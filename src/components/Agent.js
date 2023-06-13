@@ -13,14 +13,14 @@ import {
 function Agent() {
   return (
     <>
-      <div className="admin_main">
+      <div className="admin_main" >
         <div className="admin_main_inner">
-          <div className="admin_panel_data height_adjust">
+          <div className="admin_panel_data   height_adjust">
             <div className="body d-flex">
               <div className="container-xxl" style={{ marginTop: "-50px" }}>
                 <div className=" mb-4">
                   <div className="card-header py-3 no-bg bg-transparent d-flex align-items-center px-0 justify-content-between  flex-wrap">
-                    <h3 className="fw-bold mb-0">Agents</h3>
+                    <h3 className="fw-bold mb-0">Agent</h3>
                   </div>
                 </div>
                 {/* Row end  */}
