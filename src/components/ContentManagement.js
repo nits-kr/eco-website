@@ -3,8 +3,14 @@ import { Link } from "react-router-dom"
 import axios from "axios";
 
 function ContentManagement() {
-    const [contentList, setContentList] = useState('')
+    const [contentList, setContentList] = useState([])
+    const [title, setTitle] = useState('')
+    const [description, setDescription] = useState('')
     const [formData, setFormData] = useState({ questions: '', answers: '' });
+    const [selectedContentIndex, setSelectedContentIndex] = useState(0);
+    const [currentIndex, setCurrentIndex] = useState(0);
+
+
     axios.defaults.headers.common["x-auth-token-user"] =
         localStorage.getItem("token");
         const handleInputChange = (event) => {
@@ -18,29 +24,38 @@ function ContentManagement() {
         const { data } = await axios.post("http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/content/content/list", {
         });
         setContentList(data.results.list);
+        setTitle(data.results.list[0].title)
+        setDescription(data.results.list[0].Description)
         console.log(data);
     };
-    const updateList = (event) =>{
+    const updateList = (event, _id) =>{
         event.preventDefault();
-        axios.post("http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/content/content/updateContent/644a08dc84ab4b696d963b42", {
-            title:formData.questions
+        axios.patch(`http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/content/content/updateContent/${_id}`, {
+            title:title,
+            Description:description
         })
         .then(response => {
-            console.loh(response.data.results.updateData)
-            setFormData(response.data.results.updateData);
+            console.log("update data" ,response.data.results.updateData)
+            setTitle(response.data.results.updateData);
+            setDescription(response.data.results.updateData)
 
         })
         .catch(error => {
             console.log(error.response.data.results)
         })
     }
+    const handleOnUpdate = (event, _id) => {
+        event.preventDefault();
+        updateList(event, _id);
+    }
+    
     return (
         <>
             <div className="admin_main">
                 <div className="admin_main_inner">
                     <div className="admin_panel_data height_adjust">
                         <div className="row content_management justify-content-center">
-                            {(contentList || []).map((data, index) => (
+                            {contentList.map((data, index) => (
                                 <div className="col-12 mb-5" key={index}>
                                     <div className="row">
                                         <div className="col-md-6 d-flex align-items-stretch">
@@ -77,6 +92,7 @@ function ContentManagement() {
                     </div>
                 </div>
             </div>
+            {contentList.map((data) => (
             <div className="modal fade Edit_help Edit_modal" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
                 tabIndex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                 <div className="modal-dialog modal-dialog-centered">
@@ -86,25 +102,27 @@ function ContentManagement() {
                             <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div className="modal-body">
-                            <form className="form-design row mx-0 py-2" action="" onSubmit={updateList}>
+                            <form className="form-design row mx-0 py-2" action="" >
                                 <div className="form-group col-12">
                                     <label htmlFor="quesstioon">Title</label>
                                     <input className="form-control" type="text" id="questions" name="questions"
-                                        value={formData.questions} onChange={handleInputChange} />
+                                        value={title} onChange={(e) => setTitle(e.target.value)} />
                                 </div>
                                 <div className="form-group col-12">
                                     <label htmlFor="quesstioon">Description</label>
-                                    <textarea className="form-control" name="answers" id="answers" style={{ height: '150px' }} value={formData.answers} onChange={handleInputChange} />
+                                    <textarea className="form-control" name="answers" id="answers" style={{ height: '150px' }} value={description} onChange={(e) => setDescription(e.target.value)} />
 
                                 </div>
                                 <div className="form-group col-12 text-center mb-0">
-                                    <button type="submit" className="comman_btn2">Update</button>
+                                <button type="submit" className="comman_btn2" onClick={(event) => handleOnUpdate(event, data._id)}>Update</button>
+
                                 </div>
                             </form>
                         </div>
                     </div>
                 </div>
             </div>
+            ))}
             <div className="modal fade Edit_help Edit_modal" id="staticBackdrop1" data-bs-backdrop="static" data-bs-keyboard="false"
                 tabIndex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                 <div className="modal-dialog modal-dialog-centered">

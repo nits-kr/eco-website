@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from "react-router-dom"
 import axios from "axios";
+import Swal from "sweetalert2";
+
 function Help() {
+    const [searchQuery, setSearchQuery] = useState("");
     const [helpList, setHelpList] = useState([]);
     const [category, setCategory] = useState({
         categoryNameEn: '',
@@ -26,11 +29,39 @@ function Help() {
         const { name, value } = event.target;
         setSubCategory({ ...subCategory, [name]: value });
     };
+    const handleSearchCategoryName = async (e) => {
+        e.preventDefault();
+        if (searchQuery) {
+          try {
+            const response = await axios.post(
+              "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/help/help/helpSearch",
+              {
+                categoryName: searchQuery,
+              }
+            );
+            const { error, results } = response.data;
+            if (error) {
+              throw new Error("Error searching for products.");
+            } else {
+                setHelpList(results.searchData);
+            }
+          } catch (error) {
+            Swal.fire({
+              title: "Error!",
+              text: error.message,
+              icon: "error",
+              confirmButtonText: "OK",
+            });
+          }
+        } else {
+          helpList([]);
+        }
+      };
     useEffect(() => {
         userList();
     }, []);
     const userList = async () => {
-        const { data } = await axios.post("http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/help/help/list", {
+        const { data } = await axios.post("http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/help/help/list", {
             startDate,
             endDate,
         });
@@ -50,7 +81,7 @@ function Help() {
         event.preventDefault();
         try {
             const response = await axios.post(
-                "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/help/help/createHelp",
+                "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/help/help/createHelp",
                 {
                     categoryName: category.categoryNameEn,
                     subCategoryName: subCategory.nameEn
@@ -68,7 +99,7 @@ function Help() {
     const handleSave = async () => {
         try {
             const response = await axios.post(
-                "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/help/help/list",
+                "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/help/help/list",
             );
             setHelpList(response.data.results.list.reverse());
             console.log(response.data);
@@ -87,7 +118,7 @@ function Help() {
                                     <div className="col-12 design_outter_comman shadow mb-4">
                                         <div className="row comman_header justify-content-between">
                                             <div className="col">
-                                                <h2>Add New Help Category</h2>
+                                                <h2>Add New Help Category </h2>
                                             </div>
                                         </div>
                                         <form
@@ -150,9 +181,14 @@ function Help() {
                                                 <h2>Help</h2>
                                             </div>
                                             <div className="col-3 Searchbox">
-                                                <form className="form-design" action="">
+                                                <form className="form-design" action="" onSubmit={handleSearchCategoryName} >
                                                     <div className="form-group mb-0 position-relative icons_set">
-                                                        <input type="text" className="form-control" placeholder="Search" name="name" id="name" />
+                                                        <input type="text" className="form-control" placeholder="Search" name="name" id="name"
+                                                        value={searchQuery}
+                                                        onChange={(e) =>
+                                                          setSearchQuery(e.target.value)
+                                                        }
+                                                        />
                                                         <i className="far fa-search"></i>
                                                     </div>
                                                 </form>
@@ -199,7 +235,8 @@ function Help() {
                                                                     <td>{value.subCategoryName}</td>
                                                                     <td>{value.subCategoryName}</td>
                                                                     <td>
-                                                                        <Link className="comman_btn table_viewbtn" to="/help-view">View</Link>
+                                                                        <Link className="comman_btn table_viewbtn"
+                                                                         to="/help-view">View</Link>
                                                                     </td>
                                                                 </tr>
                                                             ))}

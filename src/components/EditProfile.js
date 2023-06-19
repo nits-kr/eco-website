@@ -22,7 +22,7 @@ function EditProfile() {
         data.append("profile_Pic", formData.uploadImage);
         axios
             .post(
-                "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/user/editProfile/64070221ffa431d388d348c0",
+                `http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/user/editProfile/647d9861899dd13aae681ba6`,
                 data
             )
             .then((response) => {
@@ -153,6 +153,7 @@ function EditProfile() {
                                                     defaultValue="user@gmail.com"
                                                     name="name"
                                                     id="name"
+                                                    placeholder="user@gmail.com"
                                                 />
                                             </div>
                                             <div className="form-group col-12 mt-2 text-center">

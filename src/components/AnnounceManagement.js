@@ -279,7 +279,8 @@ function AnnounceManagement() {
                                                         >
                                                             <div className="col-2">
                                                                 <div className="notification_icon">
-                                                                    <i className="fa fa-image"></i>
+                                                                    {/* <i className="fa fa-image" style={{width:"50px", height:"50px"}}> {data.pic} </i> */}
+                                                                    <img src={data.pic} alt="" />
                                                                 </div>
                                                             </div>
                                                             <div className="col">

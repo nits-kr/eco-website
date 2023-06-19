@@ -1,24 +1,65 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit } from "@fortawesome/free-solid-svg-icons";
 
 function AgentDetails() {
+  axios.defaults.headers.common["x-auth-token-user"] =
+    localStorage.getItem("token");
+  const [formData, setFormData] = useState([]);
+  const [selectedImage, setSelectedImage] = useState(null);
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    setFormData({ ...formData, [name]: value });
+  };
+  const handleImageUpload = (event) => {
+    const file = event.target.files[0];
+    setSelectedImage(URL.createObjectURL(file));
+    setFormData({ ...formData, profilePic: event.target.files[0] });
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    try {
+      const data = new FormData();
+      data.append("name", formData.fullName);
+      data.append("Email", formData.email);
+      data.append("accountNumber", formData.accountNumber);
+      data.append("bankName", formData.bankName);
+      data.append("password", formData.password);
+      data.append("commisionType", "global");
+      data.append("profile_Pic", formData.profilePic);
+      data.append("mobileNumber", formData.mobileNumber);
+      data.append("address", formData.address);
+      data.append("accountName", formData.accountName);
+      data.append("routingNumber", formData.routing);
+      const response = await axios.post(
+        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/agent/agent/addUser",
+        data
+      );
+      console.log(response.data.results.saveUser);
+
+      if (!response.data.error) {
+        alert("List saved!");
+        //handleSave();
+        setFormData(response.data.results.saveUser);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
   return (
     <>
       <div className="admin_main">
         <div className="admin_main_inner">
           <div className="admin_panel_data height_adjust">
-          <h6 className="breadcrumb">
+            <h6 className="breadcrumb">
               <Link to="/" className="breadcrumb_link text-danger">
-                <strong>
-                Agents /
-                </strong>
+                <strong>Agents /</strong>
               </Link>{" "}
               <Link to="/" className="breadcrumb_link text-secondary">
-              <strong>
-                Add
-                </strong>
+                <strong>Add</strong>
               </Link>{" "}
             </h6>
             <div className="row dashboard_part justify-content-center">
@@ -42,6 +83,8 @@ function AgentDetails() {
                                 defaultValue="karan"
                                 name="fullName"
                                 id="fullName"
+                                value={formData.fullName}
+                                onChange={handleInputChange}
                               />
                             </div>
                           </div>
@@ -55,8 +98,11 @@ function AgentDetails() {
                             <input
                               type="email"
                               className="form-control"
-                              id="exampleFormControlInput1"
+                              id="email"
                               placeholder="name@example.com"
+                              name="email"
+                              value={formData.email}
+                              onChange={handleInputChange}
                             />
                           </div>
 
@@ -69,8 +115,10 @@ function AgentDetails() {
                                 type="text"
                                 className="form-control"
                                 defaultValue=""
-                                name="account"
-                                id="account"
+                                name="accountNumber"
+                                id="accountNumber"
+                                value={formData.accountNumber}
+                                onChange={handleInputChange}
                               />
                             </div>
                           </div>
@@ -85,6 +133,8 @@ function AgentDetails() {
                                 defaultValue=""
                                 name="bankName"
                                 id="bankName"
+                                value={formData.bankName}
+                                onChange={handleInputChange}
                               />
                             </div>
                           </div>
@@ -99,6 +149,8 @@ function AgentDetails() {
                                 defaultValue="**********"
                                 name="password"
                                 id="password"
+                                value={formData.password}
+                                onChange={handleInputChange}
                               />
                             </div>
                           </div>
@@ -108,43 +160,83 @@ function AgentDetails() {
                                 Commision Types:
                               </label>
                             </div>
-                            <div className="col-6">
+                            {/* <div className="col-6">
+                              <button type="button" class="btn btn-danger">
+                                Global{" "}
+                                <span class="badge text-bg-light align-iten-center"> {" "} </span>
+                              </button>
+                            </div> */}
+                            <div
+                              className="btn-group"
+                              role="group"
+                              aria-label="Basic checkbox toggle button group"
+                            >
                               <input
-                                type="text"
-                                className="form-control"
-                                defaultValue="global"
-                                name="commision"
-                                id="commision"
+                                type="checkbox"
+                                className="btn-check"
+                                id="btncheck1"
+                                autoComplete="off"
                               />
+                              <label
+                                className="btn btn-outline-danger bg-danger text-light"
+                                htmlFor="btncheck1"
+                              >
+                                Global
+                              </label>
+                              <input
+                                type="checkbox"
+                                className="btn-check"
+                                id="btncheck2"
+                                autoComplete="off"
+                              />
+                              <label
+                                className="btn btn-outline-danger"
+                                htmlFor="btncheck2"
+                              >
+                                {" "}
+                              </label>
                             </div>
                           </div>
                         </form>
                       </div>
                     </div>
                   </div>
+                 
                   <div className="row users-information position-relative align-items-center justify-content-center">
                     <div className="col-12">
                       <div className="users_left">
                         <div className="row">
                           <div className="col-12">
                             <div className="profile-bg">
-                              {" "}
                               <strong className="d-flex justify-content-flex-start">
-                                {" "}
-                                Profile Image{" "}
-                              </strong>{" "}
+                                Profile Image
+                              </strong>
                             </div>
                             <div className="user_imgg ms-0">
-                              <img src="assets/img/profile_img1.jpg" alt="" />
+                              {selectedImage ? (
+                                <img src={selectedImage} alt="" />
+                              ) : (
+                                <img src="assets/img/profile_img1.jpg" alt="" />
+                              )}
                             </div>
                           </div>
-                          <div className="col-1 users_left_content" style={{marginTop:"-45px", marginLeft:"80px"}} >
-                            <Link to="#">
-                            <FontAwesomeIcon
-                              icon={faEdit}
-                              style={{ color: "red" }}
+                          <div
+                            className="col-1 users_left_content"
+                            style={{ marginTop: "-45px", marginLeft: "80px" }}
+                          >
+                            <label htmlFor="upload-image">
+                              <FontAwesomeIcon
+                                icon={faEdit}
+                                style={{ color: "red" }}
+                              />
+                            </label>
+                            <input
+                              id="upload-image"
+                              type="file"
+                              accept="image/*"
+                              onChange={handleImageUpload}
+                              style={{ display: "none" }}
                             />
-                            </Link>
                           </div>
                         </div>
                       </div>
@@ -167,9 +259,10 @@ function AgentDetails() {
                               <input
                                 type="text"
                                 className="form-control"
-                                defaultValue=""
-                                name="name"
-                                id="name"
+                                name="mobileNumber"
+                                id="mobileNumber"
+                                value={formData.mobileNumber}
+                                onChange={handleInputChange}
                               />
                             </div>
                           </div>
@@ -185,6 +278,8 @@ function AgentDetails() {
                                 placeholder="type address..."
                                 name="address"
                                 id="address"
+                                value={formData.address}
+                                onChange={handleInputChange}
                               />
                             </div>
                           </div>
@@ -199,6 +294,8 @@ function AgentDetails() {
                                 defaultValue=""
                                 name="accountName"
                                 id="accountName"
+                                value={formData.accountName}
+                                onChange={handleInputChange}
                               />
                             </div>
                           </div>
@@ -213,6 +310,8 @@ function AgentDetails() {
                                 defaultValue=""
                                 name="routing"
                                 id="routing"
+                                value={formData.routing}
+                                onChange={handleInputChange}
                               />
                             </div>
                           </div>
@@ -221,13 +320,13 @@ function AgentDetails() {
                               <label htmlFor="status">Status:</label>
                             </div>
                             <div className="col-12">
-                              <input
-                                type="text"
-                                className="form-control"
-                                defaultValue="approved"
-                                name="status"
-                                id="status"
-                              />
+                              <button
+                                type="button"
+                                class="btn btn-danger"
+                                onClick={handleSubmit}
+                              >
+                                Approved
+                              </button>
                             </div>
                           </div>
                         </form>

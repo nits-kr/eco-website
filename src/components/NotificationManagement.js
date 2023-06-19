@@ -3,7 +3,7 @@ import { Link } from "react-router-dom"
 import axios from "axios";
 
 function NotificationManagement() {
-    const [notificationList, setNotificationList] = useState('')
+    const [notificationList, setNotificationList] = useState([])
     const [reportNotification, setReportNotification] = useState({
         reports: '',
         reportsAr: '',
@@ -182,7 +182,7 @@ function NotificationManagement() {
                                                         </div>
                                                     </div>
 
-                                                    {(notificationList || []).map((data, index) => (
+                                                    {notificationList.map((data, index) => (
                                                         <div className="row mx-0 notification-box shadow mb-4" key={index}>
                                                             <div className="col-2">
                                                                 <div className="notification_icon">

@@ -91,26 +91,15 @@ function CoupanList() {
             setCoupanList([]);
         }
     };
-    const handleDelete = (itemId) => {
-        fetch(`http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/coupan/coupan/delete/${itemId}`, {
-            method: 'DELETE',
-        })
-            .then((response) => {
-                if (response.ok) {
-                    // Remove the deleted item from the coupanList array
-                    setCoupanList((prevList) =>
-                        prevList.filter((item) => item._id !== itemId)
-                    );
-                    // Perform any additional actions or show a success message
-                } else {
-                    // Handle errors or show an error message
-                }
-            })
-            .catch((error) => {
-                // Handle errors or show an error message
-            });
-    };
-
+  const handleDelete = (_id) => {
+    alert(_id)
+    deleteConfirm(_id);
+  }
+  const deleteConfirm = (_id) => {
+    const data = axios.delete(`http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/coupan/coupan/delete/${_id}`)
+    console.log("deleted coupan list item", data?.results?.deleteData);
+    setCoupanList([])
+  }
 
     return (
         <>
@@ -184,7 +173,7 @@ function CoupanList() {
                                                 <thead>
                                                     <tr>
                                                         <th>
-                                                            <form className="table_btns d-flex align-items-center justify-content-center">
+                                                            <form className="table_btns d-flex align-items-center justify-content-center" style={{marginTop:"-27px"}}>
                                                                 <div className="check_radio">
                                                                     <input
                                                                         type="checkbox"
@@ -207,8 +196,8 @@ function CoupanList() {
                                                     {(coupanList || [])?.map((item, index) => (
                                                         <tr key={index}>
                                                             <td>
-                                                                <form className="table_btns d-flex align-items-center justify-content-center">
-                                                                    <div className="check_radio">
+                                                                <form className="table_btns d-flex align-items-center justify-content-center my-2">
+                                                                    <div className="check_radio mb-3">
                                                                         <input
                                                                             type="checkbox"
                                                                             name={`c${index + 2}`}
@@ -225,7 +214,7 @@ function CoupanList() {
                                                             <td>{item.status}</td>
                                                             <td>
                                                                 <Link
-                                                                    className="comman_btn table_viewbtn"
+                                                                    className="comman_btn table_viewbtn mx-2"
                                                                     data-bs-toggle="modal"
                                                                     data-bs-target="#editt"
                                                                     to="#"
@@ -280,6 +269,7 @@ function CoupanList() {
                                         className="comman_btn mx-2"
                                         data-bs-dismiss="modal"
                                         to="javscript:;"
+                                        onClick={deleteConfirm}
                                     >
                                         Yes
                                     </Link>

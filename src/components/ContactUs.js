@@ -11,7 +11,7 @@ function ContactUs() {
         userList();
     }, []);
     const userList = async () => {
-        const { data } = await axios.post("http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/contact/contact/contactList?=", {
+        const { data } = await axios.post("http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/contact/contact/contactList", {
             startDate,
             endDate,
         });
@@ -70,110 +70,7 @@ function ContactUs() {
                                         <div className="row">
                                             <div className="col-12 comman_table_design px-0">
                                                 <div className="table-responsive">
-                                                    {/* <table className="table mb-0">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>S.No.</th>
-                                                                <th>User Name</th>
-                                                                <th>E-mail</th>
-                                                                <th>Subject</th>
-                                                                <th>Description</th>
-                                                                <th>Date</th>
-                                                                <th>Status</th>
-                                                                <th>Action</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            <tr>
-                                                                <td>1</td>
-                                                                <td>Ajay Sharma</td>
-                                                                <td>xyz@gmail.com</td>
-                                                                <td>Lorem ipsum</td>
-                                                                <td>Lorem ipsum dolor sit amet</td>
-                                                                <td>March 28,2022</td>
-                                                                <td>
-                                                                    <form className="table_btns d-flex align-items-center">
-                                                                        <div className="check_toggle">
-                                                                            <input data-bs-toggle="modal" data-bs-target="#staticBackdrop2"
-                                                                                defaultChecked="" type="checkbox" name="check1" id="check1"
-                                                                                className="d-none" /> <label htmlFor="check1"></label>
-                                                                        </div>
-                                                                    </form>
-                                                                </td>
-                                                                <td>
-                                                                    <Link data-bs-toggle="modal" data-bs-target="#staticBackdrop"
-                                                                        className="comman_btn table_viewbtn" to="javscript:;">View</Link>
-                                                                    <Link className="comman_btn2 table_viewbtn" to="javscript:;">Delete</Link>
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>2</td>
-                                                                <td>Ajay Sharma</td>
-                                                                <td>xyz@gmail.com</td>
-                                                                <td>Lorem ipsum</td>
-                                                                <td>Lorem ipsum dolor sit amet</td>
-                                                                <td>March 28,2022</td>
-                                                                <td>
-                                                                    <form className="table_btns d-flex align-items-center">
-                                                                        <div className="check_toggle">
-                                                                            <input data-bs-toggle="modal" data-bs-target="#staticBackdrop2"
-                                                                                defaultChecked="" type="checkbox" name="check2" id="check2"
-                                                                                className="d-none" /> <label htmlFor="check2"></label>
-                                                                        </div>
-                                                                    </form>
-                                                                </td>
-                                                                <td>
-                                                                    <Link data-bs-toggle="modal" data-bs-target="#staticBackdrop"
-                                                                        className="comman_btn table_viewbtn" to="javscript:;">View</Link>
-                                                                    <Link className="comman_btn2 table_viewbtn" to="javscript:;">Delete</Link>
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>3</td>
-                                                                <td>Ajay Sharma</td>
-                                                                <td>xyz@gmail.com</td>
-                                                                <td>Lorem ipsum</td>
-                                                                <td>Lorem ipsum dolor sit amet</td>
-                                                                <td>March 28,2022</td>
-                                                                <td>
-                                                                    <form className="table_btns d-flex align-items-center">
-                                                                        <div className="check_toggle">
-                                                                            <input data-bs-toggle="modal" data-bs-target="#staticBackdrop2"
-                                                                                defaultChecked="" type="checkbox" name="check3" id="check3"
-                                                                                className="d-none" /> <label htmlFor="check3"></label>
-                                                                        </div>
-                                                                    </form>
-                                                                </td>
-                                                                <td>
-                                                                    <Link data-bs-toggle="modal" data-bs-target="#staticBackdrop"
-                                                                        className="comman_btn table_viewbtn" to="javscript:;">View</Link>
-                                                                    <Link className="comman_btn2 table_viewbtn" to="javscript:;">Delete</Link>
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>4</td>
-                                                                <td>Ajay Sharma</td>
-                                                                <td>xyz@gmail.com</td>
-                                                                <td>Lorem ipsum</td>
-                                                                <td>Lorem ipsum dolor sit amet</td>
-                                                                <td>March 28,2022</td>
-                                                                <td>
-                                                                    <form className="table_btns d-flex align-items-center">
-                                                                        <div className="check_toggle">
-                                                                            <input data-bs-toggle="modal" data-bs-target="#staticBackdrop2"
-                                                                                defaultChecked="" type="checkbox" name="check4" id="check4"
-                                                                                className="d-none" /> <label htmlFor="check4"></label>
-                                                                        </div>
-                                                                    </form>
-                                                                </td>
-                                                                <td>
-                                                                    <Link data-bs-toggle="modal" data-bs-target="#staticBackdrop"
-                                                                        className="comman_btn table_viewbtn" to="javscript:;">View</Link>
-                                                                    <Link className="comman_btn2 table_viewbtn" to="javscript:;">Delete</Link>
-                                                                </td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table> */}
+                                                    
                                                     <table className="table mb-0">
                                                         <thead>
                                                             <tr>
@@ -216,7 +113,7 @@ function ContactUs() {
                                                                         <Link
                                                                             data-bs-toggle="modal"
                                                                             data-bs-target="#staticBackdrop"
-                                                                            className="comman_btn table_viewbtn"
+                                                                            className="comman_btn table_viewbtn me-2"
                                                                             to="#"
                                                                         >
                                                                             View

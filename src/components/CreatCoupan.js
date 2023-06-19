@@ -6,11 +6,20 @@ export default function CreatCoupan() {
     //const [coupanList, setCoupanList] = useState([])
     const [coupan, setCoupan] = useState({
         coupanTitle: '',
-        coupanCode: ''
+        coupanCode: '',
+        startDate: '', // Provide an initial value
+        endDate: '', // Provide an initial value
+        quantity: '',
+        discountType: ''
     });
+    
     const [restriction, setRestriction] = useState({
         coupanTitle: '',
-        coupanCode: ''
+        coupanCode: '',
+        startDate: '', // Provide an initial value
+        endDate: '', // Provide an initial value
+        quantity: '',
+        discountType: ''
     });
     const [usage, setUsage] = useState({
         coupanTitle: '',
@@ -45,7 +54,7 @@ export default function CreatCoupan() {
                     DiscountType: coupan.discountType,
                 }
             );
-            console.log(response.data.results.coupanData);
+            console.log("create coupan",response.data.results.coupanData);
             if (!response.data.error) {
                 Swal.fire({
                     title: "Coupan Created!",

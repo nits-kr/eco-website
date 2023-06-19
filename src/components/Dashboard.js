@@ -47,7 +47,7 @@ function Dashboard() {
         if (searchQuery) {
             try {
                 const response = await axios.post('http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/dashboards/count/search', {
-                    sellerName: searchQuery
+                    orderStatus: searchQuery
                 });
                 const { error, results } = response.data;
                 if (error) {
@@ -82,7 +82,7 @@ function Dashboard() {
                                             </div>
                                             <div className="col pe-0">
                                                 <div className="dashboard_boxcontent">
-                                                    <h2>Total Users</h2>
+                                                    <h2>Total Revenue</h2>
                                                     <span>{userCounts.userCount}</span>
                                                 </div>
                                             </div>
@@ -108,7 +108,7 @@ function Dashboard() {
                                             </div>
                                             <div className="col pe-0">
                                                 <div className="dashboard_boxcontent">
-                                                    <h2>Total Offers</h2>
+                                                    <h2>Total Products</h2>
                                                     <span>500</span>
                                                 </div>
                                             </div>
@@ -121,7 +121,7 @@ function Dashboard() {
                                             </div>
                                             <div className="col pe-0">
                                                 <div className="dashboard_boxcontent">
-                                                    <h2>Total Revenue</h2>
+                                                    <h2>Total Customers</h2>
                                                     <span>SAR 20000</span>
                                                 </div>
                                             </div>
@@ -143,9 +143,6 @@ function Dashboard() {
                                                     </div>
                                                 </form>
                                             </div>
-                                            {/* <div className="col-auto">
-                                                <input type="date" className="custom_date" />
-                                            </div> */}
                                         </div>
                                         <form
                                             className="form-design py-4 px-3 help-support-form row align-items-end justify-content-between"
@@ -168,28 +165,40 @@ function Dashboard() {
                                                     <table className="table mb-0">
                                                         <thead>
                                                             <tr>
-                                                                <th>S.No.</th>
-                                                                <th>Seller Name</th>
-                                                                <th>Buyer Name</th>
-                                                                <th>Mobile Number</th>
-                                                                <th>Order Date</th>
-                                                                <th>Offer Type</th>
-                                                                <th>Action</th>
+                                                                <th>Order ID</th>
+                                                                <th>Buyer-name</th>
+                                                                <th>Date Placed</th>
+                                                                <th>Price</th>
+                                                                <th>Order Status</th>
+                                                                <th>Payment</th>
+                                                                {/* <th>Action</th> */}
                                                             </tr>
                                                         </thead>
                                                         <tbody>
                                                             {(recentOrderList || [])?.map((order, index) => (
                                                                 <tr key={index}>
-                                                                    <td>{index + 1}</td>
-                                                                    <td>{order.sellerName}</td>
-                                                                    <td>{order.buyerName}</td>
-                                                                    <td>{order.mobileNumber}</td>
-                                                                    <td>{order.createdAt}</td>
-                                                                    <td>{order.offerType}</td>
-                                                                    <td>
+                                                                    <td> {order.products[0].product_Id} </td>
+                                                                    <td> {order?.user_Id?.userName} </td>
+                                                                    <td> {order.createdAt} </td>
+                                                                    <td> {order.cartsTotal} </td>
+                                                                    <td> {order.orderStatus} </td>
+                                                                    <td> {order.paymentIntent} </td>
+                                                                    
+                                                                    {/* <td>
                                                                         <Link className="comman_btn2 table_viewbtn" to="/recent-order">View</Link>
-                                                                    </td>
+                                                                    </td> */}
                                                                 </tr>
+                                                                // <tr key={index}>
+                                                                //     <td>{index + 1}</td>
+                                                                //     <td>{order.sellerName}</td>
+                                                                //     <td>{order.buyerName}</td>
+                                                                //     <td>{order.mobileNumber}</td>
+                                                                //     <td>{order.createdAt}</td>
+                                                                //     <td>{order.offerType}</td>
+                                                                //     <td>
+                                                                //         <Link className="comman_btn2 table_viewbtn" to="/recent-order">View</Link>
+                                                                //     </td>
+                                                                // </tr>
                                                             ))}
                                                         </tbody>
                                                     </table>

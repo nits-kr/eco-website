@@ -1,5 +1,7 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import axios from "axios";
+import Swal from "sweetalert2";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faEye,
@@ -11,16 +13,70 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 function Agent() {
+  axios.defaults.headers.common["x-auth-token-user"] =
+    localStorage.getItem("token");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [agentList, setAgentList] = useState([]);
+  const handleSearch = async (e) => {
+    e.preventDefault();
+    if (searchQuery) {
+      try {
+        const response = await axios.post(
+          "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/agent/agent/search-user",
+          {
+            name: searchQuery,
+          }
+        );
+        const { error, results } = response.data;
+        if (error) {
+          throw new Error("Error searching for products.");
+        } else {
+          setAgentList(results.searchData);
+        }
+      } catch (error) {
+        Swal.fire({
+          title: "Error!",
+          text: error.message,
+          icon: "error",
+          confirmButtonText: "OK",
+        });
+      }
+    } else {
+      agentList([]);
+    }
+  };
+  useEffect(() => {
+    userList();
+  }, []);
+  const userList = async () => {
+    const { data } = await axios.post(
+      "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/agent/agent/user-List"
+    );
+    setAgentList(data.results.list.reverse());
+    console.log("Agent List", data);
+  };
+  const deleteAgent = (_id) => {
+    const data = axios.delete(
+      `http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/agent/agent/delete-user/${_id}`
+    );
+    //alert(_id)
+    console.log("delete aagent", _id);
+    setAgentList(data.results.list);
+  };
+  const viewAgent = (_id) => {
+    console.log("viewAgent", _id);
+  };
+
   return (
     <>
-      <div className="admin_main" >
+      <div className="admin_main">
         <div className="admin_main_inner">
-          <div className="admin_panel_data   height_adjust">
+          <div className="admin_panel_data height_adjust">
             <div className="body d-flex">
               <div className="container-xxl" style={{ marginTop: "-50px" }}>
                 <div className=" mb-4">
                   <div className="card-header py-3 no-bg bg-transparent d-flex align-items-center px-0 justify-content-between  flex-wrap">
-                    <h3 className="fw-bold mb-0">Agent</h3>
+                    <h3 className="fw-bold mb-0">Agents</h3>
                   </div>
                 </div>
                 {/* Row end  */}
@@ -61,42 +117,48 @@ function Agent() {
                               </div>
                             </div>
                             <div className="search-box col-sm-4">
-                              <div className="input-group">
-                                <input
-                                  type="search"
-                                  className="form-control"
-                                  placeholder="I'm searching for..."
-                                  aria-label="Recipient's username"
-                                  aria-describedby="button-addon2"
-                                />
-                                <button
-                                  className="btn"
-                                  type="button"
-                                  id="button-addon2"
-                                  fdprocessedid="b7cmd"
-                                >
-                                  <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    width={24}
-                                    height={24}
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeWidth={2}
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    className="feather feather-search"
+                              <form onSubmit={handleSearch}>
+                                <div className="input-group">
+                                  <input
+                                    type="search"
+                                    className="form-control"
+                                    placeholder="I'm searching for..."
+                                    aria-label="Recipient's username"
+                                    aria-describedby="button-addon2"
+                                    value={searchQuery}
+                                    onChange={(e) =>
+                                      setSearchQuery(e.target.value)
+                                    }
+                                  />
+                                  <button
+                                    className="btn"
+                                    type="button"
+                                    id="button-addon2"
+                                    fdprocessedid="b7cmd"
                                   >
-                                    <circle cx={11} cy={11} r={8} />
-                                    <line
-                                      x1={21}
-                                      y1={21}
-                                      x2="16.65"
-                                      y2="16.65"
-                                    />
-                                  </svg>
-                                </button>
-                              </div>
+                                    <svg
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      width={24}
+                                      height={24}
+                                      viewBox="0 0 24 24"
+                                      fill="none"
+                                      stroke="currentColor"
+                                      strokeWidth={2}
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      className="feather feather-search"
+                                    >
+                                      <circle cx={11} cy={11} r={8} />
+                                      <line
+                                        x1={21}
+                                        y1={21}
+                                        x2="16.65"
+                                        y2="16.65"
+                                      />
+                                    </svg>
+                                  </button>
+                                </div>
+                              </form>
                             </div>
                             <div className="col-sm-4 ms-auto">
                               <div className="button-group">
@@ -187,16 +249,7 @@ function Agent() {
                                     >
                                       Online Status
                                     </th>
-                                    <th
-                                      className="sorting"
-                                      tabIndex={0}
-                                      aria-controls="myDataTable"
-                                      rowSpan={1}
-                                      colSpan={1}
-                                      aria-label="Color: activate to sort column ascending"
-                                    >
-                                      Balance
-                                    </th>
+
                                     <th
                                       className="dt-body-right sorting"
                                       tabIndex={0}
@@ -244,426 +297,75 @@ function Agent() {
                                   </tr>
                                 </thead>
                                 <tbody>
-                                  <tr role="row" className="odd">
-                                    <td tabIndex={0} className="">
-                                      <input type="checkbox" />
-                                    </td>
-                                    <td>Ayed</td>
-                                    <td className="sorting_1">
-                                      ayed@gmail.com
-                                    </td>
-                                    <td>9856344232</td>
-                                    <td className="text-warning">Created</td>
-                                    <td className=" dt-body-right">Online</td>
-                                    <td>$0</td>
-                                    <td className=" dt-body-right">
-                                      <span className="badge text-secondary">
-                                        7 june 2023
-                                      </span>
-                                    </td>
-                                    <td className="dt-body-right">
-                                      <Link to="/agents-information">
-                                        <span className="badge text-dark">
-                                          <FontAwesomeIcon icon={faEye} />
+                                  {agentList.map((agent, index) => (
+                                    <tr role="row" className="odd" key={index}>
+                                      <td tabIndex={0} className="">
+                                        <input type="checkbox" />
+                                      </td>
+                                      <td> {agent.name} </td>
+                                      <td className="sorting_1">
+                                        {agent.Email}
+                                      </td>
+                                      <td> {agent.mobileNumber} </td>
+                                      <td className="text-warning">
+                                        {" "}
+                                        {agent.status}{" "}
+                                      </td>
+                                      <td className=" dt-body-right">
+                                        {" "}
+                                        {agent.onlineStatus}{" "}
+                                      </td>
+
+                                      <td className=" dt-body-right">
+                                        <span className="badge text-secondary">
+                                          {agent.createdAt}
                                         </span>
-                                      </Link>
-                                    </td>
-                                    <td className=" dt-body-right">
-                                      <span className="badge text-dark">
-                                        <FontAwesomeIcon icon={faTrash} />
-                                      </span>
-                                    </td>
-                                    <td className=" dt-body-right">
-                                      <span className="badge text-dark">
-                                        <FontAwesomeIcon icon={faDollarSign} />
-                                      </span>
-                                    </td>
-                                    <td className=" dt-body-right">
-                                      <span className="badge text-dark">
-                                        <FontAwesomeIcon
-                                          icon={faMoneyBill1Wave}
-                                        />
-                                      </span>
-                                    </td>
-                                  </tr>
-                                  <tr role="row" className="odd">
-                                    <td tabIndex={0} className="">
-                                      <input type="checkbox" />
-                                    </td>
-                                    <td>Ayed</td>
-                                    <td className="sorting_1">
-                                      ayed@gmail.com
-                                    </td>
-                                    <td>9856344232</td>
-                                    <td>Created</td>
-                                    <td className=" dt-body-right">Online</td>
-                                    <td>$0</td>
-                                    <td className=" dt-body-right">
-                                      <span className="badge text-secondary">
-                                        7 june 2023
-                                      </span>
-                                    </td>
-                                    <td className="dt-body-right">
-                                      <Link to="/agents-information">
+                                      </td>
+                                      <td className="dt-body-right">
+                                        {/* <Link to="/agents-information"> */}
+                                          <Link to={`/agents-information/${agent._id}`}>
+                                          <span className="badge text-dark">
+                                            <button
+                                              type="button"
+                                              className="border border-none bg-light"
+                                              onClick={() =>
+                                                viewAgent(agent._id)
+                                              }
+                                            >
+                                              <FontAwesomeIcon icon={faEye} />
+                                            </button>
+                                          </span>
+                                        </Link>
+                                      </td>
+                                      <td className=" dt-body-right">
                                         <span className="badge text-dark">
-                                          <FontAwesomeIcon icon={faEye} />
+                                          <button
+                                            type="button"
+                                            className="border border-none bg-light"
+                                            onClick={() =>
+                                              deleteAgent(agent._id)
+                                            }
+                                          >
+                                            <FontAwesomeIcon icon={faTrash} />
+                                          </button>
                                         </span>
-                                      </Link>
-                                    </td>
-                                    <td className=" dt-body-right">
-                                      <span className="badge text-dark">
-                                        <FontAwesomeIcon icon={faTrash} />
-                                      </span>
-                                    </td>
-                                    <td className=" dt-body-right">
-                                      <span className="badge text-dark">
-                                        <FontAwesomeIcon icon={faDollarSign} />
-                                      </span>
-                                    </td>
-                                    <td className=" dt-body-right">
-                                      <span className="badge text-dark">
-                                        <FontAwesomeIcon
-                                          icon={faMoneyBill1Wave}
-                                        />
-                                      </span>
-                                    </td>
-                                  </tr>
-                                  <tr role="row" className="odd">
-                                    <td tabIndex={0} className="">
-                                      <input type="checkbox" />
-                                    </td>
-                                    <td>Ayed</td>
-                                    <td className="sorting_1">
-                                      ayed@gmail.com
-                                    </td>
-                                    <td>9856344232</td>
-                                    <td>Created</td>
-                                    <td className=" dt-body-right">Online</td>
-                                    <td>$0</td>
-                                    <td className=" dt-body-right">
-                                      <span className="badge text-secondary">
-                                        7 june 2023
-                                      </span>
-                                    </td>
-                                    <td className="dt-body-right">
-                                      <Link to="/agents-information">
+                                      </td>
+                                      <td className=" dt-body-right">
                                         <span className="badge text-dark">
-                                          <FontAwesomeIcon icon={faEye} />
+                                          <FontAwesomeIcon
+                                            icon={faDollarSign}
+                                          />
                                         </span>
-                                      </Link>
-                                    </td>
-                                    <td className=" dt-body-right">
-                                      <span className="badge text-dark">
-                                        <FontAwesomeIcon icon={faTrash} />
-                                      </span>
-                                    </td>
-                                    <td className=" dt-body-right">
-                                      <span className="badge text-dark">
-                                        <FontAwesomeIcon icon={faDollarSign} />
-                                      </span>
-                                    </td>
-                                    <td className=" dt-body-right">
-                                      <span className="badge text-dark">
-                                        <FontAwesomeIcon
-                                          icon={faMoneyBill1Wave}
-                                        />
-                                      </span>
-                                    </td>
-                                  </tr>
-                                  <tr role="row" className="odd">
-                                    <td tabIndex={0} className="">
-                                      <input type="checkbox" />
-                                    </td>
-                                    <td>Ayed</td>
-                                    <td className="sorting_1">
-                                      ayed@gmail.com
-                                    </td>
-                                    <td>9856344232</td>
-                                    <td>Created</td>
-                                    <td className=" dt-body-right">Online</td>
-                                    <td>$0</td>
-                                    <td className=" dt-body-right">
-                                      <span className="badge text-secondary">
-                                        7 june 2023
-                                      </span>
-                                    </td>
-                                    <td className="dt-body-right">
-                                      <Link to="/agents-information">
+                                      </td>
+                                      <td className=" dt-body-right">
                                         <span className="badge text-dark">
-                                          <FontAwesomeIcon icon={faEye} />
+                                          <FontAwesomeIcon
+                                            icon={faMoneyBill1Wave}
+                                          />
                                         </span>
-                                      </Link>
-                                    </td>
-                                    <td className=" dt-body-right">
-                                      <span className="badge text-dark">
-                                        <FontAwesomeIcon icon={faTrash} />
-                                      </span>
-                                    </td>
-                                    <td className=" dt-body-right">
-                                      <span className="badge text-dark">
-                                        <FontAwesomeIcon icon={faDollarSign} />
-                                      </span>
-                                    </td>
-                                    <td className=" dt-body-right">
-                                      <span className="badge text-dark">
-                                        <FontAwesomeIcon
-                                          icon={faMoneyBill1Wave}
-                                        />
-                                      </span>
-                                    </td>
-                                  </tr>
-                                  <tr role="row" className="odd">
-                                    <td tabIndex={0} className="">
-                                      <input type="checkbox" />
-                                    </td>
-                                    <td>Ayed</td>
-                                    <td className="sorting_1">
-                                      ayed@gmail.com
-                                    </td>
-                                    <td>9856344232</td>
-                                    <td>Created</td>
-                                    <td className=" dt-body-right">Online</td>
-                                    <td>$0</td>
-                                    <td className=" dt-body-right">
-                                      <span className="badge text-secondary">
-                                        7 june 2023
-                                      </span>
-                                    </td>
-                                    <td className="dt-body-right">
-                                      <Link to="/agents-information">
-                                        <span className="badge text-dark">
-                                          <FontAwesomeIcon icon={faEye} />
-                                        </span>
-                                      </Link>
-                                    </td>
-                                    <td className=" dt-body-right">
-                                      <span className="badge text-dark">
-                                        <FontAwesomeIcon icon={faTrash} />
-                                      </span>
-                                    </td>
-                                    <td className=" dt-body-right">
-                                      <span className="badge text-dark">
-                                        <FontAwesomeIcon icon={faDollarSign} />
-                                      </span>
-                                    </td>
-                                    <td className=" dt-body-right">
-                                      <span className="badge text-dark">
-                                        <FontAwesomeIcon
-                                          icon={faMoneyBill1Wave}
-                                        />
-                                      </span>
-                                    </td>
-                                  </tr>
-                                  <tr role="row" className="odd">
-                                    <td tabIndex={0} className="">
-                                      <input type="checkbox" />
-                                    </td>
-                                    <td>Ayed</td>
-                                    <td className="sorting_1">
-                                      ayed@gmail.com
-                                    </td>
-                                    <td>9856344232</td>
-                                    <td>Created</td>
-                                    <td className=" dt-body-right">Online</td>
-                                    <td>$0</td>
-                                    <td className=" dt-body-right">
-                                      <span className="badge text-secondary">
-                                        7 june 2023
-                                      </span>
-                                    </td>
-                                    <td className="dt-body-right">
-                                      <Link to="/agents-information">
-                                        <span className="badge text-dark">
-                                          <FontAwesomeIcon icon={faEye} />
-                                        </span>
-                                      </Link>
-                                    </td>
-                                    <td className=" dt-body-right">
-                                      <span className="badge text-dark">
-                                        <FontAwesomeIcon icon={faTrash} />
-                                      </span>
-                                    </td>
-                                    <td className=" dt-body-right">
-                                      <span className="badge text-dark">
-                                        <FontAwesomeIcon icon={faDollarSign} />
-                                      </span>
-                                    </td>
-                                    <td className=" dt-body-right">
-                                      <span className="badge text-dark">
-                                        <FontAwesomeIcon
-                                          icon={faMoneyBill1Wave}
-                                        />
-                                      </span>
-                                    </td>
-                                  </tr>
-                                  <tr role="row" className="odd">
-                                    <td tabIndex={0} className="">
-                                      <input type="checkbox" />
-                                    </td>
-                                    <td>Ayed</td>
-                                    <td className="sorting_1">
-                                      ayed@gmail.com
-                                    </td>
-                                    <td>9856344232</td>
-                                    <td>Created</td>
-                                    <td className=" dt-body-right">Online</td>
-                                    <td>$0</td>
-                                    <td className=" dt-body-right">
-                                      <span className="badge text-secondary">
-                                        7 june 2023
-                                      </span>
-                                    </td>
-                                    <td className="dt-body-right">
-                                      <Link to="/agents-information">
-                                        <span className="badge text-dark">
-                                          <FontAwesomeIcon icon={faEye} />
-                                        </span>
-                                      </Link>
-                                    </td>
-                                    <td className=" dt-body-right">
-                                      <span className="badge text-dark">
-                                        <FontAwesomeIcon icon={faTrash} />
-                                      </span>
-                                    </td>
-                                    <td className=" dt-body-right">
-                                      <span className="badge text-dark">
-                                        <FontAwesomeIcon icon={faDollarSign} />
-                                      </span>
-                                    </td>
-                                    <td className=" dt-body-right">
-                                      <span className="badge text-dark">
-                                        <FontAwesomeIcon
-                                          icon={faMoneyBill1Wave}
-                                        />
-                                      </span>
-                                    </td>
-                                  </tr>
-                                  <tr role="row" className="odd">
-                                    <td tabIndex={0} className="">
-                                      <input type="checkbox" />
-                                    </td>
-                                    <td>Ayed</td>
-                                    <td className="sorting_1">
-                                      ayed@gmail.com
-                                    </td>
-                                    <td>9856344232</td>
-                                    <td>Created</td>
-                                    <td className=" dt-body-right">Online</td>
-                                    <td>$0</td>
-                                    <td className=" dt-body-right">
-                                      <span className="badge text-secondary">
-                                        7 june 2023
-                                      </span>
-                                    </td>
-                                    <td className="dt-body-right">
-                                      <Link to="/agents-information">
-                                        <span className="badge text-dark">
-                                          <FontAwesomeIcon icon={faEye} />
-                                        </span>
-                                      </Link>
-                                    </td>
-                                    <td className=" dt-body-right">
-                                      <span className="badge text-dark">
-                                        <FontAwesomeIcon icon={faTrash} />
-                                      </span>
-                                    </td>
-                                    <td className=" dt-body-right">
-                                      <span className="badge text-dark">
-                                        <FontAwesomeIcon icon={faDollarSign} />
-                                      </span>
-                                    </td>
-                                    <td className=" dt-body-right">
-                                      <span className="badge text-dark">
-                                        <FontAwesomeIcon
-                                          icon={faMoneyBill1Wave}
-                                        />
-                                      </span>
-                                    </td>
-                                  </tr>
-                                  <tr role="row" className="odd">
-                                    <td tabIndex={0} className="">
-                                      <input type="checkbox" />
-                                    </td>
-                                    <td>Ayed</td>
-                                    <td className="sorting_1">
-                                      ayed@gmail.com
-                                    </td>
-                                    <td>9856344232</td>
-                                    <td>Created</td>
-                                    <td className=" dt-body-right">Online</td>
-                                    <td>$0</td>
-                                    <td className=" dt-body-right">
-                                      <span className="badge text-secondary">
-                                        7 june 2023
-                                      </span>
-                                    </td>
-                                    <td className="dt-body-right">
-                                      <Link to="/agents-information">
-                                        <span className="badge text-dark">
-                                          <FontAwesomeIcon icon={faEye} />
-                                        </span>
-                                      </Link>
-                                    </td>
-                                    <td className=" dt-body-right">
-                                      <span className="badge text-dark">
-                                        <FontAwesomeIcon icon={faTrash} />
-                                      </span>
-                                    </td>
-                                    <td className=" dt-body-right">
-                                      <span className="badge text-dark">
-                                        <FontAwesomeIcon icon={faDollarSign} />
-                                      </span>
-                                    </td>
-                                    <td className=" dt-body-right">
-                                      <span className="badge text-dark">
-                                        <FontAwesomeIcon
-                                          icon={faMoneyBill1Wave}
-                                        />
-                                      </span>
-                                    </td>
-                                  </tr>
-                                  <tr role="row" className="odd">
-                                    <td tabIndex={0} className="">
-                                      <input type="checkbox" />
-                                    </td>
-                                    <td>Ayed</td>
-                                    <td className="sorting_1">
-                                      ayed@gmail.com
-                                    </td>
-                                    <td>9856344232</td>
-                                    <td>Created</td>
-                                    <td className=" dt-body-right">Online</td>
-                                    <td>$0</td>
-                                    <td className=" dt-body-right">
-                                      <span className="badge text-secondary">
-                                        7 june 2023
-                                      </span>
-                                    </td>
-                                    <td className="dt-body-right">
-                                      <Link to="/agents-information">
-                                        <span className="badge text-dark">
-                                          <FontAwesomeIcon icon={faEye} />
-                                        </span>
-                                      </Link>
-                                    </td>
-                                    <td className=" dt-body-right">
-                                      <span className="badge text-dark">
-                                        <FontAwesomeIcon icon={faTrash} />
-                                      </span>
-                                    </td>
-                                    <td className=" dt-body-right">
-                                      <span className="badge text-dark">
-                                        <FontAwesomeIcon icon={faDollarSign} />
-                                      </span>
-                                    </td>
-                                    <td className=" dt-body-right">
-                                      <span className="badge text-dark">
-                                        <FontAwesomeIcon
-                                          icon={faMoneyBill1Wave}
-                                        />
-                                      </span>
-                                    </td>
-                                  </tr>
+                                      </td>
+                                    </tr>
+                                  ))}
                                 </tbody>
                               </table>
                             </div>

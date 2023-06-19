@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
     faEdit,
@@ -13,6 +14,20 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 function UserDetails2() {
+    axios.defaults.headers.common["x-auth-token-user"] =
+    localStorage.getItem("token");
+    const [userListDetails, setUserListDetails] = useState({})
+    useEffect(() => {
+        userDetails();
+      }, []);
+      const userDetails = async () => {
+        const { data } = await axios.post(
+          `http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/user/details/6479bd30adce522c085b2705`
+        );
+        setUserListDetails(data.results.list);
+        console.log("User List Details", data.results.list);
+      };
+    
     return (
         <>
             <div className="admin_main">
@@ -55,8 +70,8 @@ function UserDetails2() {
                                                                 <img src="assets/img/profile_img1.jpg" alt="" />
                                                             </div>
                                                         </div>
-                                                        <div className="col-12 users_left_content" style={{ marginTop: '-80px' }}>
-                                                            <h5>Karan</h5>
+                                                        <div className="col-12 users_left_content ms-3" style={{ marginTop: '-80px' }}>
+                                                            <h5> {userListDetails.userName} </h5>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -153,14 +168,7 @@ function UserDetails2() {
                                                             </label>
                                                         </div>
                                                         <div className="col-8">
-                                                            <input
-                                                                type="text"
-                                                                className="form-control"
-                                                                defaultValue="karan"
-                                                                name="name"
-                                                                id="name"
-                                                                style={{ border: "none" }}
-                                                            />
+                                                        {userListDetails.userName}
                                                         </div>
                                                     </div>
                                                 </div>

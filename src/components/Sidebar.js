@@ -13,7 +13,7 @@ function Sidebar() {
                     <div className="siderbar_inner">
                         <div className="sidebar_logo">
                             <Link to="javscript:;">
-                                <img src="assets/img/logo1.png" alt="Logo" />
+                                <img src="../assets/img/logo1.png" alt="Logo" />
                             </Link>
                         </div>
                         <div className="sidebar_menus">
@@ -270,7 +270,7 @@ function Sidebar() {
                             </div>
                             <div className="col-auto d-flex align-items-center">
                                 <Link className="change_language" to="">
-                                    <img src="assets/img/saudi_flag1.png" alt="" />
+                                    <img src="../assets/img/saudi_flag1.png" alt="" />
                                     عربى
                                 </Link>
                                 <div className="dropdown Profile_dropdown">
@@ -281,7 +281,7 @@ function Sidebar() {
                                         data-bs-toggle="dropdown"
                                         aria-expanded="false"
                                     >
-                                        <img src="assets/img/profile_img1.jpg" alt="" />
+                                        <img src="../assets/img/profile_img1.jpg" alt="" />
                                     </button>
                                     <ul
                                         className="dropdown-menu"

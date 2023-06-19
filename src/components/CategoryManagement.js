@@ -10,36 +10,42 @@ import Value from "./Value";
 import EditSubCategory from "./EditSubCategory";
 //import EditSubSubCategory from "./EditSubSubCategory";
 import EditAttribute from "./EditAttribute";
-import Swal from 'sweetalert2';
-
+import Swal from "sweetalert2";
 
 function CategoryManagement() {
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const [categoryList, setCategoryList] = useState([]);
-  const [formData, setFormData] = useState({ nameEn: '', nameAr: '', categoryPic: null });
-  const [newCategory, setNewCategory] = useState([])
+  const [formData, setFormData] = useState({
+    nameEn: "",
+    nameAr: "",
+    categoryPic: null,
+  });
+  const [newCategory, setNewCategory] = useState([]);
 
   const handleSearch = async (e) => {
     e.preventDefault();
     if (searchQuery) {
       try {
-        const response = await axios.post('http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/category/search-category', {
-          categoryName: searchQuery
-        });
+        const response = await axios.post(
+          "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/category/search-category",
+          {
+            categoryName: searchQuery,
+          }
+        );
         const { error, results } = response.data;
         if (error) {
-          throw new Error('Error searching for products.');
+          throw new Error("Error searching for products.");
         } else {
           setCategoryList(results.categoryData);
         }
       } catch (error) {
         Swal.fire({
-          title: 'Error!',
+          title: "Error!",
           text: error.message,
-          icon: 'error',
-          confirmButtonText: 'OK'
+          icon: "error",
+          confirmButtonText: "OK",
         });
       }
     } else {
@@ -60,17 +66,21 @@ function CategoryManagement() {
     event.preventDefault();
     try {
       const data = new FormData();
-      data.append('categoryName', formData.nameEn);
-      data.append('categoryPic', formData.categoryPic);
-      const response = await axios.post('http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/category/create', data, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          'x-auth-token-user': localStorage.getItem('token')
+      data.append("categoryName", formData.nameEn);
+      data.append("categoryPic", formData.categoryPic);
+      const response = await axios.post(
+        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/category/create",
+        data,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            "x-auth-token-user": localStorage.getItem("token"),
+          },
         }
-      });
+      );
       console.log(response.data.results.saveCategory);
       if (!response.data.error) {
-        alert('List saved!');
+        alert("List saved!");
         handleSave();
       }
     } catch (error) {
@@ -80,11 +90,15 @@ function CategoryManagement() {
 
   const handleSave = async () => {
     try {
-      const response = await axios.post('http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/category/list', null, {
-        headers: {
-          'x-auth-token-user': localStorage.getItem('token')
+      const response = await axios.post(
+        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/category/list",
+        null,
+        {
+          headers: {
+            "x-auth-token-user": localStorage.getItem("token"),
+          },
         }
-      });
+      );
       setCategoryList(response.data.results.list.reverse());
       console.log(response.data);
     } catch (error) {
@@ -97,15 +111,14 @@ function CategoryManagement() {
   }, []);
 
   const handleUpdate = (nameEn, nameAr, categoryPic, id) => {
-    console.log(nameEn, nameAr, categoryPic, id)
+    console.log(nameEn, nameAr, categoryPic, id);
     setNewCategory({
       nameEn: nameEn,
       nameAr: nameAr,
       categoryPic: categoryPic,
-      id
-    })
+      id,
+    });
   };
-
 
   return (
     <>
@@ -174,7 +187,6 @@ function CategoryManagement() {
                               role="tab"
                               aria-controls="nav-contact1"
                               aria-selected="false"
-
                             >
                               Attributes
                             </button>
@@ -187,7 +199,6 @@ function CategoryManagement() {
                               role="tab"
                               aria-controls="nav-contact2"
                               aria-selected="false"
-
                             >
                               Values
                             </button>
@@ -218,7 +229,6 @@ function CategoryManagement() {
                                     <input
                                       type="text"
                                       className="form-control"
-
                                       name="nameEn"
                                       id="name-en"
                                       value={formData.nameEn}
@@ -232,7 +242,6 @@ function CategoryManagement() {
                                     <input
                                       type="text"
                                       className="form-control"
-
                                       name="nameAr"
                                       id="name-ar"
                                       value={formData.nameAr}
@@ -248,15 +257,20 @@ function CategoryManagement() {
                                     <input
                                       type="file"
                                       className="form-control"
-
                                       name="upload-video"
                                       id="upload-video"
                                       onChange={handleFileChange}
-                                      style={{ marginLeft: '15px', width: '95%' }}
+                                      style={{
+                                        marginLeft: "15px",
+                                        width: "95%",
+                                      }}
                                     />
                                   </div>
                                   <div className="form-group mb-0 col-auto">
-                                    <button className="comman_btn2" type="submit">
+                                    <button
+                                      className="comman_btn2"
+                                      type="submit"
+                                    >
                                       Save
                                     </button>
                                   </div>
@@ -268,7 +282,10 @@ function CategoryManagement() {
                                     <h2>Category List</h2>
                                   </div>
                                   <div className="col-3">
-                                    <form className="form-design" onSubmit={handleSearch}>
+                                    <form
+                                      className="form-design"
+                                      onSubmit={handleSearch}
+                                    >
                                       <div className="form-group mb-0 position-relative icons_set">
                                         <input
                                           type="text"
@@ -277,7 +294,9 @@ function CategoryManagement() {
                                           name="name"
                                           id="name"
                                           value={searchQuery}
-                                          onChange={(e) => setSearchQuery(e.target.value)}
+                                          onChange={(e) =>
+                                            setSearchQuery(e.target.value)
+                                          }
                                         />
                                         <i className="far fa-search"></i>
                                       </div>
@@ -293,7 +312,6 @@ function CategoryManagement() {
                                 <div className="row">
                                   <div className="col-12 comman_table_design px-0">
                                     <div className="table-responsive">
-
                                       <table className="table mb-0">
                                         <thead>
                                           <tr>
@@ -316,9 +334,7 @@ function CategoryManagement() {
                                                 <td>
                                                   <img
                                                     className="table_img"
-                                                   // src={`http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/${category.categoryPic}`}
-                                                    
-                                                     src={category.categoryPic}
+                                                    src={category.categoryPic}
                                                     alt=""
                                                   />
                                                 </td>
@@ -364,7 +380,14 @@ function CategoryManagement() {
                                                     data-bs-target="#staticBackdrop"
                                                     className="comman_btn2 table_viewbtn"
                                                     to=""
-                                                    onClick={() => handleUpdate(category.categoryName, category.categoryName, category.categoryPic, category._id)}
+                                                    onClick={() =>
+                                                      handleUpdate(
+                                                        category.categoryName,
+                                                        category.categoryName,
+                                                        category.categoryPic,
+                                                        category._id
+                                                      )
+                                                    }
                                                   >
                                                     Edit
                                                   </Link>

@@ -1,18 +1,44 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
+import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faEdit,
-  faTrash,
   faCheck,
   faDollarSign,
-  faChartLine,
   faArrowRight,
-  faCreditCard,
   faStar,
 } from "@fortawesome/free-solid-svg-icons";
 
 function AgentInformation() {
+  axios.defaults.headers.common["x-auth-token-user"] =
+    localStorage.getItem("token");
+  const { id } = useParams();
+  const [agentDetails, setAgentDetails] = useState("");
+  const [agentDetails2, setAgentDetails2] = useState("");
+  const [agentList, setAgentList] = useState([]);
+  useEffect(() => {
+    userList();
+  }, []);
+  const userList = async () => {
+    const { data } = await axios.post(
+      "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/agent/agent/user-List"
+    );
+    setAgentList(data.results.list.reverse());
+    console.log("Agent List", data);
+  };
+  useEffect(() => {
+    userDetails();
+  }, []);
+  const userDetails = async () => {
+    const { data } = await axios.post(
+      `http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/agent/agent/user-details/${id}`
+    );
+    setAgentDetails(data.results.userDetail);
+    setAgentDetails2(data.results);
+    console.log("Agent Details", data.results.userDetail);
+  };
+
   return (
     <>
       <div className="admin_main">
@@ -31,7 +57,7 @@ function AgentInformation() {
                                 className="profile-bg"
                                 style={{
                                   backgroundImage:
-                                    "url('assets/img/profile_img2.jpeg')",
+                                    "url('../assets/img/profile_img2.jpeg')",
                                   height: "100px",
                                   width: "130%",
                                   backgroundSize: "cover",
@@ -48,14 +74,18 @@ function AgentInformation() {
                                   marginLeft: "0px",
                                 }}
                               >
-                                <img src="assets/img/profile_img1.jpg" alt="" />
+                                <img src="../assets/img/profile_img1.jpg" alt="" />
                               </div>
                             </div>
                             <div
                               className="col-12 users_left_content"
                               style={{ marginTop: "-80px" }}
                             >
-                              <h5>Karan</h5>
+                              <h5 style={{ marginLeft: "10px" }}>
+                                {agentDetails && agentDetails.name
+                                  ? agentDetails.name.split(" ")[0]
+                                  : ""}
+                              </h5>
                             </div>
                           </div>
                         </div>
@@ -169,20 +199,11 @@ function AgentInformation() {
                             }}
                           >
                             <div className="col-4">
-                              <label htmlFor="" style={{ marginTop: "15px" }}>
+                              <label htmlFor="" style={{ marginTop: "10px" }}>
                                 Full Name:
                               </label>
                             </div>
-                            <div className="col-8">
-                              <input
-                                type="text"
-                                className="form-control"
-                                defaultValue="karan"
-                                name="name"
-                                id="name"
-                                style={{ border: "none" }}
-                              />
-                            </div>
+                            <div className="col-8 mt-2">{agentDetails.name}</div>
                           </div>
                         </div>
                         <div
@@ -200,19 +221,12 @@ function AgentInformation() {
                             }}
                           >
                             <div className="col-4">
-                              <label htmlFor="" style={{ marginTop: "15px" }}>
+                              <label htmlFor="" style={{ marginTop: "10px" }}>
                                 Mobile Number:
                               </label>
                             </div>
-                            <div className="col-8">
-                              <input
-                                type="text"
-                                className="form-control"
-                                defaultValue="+91********14"
-                                name="name"
-                                id="name"
-                                style={{ border: "none" }}
-                              />
+                            <div className="col-8 mt-2">
+                              {agentDetails.mobileNumber}
                             </div>
                           </div>
                         </div>
@@ -231,20 +245,11 @@ function AgentInformation() {
                             }}
                           >
                             <div className="col-4">
-                              <label htmlFor="" style={{ marginTop: "15px" }}>
+                              <label htmlFor="" style={{ marginTop: "10px" }}>
                                 Email Id:
                               </label>
                             </div>
-                            <div className="col-8">
-                              <input
-                                type="text"
-                                className="form-control"
-                                defaultValue="********ffescom.co"
-                                name="name"
-                                id="name"
-                                style={{ border: "none" }}
-                              />
-                            </div>
+                            <div className="col-8 mt-2">{agentDetails.Email}</div>
                           </div>
                         </div>
                         <div
@@ -262,20 +267,11 @@ function AgentInformation() {
                             }}
                           >
                             <div className="col-4">
-                              <label htmlFor="" style={{ marginTop: "15px" }}>
+                              <label htmlFor="" style={{ marginTop: "10px" }}>
                                 Location:
                               </label>
                             </div>
-                            <div className="col-8">
-                              <input
-                                type="text"
-                                className="form-control"
-                                defaultValue="Mecca Saudi Arebia"
-                                name="name"
-                                id="name"
-                                style={{ border: "none" }}
-                              />
-                            </div>
+                            <div className="col-8 mt-2">{agentDetails.address}</div>
                           </div>
                         </div>
                       </form>
@@ -343,7 +339,7 @@ function AgentInformation() {
                                   className="box_tag_left ms-5"
                                   style={{ fontSize: "30px" }}
                                 >
-                                  0
+                                  {agentDetails2.compltedOrder}
                                 </strong>
                               </div>
                               <div className="col-6">
@@ -383,7 +379,7 @@ function AgentInformation() {
                                   className="box_tag_left"
                                   style={{ fontSize: "30px" }}
                                 >
-                                  $0.00
+                                  ${agentDetails2.totalearning}
                                 </strong>
                               </div>
                               <div className="col-6">
@@ -407,46 +403,6 @@ function AgentInformation() {
                         </div>
                       </div>
                     </div>
-                    {/* <div
-                      className="col-4 design_outter_comman shadow mb-4"
-                      style={{ marginLeft: "10px", width: "32%" }}
-                    >
-                      <div className="w-100 my-5">
-                        <Link>
-                          <h5>Average Order Value</h5>
-                        </Link>
-                        <div className="row mt-2">
-                          <div className="col-12">
-                            <div className="row content_offer_inner">
-                              <div className="col-6 text-end">
-                                <strong
-                                  className="box_tag_left"
-                                  style={{ fontSize: "30px" }}
-                                >
-                                  0.00
-                                </strong>
-                              </div>
-                              <div className="col-6">
-                                <span className="box_tag_left">
-                                  <Link
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#staticBackdrop"
-                                    className="comman_btn2 table_viewbtn"
-                                    to=""
-                                  >
-                                    <FontAwesomeIcon
-                                      icon={faChartLine}
-                                      className="average-order-icon"
-                                      style={{ fontSize: "30px" }}
-                                    />
-                                  </Link>
-                                </span>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div> */}
                     <div className="col-12 design_outter_comman shadow mb-4">
                       <div className="row  justify-content-between mt-3">
                         <div className="col-auto">
