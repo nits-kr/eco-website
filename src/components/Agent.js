@@ -346,7 +346,7 @@ function Agent() {
                                               deleteAgent(agent._id)
                                             }
                                           >
-                                            <FontAwesomeIcon icon={faTrash} />
+                                            <FontAwesomeIcon icon={faTrash}/>
                                           </button>
                                         </span>
                                       </td>
