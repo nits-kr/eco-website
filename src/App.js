@@ -72,7 +72,7 @@ function App() {
           <Route
             exact
             className="active"
-            path="/agents-information"
+            path="/agents-information/:id"
             element={<AgentInformation/>}
           />
           
