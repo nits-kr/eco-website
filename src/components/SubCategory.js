@@ -8,19 +8,19 @@ function SubCategory() {
   const [categoryList, setCategoryList] = useState([]);
   const [subCategoryList, setSubCategoryList] =useState([])
   const [categories, setCategories] = useState([]);
-  const [subCategory, setSubCategory] = useState([{
+  const [subCategory, setSubCategory] = useState({
     nameEn: "",
     nameAr: "",
     categoryId: "",
     subCategoryPic: null,
-  }]);
+  });
 
   const [searchQuery, setSearchQuery] = useState("");
   const [newCategory, setNewCategory] = useState([]);
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
-    setSubCategory([{ ...subCategory, [name]: value }]);
+    setSubCategory({ ...subCategory, [name]: value });
   };
   const handleFileChange = (event) => {
     setSubCategory({ ...subCategory, subCategoryPic: event.target.files[0] });

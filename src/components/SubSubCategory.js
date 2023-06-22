@@ -10,12 +10,12 @@ function SubSubCategory() {
   const [subSubCategoryList, setSubSubCategoryList] = useState([]);
   const [categories, setCategories] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
-  const [subSubCategory, setSubSubCategory] = useState([{
+  const [subSubCategory, setSubSubCategory] = useState({
     nameEn: '',
     nameAr: '',
     categoryId: '',
     categoryId1: ''
-  }]);
+  });
   const [newCategory, setNewCategory] = useState([])
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
@@ -46,7 +46,7 @@ function SubSubCategory() {
   };
   const handleInputChange = (event) => {
     const { name, value } = event.target;
-    setSubSubCategory([{ ...subSubCategory, [name]: value }]);
+    setSubSubCategory({ ...subSubCategory, [name]: value });
   };
 
 
@@ -122,12 +122,12 @@ console.log("sub subCategory list", subSubCategoryList);
 
   const handleUpdate = ( id,id2, nameEn, nameAr) => {
     console.log(nameEn, nameAr, id)
-    setNewCategory([{
+    setNewCategory({
       nameEn: nameEn,
       nameAr: nameAr,
       id,
       id2,
-    }])
+    })
   };
 
   return (

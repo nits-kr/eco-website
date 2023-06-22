@@ -17,11 +17,11 @@ function CategoryManagement() {
     localStorage.getItem("token");
   const [searchQuery, setSearchQuery] = useState("");
   const [categoryList, setCategoryList] = useState([]);
-  const [formData, setFormData] = useState([{
+  const [formData, setFormData] = useState({
     nameEn: "",
     nameAr: "",
     categoryPic: null,
-  }]);
+  });
   const [newCategory, setNewCategory] = useState([]);
 
   const handleSearch = async (e) => {
@@ -55,11 +55,11 @@ function CategoryManagement() {
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
-    setFormData([{ ...formData, [name]: value }]);
+    setFormData({ ...formData, [name]: value });
   };
 
   const handleFileChange = (event) => {
-    setFormData([{ ...formData, categoryPic: event.target.files[0] }]);
+    setFormData({ ...formData, categoryPic: event.target.files[0] });
   };
 
   const handleSubmit = async (event) => {

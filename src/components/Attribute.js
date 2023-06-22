@@ -10,13 +10,13 @@ function Attribute() {
   const [categories, setCategories] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
   const [subSubCategories, setSubSubCategories] = useState([]);
-  const [attributes, setAttributes] = useState([{
+  const [attributes, setAttributes] = useState({
     nameEn: '',
     nameAr: '',
     categoryId: '',
     categoryId1: '',
     categoryId2: '',
-  }]);
+  });
   const handleSearch = async (e) => {
     e.preventDefault();
     if (searchQuery) {
@@ -45,7 +45,7 @@ function Attribute() {
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
-    setAttributes([{ ...attributes, [name]: value }]);
+    setAttributes({ ...attributes, [name]: value });
   };
   const handleSubmit = async (event) => {
     event.preventDefault();
