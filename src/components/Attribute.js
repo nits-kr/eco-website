@@ -5,17 +5,18 @@ import Swal from 'sweetalert2';
 
 function Attribute() {
   const [attributesList, setAttributesList] = useState([]);
+  const [subAttributesList, setSubAttributesList] = useState([])
   const [searchQuery, setSearchQuery] = useState('');
   const [categories, setCategories] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
   const [subSubCategories, setSubSubCategories] = useState([]);
-  const [attributes, setAttributes] = useState({
+  const [attributes, setAttributes] = useState([{
     nameEn: '',
     nameAr: '',
     categoryId: '',
     categoryId1: '',
     categoryId2: '',
-  });
+  }]);
   const handleSearch = async (e) => {
     e.preventDefault();
     if (searchQuery) {
@@ -44,7 +45,7 @@ function Attribute() {
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
-    setAttributes({ ...attributes, [name]: value });
+    setAttributes([{ ...attributes, [name]: value }]);
   };
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -114,7 +115,8 @@ function Attribute() {
     await axios
       .post("http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/attribute/attributeList")
       .then((response) => {
-        setAttributesList(response.data.results.list);
+        setAttributesList(response?.data?.results?.list);
+        // setSubAttributesList(response?.data?.results?.list)
         console.log(response.data);
       });
   }
@@ -244,11 +246,11 @@ function Attribute() {
                       {(attributesList || [])?.map((value, index) => (
                         <tr key={index}>
                           <td>{index + 1}</td>
-                          <td>{value.category_Id}</td>
-                          <td>{value.subCategory_Id}</td>
-                          <td>{value.subSubCategory_Id}</td>
-                          <td>{value.attributeName}</td>
-                          <td>{value.attributeName}</td>
+                          <td>{value?.subSubCategory_Id?.category_Id}</td>
+                          <td>{value?.subSubCategory_Id?.subCategory_Id}</td>
+                          <td>{value?.subSubCategory_Id?.subSubCategoryName}</td>
+                          <td>{value?.attributeName}</td>
+                          <td>{value?.attributeName}</td>
                           <td>
                             <form className="table_btns d-flex align-items-center">
                               <div className="check_toggle">

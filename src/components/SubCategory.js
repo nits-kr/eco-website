@@ -6,20 +6,21 @@ import EditValues from "./EditValues";
 
 function SubCategory() {
   const [categoryList, setCategoryList] = useState([]);
+  const [subCategoryList, setSubCategoryList] =useState([])
   const [categories, setCategories] = useState([]);
-  const [subCategory, setSubCategory] = useState({
+  const [subCategory, setSubCategory] = useState([{
     nameEn: "",
     nameAr: "",
     categoryId: "",
     subCategoryPic: null,
-  });
+  }]);
 
   const [searchQuery, setSearchQuery] = useState("");
   const [newCategory, setNewCategory] = useState([]);
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
-    setSubCategory({ ...subCategory, [name]: value });
+    setSubCategory([{ ...subCategory, [name]: value }]);
   };
   const handleFileChange = (event) => {
     setSubCategory({ ...subCategory, subCategoryPic: event.target.files[0] });
@@ -42,7 +43,7 @@ function SubCategory() {
         if (error) {
           throw new Error("Error searching for products.");
         } else {
-          setCategoryList(results.categoryData);
+          setSubCategoryList(results.categoryData);
         }
       } catch (error) {
         Swal.fire({
@@ -53,7 +54,7 @@ function SubCategory() {
         });
       }
     } else {
-      setCategoryList([]);
+      setSubCategoryList([]);
     }
   };
 
@@ -102,8 +103,10 @@ function SubCategory() {
       const response = await axios.post(
         "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/subCategory/SubCategoryList"
       );
-      setCategoryList(response.data.results.list.reverse());
-      console.log(response.data);
+      // setCategoryList(response?.data?.results?.list[0]?.category_Id);
+      setSubCategoryList(response?.data?.results?.list)
+      console.log( "subcategory list", response?.data?.results?.list[0]?.category_Id);
+      console.log("sub category list data new", response?.data?.results?.list);
     } catch (error) {
       console.error(error);
     }
@@ -252,16 +255,16 @@ console.log("subcategory", subCategory);
                       </tr>
                     </thead>
                     <tbody>
-                      {(categoryList || [])?.map((value, index) => (
+                      {(subCategoryList || [])?.map((value, index) => (
                         <tr key={index}>
                           <td>{index + 1}</td>
-                          <td>{value._id}</td>
-                          <td>{value.subCategoryName}</td>
+                          <td>{value?.category_Id?.categoryName}</td>
+                          <td>{value?.subCategoryName}</td>
                           <td>{value.subCategoryName}</td>
                           <td>
                             <img
                               className="table_img"
-                              src={value.subCategoryPic}
+                              src={value?.category_Id?.categoryPic}
                               alt=""
                             />
                           </td>
@@ -320,7 +323,7 @@ console.log("subcategory", subCategory);
           </div>
         </div>
       </div>
-      <EditValues newCategory={newCategory} />
+      {/* <EditValues newCategory={newCategory} /> */}
     </>
   );
 }

@@ -1,582 +1,400 @@
-import React from 'react'
-import { Link } from "react-router-dom"
+import React from "react";
+import { Link } from "react-router-dom";
 function OfferManagement() {
-    return (
-        <>
-            <div className="admin_main">
-                <div className="admin_main_inner">
-                    <div className="admin_panel_data height_adjust">
-                        <div className="row offer-management justify-content-center">
-                            <div className="col-12">
-                                <div className="row mx-0">
-                                    {/* <!-- <div className="col-12 px-0 mb-4"><div className="offer_map shadow"><img src="assets/img/map.png" alt=""></div></div> --> */}
-                                    <div className="col-12 design_outter_comman shadow">
-                                        <div className="row comman_header justify-content-between">
-                                            <div className="col">
-                                                <h2>Offers Management</h2>
-                                            </div>
-                                            <div className="col-3">
-                                                <form className="form-design" action="">
-                                                    <div className="form-group mb-0 position-relative icons_set">
-                                                        <input type="text" className="form-control" placeholder="Search" name="name" id="name" />
-                                                        <i className="far fa-search"></i>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                            <div className="col-auto">
-                                                <input type="date" className="custom_date" />
-                                            </div>
-                                            <div className="col-auto">
-                                                <div className="dropdown calender_part">
-                                                    <Link className="dropdown-toggle" to="" role="button" id="dropdownMenuLink"
-                                                        data-bs-toggle="dropdown" aria-expanded="false">
-                                                        <i className="fa fa-filter"></i>
-                                                    </Link>
-                                                    <ul className="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                                                        <li>
-                                                            <Link className="dropdown-item" to="/offers">All</Link>
-                                                        </li>
-                                                        <li>
-                                                            <Link className="dropdown-item" to="/offerManagementEnable">Enabled Only</Link>
-                                                        </li>
-                                                        <li>
-                                                            <Link className="dropdown-item" to="/offerManagementDisable">Disabled Only</Link>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className="row">
-                                            <div className="col-12 px-0">
-                                                <nav>
-                                                    <div className="nav nav-tabs comman_tabs" id="nav-tab" role="tablist">
-                                                        <button className="nav-link active" id="nav-home-tab" data-bs-toggle="tab"
-                                                            data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home"
-                                                            aria-selected="true"> All </button>
-                                                        <button className="nav-link" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile"
-                                                            type="button" role="tab" aria-controls="nav-profile" aria-selected="false"> Free Offers
-                                                        </button>
-                                                        <button className="nav-link" id="nav-contact-tab" data-bs-toggle="tab" data-bs-target="#nav-contact"
-                                                            type="button" role="tab" aria-controls="nav-contact" aria-selected="false"> Fixed Price Offers
-                                                        </button>
-                                                        <button className="nav-link" id="nav-contact1-tab" data-bs-toggle="tab"
-                                                            data-bs-target="#nav-contact1" type="button" role="tab" aria-controls="nav-contact1"
-                                                            aria-selected="false"> Auctions </button>
-                                                    </div>
-                                                </nav>
-                                                <div className="tab-content" id="nav-tabContent">
-                                                    <div className="tab-pane fade show active" id="nav-home" role="tabpanel"
-                                                        aria-labelledby="nav-home-tab">
-                                                        <div className="row py-4 pe-2 mx-0">
-                                                            <div className="col-12">
-                                                                <div className="row products_posted p-0">
-                                                                    <div className="col-4 mb-4">
-                                                                        <Link to="/offerDetails" className="products_posted_box">
-                                                                            <img className="main_img" src="assets/img/product_img1.png" alt="" />
-                                                                            <div className="img_bx">
-                                                                                <img src="assets/img/free.svg" alt="" />
-                                                                            </div>
-                                                                        </Link>
-                                                                    </div>
-                                                                    <div className="col-4 mb-4">
-                                                                        <Link to="/offerDetails" className="products_posted_box">
-                                                                            <img className="main_img" src="assets/img/product_img2.png" alt="" />
-                                                                            <div className="img_bx">
-                                                                                <img src="assets/img/price.svg" alt="" />
-                                                                            </div>
-                                                                        </Link>
-                                                                    </div>
-                                                                    <div className="col-4 mb-4">
-                                                                        <Link to="/offerDetails" className="products_posted_box">
-                                                                            <img className="main_img" src="assets/img/product_img3.png" alt="" />
-                                                                            <div className="img_bx">
-                                                                                <img src="assets/img/auction.svg" alt="" />
-                                                                            </div>
-                                                                        </Link>
-                                                                    </div>
-                                                                    <div className="col-4 mb-4 mt-2">
-                                                                        <Link to="/offerDetails" className="products_posted_box">
-                                                                            <img className="main_img" src="assets/img/product_img1.png" alt="" />
-                                                                            <div className="img_bx">
-                                                                                <img src="assets/img/free.svg" alt="" />
-                                                                            </div>
-                                                                        </Link>
-                                                                    </div>
-                                                                    <div className="col-4 mb-4 mt-2">
-                                                                        <Link to="/offerDetails" className="products_posted_box">
-                                                                            <img className="main_img" src="assets/img/product_img2.png" alt="" />
-                                                                            <div className="img_bx">
-                                                                                <img src="assets/img/price.svg" alt="" />
-                                                                            </div>
-                                                                        </Link>
-                                                                    </div>
-                                                                    <div className="col-4 mb-4 mt-2">
-                                                                        <Link to="/offerDetails" className="products_posted_box">
-                                                                            <img className="main_img" src="assets/img/product_img3.png" alt="" />
-                                                                            <div className="img_bx">
-                                                                                <img src="assets/img/auction.svg" alt="" />
-                                                                            </div>
-                                                                        </Link>
-                                                                    </div>
-                                                                    <div className="col-4 mb-4 mt-2">
-                                                                        <Link to="/offerDetails" className="products_posted_box">
-                                                                            <img className="main_img" src="assets/img/product_img1.png" alt="" />
-                                                                            <div className="img_bx">
-                                                                                <img src="assets/img/free.svg" alt="" />
-                                                                            </div>
-                                                                        </Link>
-                                                                    </div>
-                                                                    <div className="col-4 mb-4 mt-2">
-                                                                        <Link to="/offerDetails" className="products_posted_box">
-                                                                            <img className="main_img" src="assets/img/product_img2.png" alt="" />
-                                                                            <div className="img_bx">
-                                                                                <img src="assets/img/price.svg" alt="" />
-                                                                            </div>
-                                                                        </Link>
-                                                                    </div>
-                                                                    <div className="col-4 mb-4 mt-2">
-                                                                        <Link to="/offerDetails" className="products_posted_box">
-                                                                            <img className="main_img" src="assets/img/product_img3.png" alt="" />
-                                                                            <div className="img_bx">
-                                                                                <img src="assets/img/auction.svg" alt="" />
-                                                                            </div>
-                                                                        </Link>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div className="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
-                                                        <div className="row py-4 pe-2 mx-0">
-                                                            <div className="col-12">
-                                                                <div className="row products_posted p-0">
-                                                                    <div className="col-4 mb-4">
-                                                                        <Link to="/offerDetails" className="products_posted_box">
-                                                                            <img className="main_img" src="assets/img/product_img1.png" alt="" />
-                                                                            <div className="img_bx">
-                                                                                <img src="assets/img/free.svg" alt="" />
-                                                                            </div>
-                                                                        </Link>
-                                                                    </div>
-                                                                    <div className="col-4 mb-4">
-                                                                        <Link to="/offerDetails" className="products_posted_box">
-                                                                            <img className="main_img" src="assets/img/product_img2.png" alt="" />
-                                                                            <div className="img_bx">
-                                                                                <img src="assets/img/free.svg" alt="" />
-                                                                            </div>
-                                                                        </Link>
-                                                                    </div>
-                                                                    <div className="col-4 mb-4">
-                                                                        <Link to="/offerDetails" className="products_posted_box">
-                                                                            <img className="main_img" src="assets/img/product_img3.png" alt="" />
-                                                                            <div className="img_bx">
-                                                                                <img src="assets/img/free.svg" alt="" />
-                                                                            </div>
-                                                                        </Link>
-                                                                    </div>
-                                                                    <div className="col-4 mb-4 mt-2">
-                                                                        <Link to="/offerDetails" className="products_posted_box">
-                                                                            <img className="main_img" src="assets/img/product_img3.png" alt="" />
-                                                                            <div className="img_bx">
-                                                                                <img src="assets/img/free.svg" alt="" />
-                                                                            </div>
-                                                                        </Link>
-                                                                    </div>
-                                                                    <div className="col-4 mb-4 mt-2">
-                                                                        <Link to="/offerDetails" className="products_posted_box">
-                                                                            <img className="main_img" src="assets/img/product_img1.png" alt="" />
-                                                                            <div className="img_bx">
-                                                                                <img src="assets/img/free.svg" alt="" />
-                                                                            </div>
-                                                                        </Link>
-                                                                    </div>
-                                                                    <div className="col-4 mb-4 mt-2">
-                                                                        <Link to="/offerDetails" className="products_posted_box">
-                                                                            <img className="main_img" src="assets/img/product_img2.png" alt="" />
-                                                                            <div className="img_bx">
-                                                                                <img src="assets/img/free.svg" alt="" />
-                                                                            </div>
-                                                                        </Link>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div className="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">
-                                                        <div className="row py-4 pe-2 mx-0">
-                                                            <div className="col-12">
-                                                                <div className="row products_posted p-0">
-                                                                    <div className="col-4 mb-4">
-                                                                        <Link to="/offerDetails" className="products_posted_box">
-                                                                            <img className="main_img" src="assets/img/product_img1.png" alt="" />
-                                                                            <div className="img_bx">
-                                                                                <img src="assets/img/price.svg" alt="" />
-                                                                            </div>
-                                                                        </Link>
-                                                                    </div>
-                                                                    <div className="col-4 mb-4">
-                                                                        <Link to="/offerDetails" className="products_posted_box">
-                                                                            <img className="main_img" src="assets/img/product_img2.png" alt="" />
-                                                                            <div className="img_bx">
-                                                                                <img src="assets/img/price.svg" alt="" />
-                                                                            </div>
-                                                                        </Link>
-                                                                    </div>
-                                                                    <div className="col-4 mb-4">
-                                                                        <Link to="/offerDetails" className="products_posted_box">
-                                                                            <img className="main_img" src="assets/img/product_img3.png" alt="" />
-                                                                            <div className="img_bx">
-                                                                                <img src="assets/img/price.svg" alt="" />
-                                                                            </div>
-                                                                        </Link>
-                                                                    </div>
-                                                                    <div className="col-4 mb-4 mt-2">
-                                                                        <Link to="/offerDetails" className="products_posted_box">
-                                                                            <img className="main_img" src="assets/img/product_img3.png" alt="" />
-                                                                            <div className="img_bx">
-                                                                                <img src="assets/img/price.svg" alt="" />
-                                                                            </div>
-                                                                        </Link>
-                                                                    </div>
-                                                                    <div className="col-4 mb-4 mt-2">
-                                                                        <Link to="/offerDetails" className="products_posted_box">
-                                                                            <img className="main_img" src="assets/img/product_img1.png" alt="" />
-                                                                            <div className="img_bx">
-                                                                                <img src="assets/img/price.svg" alt="" />
-                                                                            </div>
-                                                                        </Link>
-                                                                    </div>
-                                                                    <div className="col-4 mb-4 mt-2">
-                                                                        <Link to="/offerDetails" className="products_posted_box">
-                                                                            <img className="main_img" src="assets/img/product_img2.png" alt="" />
-                                                                            <div className="img_bx">
-                                                                                <img src="assets/img/price.svg" alt="" />
-                                                                            </div>
-                                                                        </Link>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div className="tab-pane fade" id="nav-contact1" role="tabpanel" aria-labelledby="nav-contact1-tab">
-                                                        <div className="row py-4 pe-2 mx-0">
-                                                            <div className="col-12">
-                                                                <div className="row products_posted p-0">
-                                                                    <div className="col-4 mb-4">
-                                                                        <Link to="/offerDetails" className="products_posted_box">
-                                                                            <img className="main_img" src="assets/img/product_img1.png" alt="" />
-                                                                            <div className="img_bx">
-                                                                                <img src="assets/img/auction.svg" alt="" />
-                                                                            </div>
-                                                                        </Link>
-                                                                    </div>
-                                                                    <div className="col-4 mb-4">
-                                                                        <Link to="/offerDetails" className="products_posted_box">
-                                                                            <img className="main_img" src="assets/img/product_img2.png" alt="" />
-                                                                            <div className="img_bx">
-                                                                                <img src="assets/img/auction.svg" alt="" />
-                                                                            </div>
-                                                                        </Link>
-                                                                    </div>
-                                                                    <div className="col-4 mb-4">
-                                                                        <Link to="/offerDetails" className="products_posted_box">
-                                                                            <img className="main_img" src="assets/img/product_img3.png" alt="" />
-                                                                            <div className="img_bx">
-                                                                                <img src="assets/img/auction.svg" alt="" />
-                                                                            </div>
-                                                                        </Link>
-                                                                    </div>
-                                                                    <div className="col-4 mb-4 mt-2">
-                                                                        <Link to="/offerDetails" className="products_posted_box">
-                                                                            <img className="main_img" src="assets/img/product_img3.png" alt="" />
-                                                                            <div className="img_bx">
-                                                                                <img src="assets/img/auction.svg" alt="" />
-                                                                            </div>
-                                                                        </Link>
-                                                                    </div>
-                                                                    <div className="col-4 mb-4 mt-2">
-                                                                        <Link to="/offerDetails" className="products_posted_box">
-                                                                            <img className="main_img" src="assets/img/product_img1.png" alt="" />
-                                                                            <div className="img_bx">
-                                                                                <img src="assets/img/auction.svg" alt="" />
-                                                                            </div>
-                                                                        </Link>
-                                                                    </div>
-                                                                    <div className="col-4 mb-4 mt-2">
-                                                                        <Link to="/offerDetails" className="products_posted_box">
-                                                                            <img className="main_img" src="assets/img/product_img2.png" alt="" />
-                                                                            <div className="img_bx">
-                                                                                <img src="assets/img/auction.svg" alt="" />
-                                                                            </div>
-                                                                        </Link>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+  return (
+    <>
+      <div className="admin_main">
+        <div className="admin_main_inner">
+          <div className="admin_panel_data height_adjust">
+            <div className="row offer-management justify-content-center">
+              <div className="col-12">
+                <div className="row mx-0">
+                  <div className="col-12 design_outter_comman mb-4 shadow">
+                    <div className="row comman_header justify-content-between">
+                      <div className="col">
+                        <h2>Add New Offer</h2>
+                      </div>
+                    </div>
+                    <form
+                      className="form-design py-4 px-3 help-support-form row align-items-end justify-content-between"
+                      action=""
+                    >
+                      <div className="form-group col-6">
+                        <label htmlFor="">Product Name</label>
+                        <input
+                          type="text"
+                          className="form-control"
+                          defaultValue=""
+                          name="name"
+                          id="name"
+                        />
+                      </div>
+                      <div className="form-group col-6">
+                        <label htmlFor="">Title</label>
+                        <input
+                          type="text"
+                          className="form-control"
+                          defaultValue=""
+                          name="name"
+                          id="name"
+                        />
+                      </div>
+                      <div className="form-group mb-0 col">
+                        <label htmlFor="">Code</label>
+                        <input
+                          type="text"
+                          className="form-control"
+                          defaultValue=""
+                          name="name"
+                          id="name"
+                        />
+                      </div>
+                      <div className="form-group mb-0 col">
+                        <label htmlFor="">Discount</label>
+                        <input
+                          type="text"
+                          className="form-control"
+                          defaultValue=""
+                          name="name"
+                          id="name"
+                        />
+                      </div>
+                      <div className="form-group mb-0 col-auto">
+                        <button className="comman_btn2">Add</button>
+                      </div>
+                    </form>
+                  </div>
+                  <div className="col-12 design_outter_comman mb-4 shadow">
+                    <div className="row comman_header justify-content-between">
+                      <div className="col">
+                        <h2>Offers List</h2>
+                      </div>
+                      <div className="col-3">
+                        <form className="form-design" action="">
+                          <div className="form-group mb-0 position-relative icons_set">
+                            <input
+                              type="text"
+                              className="form-control"
+                              placeholder="Search"
+                              name="name"
+                              id="name"
+                            />
+                            <i className="far fa-search" />
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                    <form
+                      className="form-design py-4 px-3 help-support-form row align-items-end justify-content-between"
+                      action=""
+                    >
+                      <div className="form-group mb-0 col-5">
+                        <label htmlFor="">From</label>
+                        <input type="date" className="form-control" />
+                      </div>
+                      <div className="form-group mb-0 col-5">
+                        <label htmlFor="">To</label>
+                        <input type="date" className="form-control" />
+                      </div>
+                      <div className="form-group mb-0 col-auto">
+                        <button className="comman_btn2">Search</button>
+                      </div>
+                    </form>
+                    <div className="row">
+                      <div className="col-12 comman_table_design px-0">
+                        <div className="table-responsive">
+                          <table className="table mb-0">
+                            <thead>
+                              <tr>
+                                <th>S.No.</th>
+                                <th>Product Name</th>
+                                <th>Title</th>
+                                <th>Code</th>
+                                <th>Discount</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr>
+                                <td>1</td>
+                                <td>Oneplus Nord</td>
+                                <td>10% Off</td>
+                                <td>1234234</td>
+                                <td>10%</td>
+                                <td>
+                                  <form className="table_btns d-flex align-items-center">
+                                    <div className="check_toggle">
+                                      <input
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#staticBackdrop"
+                                        type="checkbox"
+                                        defaultChecked=""
+                                        name="check1"
+                                        id="check1"
+                                        className="d-none"
+                                      />
+                                      <label htmlFor="check1" />
                                     </div>
-                                </div>
-                            </div>
+                                  </form>
+                                </td>
+                                <td>
+                                  <a
+                                    className="comman_btn table_viewbtn"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#edittoffer"
+                                    href="javascript:;"
+                                  >
+                                    Edit
+                                  </a>
+                                  <a
+                                    className="comman_btn2 table_viewbtn"
+                                    href="javascript:;"
+                                  >
+                                    Delete
+                                  </a>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td>2</td>
+                                <td>Oneplus Nord</td>
+                                <td>10% Off</td>
+                                <td>1234234</td>
+                                <td>10%</td>
+                                <td>
+                                  <form className="table_btns d-flex align-items-center">
+                                    <div className="check_toggle">
+                                      <input
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#staticBackdrop"
+                                        type="checkbox"
+                                        defaultChecked=""
+                                        name="check2"
+                                        id="check2"
+                                        className="d-none"
+                                      />
+                                      <label htmlFor="check2" />
+                                    </div>
+                                  </form>
+                                </td>
+                                <td>
+                                  <a
+                                    className="comman_btn table_viewbtn"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#edittoffer"
+                                    href="javascript:;"
+                                  >
+                                    Edit
+                                  </a>
+                                  <a
+                                    className="comman_btn2 table_viewbtn"
+                                    href="javascript:;"
+                                  >
+                                    Delete
+                                  </a>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td>3</td>
+                                <td>Oneplus Nord</td>
+                                <td>10% Off</td>
+                                <td>1234234</td>
+                                <td>10%</td>
+                                <td>
+                                  <form className="table_btns d-flex align-items-center">
+                                    <div className="check_toggle">
+                                      <input
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#staticBackdrop"
+                                        type="checkbox"
+                                        defaultChecked=""
+                                        name="check3"
+                                        id="check3"
+                                        className="d-none"
+                                      />
+                                      <label htmlFor="check3" />
+                                    </div>
+                                  </form>
+                                </td>
+                                <td>
+                                  <a
+                                    className="comman_btn table_viewbtn"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#edittoffer"
+                                    href="javascript:;"
+                                  >
+                                    Edit
+                                  </a>
+                                  <a
+                                    className="comman_btn2 table_viewbtn"
+                                    href="javascript:;"
+                                  >
+                                    Delete
+                                  </a>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td>4</td>
+                                <td>Oneplus Nord</td>
+                                <td>10% Off</td>
+                                <td>1234234</td>
+                                <td>10%</td>
+                                <td>
+                                  <form className="table_btns d-flex align-items-center">
+                                    <div className="check_toggle">
+                                      <input
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#staticBackdrop"
+                                        type="checkbox"
+                                        defaultChecked=""
+                                        name="check4"
+                                        id="check4"
+                                        className="d-none"
+                                      />
+                                      <label htmlFor="check4" />
+                                    </div>
+                                  </form>
+                                </td>
+                                <td>
+                                  <a
+                                    className="comman_btn table_viewbtn"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#edittoffer"
+                                    href="javascript:;"
+                                  >
+                                    Edit
+                                  </a>
+                                  <a
+                                    className="comman_btn2 table_viewbtn"
+                                    href="javascript:;"
+                                  >
+                                    Delete
+                                  </a>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
                         </div>
+                      </div>
                     </div>
+                  </div>
                 </div>
+              </div>
             </div>
-            {/* <!-- Modal --> */}
-            <div className="modal fade Edit_modal" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
-                tabIndex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                <div className="modal-dialog modal-dialog-centered">
-                    <div className="modal-content">
-                        <div className="modal-header">
-                            <h5 className="modal-title" id="staticBackdropLabel">Edit Category</h5>
-                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div className="modal-body">
-                            <form className="form-design p-3 help-support-form row align-items-end justify-content-center" action="">
-                                <div className="form-group col-6">
-                                    <label htmlFor="">Enter Category Name (En)</label>
-                                    <input type="text" className="form-control" defaultValue="Lorem" name="name" id="name" />
-                                </div>
-                                <div className="form-group col-6">
-                                    <label htmlFor="">Enter Category Name (Ar)</label>
-                                    <input type="text" className="form-control" defaultValue="لوريم" name="name" id="name" />
-                                </div>
-                                <div className="form-group col-12 choose_file position-relative">
-                                    <span>Upload Image</span>
-                                    <label htmlFor="upload_video">
-                                        <i className="fal fa-camera me-1"></i>Choose File </label>
-                                    <input type="file" className="form-control" defaultValue="" name="upload_video" id="upload_video" />
-                                </div>
-                                <div className="form-group mb-0 col-auto">
-                                    <button className="comman_btn2">Save</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
+          </div>
+        </div>
+      </div>
+      <div
+        className="modal fade Update_modal"
+        id="staticBackdrop"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+        tabIndex={-1}
+        aria-labelledby="staticBackdropLabel"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog modal-dialog-centered">
+          <div className="modal-content">
+            <div className="modal-body p-4">
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              />
+              <div className="row">
+                <div className="col-12 Update_modal_content py-4">
+                  <h2>Disable</h2>
+                  <p>Are you sure you want to disable this Offer?</p>
+                  <a className="comman_btn mx-2" href="javscript:;">
+                    Yes
+                  </a>
+                  <a className="comman_btn2 mx-2 bg-red" href="javscript:;">
+                    NO
+                  </a>
                 </div>
+              </div>
             </div>
-            {/* <!-- Modal --> */}
-            <div className="modal fade Edit_modal" id="staticBackdrop1" data-bs-backdrop="static" data-bs-keyboard="false"
-                tabIndex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                <div className="modal-dialog modal-dialog-centered">
-                    <div className="modal-content">
-                        <div className="modal-header">
-                            <h5 className="modal-title" id="staticBackdropLabel"> Edit Sub Category </h5>
-                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div className="modal-body">
-                            <form className="form-design p-3 help-support-form row align-items-end justify-content-center" action="">
-                                <div className="form-group col-12">
-                                    <label htmlFor="">Select Category</label>
-                                    <select className="select form-control" multiple name="" id="">
-                                        <option defaultValue="1">Lorem</option>
-                                        <option defaultValue="2">ipsum</option>
-                                        <option defaultValue="3">Lorem</option>
-                                        <option defaultValue="1">Lorem</option>
-                                        <option defaultValue="2">ipsum</option>
-                                        <option defaultValue="3">Lorem</option>
-                                    </select>
-                                </div>
-                                <div className="form-group col-6">
-                                    <label htmlFor="">Enter Sub Category Name (En)</label>
-                                    <input type="text" className="form-control" defaultValue="Lorem" name="name" id="name" />
-                                </div>
-                                <div className="form-group col-6">
-                                    <label htmlFor="">Enter Sub Category Name (Ar)</label>
-                                    <input type="text" className="form-control" defaultValue="لوريم" name="name" id="name" />
-                                </div>
-                                <div className="form-group mb-0 col-auto">
-                                    <button className="comman_btn2">Save</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
+          </div>
+        </div>
+      </div>
+      <div
+        className="modal fade Edit_modal"
+        id="edittoffer"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+        tabIndex={-1}
+        aria-labelledby="staticBackdropLabel"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog modal-dialog-centered">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title" id="staticBackdropLabel">
+                Edit Offer
+              </h5>
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              />
+            </div>
+            <div className="modal-body">
+              <form
+                className="form-design py-4 px-3 help-support-form row align-items-end justify-content-between"
+                action=""
+              >
+                <div className="form-group col-6">
+                  <label htmlFor="">Product Name</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    defaultValue="Oneplus Nord"
+                    name="name"
+                    id="name"
+                  />
                 </div>
-            </div>
-            {/* <!-- Modal --> */}
-            <div className="modal fade Edit_modal" id="staticBackdrop2" data-bs-backdrop="static" data-bs-keyboard="false"
-                tabIndex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                <div className="modal-dialog modal-dialog-centered">
-                    <div className="modal-content">
-                        <div className="modal-header">
-                            <h5 className="modal-title" id="staticBackdropLabel"> Edit Sub Sub Category </h5>
-                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div className="modal-body">
-                            <form className="form-design p-3 help-support-form row align-items-end justify-content-center" action="">
-                                <div className="form-group col-6">
-                                    <label htmlFor="">Select Category</label>
-                                    <select className="select form-control" multiple name="" id="">
-                                        <option defaultValue="1">Lorem</option>
-                                        <option defaultValue="2">ipsum</option>
-                                        <option defaultValue="3">Lorem</option>
-                                        <option defaultValue="1">Lorem</option>
-                                        <option defaultValue="2">ipsum</option>
-                                        <option defaultValue="3">Lorem</option>
-                                    </select>
-                                </div>
-                                <div className="form-group col-6">
-                                    <label htmlFor="">Select Sub Category</label>
-                                    <select className="select form-control" multiple name="" id="">
-                                        <option defaultValue="1">Lorem</option>
-                                        <option defaultValue="2">ipsum</option>
-                                        <option defaultValue="3">Lorem</option>
-                                        <option defaultValue="1">Lorem</option>
-                                        <option defaultValue="2">ipsum</option>
-                                        <option defaultValue="3">Lorem</option>
-                                    </select>
-                                </div>
-                                <div className="form-group col-6">
-                                    <label htmlFor="">Enter Sub Sub Category Name (En)</label>
-                                    <input type="text" className="form-control" defaultValue="Lorem" name="name" id="name" />
-                                </div>
-                                <div className="form-group col-6">
-                                    <label htmlFor="">Enter Sub Sub Category Name (Ar)</label>
-                                    <input type="text" className="form-control" defaultValue="لوريم" name="name" id="name" />
-                                </div>
-                                <div className="form-group mb-0 col-auto">
-                                    <button className="comman_btn2">Save</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
+                <div className="form-group col-6">
+                  <label htmlFor="">Title</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    defaultValue="10% Off"
+                    name="name"
+                    id="name"
+                  />
                 </div>
-            </div>
-            {/* <!-- Modal --> */}
-            <div className="modal fade Edit_modal" id="staticBackdrop3" data-bs-backdrop="static" data-bs-keyboard="false"
-                tabIndex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                <div className="modal-dialog modal-dialog-centered">
-                    <div className="modal-content">
-                        <div className="modal-header">
-                            <h5 className="modal-title" id="staticBackdropLabel">Edit Attribute</h5>
-                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div className="modal-body">
-                            <form className="form-design p-3 help-support-form row align-items-end justify-content-center" action="">
-                                <div className="form-group col-6">
-                                    <label htmlFor="">Select Category</label>
-                                    <select className="select form-control" multiple name="" id="">
-                                        <option defaultValue="1">Lorem</option>
-                                        <option defaultValue="2">ipsum</option>
-                                        <option defaultValue="3">Lorem</option>
-                                        <option defaultValue="1">Lorem</option>
-                                        <option defaultValue="2">ipsum</option>
-                                        <option defaultValue="3">Lorem</option>
-                                    </select>
-                                </div>
-                                <div className="form-group col-6">
-                                    <label htmlFor="">Select Sub Category</label>
-                                    <select className="select form-control" multiple name="" id="">
-                                        <option defaultValue="1">Lorem</option>
-                                        <option defaultValue="2">ipsum</option>
-                                        <option defaultValue="3">Lorem</option>
-                                        <option defaultValue="1">Lorem</option>
-                                        <option defaultValue="2">ipsum</option>
-                                        <option defaultValue="3">Lorem</option>
-                                    </select>
-                                </div>
-                                <div className="form-group col-12">
-                                    <label htmlFor="">Select Sub Sub Category</label>
-                                    <select className="select form-control" multiple name="" id="">
-                                        <option defaultValue="1">Lorem</option>
-                                        <option defaultValue="2">ipsum</option>
-                                        <option defaultValue="3">Lorem</option>
-                                        <option defaultValue="1">Lorem</option>
-                                        <option defaultValue="2">ipsum</option>
-                                        <option defaultValue="3">Lorem</option>
-                                    </select>
-                                </div>
-                                <div className="form-group col-6">
-                                    <label htmlFor="">Attribute Name (En)</label>
-                                    <input type="text" className="form-control" defaultValue="Lorem" name="name" id="name" />
-                                </div>
-                                <div className="form-group col-6">
-                                    <label htmlFor="">Attribute Name (Ar)</label>
-                                    <input type="text" className="form-control" defaultValue="لوريم" name="name" id="name" />
-                                </div>
-                                <div className="form-group mb-0 col-auto">
-                                    <button className="comman_btn2">Save</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
+                <div className="form-group mb-0 col">
+                  <label htmlFor="">Code</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    defaultValue={1234234}
+                    name="name"
+                    id="name"
+                  />
                 </div>
-            </div>
-            {/* <!-- Modal --> */}
-            <div className="modal fade Edit_modal" id="staticBackdrop4" data-bs-backdrop="static" data-bs-keyboard="false"
-                tabIndex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                <div className="modal-dialog modal-dialog-centered">
-                    <div className="modal-content">
-                        <div className="modal-header">
-                            <h5 className="modal-title" id="staticBackdropLabel">Edit Values</h5>
-                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div className="modal-body">
-                            <form className="form-design p-3 help-support-form row align-items-end justify-content-center" action="">
-                                <div className="form-group col-6">
-                                    <label htmlFor="">Select Category</label>
-                                    <select className="select form-control" multiple name="" id="">
-                                        <option defaultValue="1">Lorem</option>
-                                        <option defaultValue="2">ipsum</option>
-                                        <option defaultValue="3">Lorem</option>
-                                        <option defaultValue="1">Lorem</option>
-                                        <option defaultValue="2">ipsum</option>
-                                        <option defaultValue="3">Lorem</option>
-                                    </select>
-                                </div>
-                                <div className="form-group col-6">
-                                    <label htmlFor="">Select Sub Category</label>
-                                    <select className="select form-control" multiple name="" id="">
-                                        <option defaultValue="1">Lorem</option>
-                                        <option defaultValue="2">ipsum</option>
-                                        <option defaultValue="3">Lorem</option>
-                                        <option defaultValue="1">Lorem</option>
-                                        <option defaultValue="2">ipsum</option>
-                                        <option defaultValue="3">Lorem</option>
-                                    </select>
-                                </div>
-                                <div className="form-group col-6">
-                                    <label htmlFor="">Select Sub Sub Category</label>
-                                    <select className="select form-control" multiple name="" id="">
-                                        <option defaultValue="1">Lorem</option>
-                                        <option defaultValue="2">ipsum</option>
-                                        <option defaultValue="3">Lorem</option>
-                                        <option defaultValue="1">Lorem</option>
-                                        <option defaultValue="2">ipsum</option>
-                                        <option defaultValue="3">Lorem</option>
-                                    </select>
-                                </div>
-                                <div className="form-group col-6">
-                                    <label htmlFor="">Select Attribute</label>
-                                    <select className="select form-control" multiple name="" id="">
-                                        <option defaultValue="1">Lorem</option>
-                                        <option defaultValue="2">ipsum</option>
-                                        <option defaultValue="3">Lorem</option>
-                                        <option defaultValue="1">Lorem</option>
-                                        <option defaultValue="2">ipsum</option>
-                                        <option defaultValue="3">Lorem</option>
-                                    </select>
-                                </div>
-                                <div className="form-group col-6">
-                                    <label htmlFor="">Value Name (En)</label>
-                                    <input type="text" className="form-control" defaultValue="Lorem" name="name" id="name" />
-                                </div>
-                                <div className="form-group col-6">
-                                    <label htmlFor="">Value Name (Ar)</label>
-                                    <input type="text" className="form-control" defaultValue="لوريم" name="name" id="name" />
-                                </div>
-                                <div className="form-group mb-0 col-auto">
-                                    <button className="comman_btn2">Save</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
+                <div className="form-group mb-0 col">
+                  <label htmlFor="">Discount</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    defaultValue="10%"
+                    name="name"
+                    id="name"
+                  />
                 </div>
+                <div className="form-group mb-0 col-auto">
+                  <button className="comman_btn2">Add</button>
+                </div>
+              </form>
             </div>
-        </>
-    )
+          </div>
+        </div>
+      </div>
+    </>
+  );
 }
 
-export default OfferManagement
+export default OfferManagement;

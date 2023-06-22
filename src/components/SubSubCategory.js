@@ -10,12 +10,12 @@ function SubSubCategory() {
   const [subSubCategoryList, setSubSubCategoryList] = useState([]);
   const [categories, setCategories] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
-  const [subSubCategory, setSubSubCategory] = useState({
+  const [subSubCategory, setSubSubCategory] = useState([{
     nameEn: '',
     nameAr: '',
     categoryId: '',
     categoryId1: ''
-  });
+  }]);
   const [newCategory, setNewCategory] = useState([])
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
@@ -46,7 +46,7 @@ function SubSubCategory() {
   };
   const handleInputChange = (event) => {
     const { name, value } = event.target;
-    setSubSubCategory({ ...subSubCategory, [name]: value });
+    setSubSubCategory([{ ...subSubCategory, [name]: value }]);
   };
 
 
@@ -108,26 +108,26 @@ function SubSubCategory() {
     try {
       const response = await axios.post("http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/subSubCategory/subSubCategoryList");
 
-      setSubSubCategoryList(response.data.results.list);
-      console.log(response.data);
+      setSubSubCategoryList(response?.data?.results?.list);
+      console.log("sub sub category data",response.data);
     } catch (error) {
       console.error(error);
     }
   }
 
-
+console.log("sub subCategory list", subSubCategoryList);
   useEffect(() => {
     handleSave()
   }, []);
 
   const handleUpdate = ( id,id2, nameEn, nameAr) => {
     console.log(nameEn, nameAr, id)
-    setNewCategory({
+    setNewCategory([{
       nameEn: nameEn,
       nameAr: nameAr,
       id,
       id2,
-    })
+    }])
   };
 
   return (
@@ -243,8 +243,8 @@ function SubSubCategory() {
                       {(subSubCategoryList || [])?.map((value, index) => (
                         <tr key={index}>
                           <td>{index + 1}</td>
-                          <td>{value.category_Id}</td>
-                          <td>{value.subCategory_Id}</td>
+                          <td>{value.category_Id?._id}</td>
+                          <td>{value?.category_Id?.categoryName}</td>
                           <td>{value.subSubCategoryName}</td>
                           <td>{value.subSubCategoryName}</td>
                           <td>
@@ -300,7 +300,7 @@ function SubSubCategory() {
           </div>
         </div>
       </div>
-      <EditSubSubCategory newCategory={newCategory}/>
+      {/* <EditSubSubCategory newCategory={newCategory}/> */}
     </>
   );
 }
