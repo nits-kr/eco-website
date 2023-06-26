@@ -66,7 +66,7 @@ function CategoryManagement() {
     event.preventDefault();
     try {
       const data = new FormData();
-      data.append("categoryName", formData.nameEn);
+      data.append("categoryName_en", formData.nameEn);
       data.append("categoryPic", formData.categoryPic);
       const response = await axios.post(
         "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/category/create",
@@ -329,8 +329,8 @@ function CategoryManagement() {
                                             (category, index) => (
                                               <tr key={category._id}>
                                                 <td>{index + 1}</td>
-                                                <td>{category.categoryName}</td>
-                                                <td>{category.categoryName}</td>
+                                                <td>{category?.categoryName_en}</td>
+                                                <td>{category?.categoryName_en}</td>
                                                 <td>
                                                   <img
                                                     className="table_img"

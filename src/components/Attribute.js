@@ -50,7 +50,7 @@ function Attribute() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     await axios.post('http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/attribute/createAttribute', {
-      attributeName: attributes.nameEn,
+      attributeName_en: attributes.nameEn,
       category_Id: attributes.categoryId,
       subCategory_Id: attributes.categoryId1,
       subSubCategory_Id: attributes.categoryId2

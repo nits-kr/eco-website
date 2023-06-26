@@ -21,7 +21,7 @@ function EditCategory(props) {
 
         axios
             .patch(`http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/category/update/${props.newCategory.id}`, {
-                categoryName: category.nameEn
+                categoryName_en: category.nameEn
             })
             .then((response) => {
                 console.log(response)

@@ -64,7 +64,7 @@ function SubCategory() {
     try {
       const data = new FormData();
       console.log("formDta",data);
-      data.append("subCategoryName", subCategory.nameEn);
+      data.append("subCategoryName_en", subCategory.nameEn);
       data.append("category_Id", "6482af73f40a922b349e8dc9");
       data.append("subCategoryPic", subCategory.subCategoryPic);
       console.log(subCategory.subCategoryPic);

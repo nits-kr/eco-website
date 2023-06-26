@@ -56,13 +56,13 @@ function SubSubCategory() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     await axios.post('http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/subSubCategory/createSubSubCategory', {
-      subSubCategoryName: subSubCategory.nameEn,
+      subSubCategoryName_en: subSubCategory.nameEn,
       category_Id: subSubCategory.categoryId,
       subCategory_Id: subSubCategory.categoryId1
     }
     )
       .then(response => {
-        console.log(response.data.results.subSubCategoryData);
+        console.log(response.data.results.saveSubSubCategory);
         if (!response.data.error) {
           alert('List  saved!')
           handleSave()
