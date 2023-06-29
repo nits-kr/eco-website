@@ -61,7 +61,7 @@ function Agent() {
     );
     //alert(_id)
     console.log("delete aagent", _id);
-    setAgentList(data.results.list);
+    setAgentList(data?.results?.list);
   };
   const viewAgent = (_id) => {
     console.log("viewAgent", _id);
@@ -297,7 +297,7 @@ function Agent() {
                                   </tr>
                                 </thead>
                                 <tbody>
-                                  {agentList.map((agent, index) => (
+                                  {agentList?.map((agent, index) => (
                                     <tr role="row" className="odd" key={index}>
                                       <td tabIndex={0} className="">
                                         <input type="checkbox" />
@@ -318,7 +318,7 @@ function Agent() {
 
                                       <td className=" dt-body-right">
                                         <span className="badge text-secondary">
-                                          {agent.createdAt}
+                                          {agent.createdAt.slice(0,10)}
                                         </span>
                                       </td>
                                       <td className="dt-body-right">
@@ -343,7 +343,7 @@ function Agent() {
                                             type="button"
                                             className="border border-none bg-light"
                                             onClick={() =>
-                                              deleteAgent(agent._id)
+                                              deleteAgent(agent?._id)
                                             }
                                           >
                                             <FontAwesomeIcon icon={faTrash}/>

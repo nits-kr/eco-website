@@ -8,6 +8,7 @@ import "slick-carousel/slick/slick-theme.css";
 import OwlCarousel from "react-owl-carousel";
 import "owl.carousel/dist/assets/owl.carousel.css";
 import "owl.carousel/dist/assets/owl.theme.default.css";
+import SlickSlider from "./SlickSlider";
 
 function HomeScreenBanner() {
   const [selectedImage, setSelectedImage] = useState(null);
@@ -181,7 +182,7 @@ function HomeScreenBanner() {
 
   return (
     <>
-      <div className="admin_main">
+      {/* <div className="admin_main">
         <div className="admin_main_inner">
           <div className="admin_panel_data height_adjust">
             <div className="row signup_management justify-content-center">
@@ -539,7 +540,8 @@ function HomeScreenBanner() {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
+      <SlickSlider/>
     </>
   );
 }

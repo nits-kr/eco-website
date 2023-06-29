@@ -37,8 +37,6 @@ function StaffManagement() {
         new Date(user.createdAt) <= new Date(endDate)
     );
     setStaffList(filteredUsers.reverse());
-    setModules(data?.results?.saveData?.modules);
-   // setModules(data.results.modules); 
     console.log(data);
   };
   const handleSearch = (e) => {
@@ -146,7 +144,7 @@ function StaffManagement() {
                           {Array.isArray(modules) &&
                             modules.map((module) => (
                               <option key={module._id} value={module._id}>
-                                {module.modules}
+                                {module?.modules}
                               </option>
                             ))}
                         </select>
@@ -272,10 +270,10 @@ function StaffManagement() {
                               {(staffList || []).map((data, index) => (
                                 <tr key={index}>
                                   <td>{index + 1}</td>
-                                  <td>{data.createdAt}</td>
-                                  <td>{data.staffName}</td>
-                                  <td>{data.userEmail}</td>
-                                  <td>{data.modules}</td>
+                                  <td>{data?.createdAt?.slice(0, 10)}</td>
+                                  <td>{data?.staffName}</td>
+                                  <td>{data?.userEmail}</td>
+                                  <td>{data?.modules[0]}</td>
                                   <td>
                                     <form className="table_btns d-flex align-items-center">
                                       <div className="check_toggle">

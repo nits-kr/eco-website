@@ -1,6 +1,54 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { useCreateOfferMutation } from "../services/Post";
+import { useGetOfferListQuery } from "../services/Post";
+import { useUpdateOfferMutation } from "../services/Post";
+import { useDeleteOfferMutation } from "../services/Post";
+import { useSearchOfferMutation } from "../services/Post";
 function OfferManagement() {
+  const [createOffer, responseInfo] = useCreateOfferMutation();
+  const [updateOffer, response] = useUpdateOfferMutation();
+  const [deleteOffer, res] = useDeleteOfferMutation();
+  const [searchOffer, re] = useSearchOfferMutation();
+  const offerListItems = useGetOfferListQuery();
+  const [productName, setProductName] = useState("");
+  const [title, setTitle] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [code, setCode] = useState("");
+  const [discount, setDiscount] = useState("");
+  const [itemId, setItemId] = useState("");
+  const handleSaveChanges = (e) => {
+    e.preventDefault();
+    const newOffer = {
+      title: title,
+      code: code,
+      Discount: discount,
+      product_Id: "6482bea984e5342a120adbde",
+      // productName: productName,
+    };
+    createOffer(newOffer);
+  };
+  const handleSaveChanges2 = (e) => {
+    e.preventDefault();
+    const newOffer = {
+      title: title,
+    };
+    searchOffer(newOffer);
+  };
+  const handleSaveChanges1 = (e) => {
+    e.preventDefault();
+    console.log("handleSaveChanges1", itemId);
+    const editOffer = {
+      id: itemId,
+      title: title,
+      code: code,
+      Discount: discount,
+      // productName: productName,
+      product_Id: "6482bea984e5342a120adbde",
+    };
+    updateOffer(editOffer);
+  };
   return (
     <>
       <div className="admin_main">
@@ -24,9 +72,10 @@ function OfferManagement() {
                         <input
                           type="text"
                           className="form-control"
-                          defaultValue=""
-                          name="name"
-                          id="name"
+                          name="productName"
+                          id="productName"
+                          value={productName}
+                          onChange={(e) => setProductName(e.target.value)}
                         />
                       </div>
                       <div className="form-group col-6">
@@ -34,9 +83,10 @@ function OfferManagement() {
                         <input
                           type="text"
                           className="form-control"
-                          defaultValue=""
-                          name="name"
-                          id="name"
+                          name="title"
+                          id="title"
+                          value={title}
+                          onChange={(e) => setTitle(e.target.value)}
                         />
                       </div>
                       <div className="form-group mb-0 col">
@@ -44,9 +94,10 @@ function OfferManagement() {
                         <input
                           type="text"
                           className="form-control"
-                          defaultValue=""
-                          name="name"
-                          id="name"
+                          name="code"
+                          id="code"
+                          value={code}
+                          onChange={(e) => setCode(e.target.value)}
                         />
                       </div>
                       <div className="form-group mb-0 col">
@@ -54,13 +105,19 @@ function OfferManagement() {
                         <input
                           type="text"
                           className="form-control"
-                          defaultValue=""
-                          name="name"
-                          id="name"
+                          name="discount"
+                          id="discount"
+                          value={discount}
+                          onChange={(e) => setDiscount(e.target.value)}
                         />
                       </div>
                       <div className="form-group mb-0 col-auto">
-                        <button className="comman_btn2">Add</button>
+                        <button
+                          className="comman_btn2"
+                          onClick={handleSaveChanges}
+                        >
+                          Add
+                        </button>
                       </div>
                     </form>
                   </div>
@@ -70,7 +127,11 @@ function OfferManagement() {
                         <h2>Offers List</h2>
                       </div>
                       <div className="col-3">
-                        <form className="form-design" action="">
+                        <form
+                          className="form-design"
+                          action=""
+                          onSubmit={handleSaveChanges2}
+                        >
                           <div className="form-group mb-0 position-relative icons_set">
                             <input
                               type="text"
@@ -78,6 +139,8 @@ function OfferManagement() {
                               placeholder="Search"
                               name="name"
                               id="name"
+                              value={title}
+                              onChange={(e) => setTitle(e.target.value)}
                             />
                             <i className="far fa-search" />
                           </div>
@@ -87,14 +150,25 @@ function OfferManagement() {
                     <form
                       className="form-design py-4 px-3 help-support-form row align-items-end justify-content-between"
                       action=""
+                      onSubmit={handleSaveChanges2}
                     >
                       <div className="form-group mb-0 col-5">
                         <label htmlFor="">From</label>
-                        <input type="date" className="form-control" />
+                        <input
+                          type="date"
+                          className="form-control"
+                          value={startDate}
+                          onChange={(e) => setStartDate(e.target.value)}
+                        />
                       </div>
                       <div className="form-group mb-0 col-5">
                         <label htmlFor="">To</label>
-                        <input type="date" className="form-control" />
+                        <input
+                          type="date"
+                          className="form-control"
+                          value={endDate}
+                          onChange={(e) => setEndDate(e.target.value)}
+                        />
                       </div>
                       <div className="form-group mb-0 col-auto">
                         <button className="comman_btn2">Search</button>
@@ -116,162 +190,55 @@ function OfferManagement() {
                               </tr>
                             </thead>
                             <tbody>
-                              <tr>
-                                <td>1</td>
-                                <td>Oneplus Nord</td>
-                                <td>10% Off</td>
-                                <td>1234234</td>
-                                <td>10%</td>
-                                <td>
-                                  <form className="table_btns d-flex align-items-center">
-                                    <div className="check_toggle">
-                                      <input
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#staticBackdrop"
-                                        type="checkbox"
-                                        defaultChecked=""
-                                        name="check1"
-                                        id="check1"
-                                        className="d-none"
-                                      />
-                                      <label htmlFor="check1" />
-                                    </div>
-                                  </form>
-                                </td>
-                                <td>
-                                  <a
-                                    className="comman_btn table_viewbtn"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#edittoffer"
-                                    href="javascript:;"
-                                  >
-                                    Edit
-                                  </a>
-                                  <a
-                                    className="comman_btn2 table_viewbtn"
-                                    href="javascript:;"
-                                  >
-                                    Delete
-                                  </a>
-                                </td>
-                              </tr>
-                              <tr>
-                                <td>2</td>
-                                <td>Oneplus Nord</td>
-                                <td>10% Off</td>
-                                <td>1234234</td>
-                                <td>10%</td>
-                                <td>
-                                  <form className="table_btns d-flex align-items-center">
-                                    <div className="check_toggle">
-                                      <input
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#staticBackdrop"
-                                        type="checkbox"
-                                        defaultChecked=""
-                                        name="check2"
-                                        id="check2"
-                                        className="d-none"
-                                      />
-                                      <label htmlFor="check2" />
-                                    </div>
-                                  </form>
-                                </td>
-                                <td>
-                                  <a
-                                    className="comman_btn table_viewbtn"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#edittoffer"
-                                    href="javascript:;"
-                                  >
-                                    Edit
-                                  </a>
-                                  <a
-                                    className="comman_btn2 table_viewbtn"
-                                    href="javascript:;"
-                                  >
-                                    Delete
-                                  </a>
-                                </td>
-                              </tr>
-                              <tr>
-                                <td>3</td>
-                                <td>Oneplus Nord</td>
-                                <td>10% Off</td>
-                                <td>1234234</td>
-                                <td>10%</td>
-                                <td>
-                                  <form className="table_btns d-flex align-items-center">
-                                    <div className="check_toggle">
-                                      <input
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#staticBackdrop"
-                                        type="checkbox"
-                                        defaultChecked=""
-                                        name="check3"
-                                        id="check3"
-                                        className="d-none"
-                                      />
-                                      <label htmlFor="check3" />
-                                    </div>
-                                  </form>
-                                </td>
-                                <td>
-                                  <a
-                                    className="comman_btn table_viewbtn"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#edittoffer"
-                                    href="javascript:;"
-                                  >
-                                    Edit
-                                  </a>
-                                  <a
-                                    className="comman_btn2 table_viewbtn"
-                                    href="javascript:;"
-                                  >
-                                    Delete
-                                  </a>
-                                </td>
-                              </tr>
-                              <tr>
-                                <td>4</td>
-                                <td>Oneplus Nord</td>
-                                <td>10% Off</td>
-                                <td>1234234</td>
-                                <td>10%</td>
-                                <td>
-                                  <form className="table_btns d-flex align-items-center">
-                                    <div className="check_toggle">
-                                      <input
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#staticBackdrop"
-                                        type="checkbox"
-                                        defaultChecked=""
-                                        name="check4"
-                                        id="check4"
-                                        className="d-none"
-                                      />
-                                      <label htmlFor="check4" />
-                                    </div>
-                                  </form>
-                                </td>
-                                <td>
-                                  <a
-                                    className="comman_btn table_viewbtn"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#edittoffer"
-                                    href="javascript:;"
-                                  >
-                                    Edit
-                                  </a>
-                                  <a
-                                    className="comman_btn2 table_viewbtn"
-                                    href="javascript:;"
-                                  >
-                                    Delete
-                                  </a>
-                                </td>
-                              </tr>
+                              {offerListItems?.data?.results?.list?.map(
+                                (item, index) => {
+                                  return (
+                                    <tr key={index}>
+                                      <td> {index + 1} </td>
+                                      <td> {item?.product_Id?.productName} </td>
+                                      <td> {item?.title} </td>
+                                      <td> {item?.code} </td>
+                                      <td> {item?.Discount} </td>
+                                      <td>
+                                        <form className="table_btns d-flex align-items-center">
+                                          <div className="check_toggle">
+                                            <input
+                                              data-bs-toggle="modal"
+                                              data-bs-target="#staticBackdrop"
+                                              type="checkbox"
+                                              defaultChecked=""
+                                              name="check1"
+                                              id="check1"
+                                              className="d-none"
+                                            />
+                                            <label htmlFor="check1" />
+                                          </div>
+                                        </form>
+                                      </td>
+                                      <td>
+                                        <Link
+                                          className="comman_btn table_viewbtn"
+                                          data-bs-toggle="modal"
+                                          data-bs-target="#edittoffer"
+                                          to="#"
+                                          onClick={() => setItemId(item?._id)}
+                                        >
+                                          Edit
+                                        </Link>
+                                        <Link
+                                          className="comman_btn2 table_viewbtn ms-2"
+                                          to="#"
+                                          onClick={() => {
+                                            deleteOffer(item?._id);
+                                          }}
+                                        >
+                                          Delete
+                                        </Link>
+                                      </td>
+                                    </tr>
+                                  );
+                                }
+                              )}
                             </tbody>
                           </table>
                         </div>
@@ -306,12 +273,12 @@ function OfferManagement() {
                 <div className="col-12 Update_modal_content py-4">
                   <h2>Disable</h2>
                   <p>Are you sure you want to disable this Offer?</p>
-                  <a className="comman_btn mx-2" href="javscript:;">
+                  <Link className="comman_btn mx-2" to="#">
                     Yes
-                  </a>
-                  <a className="comman_btn2 mx-2 bg-red" href="javscript:;">
+                  </Link>
+                  <Link className="comman_btn2 mx-2 bg-red" to="#">
                     NO
-                  </a>
+                  </Link>
                 </div>
               </div>
             </div>
@@ -350,7 +317,8 @@ function OfferManagement() {
                   <input
                     type="text"
                     className="form-control"
-                    defaultValue="Oneplus Nord"
+                    value={productName}
+                    onChange={(e) => setProductName(e.target.value)}
                     name="name"
                     id="name"
                   />
@@ -360,9 +328,10 @@ function OfferManagement() {
                   <input
                     type="text"
                     className="form-control"
-                    defaultValue="10% Off"
-                    name="name"
-                    id="name"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    name="title"
+                    id="title"
                   />
                 </div>
                 <div className="form-group mb-0 col">
@@ -370,9 +339,10 @@ function OfferManagement() {
                   <input
                     type="text"
                     className="form-control"
-                    defaultValue={1234234}
-                    name="name"
-                    id="name"
+                    value={code}
+                    onChange={(e) => setCode(e.target.value)}
+                    name="code"
+                    id="code"
                   />
                 </div>
                 <div className="form-group mb-0 col">
@@ -380,13 +350,16 @@ function OfferManagement() {
                   <input
                     type="text"
                     className="form-control"
-                    defaultValue="10%"
+                    value={discount}
+                    onChange={(e) => setDiscount(e.target.value)}
                     name="name"
                     id="name"
                   />
                 </div>
                 <div className="form-group mb-0 col-auto">
-                  <button className="comman_btn2">Add</button>
+                  <button className="comman_btn2" onClick={handleSaveChanges1}>
+                    Add
+                  </button>
                 </div>
               </form>
             </div>
