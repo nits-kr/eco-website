@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from "react-router-dom"
 import axios from "axios";
+import Sidebar from './Sidebar';
 
 export default function ProductReports() {
     const [reporterList, setReporterList] = useState('')
@@ -51,6 +52,7 @@ export default function ProductReports() {
     // };
     return (
         <>
+        <Sidebar/>
             <div className="tab-pane fade" id="nav-profile" role="tabpanel"
                 aria-labelledby="nav-profile-tab">
                 <div className="row mx-0">

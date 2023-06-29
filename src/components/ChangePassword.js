@@ -3,6 +3,7 @@ import Swal from "sweetalert2";
 import axios from "axios";
 //import { useHistory } from 'react-router-dom';
 import VerificationModal from "./VerificationModal";
+import Sidebar from "./Sidebar";
 function ChangePassword() {
   const [oldPassword, setOldPassword] = useState("Nc@1234");
   const [newPassword, setNewPassword] = useState("Nc@1234");
@@ -50,6 +51,7 @@ function ChangePassword() {
   };
   return (
     <>
+    <Sidebar/>
       <div className="admin_main" id="verificationModalBtn">
         <div className="admin_main_inner">
           <div className="admin_panel_data height_adjust">

@@ -11,6 +11,7 @@ import EditSubCategory from "./EditSubCategory";
 //import EditSubSubCategory from "./EditSubSubCategory";
 import EditAttribute from "./EditAttribute";
 import Swal from "sweetalert2";
+import Sidebar from "./Sidebar";
 
 function CategoryManagement() {
   axios.defaults.headers.common["x-auth-token-user"] =
@@ -122,6 +123,7 @@ function CategoryManagement() {
 
   return (
     <>
+    <Sidebar/>
       <div className="admin_main">
         <div className="admin_main_inner">
           <div className="admin_panel_data height_adjust">

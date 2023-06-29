@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
 import EditValues from "./EditValues";
+import Sidebar from "./Sidebar";
 
 function SubCategory() {
   const [categoryList, setCategoryList] = useState([]);
@@ -126,6 +127,7 @@ function SubCategory() {
 console.log("subcategory", subCategory);
   return (
     <>
+    <Sidebar/>
       <div
         className="tab-pane fade"
         id="nav-profile"

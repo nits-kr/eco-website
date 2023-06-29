@@ -4,6 +4,7 @@ import axios from "axios";
 import ProductReports from "./ProductReports";
 import UserReports from "./UserReports";
 import Swal from "sweetalert2";
+import Sidebar from "./Sidebar";
 
 function ReportManagement() {
     const [searchQuery, setSearchQuery] = useState('');
@@ -35,6 +36,7 @@ function ReportManagement() {
     };
     return (
         <>
+        <Sidebar/>
             <div className="admin_main">
                 <div className="admin_main_inner">
                     <div className="admin_panel_data height_adjust">

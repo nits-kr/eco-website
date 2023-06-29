@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import EditStaffMember from "./EditStaffMember";
 import axios from "axios";
 import Swal from "sweetalert2";
+import Sidebar from "./Sidebar";
 
 function StaffManagement() {
   const [staffList, setStaffList] = useState([]);
@@ -104,6 +105,7 @@ function StaffManagement() {
 
   return (
     <>
+    <Sidebar/>
       <div className="admin_main">
         <div className="admin_main_inner">
           <div className="admin_panel_data height_adjust">

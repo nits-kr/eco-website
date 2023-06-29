@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 import axios from "axios";
+import Sidebar from "./Sidebar";
 
 function ResetPassword() {
   const [password, setPassword] = useState("");
@@ -47,6 +48,7 @@ function ResetPassword() {
 
   return (
     <>
+    <Sidebar/>
       <section className="login_page">
         <div className="container-fluid px-0">
           <div className="row justify-content-start">

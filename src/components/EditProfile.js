@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 import axios from "axios";
+import Sidebar from "./Sidebar";
 
 function EditProfile() {
     const [formData, setFormData] = useState([]);
@@ -98,6 +99,7 @@ function EditProfile() {
     }, []);
     return (
         <>
+        <Sidebar/>
             <div className="admin_main">
                 <div className="admin_main_inner">
                     <div className="admin_panel_data height_adjust">

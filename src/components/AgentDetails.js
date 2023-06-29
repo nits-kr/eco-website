@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit } from "@fortawesome/free-solid-svg-icons";
+import Sidebar from "./Sidebar";
 
 function AgentDetails() {
   axios.defaults.headers.common["x-auth-token-user"] =
@@ -51,6 +52,7 @@ function AgentDetails() {
   };
   return (
     <>
+    <Sidebar/>
       <div className="admin_main">
         <div className="admin_main_inner">
           <div className="admin_panel_data height_adjust">

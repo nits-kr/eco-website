@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import axios from "axios";
+import Sidebar from './Sidebar';
 function EditSubCategory() {
   const [categories, setCategories] = useState([]);
   const [subCategory, setSubCategory] = useState({
@@ -37,6 +38,7 @@ function EditSubCategory() {
   }, []);
   return (
     <>
+    <Sidebar/>
       <div
         className="modal fade Edit_modal"
         id="staticBackdrop1"

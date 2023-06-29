@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useGetTransactionListQuery } from "../services/Post";
 // import { useGetTransactionListDetailsQuery } from "../services/Post";
 import { useGetTransactionListDetailsMutation } from "../services/Post";
+import Sidebar from "./Sidebar";
 function TransactionManagement() {
     const transactionList = useGetTransactionListQuery();
     const [getTransactionDetails] = useGetTransactionListDetailsMutation();
@@ -14,6 +15,7 @@ function TransactionManagement() {
     //   };
   return (
     <>
+    <Sidebar/>
       <div className="admin_main">
         <div className="admin_main_inner">
           <div className="admin_panel_data height_adjust">

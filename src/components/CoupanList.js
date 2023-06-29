@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 import axios from "axios";
+import Sidebar from "./Sidebar";
 function CoupanList() {
     const [coupanList, setCoupanList] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
@@ -103,6 +104,7 @@ function CoupanList() {
 
     return (
         <>
+        <Sidebar/>
             <div className="admin_main">
                 <div className="admin_main_inner">
                     <div className="admin_panel_data height_adjust">

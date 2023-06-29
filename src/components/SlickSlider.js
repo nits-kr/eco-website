@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import Sidebar from "./Sidebar";
 
 function SlickSlider() {
   const [selectedImage, setSelectedImage] = useState(null);
@@ -47,6 +48,7 @@ function SlickSlider() {
   };
   return (
     <>
+    <Sidebar/>
       <div className="admin_main">
         <div className="admin_main_inner">
           <div className="admin_panel_data height_adjust">

@@ -3,6 +3,7 @@ import { Link } from "react-router-dom"
 import axios from "axios";
 import { useState } from 'react';
 import { useEffect } from 'react';
+import Sidebar from './Sidebar';
 function RecentOrderDetails() {
     const MAX_RATING = 5;
     const CURRENT_RATING = 4;
@@ -17,6 +18,7 @@ function RecentOrderDetails() {
     }, [])
     return (
         <>
+        <Sidebar/>
             <div className="admin_main">
                 <div className="admin_main_inner">
                     <div className="admin_panel_data height_adjust">

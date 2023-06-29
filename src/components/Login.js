@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 import axios from "axios";
+import Sidebar from "./Sidebar";
 function Login() {
     const userLogin = async (userEmail, password) => {
         const { data } = await axios.post("http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/user/login", {
@@ -34,6 +35,7 @@ function Login() {
     };
     return (
         <>
+        {/* <Sidebar/> */}
             <section className="login_page">
                 <div className="container-fluid px-0">
                     <div className="row justify-content-start">
@@ -74,11 +76,13 @@ function Login() {
                                                     Forgot Password?
                                                 </Link>
                                             </div>
+                                            <Link to="/dashboard">
                                             <div className="form-group col-12">
                                                 <button type="submit" className="comman_btn">
                                                     Submit
                                                 </button>
                                             </div>
+                                            </Link>
                                         </form>
                                     </div>
                                 </div>

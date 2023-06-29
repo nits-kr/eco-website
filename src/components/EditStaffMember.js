@@ -1,5 +1,6 @@
 import React, {  useState } from 'react'
 import axios from "axios";
+import Sidebar from './Sidebar';
 
 function EditStaffMember() {
     const [modules, setModules] = useState([]);
@@ -47,6 +48,7 @@ function EditStaffMember() {
 
     return (
         <>
+        <Sidebar/>
             <div className="modal fade Edit_modal" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
                 tabIndex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                 <div className="modal-dialog modal-dialog-centered">

@@ -9,6 +9,7 @@ import OwlCarousel from "react-owl-carousel";
 import "owl.carousel/dist/assets/owl.carousel.css";
 import "owl.carousel/dist/assets/owl.theme.default.css";
 import SlickSlider from "./SlickSlider";
+import Sidebar from "./Sidebar";
 
 function HomeScreenBanner() {
   const [selectedImage, setSelectedImage] = useState(null);
@@ -182,6 +183,7 @@ function HomeScreenBanner() {
 
   return (
     <>
+    <Sidebar/>
       <div className="admin_main">
         <div className="admin_main_inner">
           <div className="admin_panel_data height_adjust">

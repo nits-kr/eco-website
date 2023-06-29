@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import axios from "axios";
+import Sidebar from './Sidebar';
 
 function EditAttribute() {
   const [categories, setCategories] = useState([]);
@@ -69,6 +70,7 @@ function EditAttribute() {
   }, []);
   return (
     <>
+    <Sidebar/>
       <div
         className="modal fade Edit_modal"
         id="staticBackdrop3"

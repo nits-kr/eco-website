@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 import axios from "axios";
+import Sidebar from "./Sidebar";
 
 function VerificationModal() {
   const [otp, setOtp] = useState(["", "", "", ""]);
@@ -70,6 +71,7 @@ function VerificationModal() {
 
   return (
     <>
+    <Sidebar/>
       <div
         className="modal fade Edit_modal"
         id="staticBackdrop"

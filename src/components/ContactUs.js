@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from "react-router-dom"
 import axios from "axios";
+import Sidebar from './Sidebar';
 function ContactUs() {
     const [contactList, setContactList] = useState('')
     const [startDate, setStartDate] = useState("");
@@ -29,6 +30,7 @@ function ContactUs() {
     };
     return (
         <>
+        <Sidebar/>
             <div className="admin_main">
                 <div className="admin_main_inner">
                     <div className="admin_panel_data height_adjust">

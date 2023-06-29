@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
+import Sidebar from "./Sidebar";
 function Value() {
   const [valueList, setValueList] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -147,6 +148,7 @@ function Value() {
   }, []);
   return (
     <>
+    <Sidebar/>
       <div
         className="tab-pane fade"
         id="nav-contact2"

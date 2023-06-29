@@ -1,41 +1,45 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import Swal from 'sweetalert2';
+import Swal from "sweetalert2";
+import Sidebar from "./Sidebar";
 
 function Attribute() {
   const [attributesList, setAttributesList] = useState([]);
-  const [subAttributesList, setSubAttributesList] = useState([])
-  const [searchQuery, setSearchQuery] = useState('');
+  const [subAttributesList, setSubAttributesList] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
   const [categories, setCategories] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
   const [subSubCategories, setSubSubCategories] = useState([]);
   const [attributes, setAttributes] = useState({
-    nameEn: '',
-    nameAr: '',
-    categoryId: '',
-    categoryId1: '',
-    categoryId2: '',
+    nameEn: "",
+    nameAr: "",
+    categoryId: "",
+    categoryId1: "",
+    categoryId2: "",
   });
   const handleSearch = async (e) => {
     e.preventDefault();
     if (searchQuery) {
       try {
-        const response = await axios.post('http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/attribute/attributeSearch', {
-          attributesName: searchQuery
-        });
+        const response = await axios.post(
+          "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/attribute/attributeSearch",
+          {
+            attributesName: searchQuery,
+          }
+        );
         const { error, results } = response.data;
         if (error) {
-          throw new Error('Error searching for products.');
+          throw new Error("Error searching for products.");
         } else {
           setAttributesList(results.categoryData);
         }
       } catch (error) {
         Swal.fire({
-          title: 'Error!',
+          title: "Error!",
           text: error.message,
-          icon: 'error',
-          confirmButtonText: 'OK'
+          icon: "error",
+          confirmButtonText: "OK",
         });
       }
     } else {
@@ -49,20 +53,24 @@ function Attribute() {
   };
   const handleSubmit = async (event) => {
     event.preventDefault();
-    await axios.post('http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/attribute/createAttribute', {
-      attributeName_en: attributes.nameEn,
-      category_Id: attributes.categoryId,
-      subCategory_Id: attributes.categoryId1,
-      subSubCategory_Id: attributes.categoryId2
-    })
-      .then(response => {
+    await axios
+      .post(
+        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/attribute/createAttribute",
+        {
+          attributeName_en: attributes.nameEn,
+          category_Id: attributes.categoryId,
+          subCategory_Id: attributes.categoryId1,
+          subSubCategory_Id: attributes.categoryId2,
+        }
+      )
+      .then((response) => {
         console.log(response.data);
         if (!response.data.error) {
-          alert('List saved!')
-          handleSave()
+          alert("List saved!");
+          handleSave();
         }
       })
-      .catch(error => {
+      .catch((error) => {
         console.error(error);
       });
   };
@@ -113,18 +121,21 @@ function Attribute() {
 
   const handleSave = async () => {
     await axios
-      .post("http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/attribute/attributeList")
+      .post(
+        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/attribute/attributeList"
+      )
       .then((response) => {
         setAttributesList(response?.data?.results?.list);
         // setSubAttributesList(response?.data?.results?.list)
         console.log(response.data);
       });
-  }
+  };
   useEffect(() => {
-    handleSave()
+    handleSave();
   }, []);
   return (
     <>
+    <Sidebar/>
       <div
         className="tab-pane fade"
         id="nav-contact1"
@@ -145,29 +156,59 @@ function Attribute() {
             >
               <div className="form-group col-4">
                 <label htmlFor="">Select Category</label>
-                <select className="select form-control" size={15} name="categoryId" id="selectCategory" value={attributes.categoryId}
-                  onChange={handleInputChange}>
-                  {Array.isArray(categories) && categories.map(category => (
-                    <option key={category._id} value={category._id}>{category.categoryName}</option>
-                  ))}
+                <select
+                  className="select form-control"
+                  size={15}
+                  name="categoryId"
+                  id="selectCategory"
+                  value={attributes.categoryId}
+                  onChange={handleInputChange}
+                >
+                  {Array.isArray(categories) &&
+                    categories.map((category) => (
+                      <option key={category._id} value={category._id}>
+                        {category.categoryName}
+                      </option>
+                    ))}
                 </select>
               </div>
               <div className="form-group col-4">
                 <label htmlFor="">Select Sub Category</label>
-                <select className="select form-control" size={15} name="categoryId1" id="selectSubCategory" value={attributes.categoryId1}
-                  onChange={handleInputChange}>
-                  {Array.isArray(subCategories) && subCategories.map(subCategory => (
-                    <option key={subCategory._id} value={subCategory._id}>{subCategory.subCategoryName}</option>
-                  ))}
+                <select
+                  className="select form-control"
+                  size={15}
+                  name="categoryId1"
+                  id="selectSubCategory"
+                  value={attributes.categoryId1}
+                  onChange={handleInputChange}
+                >
+                  {Array.isArray(subCategories) &&
+                    subCategories.map((subCategory) => (
+                      <option key={subCategory._id} value={subCategory._id}>
+                        {subCategory.subCategoryName}
+                      </option>
+                    ))}
                 </select>
               </div>
               <div className="form-group col-4">
                 <label htmlFor="">Select Sub Sub Category</label>
-                <select className="select form-control" size={15} name="categoryId2" id="categoryId2" value={attributes.categoryId2}
-                  onChange={handleInputChange}>
-                  {Array.isArray(subSubCategories) && subSubCategories.map(subSubCategory => (
-                    <option key={subSubCategory._id} value={subSubCategory._id}>{subSubCategory.subSubCategoryName}</option>
-                  ))}
+                <select
+                  className="select form-control"
+                  size={15}
+                  name="categoryId2"
+                  id="categoryId2"
+                  value={attributes.categoryId2}
+                  onChange={handleInputChange}
+                >
+                  {Array.isArray(subSubCategories) &&
+                    subSubCategories.map((subSubCategory) => (
+                      <option
+                        key={subSubCategory._id}
+                        value={subSubCategory._id}
+                      >
+                        {subSubCategory.subSubCategoryName}
+                      </option>
+                    ))}
                 </select>
               </div>
               <div className="form-group col">
@@ -248,22 +289,24 @@ function Attribute() {
                           <td>{index + 1}</td>
                           <td>{value?.subSubCategory_Id?.category_Id}</td>
                           <td>{value?.subSubCategory_Id?.subCategory_Id}</td>
-                          <td>{value?.subSubCategory_Id?.subSubCategoryName}</td>
+                          <td>
+                            {value?.subSubCategory_Id?.subSubCategoryName}
+                          </td>
                           <td>{value?.attributeName}</td>
                           <td>{value?.attributeName}</td>
                           <td>
                             <form className="table_btns d-flex align-items-center">
                               <div className="check_toggle">
                                 <input
-                                  defaultChecked={
-                                    value.shipmentService
-                                  }
+                                  defaultChecked={value.shipmentService}
                                   type="checkbox"
                                   name={`shipment_service_${value._id}`}
                                   id={`shipment_service_${value._id}`}
                                   className="d-none"
                                 />
-                                <label htmlFor={`shipment_service_${value._id}`}></label>
+                                <label
+                                  htmlFor={`shipment_service_${value._id}`}
+                                ></label>
                               </div>
                             </form>
                           </td>
@@ -271,9 +314,7 @@ function Attribute() {
                             <form className="table_btns d-flex align-items-center">
                               <div className="check_toggle">
                                 <input
-                                  defaultChecked={
-                                    value.status
-                                  }
+                                  defaultChecked={value.status}
                                   type="checkbox"
                                   name={`status_${value._id}`}
                                   id={`status_${value._id}`}

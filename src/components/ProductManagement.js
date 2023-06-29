@@ -5,6 +5,7 @@ import Swal from "sweetalert2";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faPencil, faTrashCan } from "@fortawesome/free-solid-svg-icons";
+import Sidebar from "./Sidebar";
 
 function ProductManagement() {
   const [selectedImage, setSelectedImage] = useState(null);
@@ -70,6 +71,7 @@ function ProductManagement() {
 
   return (
     <>
+    <Sidebar/>
       <div className="admin_main">
         <div className="admin_main_inner">
           <div className="admin_panel_data height_adjust">

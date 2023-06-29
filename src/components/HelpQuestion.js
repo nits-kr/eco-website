@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
+import Sidebar from "./Sidebar";
 
 export default function HelpQuestion() {
  // const [questions, setQuestions] = useState([]);
@@ -46,6 +47,7 @@ export default function HelpQuestion() {
 
   return (
     <>
+    <Sidebar/>
       <div
         className="modal fade Edit_help Edit_modal"
         id="staticBackdrop1"

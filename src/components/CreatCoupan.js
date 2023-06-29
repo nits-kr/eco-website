@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import axios from "axios";
 import Swal from "sweetalert2";
+import Sidebar from './Sidebar';
 
 export default function CreatCoupan() {
     //const [coupanList, setCoupanList] = useState([])
@@ -136,6 +137,7 @@ export default function CreatCoupan() {
 
     return (
         <>
+        <Sidebar/>
             <div className="admin_main">
                 <div className="admin_main_inner">
                     <div className="admin_panel_data height_adjust">

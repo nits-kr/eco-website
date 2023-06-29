@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
+import Sidebar from "./Sidebar";
 function Informations() {
   const [informationListItems, setInformationListItems] = useState([]);
   const [title, setTitle] = useState("");
@@ -69,6 +70,7 @@ function Informations() {
   };
   return (
     <>
+    <Sidebar/>
       <div className="admin_main">
         <div className="admin_main_inner">
           <div className="admin_panel_data height_adjust">

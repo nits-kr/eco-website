@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
+import Sidebar from "./Sidebar";
 function ThoughtsManagement() {
     const [thoughts, setThoughts] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
@@ -45,6 +46,7 @@ function ThoughtsManagement() {
 
     return (
         <>
+        <Sidebar/>
             <div className="admin_main">
                 <div className="admin_main_inner">
                     <div className="admin_panel_data height_adjust">

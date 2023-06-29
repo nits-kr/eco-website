@@ -1,8 +1,10 @@
 import React from 'react'
 import { Link } from "react-router-dom"
+import Sidebar from './Sidebar'
 function LanguageSelection() {
     return (
         <>
+        <Sidebar/>
             <section className="login_page">
                 <div className="container-fluid px-0">
                     <div className="row justify-content-start">

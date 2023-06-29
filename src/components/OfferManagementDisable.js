@@ -1,8 +1,10 @@
 import React from 'react'
 import { Link } from "react-router-dom"
+import Sidebar from './Sidebar'
 function OfferManagementDisable() {
     return (
         <>
+        <Sidebar/>
             <div className="admin_main">
                 <div className="admin_main_inner">
                     <div className="admin_panel_data height_adjust">

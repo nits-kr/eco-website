@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from "react-router-dom"
 import axios from "axios";
+import Sidebar from './Sidebar';
 
 function ContentManagement() {
     const [contentList, setContentList] = useState([])
@@ -51,6 +52,7 @@ function ContentManagement() {
     
     return (
         <>
+        <Sidebar/>
             <div className="admin_main">
                 <div className="admin_main_inner">
                     <div className="admin_panel_data height_adjust">

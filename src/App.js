@@ -43,39 +43,38 @@ import AgentDetails from "./components/AgentDetails";
 import AgentInformation from "./components/AgentInformation";
 
 function App() {
-
   return (
     <>
-    
       <BrowserRouter>
-        <Sidebar />
+        {/* <Sidebar /> */}
         <Routes>
-          <Route exact className="active" path="/" element={<Dashboard />} />
+          <Route exact className="active" path="/" element={<Login />} />
+          <Route
+            exact
+            className="active"
+            path="dashboard"
+            element={<Dashboard />}
+          />
           <Route
             exact
             className="active"
             path="/users"
             element={<UsersManagement />}
           />
-          <Route
-            exact
-            className="active"
-            path="/agents"
-            element={<Agent/>}
-          />
+          <Route exact className="active" path="/agents" element={<Agent />} />
           <Route
             exact
             className="active"
             path="/agents-details"
-            element={<AgentDetails/>}
+            element={<AgentDetails />}
           />
           <Route
             exact
             className="active"
             path="/agents-information/:id"
-            element={<AgentInformation/>}
+            element={<AgentInformation />}
           />
-          
+
           <Route
             exact
             className="active"
@@ -167,7 +166,7 @@ function App() {
             element={<ContactUs />}
           />
           <Route exact className="active" path="/help" element={<Help />} />
-          <Route exact className="active" path="/login" element={<Login />} />
+
           <Route
             exact
             className="active"

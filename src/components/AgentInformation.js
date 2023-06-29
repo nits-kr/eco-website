@@ -9,6 +9,7 @@ import {
   faArrowRight,
   faStar,
 } from "@fortawesome/free-solid-svg-icons";
+import Sidebar from "./Sidebar";
 
 function AgentInformation() {
   axios.defaults.headers.common["x-auth-token-user"] =
@@ -41,6 +42,7 @@ function AgentInformation() {
 
   return (
     <>
+    <Sidebar/>
       <div className="admin_main">
         <div className="admin_main_inner">
           <div className="admin_panel_data height_adjust">

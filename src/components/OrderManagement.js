@@ -8,6 +8,7 @@ import {
   faPencil,
   faTrashCan,
 } from "@fortawesome/free-solid-svg-icons";
+import Sidebar from "./Sidebar";
 function OrderManagement() {
   const [orderList, setOrderList] = useState([]);
   const [startDate, setStartDate] = useState("");
@@ -79,6 +80,7 @@ function OrderManagement() {
 
   return (
     <>
+    <Sidebar/>
       <div className="admin_main">
         <div className="admin_main_inner">
           <div className="admin_panel_data height_adjust">

@@ -5,6 +5,7 @@ import { useGetOfferListQuery } from "../services/Post";
 import { useUpdateOfferMutation } from "../services/Post";
 import { useDeleteOfferMutation } from "../services/Post";
 import { useSearchOfferMutation } from "../services/Post";
+import Sidebar from "./Sidebar";
 function OfferManagement() {
   const [createOffer, responseInfo] = useCreateOfferMutation();
   const [updateOffer, response] = useUpdateOfferMutation();
@@ -51,6 +52,7 @@ function OfferManagement() {
   };
   return (
     <>
+    <Sidebar/>
       <div className="admin_main">
         <div className="admin_main_inner">
           <div className="admin_panel_data height_adjust">

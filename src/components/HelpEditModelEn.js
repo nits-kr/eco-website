@@ -1,6 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import Swal from 'sweetalert2';
+import Sidebar from './Sidebar';
 
 const HelpEditModelEn = (props) => {
   const { formData, setFormData, refreshList, selectedQuestionId } = props;
@@ -44,6 +45,7 @@ const HelpEditModelEn = (props) => {
 
   return (
     <>
+    <Sidebar/>
       <div
         className="modal fade Edit_help Edit_modal"
         id="staticBackdrop"

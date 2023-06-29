@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import axios from "axios";
 import Swal from "sweetalert2";
+import Sidebar from './Sidebar';
 //import { Link } from "react-router-dom";
 function EditSubSubCategory(props) {
     const [categories, setCategories] = useState([]);
@@ -118,6 +119,7 @@ function EditSubSubCategory(props) {
     console.log(props.newCategory)
     return (
         <>
+        <Sidebar/>
             <div
                 className="modal fade Edit_modal"
                 id="staticBackdrop5"

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 import axios from "axios";
+import Sidebar from "./Sidebar";
 function ProductList() {
   const [searchQuery, setSearchQuery] = useState("");
   const [productList, setProductList] = useState([]);
@@ -48,6 +49,7 @@ function ProductList() {
   }, []);
   return (
     <>
+    <Sidebar/>
       <div className="admin_main_inner" style={{ marginLeft: "18%" }}>
         <div className="admin_panel_data height_adjust">
           <h6 style={{ marginLeft: "2%", marginTop: "-35px" }}>

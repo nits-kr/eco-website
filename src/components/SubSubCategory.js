@@ -4,6 +4,7 @@ import axios from "axios";
 import Swal from 'sweetalert2';
 //import EditValues from "./EditValues";
 import EditSubSubCategory from "./EditSubSubCategory";
+import Sidebar from "./Sidebar";
 
 function SubSubCategory() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -132,6 +133,7 @@ console.log("sub subCategory list", subSubCategoryList);
 
   return (
     <>
+    <Sidebar/>
       <div
         className="tab-pane fade"
         id="nav-contact"

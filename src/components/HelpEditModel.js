@@ -1,8 +1,10 @@
 import React from 'react'
+import Sidebar from './Sidebar'
 
 export default function HelpEditModel() {
     return (
         <>
+        <Sidebar/>
             <div className="modal fade Edit_help Edit_modal" id="staticBackdrop2" data-bs-backdrop="static" data-bs-keyboard="false"
                 tabIndex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                 <div className="modal-dialog modal-dialog-centered">
