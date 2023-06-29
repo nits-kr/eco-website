@@ -5,12 +5,16 @@ import "slick-carousel/slick/slick-theme.css";
 
 function SlickSlider() {
   const [selectedImage, setSelectedImage] = useState(null);
+  const [imageUrl, setImageUrl] = useState("");
   const [formData, setFormData] = useState({});
   const handleImageUpload = (event) => {
     const file = event.target.files[0];
-    setSelectedImage(URL.createObjectURL(file));
+    const imageUrl = URL.createObjectURL(file);
+    setSelectedImage(imageUrl);
+    setImageUrl(imageUrl);
     setFormData({ ...formData, profilePic: event.target.files[0] });
   };
+
   const settings = {
     dots: true,
     // infinite: true,
@@ -63,7 +67,8 @@ function SlickSlider() {
                                     className="file-upload"
                                     type="file"
                                     accept="image/*"
-                                      onChange={handleImageUpload}
+                                    id="image1"
+                                    onChange={handleImageUpload}
                                   />
                                 </div>
                               </div>
@@ -72,7 +77,11 @@ function SlickSlider() {
                           <div className="row">
                             <div className="form-group mb-2 col-12">
                               <label htmlFor="">Upload Url</label>
-                              <input className="form-control" type="text" />
+                              <input
+                                className="form-control"
+                                type="text"
+                                value={imageUrl}
+                              />
                             </div>
                           </div>
                         </div>
@@ -110,7 +119,8 @@ function SlickSlider() {
                                     className="file-upload"
                                     type="file"
                                     accept="image/*"
-                                    //   onChange={handleImageUpload}
+                                    id="image2"
+                                      onChange={handleImageUpload}
                                   />
                                 </div>
                               </div>
@@ -157,7 +167,7 @@ function SlickSlider() {
                                     className="file-upload"
                                     type="file"
                                     accept="image/*"
-                                    //   onChange={handleImageUpload}
+                                      onChange={handleImageUpload}
                                   />
                                 </div>
                               </div>
@@ -204,7 +214,7 @@ function SlickSlider() {
                                     className="file-upload"
                                     type="file"
                                     accept="image/*"
-                                    //   onChange={handleImageUpload}
+                                      onChange={handleImageUpload}
                                   />
                                 </div>
                               </div>
@@ -251,7 +261,7 @@ function SlickSlider() {
                                     className="file-upload"
                                     type="file"
                                     accept="image/*"
-                                    //   onChange={handleImageUpload}
+                                      onChange={handleImageUpload}
                                   />
                                 </div>
                               </div>
