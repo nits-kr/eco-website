@@ -14,6 +14,27 @@ function SlickSlider() {
     setImageUrl(imageUrl);
     setFormData({ ...formData, profilePic: event.target.files[0] });
   };
+  const handleImageUpload2 = (event) => {
+    const file = event.target.files[0];
+    const imageUrl = URL.createObjectURL(file);
+    setSelectedImage(imageUrl);
+    setImageUrl(imageUrl);
+    setFormData({ ...formData, profilePic: event.target.files[0] });
+  };
+  const handleImageUpload3 = (event) => {
+    const file = event.target.files[0];
+    const imageUrl = URL.createObjectURL(file);
+    setSelectedImage(imageUrl);
+    setImageUrl(imageUrl);
+    setFormData({ ...formData, profilePic: event.target.files[0] });
+  };
+  const handleImageUpload4 = (event) => {
+    const file = event.target.files[0];
+    const imageUrl = URL.createObjectURL(file);
+    setSelectedImage(imageUrl);
+    setImageUrl(imageUrl);
+    setFormData({ ...formData, profilePic: event.target.files[0] });
+  };
 
   const settings = {
     dots: true,
@@ -120,7 +141,7 @@ function SlickSlider() {
                                     type="file"
                                     accept="image/*"
                                     id="image2"
-                                      onChange={handleImageUpload}
+                                    onChange={handleImageUpload2}
                                   />
                                 </div>
                               </div>
@@ -167,7 +188,7 @@ function SlickSlider() {
                                     className="file-upload"
                                     type="file"
                                     accept="image/*"
-                                      onChange={handleImageUpload}
+                                    onChange={handleImageUpload3}
                                   />
                                 </div>
                               </div>
@@ -214,7 +235,7 @@ function SlickSlider() {
                                     className="file-upload"
                                     type="file"
                                     accept="image/*"
-                                      onChange={handleImageUpload}
+                                    onChange={handleImageUpload3}
                                   />
                                 </div>
                               </div>
@@ -261,7 +282,7 @@ function SlickSlider() {
                                     className="file-upload"
                                     type="file"
                                     accept="image/*"
-                                      onChange={handleImageUpload}
+                                    onChange={handleImageUpload4}
                                   />
                                 </div>
                               </div>

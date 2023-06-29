@@ -182,7 +182,7 @@ function HomeScreenBanner() {
 
   return (
     <>
-      {/* <div className="admin_main">
+      <div className="admin_main">
         <div className="admin_main_inner">
           <div className="admin_panel_data height_adjust">
             <div className="row signup_management justify-content-center">
@@ -540,8 +540,8 @@ function HomeScreenBanner() {
             </div>
           </div>
         </div>
-      </div> */}
-      <SlickSlider/>
+      </div>
+      {/* <SlickSlider/> */}
     </>
   );
 }
