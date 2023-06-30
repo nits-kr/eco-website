@@ -321,12 +321,12 @@ function Value() {
                       {(valueList || [])?.map((value, index) => (
                         <tr key={index}>
                           <td>{index + 1}</td>
-                          <td>{value?.attribute_Id?.category_Id}</td>
-                          <td>{value?.attribute_Id?.subCategory_Id}</td>
-                          <td>{value?.attribute_Id?.subSubCategory_Id}</td>
+                          <td>{value?.category_Id?.categoryName}</td>
+                          <td>{value?.subCategory_Id?.subCategoryName}</td>
+                          <td>{value?.subSubCategory_Id?.subSubCategoryName}</td>
                           <td>{value?.attribute_Id?.attributeName}</td>
-                          <td>{value.valuesName}</td>
-                          <td>{value.valuesName}</td>
+                          <td>{value?.valuesName}</td>
+                          <td>{value?.valuesName}</td>
                           <td>
                             <form className="table_btns d-flex align-items-center">
                               <div className="check_toggle">

@@ -54,6 +54,7 @@ function Dashboard() {
             new Date(data.createdAt) >= new Date(startDate) &&
             new Date(data.createdAt) <= new Date(endDate)
         );
+        console.log("filteredData dashboard", filteredData);
         setRecentOrderList(filteredData.reverse());
       })
       .catch((error) => {

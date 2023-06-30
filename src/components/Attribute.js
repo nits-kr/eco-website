@@ -25,7 +25,7 @@ function Attribute() {
         const response = await axios.post(
           "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/attribute/attributeSearch",
           {
-            attributesName: searchQuery,
+            attributeName_en: searchQuery,
           }
         );
         const { error, results } = response.data;
@@ -287,13 +287,13 @@ function Attribute() {
                       {(attributesList || [])?.map((value, index) => (
                         <tr key={index}>
                           <td>{index + 1}</td>
-                          <td>{value?.subSubCategory_Id?.category_Id}</td>
-                          <td>{value?.subSubCategory_Id?.subCategory_Id}</td>
+                          <td>{value?.category_Id?.categoryName}</td>
+                          <td>{value?.subCategory_Id?.subCategoryName}</td>
                           <td>
                             {value?.subSubCategory_Id?.subSubCategoryName}
                           </td>
-                          <td>{value?.attributeName}</td>
-                          <td>{value?.attributeName}</td>
+                          <td>{value?.attributeName_en}</td>
+                          <td>{value?.attributeName_en}</td>
                           <td>
                             <form className="table_btns d-flex align-items-center">
                               <div className="check_toggle">
