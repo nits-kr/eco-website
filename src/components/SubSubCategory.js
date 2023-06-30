@@ -50,29 +50,29 @@ function SubSubCategory() {
     }
   };
 
-  useEffect(() => {
-    handleSearch3();
-  }, [startDate]);
-  const handleSearch3 = () => {
-    axios
-      .post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/subSubCategory/subSubCategoryList",
-        {
-          startDate,
-        }
-      )
-      .then((response) => {
-        console.log("response data", response);
-        const filteredData = response.data.results.list.filter(
-          (data) => new Date(data?.createdAt) == new Date(startDate)
-        );
-        console.log("filteredData", filteredData);
-        setSubSubCategoryList(filteredData);
-      })
-      .catch((error) => {
-        console.log(error.response.data);
-      });
-  };
+  // useEffect(() => {
+  //   handleSearch3();
+  // }, [startDate]);
+  // const handleSearch3 = () => {
+  //   axios
+  //     .post(
+  //       "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/subSubCategory/subSubCategoryList",
+  //       {
+  //         startDate,
+  //       }
+  //     )
+  //     .then((response) => {
+  //       console.log("response data", response);
+  //       const filteredData = response.data.results.list.filter(
+  //         (data) => new Date(data?.createdAt) == new Date(startDate)
+  //       );
+  //       console.log("filteredData", filteredData);
+  //       setSubSubCategoryList(filteredData);
+  //     })
+  //     .catch((error) => {
+  //       console.log(error.response.data);
+  //     });
+  // };
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -268,14 +268,14 @@ function SubSubCategory() {
                   </div>
                 </form>
               </div>
-              <div className="col-auto">
+              {/* <div className="col-auto">
                 <input
                   type="date"
                   className="custom_date"
                   value={startDate}
                   onChange={(e) => setStartDate(e.target.value)}
                 />
-              </div>
+              </div> */}
             </div>
             <div className="row">
               <div className="col-12 comman_table_design px-0">
