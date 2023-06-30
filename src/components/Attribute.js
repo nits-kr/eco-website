@@ -125,7 +125,7 @@ function Attribute() {
         "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/attribute/attributeList"
       )
       .then((response) => {
-        setAttributesList(response?.data?.results?.list);
+        setAttributesList(response?.data?.results?.list.reverse());
         // setSubAttributesList(response?.data?.results?.list)
         console.log(response.data);
       });

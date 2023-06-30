@@ -236,7 +236,7 @@ function App() {
           <Route
             exact
             className="active"
-            path="/userDetails"
+            path="/userDetails/:id"
             element={<UserDetails2 />}
           />
           <Route

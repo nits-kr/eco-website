@@ -17,6 +17,7 @@ function AgentInformation() {
   const { id } = useParams();
   const [agentDetails, setAgentDetails] = useState("");
   const [agentDetails2, setAgentDetails2] = useState("");
+  const [agentDetailsList, setAgentDetailsList] = useState([]);
   const [agentList, setAgentList] = useState([]);
   useEffect(() => {
     userList();
@@ -37,12 +38,13 @@ function AgentInformation() {
     );
     setAgentDetails(data.results.userDetail);
     setAgentDetails2(data.results);
+    setAgentDetailsList(data?.results?.details);
     console.log("Agent Details", data.results.userDetail);
   };
 
   return (
     <>
-    <Sidebar/>
+      <Sidebar />
       <div className="admin_main">
         <div className="admin_main_inner">
           <div className="admin_panel_data height_adjust">
@@ -76,7 +78,10 @@ function AgentInformation() {
                                   marginLeft: "0px",
                                 }}
                               >
-                                <img src="../assets/img/profile_img1.jpg" alt="" />
+                                <img
+                                  src="../assets/img/profile_img1.jpg"
+                                  alt=""
+                                />
                               </div>
                             </div>
                             <div
@@ -205,7 +210,9 @@ function AgentInformation() {
                                 Full Name:
                               </label>
                             </div>
-                            <div className="col-8 mt-2">{agentDetails.name}</div>
+                            <div className="col-8 mt-2">
+                              {agentDetails.name}
+                            </div>
                           </div>
                         </div>
                         <div
@@ -251,7 +258,9 @@ function AgentInformation() {
                                 Email Id:
                               </label>
                             </div>
-                            <div className="col-8 mt-2">{agentDetails.Email}</div>
+                            <div className="col-8 mt-2">
+                              {agentDetails.Email}
+                            </div>
                           </div>
                         </div>
                         <div
@@ -273,7 +282,9 @@ function AgentInformation() {
                                 Location:
                               </label>
                             </div>
-                            <div className="col-8 mt-2">{agentDetails.address}</div>
+                            <div className="col-8 mt-2">
+                              {agentDetails.address}
+                            </div>
                           </div>
                         </div>
                       </form>
@@ -440,7 +451,6 @@ function AgentInformation() {
                                 <tr>
                                   <th>Order Id</th>
                                   <th>Customers</th>
-                                  <th>Vendor</th>
                                   <th>Earning</th>
                                   <th>Cost</th>
                                   <th>Status</th>
@@ -449,16 +459,19 @@ function AgentInformation() {
                                 </tr>
                               </thead>
                               <tbody>
-                                <tr>
-                                  <td></td>
-                                  <td></td>
-                                  <td></td>
-                                  <td></td>
-                                  <td></td>
-                                  <td></td>
-                                  <td></td>
-                                  <td></td>
-                                </tr>
+                                {agentDetailsList?.map((item, index) => {
+                                  return (
+                                    <tr key={index}>
+                                      <td> {item?._id} </td>
+                                      <td></td>
+                                      <td>{item?.shippingPrice} </td>
+                                      <td>{item?.cartsTotal} </td>
+                                      <td> {item?.orderStatus} </td>
+                                      <td>{item?.createdAt.slice(0,10)} </td>
+                                      <td></td>
+                                    </tr>
+                                  );
+                                })}
                               </tbody>
                             </table>
                           </div>

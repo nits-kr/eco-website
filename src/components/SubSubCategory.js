@@ -138,7 +138,7 @@ function SubSubCategory() {
         "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/subSubCategory/subSubCategoryList"
       );
 
-      setSubSubCategoryList(response?.data?.results?.list);
+      setSubSubCategoryList(response?.data?.results?.list.reverse());
       console.log("sub sub category data", response.data);
     } catch (error) {
       console.error(error);
@@ -299,8 +299,8 @@ function SubSubCategory() {
                           <td>{index + 1}</td>
                           <td>{value.category_Id?.categoryName}</td>
                           <td>{value?.subCategory_Id?.subCategoryName}</td>
-                          <td>{value?.subSubCategoryName}</td>
-                          <td>{value?.subSubCategoryName}</td>
+                          <td>{value?.subSubCategoryName_en}</td>
+                          <td>{value?.subSubCategoryName_ar}</td>
                           <td>
                             <form className="table_btns d-flex align-items-center">
                               <div className="check_toggle">
@@ -359,7 +359,7 @@ function SubSubCategory() {
           </div>
         </div>
       </div>
-      {/* <EditSubSubCategory newCategory={newCategory}/> */}
+      <EditSubSubCategory newCategory={newCategory} />
     </>
   );
 }

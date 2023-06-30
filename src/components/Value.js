@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
 import Sidebar from "./Sidebar";
+import EditValues from "./EditValues";
 function Value() {
   const [valueList, setValueList] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -25,7 +26,7 @@ function Value() {
         const response = await axios.post(
           "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/values/valuesSearch",
           {
-            valuesName: searchQuery,
+            valuesName_en: searchQuery,
           }
         );
         const { error, results } = response.data;
@@ -58,7 +59,7 @@ function Value() {
       const response = await axios.post(
         "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/values/createvalues",
         {
-          valuesName: values.nameEn,
+          valuesName_en: values.nameEn,
           category_Id: values.categoryId,
           subCategory_Id: values.categoryId1,
           subSubCategory_Id: values.categoryId2,
@@ -80,7 +81,7 @@ function Value() {
       const response = await axios.post(
         "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/values/valuesList"
       );
-      setValueList(response.data.results.list);
+      setValueList(response.data.results.list.reverse());
       console.log(response.data);
     } catch (error) {
       console.error(error);
@@ -325,8 +326,8 @@ function Value() {
                           <td>{value?.subCategory_Id?.subCategoryName}</td>
                           <td>{value?.subSubCategory_Id?.subSubCategoryName}</td>
                           <td>{value?.attribute_Id?.attributeName}</td>
-                          <td>{value?.valuesName}</td>
-                          <td>{value?.valuesName}</td>
+                          <td>{value?.valuesName_en}</td>
+                          <td>{value?.valuesName_en}</td>
                           <td>
                             <form className="table_btns d-flex align-items-center">
                               <div className="check_toggle">
@@ -363,6 +364,7 @@ function Value() {
                               data-bs-target="#staticBackdrop4"
                               className="comman_btn2 table_viewbtn"
                               to=""
+                              
                             >
                               Edit
                             </Link>
@@ -377,6 +379,7 @@ function Value() {
           </div>
         </div>
       </div>
+      {/* <EditValues/> */}
     </>
   );
 }

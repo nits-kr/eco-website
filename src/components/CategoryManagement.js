@@ -62,7 +62,7 @@ function CategoryManagement() {
   const handleFileChange = (event) => {
     setFormData({ ...formData, categoryPic: event.target.files[0] });
   };
-
+console.log("set form data pic", formData.categoryPic);
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
@@ -384,8 +384,8 @@ function CategoryManagement() {
                                                     to=""
                                                     onClick={() =>
                                                       handleUpdate(
-                                                        category.categoryName,
-                                                        category.categoryName,
+                                                        category.categoryName_en,
+                                                        category.categoryName_en,
                                                         category.categoryPic,
                                                         category._id
                                                       )

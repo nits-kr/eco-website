@@ -68,7 +68,9 @@ function UsersManagement() {
     ["3", "Total User 2", 34.623425, -98.468883, "Total User 2"],
     ["4", "Total User 9", 34.593839, -98.409974, "Total User 9"],
   ];
-
+const handleId = (id) => {
+  alert(id)
+}
   useEffect(() => {
     userList();
     axios
@@ -268,8 +270,9 @@ function UsersManagement() {
                                   <td>
                                     <Link
                                       className="comman_btn2 table_viewbtn"
-                                      to={`/userDetails`}
-                                      // to={`/userDetails/${user._id}`}
+                                      // to={`/userDetails`}
+                                      to={`/userDetails/${user._id}`}
+                                      onClick={() => handleId(user?._id)}
                                     >
                                       View
                                     </Link>

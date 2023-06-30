@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import axios from "axios";
 import Swal from "sweetalert2";
-import Sidebar from './Sidebar';
 function EditCategory(props) {
     const [category, setCategory] = useState({
         nameEn: '',
@@ -47,7 +46,6 @@ function EditCategory(props) {
     console.log(props.newCategory)
     return (
         <>
-        <Sidebar/>
             <div
                 className="modal fade Edit_modal"
                 id="staticBackdrop"
