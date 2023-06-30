@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
 import Sidebar from "./Sidebar";
+import EditAttribute from "./EditAttribute";
 
 function Attribute() {
   const [attributesList, setAttributesList] = useState([]);
@@ -11,6 +12,7 @@ function Attribute() {
   const [categories, setCategories] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
   const [subSubCategories, setSubSubCategories] = useState([]);
+  const [itemId, setItemId] = useState([])
   const [attributes, setAttributes] = useState({
     nameEn: "",
     nameAr: "",
@@ -135,7 +137,7 @@ function Attribute() {
   }, []);
   return (
     <>
-    {/* <Sidebar/> */}
+      {/* <Sidebar/> */}
       <div
         className="tab-pane fade"
         id="nav-contact1"
@@ -327,9 +329,10 @@ function Attribute() {
                           <td>
                             <Link
                               data-bs-toggle="modal"
-                              data-bs-target="#staticBackdrop4"
+                              data-bs-target="#staticBackdrop7"
                               className="comman_btn2 table_viewbtn"
                               to=""
+                              onClick={() => setItemId(value?._id)}
                             >
                               Edit
                             </Link>
@@ -344,6 +347,7 @@ function Attribute() {
           </div>
         </div>
       </div>
+      <EditAttribute itemId = {itemId} />
     </>
   );
 }

@@ -1,27 +1,49 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect } from "react";
 import axios from "axios";
-import Sidebar from './Sidebar';
+import Sidebar from "./Sidebar";
 
-function EditAttribute() {
+function EditAttribute(props) {
+  console.log("props", props);
   const [categories, setCategories] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
   const [subSubCategories, setSubSubCategories] = useState([]);
   const [editAttributes, setEditAttributes] = useState({
-    nameEn: '',
-    nameAr: '',
-    categoryId: '',
+    nameEn: "",
+    nameAr: "",
+    categoryId: "",
+    categoryId1: "",
+    categoryId2: "",
   });
+  console.log("editAttributes", editAttributes);
+  // const handleInputChange = (event) => {
+  //   const { name, value } = event.target;
+  //   setEditAttributes({ ...editAttributes, [name]: value });
+  // };
   const handleInputChange = (event) => {
     const { name, value } = event.target;
-    setEditAttributes({ ...editAttributes, [name]: value });
+    setEditAttributes((prevAttributes) => ({
+      ...prevAttributes,
+      [name]: value,
+    }));
   };
+  
   const handleSubmit = async (event) => {
     event.preventDefault();
-    await axios.post('http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/attribute/createAttribute', { name: editAttributes })
-      .then(response => {
+    await axios
+      .patch(
+        `http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/attribute/attributeUpdate/${props.itemId}`,
+        {
+          attributeName_en: editAttributes.nameEn,
+          attributeName_ar: editAttributes.nameAr,
+          categoryName: editAttributes.categoryId,
+          subCategoryName: editAttributes.categoryId1,
+          subSubCategoryName: editAttributes.categoryId2,
+        }
+      )
+      .then((response) => {
         console.log(response.data);
       })
-      .catch(error => {
+      .catch((error) => {
         console.error(error);
       });
   };
@@ -70,10 +92,10 @@ function EditAttribute() {
   }, []);
   return (
     <>
-    <Sidebar/>
+      {/* <Sidebar/> */}
       <div
         className="modal fade Edit_modal"
-        id="staticBackdrop3"
+        id="staticBackdrop7"
         data-bs-backdrop="static"
         data-bs-keyboard="false"
         tabIndex="-1"
@@ -101,29 +123,59 @@ function EditAttribute() {
               >
                 <div className="form-group col-6">
                   <label htmlFor="">Select Category</label>
-                  <select className="select form-control" size={15} name="categoryId" id="selectCategory" value={editAttributes.categoryId}
-                    onChange={handleInputChange}>
-                    {Array.isArray(categories) && categories.map(category => (
-                      <option key={category._id} value={category._id}>{category.categoryName}</option>
-                    ))}
+                  <select
+                    className="select form-control"
+                    size={15}
+                    name="categoryId"
+                    id="selectCategory"
+                    value={editAttributes.categoryId}
+                    onChange={handleInputChange}
+                  >
+                    {Array.isArray(categories) &&
+                      categories.map((category) => (
+                        <option key={category._id} value={category._id}>
+                          {category.categoryName}
+                        </option>
+                      ))}
                   </select>
                 </div>
                 <div className="form-group col-6">
                   <label htmlFor="">Select Sub Category</label>
-                  <select className="select form-control" size={15} name="categoryId1" id="selectSubCategory" value={editAttributes.categoryId1}
-                    onChange={handleInputChange}>
-                    {Array.isArray(subCategories) && subCategories.map(subCategory => (
-                      <option key={subCategory._id} value={subCategory._id}>{subCategory.subCategoryName}</option>
-                    ))}
+                  <select
+                    className="select form-control"
+                    size={15}
+                    name="categoryId1"
+                    id="selectSubCategory"
+                    value={editAttributes.categoryId1}
+                    onChange={handleInputChange}
+                  >
+                    {Array.isArray(subCategories) &&
+                      subCategories.map((subCategory) => (
+                        <option key={subCategory._id} value={subCategory._id}>
+                          {subCategory.subCategoryName}
+                        </option>
+                      ))}
                   </select>
                 </div>
                 <div className="form-group col-12">
                   <label htmlFor="">Select Sub Sub Category</label>
-                  <select className="select form-control" size={15} name="categoryId2" id="selectSubSubCategory" value={editAttributes.categoryId2}
-                    onChange={handleInputChange}>
-                    {Array.isArray(subSubCategories) && subSubCategories.map(subSubCategory => (
-                      <option key={subSubCategory._id} value={subSubCategory._id}>{subSubCategory.subCategoryName}</option>
-                    ))}
+                  <select
+                    className="select form-control"
+                    size={15}
+                    name="categoryId2"
+                    id="selectSubSubCategory"
+                    value={editAttributes.categoryId2}
+                    onChange={handleInputChange}
+                  >
+                    {Array.isArray(subSubCategories) &&
+                      subSubCategories.map((subSubCategory) => (
+                        <option
+                          key={subSubCategory._id}
+                          value={subSubCategory._id}
+                        >
+                          {subSubCategory.subSubCategoryName}
+                        </option>
+                      ))}
                   </select>
                 </div>
                 <div className="form-group col-6">
@@ -131,8 +183,8 @@ function EditAttribute() {
                   <input
                     type="text"
                     className="form-control"
-                    name="name"
-                    id="name"
+                    name="nameEn"
+                    id="nameEn"
                     value={editAttributes.nameEn}
                     onChange={handleInputChange}
                   />
@@ -142,8 +194,8 @@ function EditAttribute() {
                   <input
                     type="text"
                     className="form-control"
-                    name="name"
-                    id="name"
+                    name="nameAr"
+                    id="nameAr"
                     value={editAttributes.nameAr}
                     onChange={handleInputChange}
                   />
@@ -260,7 +312,7 @@ function EditAttribute() {
         </div>
       </div> */}
     </>
-  )
+  );
 }
 
-export default EditAttribute
+export default EditAttribute;

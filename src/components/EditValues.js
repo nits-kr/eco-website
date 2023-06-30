@@ -128,7 +128,6 @@ function EditValues(props) {
   console.log(props.newCategory);
   return (
     <>
-      {/* <Sidebar/> */}
       <div
         className="modal fade Edit_modal"
         id="staticBackdrop4"

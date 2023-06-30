@@ -307,8 +307,8 @@ function SubCategory() {
                               onClick={() =>
                                 handleUpdate(
                                   value._id,
-                                  value.subCategoryName,
-                                  value.subCategoryName
+                                  value.subCategoryName_en,
+                                  value.subCategoryName_en
                                 )
                               }
                             >
