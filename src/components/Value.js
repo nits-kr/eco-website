@@ -265,9 +265,9 @@ function Value() {
                   onChange={handleInputChange}
                 />
               </div>
-              <div className="form-group col-auto">
+              {/* <div className="form-group col-auto">
                 <button className="comman_btn">Add More Row</button>
-              </div>
+              </div> */}
               <div className="form-group mb-0 col-12 text-center">
                 <button className="comman_btn2">Save</button>
               </div>
