@@ -10,11 +10,15 @@ function UsersManagement() {
   const [searchQuery, setSearchQuery] = useState("");
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
-
+  
   let gmarkers1 = [];
   let markers1 = [];
   let infowindow = new window.google.maps.InfoWindow({
     content: "",
+  });
+
+  useEffect(() => {
+    initialize();
   });
   const initialize = () => {
     const center = new window.google.maps.LatLng(34.593839, -98.409974);
@@ -64,20 +68,36 @@ function UsersManagement() {
     ["3", "Total User 2", 34.623425, -98.468883, "Total User 2"],
     ["4", "Total User 9", 34.593839, -98.409974, "Total User 9"],
   ];
-  useEffect(() => {
-    initialize();
-  });
+
   useEffect(() => {
     userList();
+    axios
+      .post(
+        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/user/userList",
+        {
+          page: "3",
+          userName: "n",
+          pageSize: "4",
+        }
+      )
+      .then((response) => {
+        setUsersList(response.data.results.createData.reverse());
+      })
+      .catch((error) => {
+        console.log(error.response.data);
+      });
   }, []);
   const userList = async () => {
-    const { data } = await axios.post("http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/user/userList", {
-      page: "3",
-      userName: "n",
-      pageSize: "4",
-      startDate,
-      endDate,
-    });
+    const { data } = await axios.post(
+      "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/user/userList",
+      {
+        page: "3",
+        userName: "n",
+        pageSize: "4",
+        startDate,
+        endDate,
+      }
+    );
     const filteredUsers = data.results.createData.filter(
       (user) =>
         new Date(user.createdAt) >= new Date(startDate) &&
@@ -122,7 +142,7 @@ function UsersManagement() {
 
   return (
     <>
-    <Sidebar/>
+      <Sidebar />
       <div className="admin_main">
         <div className="admin_main_inner">
           <div className="admin_panel_data height_adjust">
@@ -212,13 +232,21 @@ function UsersManagement() {
                               </tr>
                             </thead>
                             <tbody>
-                              {(usersList || [])?.map((user, index) => (
+                              {usersList?.map((user, index) => (
                                 <tr key={user._id}>
                                   <td>{index + 1}</td>
-                                  <td>{user.userName}</td>
-                                  <td>{user.mobileNumber}</td>
-                                  <td>{user.createdAt}</td>
-                                  <td>{user.totalOffers}</td>
+                                  <td>{user?.userName}</td>
+                                  <td>{user?.mobileNumber}</td>
+                                  {/* <td>{user?.createdAt.slice(0,10)}</td> */}
+                                  <td>
+                                    {" "}
+                                    {user?.createdAt
+                                      .slice(0, 10)
+                                      .split("-")
+                                      .reverse()
+                                      .join("-")}{" "}
+                                  </td>
+                                  <td>{user?.totalOffers}</td>
                                   <td>
                                     <form className="table_btns d-flex align-items-center">
                                       <div className="check_toggle">

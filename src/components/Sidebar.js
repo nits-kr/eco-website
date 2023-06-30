@@ -28,7 +28,7 @@ function Sidebar() {
                 <li className={activeItem === "dashboard" ? "active" : ""}>
                   <Link
                     className=""
-                    to="/"
+                    to="/dashboard"
                     onClick={() => handleItemClick("dashboard")}
                   >
                     <i className="fal fa-home"></i>Dashboard

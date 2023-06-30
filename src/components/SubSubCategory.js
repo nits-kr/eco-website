@@ -1,78 +1,105 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import Swal from 'sweetalert2';
+import Swal from "sweetalert2";
 //import EditValues from "./EditValues";
 import EditSubSubCategory from "./EditSubSubCategory";
 import Sidebar from "./Sidebar";
 
 function SubSubCategory() {
-  const [searchQuery, setSearchQuery] = useState('');
+  const [startDate, setStartDate] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
   const [subSubCategoryList, setSubSubCategoryList] = useState([]);
   const [categories, setCategories] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
   const [subSubCategory, setSubSubCategory] = useState({
-    nameEn: '',
-    nameAr: '',
-    categoryId: '',
-    categoryId1: ''
+    nameEn: "",
+    nameAr: "",
+    categoryId: "",
+    categoryId1: "",
   });
-  const [newCategory, setNewCategory] = useState([])
+  const [newCategory, setNewCategory] = useState([]);
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
   const handleSearch = async (e) => {
     e.preventDefault();
     if (searchQuery) {
       try {
-        const response = await axios.post('http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/subSubCategory/subSubCategorySearch', {
-          subSubCategoryName: searchQuery
-        });
+        const response = await axios.post(
+          "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/subSubCategory/subSubCategorySearch",
+          {
+            subSubCategoryName_en: searchQuery,
+          }
+        );
         const { error, results } = response.data;
         if (error) {
-          throw new Error('Error searching for products.');
+          throw new Error("Error searching for products.");
         } else {
           setSubSubCategoryList(results.categoryData);
         }
       } catch (error) {
         Swal.fire({
-          title: 'Error!',
+          title: "Error!",
           text: error.message,
-          icon: 'error',
-          confirmButtonText: 'OK'
+          icon: "error",
+          confirmButtonText: "OK",
         });
       }
     } else {
       setSubSubCategoryList([]);
     }
   };
+
+  useEffect(() => {
+    handleSearch3();
+  }, [startDate]);
+  const handleSearch3 = () => {
+    axios
+      .post(
+        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/subSubCategory/subSubCategoryList",
+        {
+          startDate,
+        }
+      )
+      .then((response) => {
+        console.log("response data", response);
+        const filteredData = response.data.results.list.filter(
+          (data) => new Date(data?.createdAt) == new Date(startDate)
+        );
+        console.log("filteredData", filteredData);
+        setSubSubCategoryList(filteredData);
+      })
+      .catch((error) => {
+        console.log(error.response.data);
+      });
+  };
+
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setSubSubCategory({ ...subSubCategory, [name]: value });
   };
-
-
-  axios.defaults.headers.common["x-auth-token-user"] =
-    localStorage.getItem("token");
-
   const handleSubmit = async (event) => {
     event.preventDefault();
-    await axios.post('http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/subSubCategory/createSubSubCategory', {
-      subSubCategoryName_en: subSubCategory.nameEn,
-      category_Id: subSubCategory.categoryId,
-      subCategory_Id: subSubCategory.categoryId1
-    }
-    )
-      .then(response => {
-        console.log(response.data.results.saveSubSubCategory);
-        if (!response.data.error) {
-          alert('List  saved!')
-          handleSave()
+    await axios
+      .post(
+        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/subSubCategory/createSubSubCategory",
+        {
+          subSubCategoryName_en: subSubCategory.nameEn,
+          subSubCategoryName_ar: subSubCategory.nameAr,
+          category_Id: subSubCategory.categoryId,
+          subCategory_Id: subSubCategory.categoryId1,
         }
-        else {
-          alert('Errors in response!')
+      )
+      .then((response) => {
+        console.log(response?.data?.results?.saveSubSubCategory);
+        if (!response.data.error) {
+          alert("List  saved!");
+          handleSave();
+        } else {
+          alert("Errors in response!");
         }
       })
-      .catch(error => {
+      .catch((error) => {
         console.error(error);
       });
   };
@@ -107,33 +134,35 @@ function SubSubCategory() {
   }, []);
   const handleSave = async () => {
     try {
-      const response = await axios.post("http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/subSubCategory/subSubCategoryList");
+      const response = await axios.post(
+        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/subSubCategory/subSubCategoryList"
+      );
 
       setSubSubCategoryList(response?.data?.results?.list);
-      console.log("sub sub category data",response.data);
+      console.log("sub sub category data", response.data);
     } catch (error) {
       console.error(error);
     }
-  }
+  };
 
-console.log("sub subCategory list", subSubCategoryList);
+  console.log("sub subCategory list", subSubCategory);
   useEffect(() => {
-    handleSave()
+    handleSave();
   }, []);
 
-  const handleUpdate = ( id,id2, nameEn, nameAr) => {
-    console.log(nameEn, nameAr, id)
+  const handleUpdate = (id, id2, nameEn, nameAr) => {
+    console.log(nameEn, nameAr, id);
     setNewCategory({
       nameEn: nameEn,
       nameAr: nameAr,
       id,
       id2,
-    })
+    });
   };
 
   return (
     <>
-    <Sidebar/>
+      {/* <Sidebar/> */}
       <div
         className="tab-pane fade"
         id="nav-contact"
@@ -154,20 +183,38 @@ console.log("sub subCategory list", subSubCategoryList);
             >
               <div className="form-group col-6">
                 <label htmlFor="">Select Category</label>
-                <select className="select form-control" size={15} name="categoryId" id="selectCategory" value={subSubCategory.categoryId}
-                  onChange={handleInputChange}>
-                  {Array.isArray(categories) && categories.map(category => (
-                    <option key={category._id} value={category._id}>{category.categoryName}</option>
-                  ))}
+                <select
+                  className="select form-control"
+                  size={100}
+                  name="categoryId"
+                  id="selectCategory"
+                  value={subSubCategory.categoryId}
+                  onChange={handleInputChange}
+                >
+                  {Array.isArray(categories) &&
+                    categories.map((category) => (
+                      <option key={category._id} value={category._id}>
+                        {category.categoryName}
+                      </option>
+                    ))}
                 </select>
               </div>
               <div className="form-group col-6">
                 <label htmlFor="">Select Sub Category</label>
-                <select className="select form-control" size={15} name="categoryId1" id="selectSubCategory" value={subSubCategory.categoryId1}
-                  onChange={handleInputChange}>
-                  {Array.isArray(subCategories) && subCategories.map(subCategory => (
-                    <option key={subCategory._id} value={subCategory._id}>{subCategory.subCategoryName}</option>
-                  ))}
+                <select
+                  className="select form-control"
+                  size={100}
+                  name="categoryId1"
+                  id="selectSubCategory"
+                  value={subSubCategory.categoryId1}
+                  onChange={handleInputChange}
+                >
+                  {Array.isArray(subCategories) &&
+                    subCategories.map((subCategory) => (
+                      <option key={subCategory._id} value={subCategory._id}>
+                        {subCategory.subCategoryName}
+                      </option>
+                    ))}
                 </select>
               </div>
               <div className="form-group col">
@@ -222,7 +269,12 @@ console.log("sub subCategory list", subSubCategoryList);
                 </form>
               </div>
               <div className="col-auto">
-                <input type="date" className="custom_date" />
+                <input
+                  type="date"
+                  className="custom_date"
+                  value={startDate}
+                  onChange={(e) => setStartDate(e.target.value)}
+                />
               </div>
             </div>
             <div className="row">
@@ -242,26 +294,26 @@ console.log("sub subCategory list", subSubCategoryList);
                       </tr>
                     </thead>
                     <tbody>
-                      {(subSubCategoryList || [])?.map((value, index) => (
+                      {subSubCategoryList?.map((value, index) => (
                         <tr key={index}>
                           <td>{index + 1}</td>
-                          <td>{value.category_Id?._id}</td>
-                          <td>{value?.category_Id?.categoryName}</td>
-                          <td>{value.subSubCategoryName}</td>
-                          <td>{value.subSubCategoryName}</td>
+                          <td>{value.category_Id?.categoryName}</td>
+                          <td>{value?.subCategory_Id?.subCategoryName}</td>
+                          <td>{value?.subSubCategoryName}</td>
+                          <td>{value?.subSubCategoryName}</td>
                           <td>
                             <form className="table_btns d-flex align-items-center">
                               <div className="check_toggle">
                                 <input
-                                  defaultChecked={
-                                    value.shipmentService
-                                  }
+                                  defaultChecked={value.shipmentService}
                                   type="checkbox"
                                   name={`shipment_service_${value._id}`}
                                   id={`shipment_service_${value._id}`}
                                   className="d-none"
                                 />
-                                <label htmlFor={`shipment_service_${value._id}`}></label>
+                                <label
+                                  htmlFor={`shipment_service_${value._id}`}
+                                ></label>
                               </div>
                             </form>
                           </td>
@@ -269,9 +321,7 @@ console.log("sub subCategory list", subSubCategoryList);
                             <form className="table_btns d-flex align-items-center">
                               <div className="check_toggle">
                                 <input
-                                  defaultChecked={
-                                    value.status
-                                  }
+                                  defaultChecked={value.status}
                                   type="checkbox"
                                   name={`status_${value._id}`}
                                   id={`status_${value._id}`}
@@ -287,7 +337,14 @@ console.log("sub subCategory list", subSubCategoryList);
                               data-bs-target="#staticBackdrop5"
                               className="comman_btn2 table_viewbtn"
                               to=""
-                              onClick={() => handleUpdate(value.category_Id, value.subCategory_Id, value.subSubCategoryName, value.subSubCategoryName)}
+                              onClick={() =>
+                                handleUpdate(
+                                  value.category_Id,
+                                  value.subCategory_Id,
+                                  value.subSubCategoryName,
+                                  value.subSubCategoryName
+                                )
+                              }
                             >
                               Edit
                             </Link>

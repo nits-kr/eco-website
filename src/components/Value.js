@@ -148,7 +148,7 @@ function Value() {
   }, []);
   return (
     <>
-    <Sidebar/>
+    {/* <Sidebar/> */}
       <div
         className="tab-pane fade"
         id="nav-contact2"

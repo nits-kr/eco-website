@@ -56,13 +56,16 @@ function Agent() {
     setAgentList(data.results.list.reverse());
     console.log("Agent List", data);
   };
-  const deleteAgent = (_id) => {
-    const data = axios.delete(
-      `http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/agent/agent/delete-user/${_id}`
-    );
-    //alert(_id)
-    console.log("delete aagent", _id);
-    setAgentList(data?.results?.list);
+  const deleteAgent = async (_id) => {
+    try {
+      await axios.delete(
+        `http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/agent/agent/delete-user/${_id}`
+      );
+      setAgentList((prevList) => prevList.filter((agent) => agent._id !== _id));
+      console.log("Deleted agent", _id);
+    } catch (error) {
+      console.log("Error deleting agent", error);
+    }
   };
   const viewAgent = (_id) => {
     console.log("viewAgent", _id);
@@ -70,7 +73,7 @@ function Agent() {
 
   return (
     <>
-    <Sidebar/>
+      <Sidebar />
       <div className="admin_main">
         <div className="admin_main_inner">
           <div className="admin_panel_data height_adjust">
@@ -320,12 +323,14 @@ function Agent() {
 
                                       <td className=" dt-body-right">
                                         <span className="badge text-secondary">
-                                          {agent.createdAt.slice(0,10)}
+                                          {agent.createdAt.slice(0, 10)}
                                         </span>
                                       </td>
                                       <td className="dt-body-right">
                                         {/* <Link to="/agents-information"> */}
-                                          <Link to={`/agents-information/${agent._id}`}>
+                                        <Link
+                                          to={`/agents-information/${agent._id}`}
+                                        >
                                           <span className="badge text-dark">
                                             <button
                                               type="button"
@@ -348,7 +353,7 @@ function Agent() {
                                               deleteAgent(agent?._id)
                                             }
                                           >
-                                            <FontAwesomeIcon icon={faTrash}/>
+                                            <FontAwesomeIcon icon={faTrash} />
                                           </button>
                                         </span>
                                       </td>

@@ -8,7 +8,18 @@ import Sidebar from "./Sidebar";
 function AgentDetails() {
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
-  const [formData, setFormData] = useState([]);
+  // const [formData, setFormData] = useState([]);
+  const [formData, setFormData] = useState({
+    fullName: "karan",
+    email: "",
+    accountNumber: "",
+    bankName: "",
+    password: "**********",
+    mobileNumber: "",
+    address: "",
+    accountName: "",
+    routing: "",
+  });
   const [selectedImage, setSelectedImage] = useState(null);
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -82,7 +93,6 @@ function AgentDetails() {
                               <input
                                 type="text"
                                 className="form-control"
-                                defaultValue="karan"
                                 name="fullName"
                                 id="fullName"
                                 value={formData.fullName}
@@ -116,7 +126,6 @@ function AgentDetails() {
                               <input
                                 type="text"
                                 className="form-control"
-                                defaultValue=""
                                 name="accountNumber"
                                 id="accountNumber"
                                 value={formData.accountNumber}
@@ -132,7 +141,6 @@ function AgentDetails() {
                               <input
                                 type="text"
                                 className="form-control"
-                                defaultValue=""
                                 name="bankName"
                                 id="bankName"
                                 value={formData.bankName}
@@ -148,7 +156,6 @@ function AgentDetails() {
                               <input
                                 type="password"
                                 className="form-control"
-                                defaultValue="**********"
                                 name="password"
                                 id="password"
                                 value={formData.password}
@@ -162,12 +169,6 @@ function AgentDetails() {
                                 Commision Types:
                               </label>
                             </div>
-                            {/* <div className="col-6">
-                              <button type="button" class="btn btn-danger">
-                                Global{" "}
-                                <span class="badge text-bg-light align-iten-center"> {" "} </span>
-                              </button>
-                            </div> */}
                             <div
                               className="btn-group"
                               role="group"
@@ -293,7 +294,6 @@ function AgentDetails() {
                               <input
                                 type="text"
                                 className="form-control"
-                                defaultValue=""
                                 name="accountName"
                                 id="accountName"
                                 value={formData.accountName}
@@ -309,7 +309,6 @@ function AgentDetails() {
                               <input
                                 type="text"
                                 className="form-control"
-                                defaultValue=""
                                 name="routing"
                                 id="routing"
                                 value={formData.routing}
@@ -324,7 +323,7 @@ function AgentDetails() {
                             <div className="col-12">
                               <button
                                 type="button"
-                                class="btn btn-danger"
+                                className="btn btn-danger"
                                 onClick={handleSubmit}
                               >
                                 Approved

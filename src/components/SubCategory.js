@@ -3,11 +3,9 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
 import EditValues from "./EditValues";
-import Sidebar from "./Sidebar";
 
 function SubCategory() {
-  const [categoryList, setCategoryList] = useState([]);
-  const [subCategoryList, setSubCategoryList] =useState([])
+  const [subCategoryList, setSubCategoryList] = useState([]);
   const [categories, setCategories] = useState([]);
   const [subCategory, setSubCategory] = useState({
     nameEn: "",
@@ -15,7 +13,6 @@ function SubCategory() {
     categoryId: "",
     subCategoryPic: null,
   });
-
   const [searchQuery, setSearchQuery] = useState("");
   const [newCategory, setNewCategory] = useState([]);
 
@@ -23,13 +20,12 @@ function SubCategory() {
     const { name, value } = event.target;
     setSubCategory({ ...subCategory, [name]: value });
   };
+
   const handleFileChange = (event) => {
     setSubCategory({ ...subCategory, subCategoryPic: event.target.files[0] });
     console.log("picture", event.target.files[0]);
   };
 
-  axios.defaults.headers.common["x-auth-token-user"] =
-    localStorage.getItem("token");
   const handleSearch = async (e) => {
     e.preventDefault();
     if (searchQuery) {
@@ -37,7 +33,7 @@ function SubCategory() {
         const response = await axios.post(
           "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/subCategory/subCategorySearch",
           {
-            subCategoryName: searchQuery,
+            subCategoryName_en: searchQuery,
           }
         );
         const { error, results } = response.data;
@@ -59,24 +55,30 @@ function SubCategory() {
     }
   };
 
-  
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
       const data = new FormData();
-      console.log("formDta",data);
       data.append("subCategoryName_en", subCategory.nameEn);
-      data.append("category_Id", "6482af73f40a922b349e8dc9");
+      data.append("subCategoryName_ar", subCategory.nameAr);
+      data.append("category_Id", subCategory.categoryId);
       data.append("subCategoryPic", subCategory.subCategoryPic);
-      console.log(subCategory.subCategoryPic);
+
       const response = await axios.post(
         "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/subCategory/createSubCategory",
         data
       );
-      console.log(response.data.results.createSubCategory);
+
       if (!response.data.error) {
-        alert("List saved!");
-        handleSave();
+        alert("Subcategory created!");
+        setSubCategory({
+          nameEn: "",
+          nameAr: "",
+          categoryId: "",
+          subCategoryPic: null,
+        });
+        setSubCategoryList((prevList) => [...prevList, response.data.results]);
+        // fetchData(); // Fetch updated subcategory list after creating a new subcategory
       }
     } catch (error) {
       console.error(error);
@@ -93,7 +95,6 @@ function SubCategory() {
         "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/subCategory/selectCategory"
       );
       setCategories(response.data.results.categoryData);
-      console.log(response.data);
     } catch (error) {
       console.error(error);
     }
@@ -104,14 +105,12 @@ function SubCategory() {
       const response = await axios.post(
         "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/subCategory/SubCategoryList"
       );
-      // setCategoryList(response?.data?.results?.list[0]?.category_Id);
-      setSubCategoryList(response?.data?.results?.list)
-      console.log( "subcategory list", response?.data?.results?.list[0]?.category_Id);
-      console.log("sub category list data new", response?.data?.results?.list);
+      setSubCategoryList(response?.data?.results?.list?.reverse());
     } catch (error) {
       console.error(error);
     }
   };
+
   useEffect(() => {
     handleSave();
   }, []);
@@ -124,10 +123,11 @@ function SubCategory() {
       nameAr: nameAr,
     });
   };
-console.log("subcategory", subCategory);
+
+  console.log("subcategory", subCategory);
   return (
     <>
-    <Sidebar/>
+      {/* <Sidebar/> */}
       <div
         className="tab-pane fade"
         id="nav-profile"
@@ -257,16 +257,16 @@ console.log("subcategory", subCategory);
                       </tr>
                     </thead>
                     <tbody>
-                      {(subCategoryList || [])?.map((value, index) => (
+                      {subCategoryList?.map((value, index) => (
                         <tr key={index}>
                           <td>{index + 1}</td>
                           <td>{value?.category_Id?.categoryName}</td>
-                          <td>{value?.subCategoryName}</td>
-                          <td>{value.subCategoryName}</td>
+                          <td>{value?.subCategoryName_en}</td>
+                          <td>{value.subCategoryName_ar}</td>
                           <td>
                             <img
                               className="table_img"
-                              src={value?.category_Id?.categoryPic}
+                              src={value?.subCategoryPic}
                               alt=""
                             />
                           </td>
@@ -325,7 +325,7 @@ console.log("subcategory", subCategory);
           </div>
         </div>
       </div>
-      {/* <EditValues newCategory={newCategory} /> */}
+      <EditValues newCategory={newCategory} />
     </>
   );
 }

@@ -135,7 +135,7 @@ function Attribute() {
   }, []);
   return (
     <>
-    <Sidebar/>
+    {/* <Sidebar/> */}
       <div
         className="tab-pane fade"
         id="nav-contact1"
