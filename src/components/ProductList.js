@@ -6,6 +6,10 @@ import Sidebar from "./Sidebar";
 function ProductList() {
   const [searchQuery, setSearchQuery] = useState("");
   const [productList, setProductList] = useState([]);
+  const [selectAll, setSelectAll] = useState(false);
+  const handleSelectAll = () => {
+    setSelectAll(!selectAll);
+  };
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
 
@@ -49,7 +53,7 @@ function ProductList() {
   }, []);
   return (
     <>
-    <Sidebar/>
+      <Sidebar />
       <div className="admin_main_inner" style={{ marginLeft: "18%" }}>
         <div className="admin_panel_data height_adjust">
           <h6 style={{ marginLeft: "2%", marginTop: "-35px" }}>
@@ -150,9 +154,18 @@ function ProductList() {
                           <thead>
                             <tr>
                               <th>
-                                <input type="checkbox" name="all" id="" />
+                                <input
+                                  type="checkbox"
+                                  name="all"
+                                  id=""
+                                  checked={selectAll}
+                                  onChange={handleSelectAll}
+                                />
                               </th>
-                              <th style={{ textAlign: "left" }}>
+                              <th
+                                className="col-4"
+                                style={{ textAlign: "left" }}
+                              >
                                 Product
                                 <span style={{ float: "right" }}>
                                   <i
@@ -229,45 +242,112 @@ function ProductList() {
                                         type="checkbox"
                                         name={product._id}
                                         id=""
+                                        checked={selectAll}
                                       />
                                     </strong>
+                                  </Link>
+                                </td>
+                                <td
+                                  style={{
+                                    display: "flex",
+                                    alignItems: "left",
+                                  }}
+                                >
+                                  <Link
+                                    to="/product-management"
+                                    style={{
+                                      color: "black",
+                                      display: "flex",
+                                      alignItems: "left",
+                                    }}
+                                  >
+                                    <div
+                                      className="col-3"
+                                      style={{
+                                        display: "flex",
+                                        alignItems: "left",
+                                      }}
+                                    >
+                                      <img
+                                        src={product.product_Pic[0]}
+                                        className="avatar lg rounded"
+                                        alt=""
+                                        style={{
+                                          width: "15vh",
+                                          height: "15vh",
+                                        }}
+                                      />
+                                    </div>
+                                    <div
+                                      className="col-9 ms-3"
+                                      style={{
+                                        display: "flex",
+                                        flexDirection: "column",
+                                        alignItems: "left",
+                                      }}
+                                    >
+                                      <div
+                                        className="col-6"
+                                        style={{
+                                          display: "flex",
+                                          flexDirection: "column",
+                                          alignItems: "left",
+                                        }}
+                                      >
+                                        <strong className="text-dark-emphasis">
+                                          {product.productName_en
+                                            ? product.productName_en.toUpperCase()
+                                            : product.productName &&
+                                              product.productName.toUpperCase()}
+                                        </strong>
+                                        <strong className="text-body-secondary">
+                                          ID: {product._id}
+                                        </strong>
+                                        <strong className="text-body-tertiary">
+                                          SKU: {product.SKU}
+                                        </strong>
+                                      </div>
+                                    </div>
                                   </Link>
                                 </td>
                                 <td style={{ textAlign: "left" }}>
                                   <Link
                                     to="/product-management"
-                                    style={{ color: "black" }}
+                                    className="text-light-emphasis"
                                   >
-                                    <img
-                                      src={product.product_Pic[0]}
-                                      className="avatar lg rounded me-2"
-                                      alt=""
-                                      style={{ width: "20px", height: "20px" }}
-                                    />
-                                    <span>{product.productName_en ? product.productName_en : product.productName}</span>
-                                    <p
-                                      style={{
-                                        fontSize: "12px",
-                                        marginLeft: "28px",
-                                      }}
-                                    >
-                                      ID: {product._id} | SKU: {product.SKU}
-                                    </p>
-                                  </Link>
-                                </td>
-
-                                <td style={{ textAlign: "left" }}>
-                                  <Link to="/product-management">
-                                    {product?.Subcategory_Id?.subCategoryName}
+                                    <strong>
+                                      {product?.Subcategory_Id?.subCategoryName
+                                        ? product?.Subcategory_Id
+                                            ?.subCategoryName
+                                        : product?.Subcategory_Id
+                                            ?.subCategoryName_en}
+                                    </strong>
                                   </Link>
                                 </td>
                                 <td style={{ textAlign: "left" }}>
-                                  <span className="badge bg-success">
+                                  <span
+                                    className={`fs-6 badge ${
+                                      product.stockQuantity === 0
+                                        ? "bg-danger"
+                                        : product.stockQuantity <= 10
+                                        ? "bg-warning"
+                                        : "bg-success"
+                                    }`}
+                                  >
                                     {product.stockQuantity}
                                   </span>
                                 </td>
-                                <td style={{ textAlign: "left" }}>
-                                  {product.Price}
+                                <td
+                                  style={{
+                                    textAlign: "left",
+                                    fontSize: "20px",
+                                  }}
+                                >
+                                  ₹{product.Price}{" "}
+                                  <del className="fs-6 ms-1 text-secondary">
+                                    {" "}
+                                    ₹{product?.oldPrice}{" "}
+                                  </del>
                                 </td>
                                 <td>
                                   <div className="dropdown">

@@ -31,10 +31,10 @@ function ProductManagement() {
     data.append("productName_en", formData.productName);
     data.append("slug", formData.slug);
     data.append("Description", formData.Description);
-    data.append("Discount", formData.discount);
+    // data.append("Discount", formData.discount);
     data.append("weight", formData.weight);
-    data.append("brandName", formData.weight);
-    data.append("productColor", formData.weight);
+    data.append("brandName", formData.brand);
+    data.append("productColor", formData.color);
     data.append("careInstuctions", formData.shortDescription);
     data.append("Price", formData.Price);
     data.append("oldPrice", formData.oldPrice);
@@ -45,8 +45,8 @@ function ProductManagement() {
     data.append("visibility", formData.visibility);
     data.append("publishDate", formData.datepicker);
     data.append("Tags", formData.Tags);
-    data.append("category_Id", "642a5a295c7827c6d6b00f7f");
-    data.append("Subcategory_Id", "642a5a295c7827c6d6b00f7f");
+    data.append("category_Id", "647eb680062671009e254fcb");
+    data.append("Subcategory_Id", "649035d1cf5408e268540ec7");
     data.append("product_Pic", formData.uploadImage);
     // data.append("brandPic", formData.uploadImage);
 
@@ -154,11 +154,11 @@ function ProductManagement() {
                       </label>
                       <input
                         type="text"
-                        id="productName"
-                        name="productName"
+                        id="productType"
+                        name="productType"
                         className="form-control"
                         placeholder="Simple"
-                        value={formData.productName}
+                        value={formData.productType}
                         onChange={handleInputChange}
                       />
                     </div>
@@ -483,6 +483,7 @@ function ProductManagement() {
                           name="visibility"
                           id="published"
                           value="published"
+                          // defaultValue={formData.published}
                           onChange={handleInputChange}
                         />
                         <label className="form-check-label" htmlFor="published">
