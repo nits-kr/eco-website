@@ -43,7 +43,7 @@ function ProductList() {
         "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/product/productList"
       )
       .then((response) => {
-        setProductList(response.data.results.list);
+        setProductList(response?.data?.results?.list.reverse());
         console.log(response.data);
       });
   }, []);
@@ -244,7 +244,7 @@ function ProductList() {
                                       alt=""
                                       style={{ width: "20px", height: "20px" }}
                                     />
-                                    <span>{product.productName}</span>
+                                    <span>{product.productName_en ? product.productName_en : product.productName}</span>
                                     <p
                                       style={{
                                         fontSize: "12px",
@@ -258,7 +258,7 @@ function ProductList() {
 
                                 <td style={{ textAlign: "left" }}>
                                   <Link to="/product-management">
-                                    {product.category_Id}
+                                    {product?.Subcategory_Id?.subCategoryName}
                                   </Link>
                                 </td>
                                 <td style={{ textAlign: "left" }}>

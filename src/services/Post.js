@@ -129,6 +129,32 @@ export const PostApi = createApi({
         };
       },
     }),
+    updateSubCategory: builder.mutation({
+      query: (body) => {
+        console.log("update category", body);
+        const { id, ...data } = body;
+        console.log("update Sub category body data", data);
+        console.log("update Sub category body id", id);
+        return {
+          url: `admin/category/subCategory/subCategoryUpdate/${id}`,
+          method: "PATCH",
+          body: data,
+        };
+      },
+    }),
+    updateValue: builder.mutation({
+      query: (body) => {
+        console.log("update category", body);
+        const { id, ...data } = body;
+        console.log("update Sub category body data", data);
+        console.log("update Sub category body id", id);
+        return {
+          url: `admin/category/values/valuesUpdate/${id}`,
+          method: "PATCH",
+          body: data,
+        };
+      },
+    }),
   }),
 });
 
@@ -150,5 +176,7 @@ export const {
   useGetTransactionListDetailsMutation,
   useSearchOfferMutation,
   useUpdateCategoryMutation,
+  useUpdateSubCategoryMutation,
+  useUpdateValueMutation,
   // useSearchOfferQuery,
 } = PostApi;

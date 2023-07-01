@@ -28,10 +28,14 @@ function ProductManagement() {
   };
   const handleOnSave = () => {
     const data = new FormData();
-    data.append("productName", formData.productName);
+    data.append("productName_en", formData.productName);
     data.append("slug", formData.slug);
     data.append("Description", formData.Description);
-    data.append("shortDescription", formData.shortDescription);
+    data.append("Discount", formData.discount);
+    data.append("weight", formData.weight);
+    data.append("brandName", formData.weight);
+    data.append("productColor", formData.weight);
+    data.append("careInstuctions", formData.shortDescription);
     data.append("Price", formData.Price);
     data.append("oldPrice", formData.oldPrice);
     data.append("SKU", formData.SKU);
@@ -42,7 +46,9 @@ function ProductManagement() {
     data.append("publishDate", formData.datepicker);
     data.append("Tags", formData.Tags);
     data.append("category_Id", "642a5a295c7827c6d6b00f7f");
+    data.append("Subcategory_Id", "642a5a295c7827c6d6b00f7f");
     data.append("product_Pic", formData.uploadImage);
+    // data.append("brandPic", formData.uploadImage);
 
     axios
       .post(
@@ -71,7 +77,7 @@ function ProductManagement() {
 
   return (
     <>
-    <Sidebar/>
+      <Sidebar />
       <div className="admin_main">
         <div className="admin_main_inner">
           <div className="admin_panel_data height_adjust">
@@ -208,7 +214,7 @@ function ProductManagement() {
                     />
 
                     <div className="form-group">
-                      <h3>Short Description</h3>
+                      <h3>Care Instuctions</h3>
                       <textarea
                         className="form-control"
                         name="shortDescription"
@@ -220,20 +226,19 @@ function ProductManagement() {
                       ></textarea>
                     </div>
                     <div className="form-group my-2">
-                      <h3>Choose Weight</h3>
+                      <h3>Weight</h3>
                       <div className="selection-section">
-                        <div className="form-group mb-0">
-                          <select
-                            id="input-state"
-                            className="form-control form-select"
-                            defaultValue=""
-                          >
-                            <option disabled>Choose Weight...</option>
-                            <option>1/2 KG</option>
-                            <option>1 KG</option>
-                            <option>1.5 KG</option>
-                          </select>
-                        </div>
+                      <div className="form-group">
+                        <input
+                          id="weight"
+                          name="weight"
+                          type="text"
+                          className="form-control"
+                          value={formData.weight}
+                          placeholder="1 kg"
+                          onChange={handleInputChange}
+                        />
+                      </div>
                       </div>
                     </div>
                   </div>
@@ -272,10 +277,21 @@ function ProductManagement() {
                           onChange={handleInputChange}
                         />
                       </div>
+                      <div className="form-group">
+                        <label htmlFor="old_price">Scheduled Discount</label>
+                        <input
+                          id="Discount"
+                          name="Discount"
+                          type="text"
+                          className="form-control"
+                          value={formData.discount}
+                          onChange={handleInputChange}
+                        />
+                      </div>
                     </div>
-                    <Link to="#" className="text-decoration-none">
+                    {/* <Link to="#" className="text-decoration-none">
                       Scheduled Discount
-                    </Link>
+                    </Link> */}
                   </div>
                   <div className="card border  rounded p-3 mt-4 shadow">
                     <h3
@@ -535,43 +551,7 @@ function ProductManagement() {
                           value={formData.taskInput}
                           onChange={handleInputChange}
                         />
-                        <button
-                          type="submit"
-                          id="addButton"
-                          className="btn btn-primary"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            const category =
-                              document.getElementById("taskInput").value;
-                            if (category) {
-                              const taskList =
-                                document.getElementById("taskList");
-                              const newCategory = document.createElement("li");
-                              newCategory.className =
-                                "list-group-item d-flex justify-content-between align-items-center";
-                              newCategory.innerText = category;
-
-                              const deleteButton =
-                                document.createElement("button");
-                              deleteButton.className = "btn btn-danger btn-sm";
-                              deleteButton.innerText = "X";
-                              deleteButton.onclick = () => {
-                                taskList.removeChild(newCategory);
-                              };
-                              newCategory.appendChild(deleteButton);
-
-                              taskList.appendChild(newCategory);
-                              document.getElementById("taskInput").value = "";
-                              //setFormData(prevProducts => [...prevProducts, category]);
-                            }
-                          }}
-                        >
-                          <Link to="#" className="text-white">
-                            Add new category
-                          </Link>
-                        </button>
                       </form>
-                      <ul id="taskList" className="list-group mt-3"></ul>
                     </div>
                   </div>
                   <div className="card border-blue shadow p-3 mb-5 bg-white rounded">
@@ -590,23 +570,14 @@ function ProductManagement() {
                       <form className="d-flex flex-column">
                         <input
                           type="text"
-                          id="taskInput"
-                          name="taskInput"
+                          id="subCategory"
+                          name="subCategory"
                           className="form-control mb-2"
                           placeholder="Add new Sub category here..."
-                          value=""
+                          value={formData.subCategory}
+                          onChange={handleInputChange}
                         />
-                        <button
-                          type="submit"
-                          id="addButton"
-                          className="btn btn-primary"
-                        >
-                          <Link to="#" className="text-white">
-                            Add new category
-                          </Link>
-                        </button>
                       </form>
-                      <ul id="taskList" className="list-group mt-3"></ul>
                     </div>
                   </div>
                   <div className="card border-blue shadow p-3 mb-5 bg-white rounded">
@@ -625,23 +596,14 @@ function ProductManagement() {
                       <form className="d-flex flex-column">
                         <input
                           type="text"
-                          id="taskInput"
-                          name="taskInput"
+                          id="brand"
+                          name="brand"
                           className="form-control mb-2"
                           placeholder="Puma"
-                          value=""
+                          value={formData.brand}
+                          onChange={handleInputChange}
                         />
-                        <button
-                          type="submit"
-                          id="addButton"
-                          className="btn btn-primary"
-                        >
-                          <Link to="#" className="text-white">
-                            Add Brand
-                          </Link>
-                        </button>
                       </form>
-                      <ul id="taskList" className="list-group mt-3"></ul>
                     </div>
                   </div>
                   <div className="card shadow p-3 mb-5 bg-white rounded">
@@ -682,10 +644,11 @@ function ProductManagement() {
                     <div className="card-body">
                       <input
                         type="text"
-                        id="Tags"
-                        name="Tags"
+                        id="color"
+                        name="color"
                         className="form-control"
-                        value=""
+                        value={formData.color}
+                        onChange={handleInputChange}
                         placeholder="Enter Color"
                       />
                     </div>

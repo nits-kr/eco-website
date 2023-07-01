@@ -60,6 +60,7 @@ function Attribute() {
         "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/attribute/createAttribute",
         {
           attributeName_en: attributes.nameEn,
+          attributeName_ar: attributes.nameAr,
           category_Id: attributes.categoryId,
           subCategory_Id: attributes.categoryId1,
           subSubCategory_Id: attributes.categoryId2,
@@ -295,7 +296,7 @@ function Attribute() {
                             {value?.subSubCategory_Id?.subSubCategoryName}
                           </td>
                           <td>{value?.attributeName_en}</td>
-                          <td>{value?.attributeName_en}</td>
+                          <td>{value?.attributeName_ar}</td>
                           <td>
                             <form className="table_btns d-flex align-items-center">
                               <div className="check_toggle">

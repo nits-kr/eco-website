@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import Swal from "sweetalert2";
+
 import Sidebar from "./Sidebar";
 
 function EditAttribute(props) {
@@ -15,17 +17,17 @@ function EditAttribute(props) {
     categoryId2: "",
   });
   console.log("editAttributes", editAttributes);
-  // const handleInputChange = (event) => {
-  //   const { name, value } = event.target;
-  //   setEditAttributes({ ...editAttributes, [name]: value });
-  // };
   const handleInputChange = (event) => {
     const { name, value } = event.target;
-    setEditAttributes((prevAttributes) => ({
-      ...prevAttributes,
-      [name]: value,
-    }));
+    setEditAttributes({ ...editAttributes, [name]: value });
   };
+  // const handleInputChange = (event) => {
+  //   const { name, value } = event.target;
+  //   setEditAttributes((prevAttributes) => ({
+  //     ...prevAttributes,
+  //     [name]: value,
+  //   }));
+  // };
   
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -42,6 +44,19 @@ function EditAttribute(props) {
       )
       .then((response) => {
         console.log(response.data);
+        if (!response.data.error) {
+          Swal.fire({
+              title: "Updated!",
+              text: "Your have been updated the list successfully.",
+              icon: "success",
+              confirmButtonColor: "#3085d6",
+              confirmButtonText: "OK",
+          }).then((result) => {
+              if (result.isConfirmed) {
+                  window.location.reload();
+              }
+          });
+      }
       })
       .catch((error) => {
         console.error(error);

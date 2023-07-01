@@ -2,10 +2,13 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
-import Sidebar from "./Sidebar";
-import EditValues from "./EditValues";
+import { useUpdateValueMutation } from "../services/Post";
 function Value() {
+  const [update, res] = useUpdateValueMutation();
+  const [editValueEn, setEditValueEn] = useState("");
+  const [editValueAr, setEditValueAr] = useState("");
   const [valueList, setValueList] = useState([]);
+  const [itemId, setItemId] = useState("");
   const [categories, setCategories] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
   const [subSubCategories, setSubSubCategories] = useState([]);
@@ -60,6 +63,7 @@ function Value() {
         "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/values/createvalues",
         {
           valuesName_en: values.nameEn,
+          valuesName_ar: values.nameAr,
           category_Id: values.categoryId,
           subCategory_Id: values.categoryId1,
           subSubCategory_Id: values.categoryId2,
@@ -147,9 +151,39 @@ function Value() {
     };
     fetchData();
   }, []);
+
+  const handleSaveChanges1 = async (e) => {
+    e.preventDefault();
+    console.log("handleSaveChanges1", itemId);
+    const editAddress = {
+      id: itemId,
+      valuesName_en: editValueEn,
+      valuesName_ar: editValueAr,
+      // categoryName: subCategory.subCategoryId,
+    };
+    try {
+      await update(editAddress);
+      Swal.fire({
+        icon: "success",
+        title: "Changes Saved",
+        text: "The subcategory has been updated successfully.",
+        confirmButtonColor: "#3085d6",
+        confirmButtonText: "OK",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          window.location.reload();
+        }
+      });
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "An error occurred while updating the subcategory.",
+      });
+    }
+  };
   return (
     <>
-    {/* <Sidebar/> */}
       <div
         className="tab-pane fade"
         id="nav-contact2"
@@ -324,10 +358,12 @@ function Value() {
                           <td>{index + 1}</td>
                           <td>{value?.category_Id?.categoryName}</td>
                           <td>{value?.subCategory_Id?.subCategoryName}</td>
-                          <td>{value?.subSubCategory_Id?.subSubCategoryName}</td>
+                          <td>
+                            {value?.subSubCategory_Id?.subSubCategoryName}
+                          </td>
                           <td>{value?.attribute_Id?.attributeName}</td>
                           <td>{value?.valuesName_en}</td>
-                          <td>{value?.valuesName_en}</td>
+                          <td>{value?.valuesName_ar}</td>
                           <td>
                             <form className="table_btns d-flex align-items-center">
                               <div className="check_toggle">
@@ -364,7 +400,7 @@ function Value() {
                               data-bs-target="#staticBackdrop4"
                               className="comman_btn2 table_viewbtn"
                               to=""
-                              
+                              onClick={() => setItemId(value?._id)}
                             >
                               Edit
                             </Link>
@@ -379,7 +415,147 @@ function Value() {
           </div>
         </div>
       </div>
-      {/* <EditValues/> */}
+      <div
+        className="modal fade Edit_modal"
+        id="staticBackdrop4"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+        tabIndex="-1"
+        aria-labelledby="staticBackdropLabel"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog modal-dialog-centered">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title" id="staticBackdropLabel">
+                Edit Values
+              </h5>
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div className="modal-body">
+              <form
+                className="form-design p-3 help-support-form row align-items-end justify-content-center"
+                action=""
+                onSubmit={handleSubmit}
+              >
+                <div className="form-group col-6">
+                  <label htmlFor="">Select Category</label>
+                  <select
+                    className="select form-control"
+                    size={15}
+                    name="categoryId"
+                    id="selectCategory"
+                    value={values.categoryId}
+                    onChange={handleInputChange}
+                  >
+                    {Array.isArray(categories) &&
+                      categories.map((category) => (
+                        <option key={category._id} value={category._id}>
+                          {category.categoryName}
+                        </option>
+                      ))}
+                  </select>
+                </div>
+                <div className="form-group col-6">
+                  <label htmlFor="">Select Sub Category</label>
+                  <select
+                    className="select form-control"
+                    size={15}
+                    name="categoryId1"
+                    id="categoryId1"
+                    value={values.categoryId1}
+                    onChange={handleInputChange}
+                  >
+                    {Array.isArray(subCategories) &&
+                      subCategories.map((subCategory) => (
+                        <option key={subCategory._id} value={subCategory._id}>
+                          {subCategory.subCategoryName}
+                        </option>
+                      ))}
+                  </select>
+                </div>
+                <div className="form-group col-6">
+                  <label htmlFor="">Select Sub Sub Category</label>
+                  <select
+                    className="select form-control"
+                    size={15}
+                    name="categoryId2"
+                    id="selectSubSubCategory"
+                    value={values.categoryId2}
+                    onChange={handleInputChange}
+                  >
+                    {Array.isArray(subSubCategories) &&
+                      subSubCategories.map((subSubCategory) => (
+                        <option
+                          key={subSubCategory._id}
+                          value={subSubCategory._id}
+                        >
+                          {subSubCategory.subSubCategoryName}
+                        </option>
+                      ))}
+                  </select>
+                </div>
+                <div className="form-group col-6">
+                  <label htmlFor="">Select Attribute</label>
+                  <select
+                    className="select form-control"
+                    size={15}
+                    name="categoryId3"
+                    id="categoryId3"
+                    value={values.categoryId3}
+                    onChange={handleInputChange}
+                  >
+                    {Array.isArray(attributes) &&
+                      attributes.map((attribute) => (
+                        <option key={attribute._id} value={attribute._id}>
+                          {attribute.attributeName}
+                        </option>
+                      ))}
+                  </select>
+                </div>
+                <div className="form-group col-6">
+                  <label htmlFor="">Value Name (En)</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    name="nameEn"
+                    id="nameEn"
+                    defaultValue=""
+                    // onChange={handleInputChange}
+                    onChange={(e) => setEditValueEn(e.target.value)}
+                  />
+                </div>
+                <div className="form-group col-6">
+                  <label htmlFor="">Value Name (Ar)</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    name="nameAr"
+                    id="nameAr"
+                    defaultValue=""
+                    // onChange={handleInputChange}
+                    onChange={(e) => setEditValueAr(e.target.value)}
+                  />
+                </div>
+                <div className="form-group mb-0 col-auto">
+                  <button
+                    className="comman_btn2"
+                    // onClick={(event) => handleUpdate(category._id, event)}
+                    onClick={handleSaveChanges1}
+                  >
+                    Save
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
     </>
   );
 }

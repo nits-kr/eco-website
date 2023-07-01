@@ -3,14 +3,22 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
 import EditValues from "./EditValues";
+import { useUpdateSubCategoryMutation } from "../services/Post";
 
 function SubCategory() {
+  const [update, res] = useUpdateSubCategoryMutation();
+  const [itemId, setItemId] = useState("");
+  const [editSubCategoryNameEn, setEditSubCategoryNameEn] = useState("");
+  const [editSubCategoryNameAr, setEditSubCategoryNameAr] = useState("");
+  console.log("update sub category", update);
   const [subCategoryList, setSubCategoryList] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [categoryNew, setCategoryNew] = useState([]);
   const [subCategory, setSubCategory] = useState({
     nameEn: "",
     nameAr: "",
     categoryId: "",
+    subCategoryId: "",
     subCategoryPic: null,
   });
   const [searchQuery, setSearchQuery] = useState("");
@@ -77,8 +85,9 @@ function SubCategory() {
           categoryId: "",
           subCategoryPic: null,
         });
-        setSubCategoryList((prevList) => [...prevList, response.data.results]);
+        // setSubCategoryList((prevList) => [...prevList, response.data.results]);
         // fetchData(); // Fetch updated subcategory list after creating a new subcategory
+        handleSave();
       }
     } catch (error) {
       console.error(error);
@@ -125,6 +134,42 @@ function SubCategory() {
   };
 
   console.log("subcategory", subCategory);
+
+  const handleSaveChanges1 = async (e) => {
+    e.preventDefault();
+    console.log("handleSaveChanges1", itemId);
+    const editAddress = {
+      id: itemId,
+      subCategoryName_en: editSubCategoryNameEn,
+      subCategoryName_ar: editSubCategoryNameAr,
+      category_Id: subCategory.categoryId,
+    };
+    // const editAddress = new FormData();
+    // editAddress.append("id", itemId);
+    // editAddress.append("subCategoryName_en", editSubCategoryNameEn);
+    // editAddress.append("subCategoryName_en", editSubCategoryNameAr);
+    // editAddress.append("subCategoryPic", subCategory.subCategoryPic);
+    try {
+      await update(editAddress);
+      Swal.fire({
+        icon: "success",
+        title: "Changes Saved",
+        text: "The subcategory has been updated successfully.",
+        confirmButtonColor: "#3085d6",
+        confirmButtonText: "OK",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          window.location.reload();
+        }
+      });
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "An error occurred while updating the subcategory.",
+      });
+    }
+  };
   return (
     <>
       {/* <Sidebar/> */}
@@ -301,16 +346,10 @@ function SubCategory() {
                           <td>
                             <Link
                               data-bs-toggle="modal"
-                              data-bs-target="#staticBackdrop4"
+                              data-bs-target="#staticBackdrop10"
                               className="comman_btn2 table_viewbtn"
                               to=""
-                              onClick={() =>
-                                handleUpdate(
-                                  value._id,
-                                  value.subCategoryName_en,
-                                  value.subCategoryName_en
-                                )
-                              }
+                              onClick={() => setItemId(value?._id)}
                             >
                               Edit
                             </Link>
@@ -325,7 +364,121 @@ function SubCategory() {
           </div>
         </div>
       </div>
-      <EditValues newCategory={newCategory} />
+      <div
+        className="modal fade Edit_modal"
+        id="staticBackdrop10"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+        tabIndex="-1"
+        aria-labelledby="staticBackdropLabel"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog modal-dialog-centered">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title" id="staticBackdropLabel">
+                Edit Sub Category
+              </h5>
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div className="modal-body">
+              <form
+                className="form-design p-3 help-support-form row align-items-end justify-content-center"
+                action=""
+              >
+                {/* <div className="form-group col-12">
+                  <label htmlFor="">Select Category</label>
+                  <select
+                    className="select form-control"
+                    multiple
+                    name="categoryId"
+                  id="selectCategory"
+                  value={subCategory.categoryId}
+                  onChange={handleInputChange}
+                  >
+                    <option defaultValue="1">Lorem</option>
+                    <option defaultValue="2">ipsum</option>
+                    <option defaultValue="3">Lorem</option>
+                    <option defaultValue="1">Lorem</option>
+                    <option defaultValue="2">ipsum</option>
+                    <option defaultValue="3">Lorem</option>
+                  </select>
+                </div> */}
+                <div className="form-group col-12">
+                  <label htmlFor="">Select Category</label>
+                  <select
+                    className="select form-control"
+                    size={15}
+                    name="categoryId"
+                    id="categoryId"
+                    value={subCategory.categoryId}
+                    onChange={handleInputChange}
+                    // onChange={(e) => setCategoryNew(e.target.value)}
+                  >
+                    {categories.map((category) => (
+                      <option key={category._id} value={category._id}>
+                        {category.categoryName}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="form-group col-6">
+                  <label htmlFor="">Enter Subcategory Category Name (En)</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    name="nameEn"
+                    id="nameEn"
+                    defaultValue=""
+                    onChange={(e) => setEditSubCategoryNameEn(e.target.value)}
+                    // onChange={handleInputChange}
+                  />
+                </div>
+                <div className="form-group col-6">
+                  <label htmlFor="">Enter Sub Category Name (Ar)</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    name="nameAr"
+                    id="nameAr"
+                    defaultValue=""
+                    onChange={(e) => setEditSubCategoryNameAr(e.target.value)}
+                    // onChange={(e) => setEditSubCategoryName(e.target.value)}
+                    // onChange={handleInputChange}
+                  />
+                </div>
+
+                <div className="form-group col-12 choose_file position-relative">
+                  <span>Upload Image</span>
+                  <label htmlFor="upload_video">
+                    <i className="fal fa-camera me-1"></i>Choose File{" "}
+                  </label>
+                  <input
+                    type="file"
+                    className="form-control"
+                    defaultValue=""
+                    name="uploadImage"
+                    id="uploadImage"
+                    onChange={(e) => handleFileChange(e, "uploadImage")}
+                    // onChange={handleFileChange}
+                  />
+                </div>
+                <div className="form-group mb-0 col-auto">
+                  <button className="comman_btn2" onClick={handleSaveChanges1}>
+                    Save
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      {/* <EditValues newCategory={newCategory} /> */}
     </>
   );
 }

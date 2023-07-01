@@ -68,6 +68,7 @@ console.log("set form data pic", formData.categoryPic);
     try {
       const data = new FormData();
       data.append("categoryName_en", formData.nameEn);
+      data.append("categoryName_ar", formData.nameAr);
       data.append("categoryPic", formData.categoryPic);
       const response = await axios.post(
         "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/category/create",
@@ -112,7 +113,7 @@ console.log("set form data pic", formData.categoryPic);
   }, []);
 
   const handleUpdate = (nameEn, nameAr, categoryPic, id) => {
-    console.log(nameEn, nameAr, categoryPic, id);
+    console.log("category update data",nameEn, nameAr, categoryPic, id);
     setNewCategory({
       nameEn: nameEn,
       nameAr: nameAr,
@@ -332,7 +333,7 @@ console.log("set form data pic", formData.categoryPic);
                                               <tr key={category._id}>
                                                 <td>{index + 1}</td>
                                                 <td>{category?.categoryName_en}</td>
-                                                <td>{category?.categoryName_en}</td>
+                                                <td>{category?.categoryName_ar}</td>
                                                 <td>
                                                   <img
                                                     className="table_img"
