@@ -273,8 +273,8 @@ function ProductList() {
                                         className="avatar lg rounded"
                                         alt=""
                                         style={{
-                                          width: "15vh",
-                                          height: "15vh",
+                                          width: "10vh",
+                                          height: "10vh",
                                         }}
                                       />
                                     </div>

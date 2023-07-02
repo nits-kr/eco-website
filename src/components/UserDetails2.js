@@ -225,7 +225,7 @@ function UserDetails2() {
                             </div>
                             <div className="col-8">
                               <div className="col-8 mt-2">
-                                {userListDetails?.list?.userName}
+                                {userListDetails?.list?.mobileNumber}
                               </div>
                             </div>
                           </div>
@@ -365,13 +365,12 @@ function UserDetails2() {
                         </div>
                         <div className="form-group col-4 d-flex align-items-start justify-content-between w-100">
                           <label htmlFor=""></label>
-                          <input
-                            type="text"
-                            className="form-control"
-                            defaultValue="20, sastri colony bhatianagar,yamuna nagar"
-                            name="name"
-                            id="name"
-                          />
+                          <div className="col-8">
+                              <div className="col-8 mt-2">
+                                {userListDetails?.list?.address_Id}
+                              </div>
+                            </div>
+                        
                         </div>
                       </form>
                     </div>

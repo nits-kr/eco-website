@@ -79,7 +79,8 @@ function AgentInformation() {
                                 }}
                               >
                                 <img
-                                  src="../assets/img/profile_img1.jpg"
+                                  src={agentDetails?.profile_Pic}
+                                  // src="../assets/img/profile_img1.jpg"
                                   alt=""
                                 />
                               </div>
@@ -101,7 +102,7 @@ function AgentInformation() {
                     <div className="row">
                       <div className="col-12 d-flex">
                         <div className="col-4">
-                          <strong>06/May/2023</strong>
+                          <strong>{agentDetails?.createdAt?.slice(0,10)} </strong>
                           <div>
                             {" "}
                             <strong style={{ color: "grey" }}>
@@ -110,7 +111,7 @@ function AgentInformation() {
                           </div>
                         </div>
                         <div className="col-4">
-                          <strong>Active</strong>
+                          <strong>{agentDetails?.status} </strong>
                           <div>
                             {" "}
                             <strong style={{ color: "grey" }}>

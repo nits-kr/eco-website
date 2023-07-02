@@ -19,7 +19,20 @@ function AgentDetails() {
     address: "",
     accountName: "",
     routing: "",
+    global: false,
+    commissionType: "local",
   });
+  const handleInputChange1 = (event) => {
+    const { checked } = event.target;
+    const commissionType = checked ? "global" : "local";
+    setFormData((prevData) => ({
+      ...prevData,
+      global: checked,
+      commissionType: commissionType,
+    }));
+  };
+  
+  console.log("form data global", formData);
   const [selectedImage, setSelectedImage] = useState(null);
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -40,7 +53,7 @@ function AgentDetails() {
       data.append("accountNumber", formData.accountNumber);
       data.append("bankName", formData.bankName);
       data.append("password", formData.password);
-      data.append("commisionType", "global");
+      data.append("commisionType", formData.global);
       data.append("profile_Pic", formData.profilePic);
       data.append("mobileNumber", formData.mobileNumber);
       data.append("address", formData.address);
@@ -63,7 +76,7 @@ function AgentDetails() {
   };
   return (
     <>
-    <Sidebar/>
+      <Sidebar />
       <div className="admin_main">
         <div className="admin_main_inner">
           <div className="admin_panel_data height_adjust">
@@ -166,37 +179,23 @@ function AgentDetails() {
                           <div className="form-group col-12">
                             <div className="col-4">
                               <label htmlFor="commision">
-                                Commision Types:
+                                Commission Types:
                               </label>
                             </div>
-                            <div
-                              className="btn-group"
-                              role="group"
-                              aria-label="Basic checkbox toggle button group"
-                            >
+                            <div className="form-check form-switch ms-4">
                               <input
+                                className="form-check-input fs-4"
                                 type="checkbox"
-                                className="btn-check"
-                                id="btncheck1"
-                                autoComplete="off"
+                                role="switch"
+                                id="flexSwitchCheckDefault"
+                                checked={formData.global}
+                                onChange={handleInputChange1}
                               />
                               <label
-                                className="btn btn-outline-danger bg-danger text-light"
-                                htmlFor="btncheck1"
+                                className="form-check-label text-danger fs-4"
+                                htmlFor="flexSwitchCheckDefault"
                               >
-                                Global
-                              </label>
-                              <input
-                                type="checkbox"
-                                className="btn-check"
-                                id="btncheck2"
-                                autoComplete="off"
-                              />
-                              <label
-                                className="btn btn-outline-danger"
-                                htmlFor="btncheck2"
-                              >
-                                {" "}
+                                <strong>Global</strong>
                               </label>
                             </div>
                           </div>
@@ -204,7 +203,7 @@ function AgentDetails() {
                       </div>
                     </div>
                   </div>
-                 
+
                   <div className="row users-information position-relative align-items-center justify-content-center">
                     <div className="col-12">
                       <div className="users_left">

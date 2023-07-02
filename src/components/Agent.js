@@ -323,7 +323,7 @@ function Agent() {
 
                                       <td className=" dt-body-right">
                                         <span className="badge text-secondary">
-                                          {agent.createdAt.slice(0, 10)}
+                                          {agent?.createdAt?.slice(0, 10)}
                                         </span>
                                       </td>
                                       <td className="dt-body-right">
