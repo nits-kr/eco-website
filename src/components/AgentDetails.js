@@ -53,7 +53,7 @@ function AgentDetails() {
       data.append("accountNumber", formData.accountNumber);
       data.append("bankName", formData.bankName);
       data.append("password", formData.password);
-      data.append("commisionType", formData.global);
+      data.append("commisionType", formData.commissionType);
       data.append("profile_Pic", formData.profilePic);
       data.append("mobileNumber", formData.mobileNumber);
       data.append("address", formData.address);

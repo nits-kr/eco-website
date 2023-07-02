@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Swal from "sweetalert2";
 import { Link } from "react-router-dom";
 import { useCreateOfferMutation } from "../services/Post";
 import { useGetOfferListQuery } from "../services/Post";
@@ -8,9 +9,9 @@ import { useSearchOfferMutation } from "../services/Post";
 import Sidebar from "./Sidebar";
 function OfferManagement() {
   const [createOffer, responseInfo] = useCreateOfferMutation();
-  const [updateOffer, response] = useUpdateOfferMutation();
-  const [deleteOffer, res] = useDeleteOfferMutation();
-  const [searchOffer, re] = useSearchOfferMutation();
+  const [updateOffer] = useUpdateOfferMutation();
+  // const [deleteOffer, response] = useDeleteOfferMutation();
+  const [searchOffer] = useSearchOfferMutation();
   const offerListItems = useGetOfferListQuery();
   const [productName, setProductName] = useState("");
   const [title, setTitle] = useState("");
@@ -19,6 +20,34 @@ function OfferManagement() {
   const [code, setCode] = useState("");
   const [discount, setDiscount] = useState("");
   const [itemId, setItemId] = useState("");
+  const [deleteOffer, response] = useDeleteOfferMutation();
+
+  const handleDeleteOffer = async (offerId) => {
+    try {
+      await deleteOffer(offerId);
+      offerListItems.refetch();
+      Swal.fire({
+        title: "Offer Deleted",
+        text: "The offer has been deleted successfully.",
+        icon: "success",
+        confirmButtonText: "OK",
+      });
+    } catch (error) {
+      // Handle error if necessary
+    }
+  };
+  useEffect(() => {
+    if (responseInfo.isSuccess) {
+      offerListItems.refetch();
+      Swal.fire({
+        title: "Offer list updated!",
+        text: "The offer has been Updated successfully.",
+        icon: "success",
+        confirmButtonText: "OK",
+      });
+    }
+  }, [responseInfo.isSuccess]);
+
   const handleSaveChanges = (e) => {
     e.preventDefault();
     const newOffer = {
@@ -29,6 +58,12 @@ function OfferManagement() {
       // productName: productName,
     };
     createOffer(newOffer);
+    Swal.fire({
+      title: "Changes Saved",
+      text: "The offer has been created successfully.",
+      icon: "success",
+      confirmButtonText: "OK",
+    });
   };
   const handleSaveChanges2 = (e) => {
     e.preventDefault();
@@ -37,7 +72,20 @@ function OfferManagement() {
     };
     searchOffer(newOffer);
   };
-  const handleSaveChanges1 = (e) => {
+  // const handleSaveChanges1 = (e) => {
+  //   e.preventDefault();
+  //   console.log("handleSaveChanges1", itemId);
+  //   const editOffer = {
+  //     id: itemId,
+  //     title: title,
+  //     code: code,
+  //     Discount: discount,
+  //     // productName: productName,
+  //     product_Id: "6482bea984e5342a120adbde",
+  //   };
+  //   updateOffer(editOffer);
+  // };
+  const handleSaveChanges1 = async (e) => {
     e.preventDefault();
     console.log("handleSaveChanges1", itemId);
     const editOffer = {
@@ -45,14 +93,25 @@ function OfferManagement() {
       title: title,
       code: code,
       Discount: discount,
-      // productName: productName,
       product_Id: "6482bea984e5342a120adbde",
     };
-    updateOffer(editOffer);
+    try {
+      await updateOffer(editOffer);
+      offerListItems.refetch();
+      Swal.fire({
+        title: "Changes Saved",
+        text: "The offer has been updated successfully.",
+        icon: "success",
+        confirmButtonText: "OK",
+      });
+    } catch (error) {
+      // Handle error if necessary
+    }
   };
+  
   return (
     <>
-    <Sidebar/>
+      <Sidebar />
       <div className="admin_main">
         <div className="admin_main_inner">
           <div className="admin_panel_data height_adjust">
@@ -192,8 +251,10 @@ function OfferManagement() {
                               </tr>
                             </thead>
                             <tbody>
-                              {offerListItems?.data?.results?.list?.map(
-                                (item, index) => {
+                              {offerListItems?.data?.results?.list
+                                ?.slice()
+                                .reverse()
+                                ?.map((item, index) => {
                                   return (
                                     <tr key={index}>
                                       <td> {index + 1} </td>
@@ -231,7 +292,7 @@ function OfferManagement() {
                                           className="comman_btn2 table_viewbtn ms-2"
                                           to="#"
                                           onClick={() => {
-                                            deleteOffer(item?._id);
+                                            handleDeleteOffer(item?._id);
                                           }}
                                         >
                                           Delete
@@ -239,8 +300,7 @@ function OfferManagement() {
                                       </td>
                                     </tr>
                                   );
-                                }
-                              )}
+                                })}
                             </tbody>
                           </table>
                         </div>
