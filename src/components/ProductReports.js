@@ -9,9 +9,20 @@ export default function ProductReports() {
     const [endDate, setEndDate] = useState("");
     axios.defaults.headers.common["x-auth-token-user"] =
         localStorage.getItem("token");
-    useEffect(() => {
-        userList();
-    }, []);
+        const fetchStaffList = async () => {
+            try {
+              const response = await axios.post(
+                "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/reporter/reporter/list"
+              );
+              setReporterList(response?.data?.results?.list?.reverse());
+            } catch (error) {
+              console.log(error.response.data);
+            }
+          };
+        
+          useEffect(() => {
+            fetchStaffList();
+          }, []);
     const userList = async () => {
         const { data } = await axios.post("http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/reporter/reporter/list", {
             startDate,
@@ -52,7 +63,7 @@ export default function ProductReports() {
     // };
     return (
         <>
-        <Sidebar/>
+        {/* <Sidebar/> */}
             <div className="tab-pane fade" id="nav-profile" role="tabpanel"
                 aria-labelledby="nav-profile-tab">
                 <div className="row mx-0">

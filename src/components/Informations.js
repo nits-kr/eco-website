@@ -7,8 +7,7 @@ function Informations() {
   const [informationListItems, setInformationListItems] = useState([]);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  //const [selectedItemId, setSelectedItemId] = useState(null); // New state for selected item ID
-
+  const [itemId, setItemId] = useState("");
 
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
@@ -27,50 +26,43 @@ function Informations() {
   };
   console.log("Title", title);
   console.log("dscription", description);
-  
-  const handleTitleChange = (e) => {
-    setTitle(e.target.value);
-  };
 
-  const handleDescriptionChange = (e) => {
-    setDescription(e.target.value);
-  };
-  const handleUpdate = async (e, _id) => {
-    alert(_id)
+  const handleUpdate = async (e) => {
+    alert(itemId);
     e.preventDefault();
-    await axios.patch(
-      `http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/information/info/update/${_id}`, 
-      { title:title, Description: description }
-    )
-    .then((response) => {
-        console.log(response)
+    await axios
+      .patch(
+        `http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/information/info/update/${itemId}`,
+        { title: title, Description: description }
+      )
+      .then((response) => {
+        console.log(response);
         if (!response.data.error) {
-            Swal.fire({
-                title: "Updated!",
-                text: "Your have been updated the list successfully.",
-                icon: "success",
-                confirmButtonColor: "#3085d6",
-                confirmButtonText: "OK",
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    window.location.reload();
-                }
-            });
+          Swal.fire({
+            title: "Updated!",
+            text: "Your have been updated the list successfully.",
+            icon: "success",
+            confirmButtonColor: "#3085d6",
+            confirmButtonText: "OK",
+          }).then((result) => {
+            if (result.isConfirmed) {
+              window.location.reload();
+            }
+          });
         }
-    })
-    .catch((error) => {
-        console.log(error)
-    });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
   const updateItem = (_id) => {
     alert(_id);
     //handleUpdate(_id)
     //setSelectedItemId(_id); // Set the selected item ID in the state
-
   };
   return (
     <>
-    <Sidebar/>
+      <Sidebar />
       <div className="admin_main">
         <div className="admin_main_inner">
           <div className="admin_panel_data height_adjust">
@@ -87,7 +79,7 @@ function Informations() {
                             data-bs-toggle="modal"
                             data-bs-target="#staticBackdrop"
                             to="javscript:;"
-                            onClick={() => updateItem(item._id)}
+                            onClick={() => setItemId(item._id)}
                           >
                             <i className="far fa-edit me-2"></i>Edit
                           </Link>
@@ -156,7 +148,7 @@ function Informations() {
                     id="title"
                     name="title"
                     value={title}
-                    onChange={handleTitleChange}
+                    onChange={(e) => setTitle(e.target.value)}
                   />
                 </div>
                 <div className="form-group col-12">
@@ -167,14 +159,14 @@ function Informations() {
                     id="description"
                     style={{ height: "150px" }}
                     value={description}
-                    onChange={handleDescriptionChange}
+                    onChange={(e) => setDescription(e.target.value)}
                   />
                 </div>
                 <div className="form-group col-12 text-center mb-0">
                   <button
                     type="submit"
                     className="comman_btn2"
-                    onClick={() => handleUpdate()}
+                    onClick={handleUpdate}
                   >
                     Update
                   </button>

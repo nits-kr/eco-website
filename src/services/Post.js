@@ -36,6 +36,18 @@ export const PostApi = createApi({
         method: "post",
       }),
     }),
+    getReportList: builder.query({
+      query: (name) => ({
+        url: `admin/reporter/reporter/list`,
+        method: "post",
+      }),
+    }),
+    getContentList: builder.query({
+      query: (name) => ({
+        url: `admin/content/content/list`,
+        method: "post",
+      }),
+    }),
     searchOffer: builder.mutation({
       query: (body) => ({
         url: `admin/offer/search-offer`,
@@ -84,6 +96,12 @@ export const PostApi = createApi({
     deleteOffer: builder.mutation({
       query: (id) => ({
         url: `admin/offer/delete-offer/${id}`,
+        method: "DELETE",
+      }),
+    }),
+    deleteContact: builder.mutation({
+      query: (id) => ({
+        url: `admin/contact/contact/contactDelete/${id}`,
         method: "DELETE",
       }),
     }),
@@ -174,6 +192,32 @@ export const PostApi = createApi({
         };
       },
     }),
+    updateContent: builder.mutation({
+      query: (body) => {
+        console.log("update category", body);
+        const { id, ...data } = body;
+        console.log("update Sub category body data", data);
+        console.log("update Sub category body id", id);
+        return {
+          url: `admin/content/content/updateContent/${id}`,
+          method: "PATCH",
+          body: data,
+        };
+      },
+    }),
+    updateCoupan: builder.mutation({
+      query: (body) => {
+        console.log("update category", body);
+        const { id, ...data } = body;
+        console.log("update Sub category body data", data);
+        console.log("update Sub category body id", id);
+        return {
+          url: `admin/coupan/coupan/updateCoupan/${id}`,
+          method: "post",
+          body: data,
+        };
+      },
+    }),
   }),
 });
 
@@ -199,5 +243,10 @@ export const {
   useUpdateValueMutation,
   useUpdateStaffMutation,
   useGetStaffListQuery,
+  useGetReportListQuery,
+  useGetContentListQuery,
+  useUpdateContentMutation,
+  useUpdateCoupanMutation,
+  useDeleteContactMutation,
   // useSearchOfferQuery,
 } = PostApi;
