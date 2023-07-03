@@ -3,11 +3,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faEye,
-  faPencil,
-  faTrashCan,
-} from "@fortawesome/free-solid-svg-icons";
+import { faEye, faPencil, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import Sidebar from "./Sidebar";
 function OrderManagement() {
   const [orderList, setOrderList] = useState([]);
@@ -18,8 +14,19 @@ function OrderManagement() {
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
   useEffect(() => {
-    userList();
+    axios
+      .post(
+        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/order/order/list"
+      )
+      .then((response) => {
+        setOrderList(response?.data?.results?.list?.reverse());
+      })
+      .catch((error) => {
+        console.log(error.response.data);
+      });
+    // userList();
   }, []);
+
   const userList = async () => {
     const { data } = await axios.post(
       "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/order/order/list",
@@ -28,13 +35,14 @@ function OrderManagement() {
         endDate,
       }
     );
-    const filteredUsers = data.results.list.filter(
+
+    const filteredUsers = data?.results?.list?.filter(
       (user) =>
         new Date(user.createdAt) >= new Date(startDate) &&
         new Date(user.createdAt) <= new Date(endDate)
     );
+
     setOrderList(filteredUsers.reverse());
-    console.log(data);
   };
 
   const handleSearch = (e) => {
@@ -55,7 +63,7 @@ function OrderManagement() {
         if (error) {
           throw new Error("Error searching for products.Data are Not Found");
         } else {
-          setOrderList(results.orderData);
+          setOrderList(results.orderDetails);
         }
       } catch (error) {
         Swal.fire({
@@ -69,18 +77,26 @@ function OrderManagement() {
       setOrderList([]);
     }
   };
-  const deleteOrder = (_id) => {
-    const data = axios.delete(
-      `http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/order/order/delete-order/${_id}`
-    );
-    //alert(_id)
-    console.log("delete Order", _id);
-    setOrderList(data.results.list);
+
+  const deleteOrder = async (_id) => {
+    try {
+      await axios.delete(
+        `http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/order/order/delete-order/${_id}`
+      );
+      console.log("delete Order", _id);
+
+      const response = await axios.post(
+        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/order/order/list"
+      );
+      setOrderList(response?.data?.results?.list?.reverse());
+    } catch (error) {
+      console.log("Error deleting order:", error);
+    }
   };
 
   return (
     <>
-    <Sidebar/>
+      <Sidebar />
       <div className="admin_main">
         <div className="admin_main_inner">
           <div className="admin_panel_data height_adjust">
@@ -179,8 +195,14 @@ function OrderManagement() {
                                   <td>
                                     <div className="table-image">
                                       <img
-                                        
-                                        src={data && data.products && data.products[0] && data.products[0].product_Id && data.products[0].product_Id.product_Pic[0]}
+                                        src={
+                                          data &&
+                                          data.products &&
+                                          data.products[0] &&
+                                          data.products[0].product_Id &&
+                                          data.products[0].product_Id
+                                            .product_Pic[0]
+                                        }
                                         className="img-fluid"
                                         alt=""
                                         style={{
@@ -190,8 +212,11 @@ function OrderManagement() {
                                       />
                                     </div>
                                   </td>
-                                  <td> {data?.products[0]?.product_Id?._id} </td>
-                                  <td> {data.createdAt} </td>
+                                  <td>
+                                    {" "}
+                                    {data?.products[0]?.product_Id?._id}{" "}
+                                  </td>
+                                  <td> {data?.createdAt?.slice(0, 10)} </td>
                                   <td> {data.paymentIntent} </td>
                                   <td> {data.orderStatus} </td>
                                   <td> {data.cartsTotal} </td>
@@ -202,14 +227,12 @@ function OrderManagement() {
                                     <FontAwesomeIcon icon={faPencil} />
                                   </td>
                                   <td>
-                                  <button
-                                            type="button"
-                                            className="border border-none bg-light"
-                                            onClick={() =>
-                                              deleteOrder(data._id)
-                                            }
-                                          >
-                                    <FontAwesomeIcon icon={faTrashCan} />
+                                    <button
+                                      type="button"
+                                      className="border border-none bg-light"
+                                      onClick={() => deleteOrder(data._id)}
+                                    >
+                                      <FontAwesomeIcon icon={faTrashCan} />
                                     </button>
                                   </td>
                                 </tr>

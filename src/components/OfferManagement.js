@@ -72,19 +72,6 @@ function OfferManagement() {
     };
     searchOffer(newOffer);
   };
-  // const handleSaveChanges1 = (e) => {
-  //   e.preventDefault();
-  //   console.log("handleSaveChanges1", itemId);
-  //   const editOffer = {
-  //     id: itemId,
-  //     title: title,
-  //     code: code,
-  //     Discount: discount,
-  //     // productName: productName,
-  //     product_Id: "6482bea984e5342a120adbde",
-  //   };
-  //   updateOffer(editOffer);
-  // };
   const handleSaveChanges1 = async (e) => {
     e.preventDefault();
     console.log("handleSaveChanges1", itemId);
@@ -108,7 +95,7 @@ function OfferManagement() {
       // Handle error if necessary
     }
   };
-  
+
   return (
     <>
       <Sidebar />
@@ -246,7 +233,7 @@ function OfferManagement() {
                                 <th>Title</th>
                                 <th>Code</th>
                                 <th>Discount</th>
-                                <th>Status</th>
+                                {/* <th>Status</th> */}
                                 <th>Action</th>
                               </tr>
                             </thead>
@@ -262,7 +249,7 @@ function OfferManagement() {
                                       <td> {item?.title} </td>
                                       <td> {item?.code} </td>
                                       <td> {item?.Discount} </td>
-                                      <td>
+                                      {/* <td>
                                         <form className="table_btns d-flex align-items-center">
                                           <div className="check_toggle">
                                             <input
@@ -277,7 +264,7 @@ function OfferManagement() {
                                             <label htmlFor="check1" />
                                           </div>
                                         </form>
-                                      </td>
+                                      </td> */}
                                       <td>
                                         <Link
                                           className="comman_btn table_viewbtn"
