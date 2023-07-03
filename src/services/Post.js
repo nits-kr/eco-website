@@ -24,6 +24,12 @@ export const PostApi = createApi({
         method: "post",
       }),
     }),
+    getStaffList: builder.query({
+      query: (name) => ({
+        url: `admin/staff/staff/list`,
+        method: "post",
+      }),
+    }),
     getTransactionList: builder.query({
       query: (name) => ({
         url: `admin/transacation/list`,
@@ -155,6 +161,19 @@ export const PostApi = createApi({
         };
       },
     }),
+    updateStaff: builder.mutation({
+      query: (body) => {
+        console.log("update category", body);
+        const { id, ...data } = body;
+        console.log("update Sub category body data", data);
+        console.log("update Sub category body id", id);
+        return {
+          url: `admin/staff/staff/updateStaff/${id}`,
+          method: "PATCH",
+          body: data,
+        };
+      },
+    }),
   }),
 });
 
@@ -178,5 +197,7 @@ export const {
   useUpdateCategoryMutation,
   useUpdateSubCategoryMutation,
   useUpdateValueMutation,
+  useUpdateStaffMutation,
+  useGetStaffListQuery,
   // useSearchOfferQuery,
 } = PostApi;

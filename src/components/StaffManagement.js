@@ -4,13 +4,18 @@ import EditStaffMember from "./EditStaffMember";
 import axios from "axios";
 import Swal from "sweetalert2";
 import Sidebar from "./Sidebar";
+import { useUpdateStaffMutation } from "../services/Post";
+import { useGetStaffListQuery } from "../services/Post";
 
 function StaffManagement() {
+  const StaffListItems = useGetStaffListQuery();
+  const [updateStaff] = useUpdateStaffMutation();
   const [staffList, setStaffList] = useState([]);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
-  const [modules, setModules] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [itemId, setItemId] = useState("");
+  const [email, setEmail] = useState("");
   const [staff, setStaff] = useState({
     nameEn: "",
     email: "",
@@ -19,11 +24,25 @@ function StaffManagement() {
     confirmPassword: "",
     categoryId: "",
   });
+
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
-  useEffect(() => {
-    userList();
-  }, []);
+
+  // const fetchStaffList = async () => {
+  //   try {
+  //     const response = await axios.post(
+  //       "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/staff/staff/list"
+  //     );
+  //     setStaffList(response?.data?.results?.list?.reverse());
+  //   } catch (error) {
+  //     console.log(error.response.data);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   fetchStaffList();
+  // }, []);
+
   const userList = async () => {
     const { data } = await axios.post(
       "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/staff/staff/list",
@@ -40,6 +59,7 @@ function StaffManagement() {
     setStaffList(filteredUsers.reverse());
     console.log(data);
   };
+
   const handleSearch = (e) => {
     e.preventDefault();
     userList();
@@ -74,6 +94,7 @@ function StaffManagement() {
       console.error(error);
     }
   };
+
   const handleSearch1 = async (e) => {
     e.preventDefault();
     if (searchQuery) {
@@ -81,14 +102,14 @@ function StaffManagement() {
         const response = await axios.post(
           "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/staff/staff/staffSearch",
           {
-            coupanTitle: searchQuery,
+            staffName: searchQuery,
           }
         );
         const { error, results } = response.data;
         if (error) {
-          throw new Error("Error searching for products.Data are Not Found");
+          throw new Error("Error searching for products. Data is not found.");
         } else {
-          setStaffList(results.coupanData);
+          setStaffList(results.staffData);
         }
       } catch (error) {
         Swal.fire({
@@ -102,10 +123,30 @@ function StaffManagement() {
       setStaffList([]);
     }
   };
+  const handleSaveChanges1 = async (e) => {
+    e.preventDefault();
+    console.log("handleSaveChanges1", itemId);
+    const editOffer = {
+      id: itemId,
+      userEmail: email,
+    };
+    try {
+      await updateStaff(editOffer);
+      StaffListItems.refetch();
+      Swal.fire({
+        title: "Changes Saved",
+        text: "The offer has been updated successfully.",
+        icon: "success",
+        confirmButtonText: "OK",
+      });
+    } catch (error) {
+      // Handle error if necessary
+    }
+  };
 
   return (
     <>
-    <Sidebar/>
+      <Sidebar />
       <div className="admin_main">
         <div className="admin_main_inner">
           <div className="admin_panel_data height_adjust">
@@ -134,24 +175,16 @@ function StaffManagement() {
                         />
                       </div>
                       <div className="form-group col-4">
-                        <label htmlFor="">Select Module</label>
-                        <select
-                          className="select form-control"
-                          size={15}
+                        <label htmlFor="">Module</label>
+                        <input
+                          type="text"
+                          className="form-control"
                           name="modules"
                           id="modules"
                           value={staff.modules}
                           onChange={handleInputChange}
-                        >
-                          {Array.isArray(modules) &&
-                            modules.map((module) => (
-                              <option key={module._id} value={module._id}>
-                                {module?.modules}
-                              </option>
-                            ))}
-                        </select>
+                        />
                       </div>
-
                       <div className="form-group col-4">
                         <label htmlFor="">Email</label>
                         <input
@@ -217,9 +250,9 @@ function StaffManagement() {
                           </div>
                         </form>
                       </div>
-                      <div className="col-auto">
+                      {/* <div className="col-auto">
                         <input type="date" className="custom_date" />
-                      </div>
+                      </div> */}
                     </div>
                     <form
                       className="form-design py-4 px-3 help-support-form row align-items-end justify-content-between"
@@ -269,41 +302,45 @@ function StaffManagement() {
                               </tr>
                             </thead>
                             <tbody>
-                              {(staffList || []).map((data, index) => (
-                                <tr key={index}>
-                                  <td>{index + 1}</td>
-                                  <td>{data?.createdAt?.slice(0, 10)}</td>
-                                  <td>{data?.staffName}</td>
-                                  <td>{data?.userEmail}</td>
-                                  <td>{data?.modules[0]}</td>
-                                  <td>
-                                    <form className="table_btns d-flex align-items-center">
-                                      <div className="check_toggle">
-                                        <input
-                                          defaultChecked
-                                          type="checkbox"
-                                          name={`check${index}`}
-                                          id={`check${index}`}
-                                          className="d-none"
-                                        />
-                                        <label
-                                          htmlFor={`check${index}`}
-                                        ></label>
-                                      </div>
-                                    </form>
-                                  </td>
-                                  <td>
-                                    <Link
-                                      data-bs-toggle="modal"
-                                      data-bs-target="#staticBackdrop"
-                                      className="comman_btn2 table_viewbtn"
-                                      to=""
-                                    >
-                                      Edit
-                                    </Link>
-                                  </td>
-                                </tr>
-                              ))}
+                              {StaffListItems?.data?.results?.list
+                                ?.slice()
+                                .reverse()
+                                ?.map((data, index) => (
+                                  <tr key={index}>
+                                    <td>{index + 1}</td>
+                                    <td>{data?.createdAt?.slice(0, 10)}</td>
+                                    <td>{data?.staffName}</td>
+                                    <td>{data?.userEmail}</td>
+                                    <td>{data?.modules[0]}</td>
+                                    <td>
+                                      <form className="table_btns d-flex align-items-center">
+                                        <div className="check_toggle">
+                                          <input
+                                            defaultChecked
+                                            type="checkbox"
+                                            name={`check${index}`}
+                                            id={`check${index}`}
+                                            className="d-none"
+                                          />
+                                          <label
+                                            htmlFor={`check${index}`}
+                                          ></label>
+                                        </div>
+                                      </form>
+                                    </td>
+                                    <td>
+                                      <Link
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#staticBackdrop"
+                                        className="comman_btn2 table_viewbtn"
+                                        to=""
+                                        onClick={() => setItemId(data?._id)}
+                                      >
+                                        Edit
+                                      </Link>
+                                    </td>
+                                  </tr>
+                                ))}
                             </tbody>
                           </table>
                         </div>
@@ -316,7 +353,107 @@ function StaffManagement() {
           </div>
         </div>
       </div>
-      <EditStaffMember />
+      {/* <EditStaffMember /> */}
+      <div
+        className="modal fade Edit_modal"
+        id="staticBackdrop"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+        tabIndex="-1"
+        aria-labelledby="staticBackdropLabel"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog modal-dialog-centered">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title" id="staticBackdropLabel">
+                Edit Staff Member
+              </h5>
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div className="modal-body">
+              <form
+                className="form-design p-3 help-support-form row align-items-start justify-content-center"
+                action=""
+              >
+                <div className="form-group col-6">
+                  <label htmlFor="">Staff Name</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    name="nameEn"
+                    id="nameEn"
+                    // value={staff ? staff.nameEn : ""}
+                    // onChange={handleInputChange}
+                  />
+                </div>
+                <div className="form-group col-6">
+                  <label htmlFor="">Email</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    name="email"
+                    id="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                </div>
+                <div className="form-group col-12">
+                  <label htmlFor="">Select Module</label>
+                  <select
+                    className="select form-control"
+                    size={15}
+                    name="models"
+                    id="models"
+                    // value={staff ? staff.modules : ""}
+                    // onChange={handleInputChange}
+                  >
+                    {/* {Array.isArray(modules) &&
+                      modules.map((module) => (
+                        <option key={module._id} value={module._id}>
+                          {module.modules}
+                        </option>
+                      ))} */}
+                  </select>
+                </div>
+                <div className="form-group col-6">
+                  <label htmlFor="">Password</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    // value={staff ? staff.password : ""}
+                    // onChange={handleInputChange}
+                    name="password"
+                    id="password"
+                  />
+                </div>
+                <div className="form-group col-6">
+                  <label htmlFor="">Confirm Password</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    // value={staff ? staff.confirmPassword : ""}
+                    // onChange={handleInputChange}
+                    name="confirmPassword"
+                    id="confirmPassword"
+                  />
+                </div>
+                <div className="form-group mb-0 col-auto">
+                  {" "}
+                  <button className="comman_btn2" onClick={handleSaveChanges1}>
+                    Save
+                  </button>{" "}
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
     </>
   );
 }
