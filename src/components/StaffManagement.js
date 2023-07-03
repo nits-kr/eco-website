@@ -28,20 +28,20 @@ function StaffManagement() {
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
 
-  // const fetchStaffList = async () => {
-  //   try {
-  //     const response = await axios.post(
-  //       "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/staff/staff/list"
-  //     );
-  //     setStaffList(response?.data?.results?.list?.reverse());
-  //   } catch (error) {
-  //     console.log(error.response.data);
-  //   }
-  // };
+  const fetchStaffList = async () => {
+    try {
+      const response = await axios.post(
+        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/staff/staff/list"
+      );
+      setStaffList(response?.data?.results?.list?.reverse());
+    } catch (error) {
+      console.log(error.response.data);
+    }
+  };
 
-  // useEffect(() => {
-  //   fetchStaffList();
-  // }, []);
+  useEffect(() => {
+    fetchStaffList();
+  }, []);
 
   const userList = async () => {
     const { data } = await axios.post(
@@ -302,45 +302,42 @@ function StaffManagement() {
                               </tr>
                             </thead>
                             <tbody>
-                              {StaffListItems?.data?.results?.list
-                                ?.slice()
-                                .reverse()
-                                ?.map((data, index) => (
-                                  <tr key={index}>
-                                    <td>{index + 1}</td>
-                                    <td>{data?.createdAt?.slice(0, 10)}</td>
-                                    <td>{data?.staffName}</td>
-                                    <td>{data?.userEmail}</td>
-                                    <td>{data?.modules[0]}</td>
-                                    <td>
-                                      <form className="table_btns d-flex align-items-center">
-                                        <div className="check_toggle">
-                                          <input
-                                            defaultChecked
-                                            type="checkbox"
-                                            name={`check${index}`}
-                                            id={`check${index}`}
-                                            className="d-none"
-                                          />
-                                          <label
-                                            htmlFor={`check${index}`}
-                                          ></label>
-                                        </div>
-                                      </form>
-                                    </td>
-                                    <td>
-                                      <Link
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#staticBackdrop"
-                                        className="comman_btn2 table_viewbtn"
-                                        to=""
-                                        onClick={() => setItemId(data?._id)}
-                                      >
-                                        Edit
-                                      </Link>
-                                    </td>
-                                  </tr>
-                                ))}
+                              {staffList?.map((data, index) => (
+                                <tr key={index}>
+                                  <td>{index + 1}</td>
+                                  <td>{data?.createdAt?.slice(0, 10)}</td>
+                                  <td>{data?.staffName}</td>
+                                  <td>{data?.userEmail}</td>
+                                  <td>{data?.modules[0]}</td>
+                                  <td>
+                                    <form className="table_btns d-flex align-items-center">
+                                      <div className="check_toggle">
+                                        <input
+                                          defaultChecked
+                                          type="checkbox"
+                                          name={`check${index}`}
+                                          id={`check${index}`}
+                                          className="d-none"
+                                        />
+                                        <label
+                                          htmlFor={`check${index}`}
+                                        ></label>
+                                      </div>
+                                    </form>
+                                  </td>
+                                  <td>
+                                    <Link
+                                      data-bs-toggle="modal"
+                                      data-bs-target="#staticBackdrop"
+                                      className="comman_btn2 table_viewbtn"
+                                      to=""
+                                      onClick={() => setItemId(data?._id)}
+                                    >
+                                      Edit
+                                    </Link>
+                                  </td>
+                                </tr>
+                              ))}
                             </tbody>
                           </table>
                         </div>
