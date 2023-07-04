@@ -170,7 +170,7 @@ function Attribute() {
                   {Array.isArray(categories) &&
                     categories.map((category) => (
                       <option key={category._id} value={category._id}>
-                        {category.categoryName}
+                        {category.categoryName_en}
                       </option>
                     ))}
                 </select>
@@ -188,7 +188,7 @@ function Attribute() {
                   {Array.isArray(subCategories) &&
                     subCategories.map((subCategory) => (
                       <option key={subCategory._id} value={subCategory._id}>
-                        {subCategory.subCategoryName}
+                        {subCategory.subCategoryName_en}
                       </option>
                     ))}
                 </select>
@@ -209,7 +209,7 @@ function Attribute() {
                         key={subSubCategory._id}
                         value={subSubCategory._id}
                       >
-                        {subSubCategory.subSubCategoryName}
+                        {subSubCategory.subSubCategoryName_en}
                       </option>
                     ))}
                 </select>
@@ -290,7 +290,7 @@ function Attribute() {
                       {(attributesList || [])?.map((value, index) => (
                         <tr key={index}>
                           <td>{index + 1}</td>
-                          <td>{value?.category_Id?.categoryName}</td>
+                          <td>{value?.category_Id?.categoryName_en}</td>
                           <td>{value?.subCategory_Id?.subCategoryName}</td>
                           <td>
                             {value?.subSubCategory_Id?.subSubCategoryName}

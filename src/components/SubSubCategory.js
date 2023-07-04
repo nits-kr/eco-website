@@ -194,7 +194,7 @@ function SubSubCategory() {
                   {Array.isArray(categories) &&
                     categories.map((category) => (
                       <option key={category._id} value={category._id}>
-                        {category.categoryName}
+                        {category.categoryName_en}
                       </option>
                     ))}
                 </select>
@@ -212,7 +212,7 @@ function SubSubCategory() {
                   {Array.isArray(subCategories) &&
                     subCategories.map((subCategory) => (
                       <option key={subCategory._id} value={subCategory._id}>
-                        {subCategory.subCategoryName}
+                        {subCategory.subCategoryName_en}
                       </option>
                     ))}
                 </select>
@@ -297,8 +297,8 @@ function SubSubCategory() {
                       {subSubCategoryList?.map((value, index) => (
                         <tr key={index}>
                           <td>{index + 1}</td>
-                          <td>{value.category_Id?.categoryName}</td>
-                          <td>{value?.subCategory_Id?.subCategoryName}</td>
+                          <td>{value.category_Id?.categoryName_en}</td>
+                          <td>{value?.subCategory_Id?.subCategoryName_en}</td>
                           <td>{value?.subSubCategoryName_en}</td>
                           <td>{value?.subSubCategoryName_ar}</td>
                           <td>

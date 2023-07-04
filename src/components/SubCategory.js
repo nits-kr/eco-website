@@ -4,8 +4,10 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import EditValues from "./EditValues";
 import { useUpdateSubCategoryMutation } from "../services/Post";
+import Spinner from "./Spinner";
 
-function SubCategory() {
+function SubCategory(props) {
+  const [loading, setLoading] = useState(false);
   const [update, res] = useUpdateSubCategoryMutation();
   const [itemId, setItemId] = useState("");
   const [editSubCategoryNameEn, setEditSubCategoryNameEn] = useState("");
@@ -110,6 +112,8 @@ function SubCategory() {
   };
 
   const handleSave = async () => {
+    // props.setProgress(10);
+    // setLoading(true);
     try {
       const response = await axios.post(
         "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/subCategory/SubCategoryList"
@@ -118,6 +122,8 @@ function SubCategory() {
     } catch (error) {
       console.error(error);
     }
+    // props.setProgress(100);
+    // setLoading(false);
   };
 
   useEffect(() => {
@@ -172,7 +178,6 @@ function SubCategory() {
   };
   return (
     <>
-      {/* <Sidebar/> */}
       <div
         className="tab-pane fade"
         id="nav-profile"
@@ -204,7 +209,7 @@ function SubCategory() {
                   {Array.isArray(categories) &&
                     categories.map((category) => (
                       <option key={category._id} value={category._id}>
-                        {category.categoryName}
+                        {category.categoryName_en}
                       </option>
                     ))}
                 </select>
@@ -305,7 +310,7 @@ function SubCategory() {
                       {subCategoryList?.map((value, index) => (
                         <tr key={index}>
                           <td>{index + 1}</td>
-                          <td>{value?.category_Id?.categoryName}</td>
+                          <td>{value?.category_Id?.categoryName_en}</td>
                           <td>{value?.subCategoryName_en}</td>
                           <td>{value.subCategoryName_ar}</td>
                           <td>

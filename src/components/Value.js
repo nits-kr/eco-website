@@ -215,7 +215,7 @@ function Value() {
                   {Array.isArray(categories) &&
                     categories.map((category) => (
                       <option key={category._id} value={category._id}>
-                        {category.categoryName}
+                        {category.categoryName_en}
                       </option>
                     ))}
                 </select>
@@ -234,7 +234,7 @@ function Value() {
                   {Array.isArray(subCategories) &&
                     subCategories.map((subCategory) => (
                       <option key={subCategory._id} value={subCategory._id}>
-                        {subCategory.subCategoryName}
+                        {subCategory.subCategoryName_en}
                       </option>
                     ))}
                 </select>
@@ -255,7 +255,7 @@ function Value() {
                         key={subSubCategory._id}
                         value={subSubCategory._id}
                       >
-                        {subSubCategory.subSubCategoryName}
+                        {subSubCategory.subSubCategoryName_en}
                       </option>
                     ))}
                 </select>
@@ -273,7 +273,7 @@ function Value() {
                   {Array.isArray(attributes) &&
                     attributes.map((attribute) => (
                       <option key={attribute._id} value={attribute._id}>
-                        {attribute.attributeName}
+                        {attribute.attributeName_en}
                       </option>
                     ))}
                 </select>

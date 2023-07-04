@@ -3,14 +3,19 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 import Sidebar from "./Sidebar";
-function UsersManagement() {
+import { useGetFileQuery } from "../services/Post";
+import Spinner from "./Spinner";
+function UsersManagement(props) {
+  const { data, isLoading, isError } = useGetFileQuery("file-id");
+  const [loading, setLoading] = useState(false);
+  console.log("down load data of user management", data);
   const [usersList, setUsersList] = useState([]);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
-  
+
   let gmarkers1 = [];
   let markers1 = [];
   let infowindow = new window.google.maps.InfoWindow({
@@ -19,7 +24,7 @@ function UsersManagement() {
 
   useEffect(() => {
     initialize();
-  });
+  }, []);
   const initialize = () => {
     const center = new window.google.maps.LatLng(34.593839, -98.409974);
     const mapOptions = {
@@ -68,9 +73,9 @@ function UsersManagement() {
     ["3", "Total User 2", 34.623425, -98.468883, "Total User 2"],
     ["4", "Total User 9", 34.593839, -98.409974, "Total User 9"],
   ];
-const handleId = (id) => {
-  alert(id)
-}
+  const handleId = (id) => {
+    alert(id);
+  };
   useEffect(() => {
     userList();
     axios
@@ -141,9 +146,29 @@ const handleId = (id) => {
       setUsersList([]);
     }
   };
+  // const handleDownload = () => {
+  //   if (data) {
+  //     const blob = new Blob([data]);
+  //     const downloadUrl = URL.createObjectURL(blob);
+  //     const link = document.createElement('a');
+  //     link.href = downloadUrl;
+  //     link.download = 'file.txt';
+  //     link.click();
+  //   }
+  // };
+  const handleDownload = () => {
+    if (data && data.results && data.results.file) {
+      const downloadUrl = data.results.file;
+      const link = document.createElement("a");
+      link.href = downloadUrl;
+      link.download = "file.xlsx";
+      link.click();
+    }
+  };
 
   return (
     <>
+      {loading}
       <Sidebar />
       <div className="admin_main">
         <div className="admin_main_inner">
@@ -178,7 +203,10 @@ const handleId = (id) => {
                         </form>
                       </div>
                       <div className="col-auto">
-                        <button className="comman_btn2">
+                        <button
+                          className="comman_btn2"
+                          onClick={handleDownload}
+                        >
                           <i className="fal fa-download me-2"></i>Excel
                         </button>
                       </div>
@@ -218,72 +246,76 @@ const handleId = (id) => {
                         </button>
                       </div>
                     </form>
-                    <div className="row">
-                      <div className="col-12 comman_table_design px-0">
-                        <div className="table-responsive">
-                          <table className="table mb-0">
-                            <thead>
-                              <tr>
-                                <th>S.No.</th>
-                                <th>User Name</th>
-                                <th>Mobile Number</th>
-                                <th>Registration Date</th>
-                                <th>Total Offers</th>
-                                <th>Status</th>
-                                <th>Action</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {usersList?.map((user, index) => (
-                                <tr key={user._id}>
-                                  <td>{index + 1}</td>
-                                  <td>{user?.userName}</td>
-                                  <td>{user?.mobileNumber}</td>
-                                  {/* <td>{user?.createdAt.slice(0,10)}</td> */}
-                                  <td>
-                                    {" "}
-                                    {user?.createdAt
-                                      .slice(0, 10)
-                                      .split("-")
-                                      .reverse()
-                                      .join("-")}{" "}
-                                  </td>
-                                  <td>{user?.totalOffers}</td>
-                                  <td>
-                                    <form className="table_btns d-flex align-items-center">
-                                      <div className="check_toggle">
-                                        <input
-                                          data-bs-toggle="modal"
-                                          data-bs-target="#staticBackdrop"
-                                          type="checkbox"
-                                          defaultChecked=""
-                                          name={`check${user._id}`}
-                                          id={`check${user._id}`}
-                                          className="d-none"
-                                        />
-                                        <label
-                                          htmlFor={`check${user._id}`}
-                                        ></label>
-                                      </div>
-                                    </form>
-                                  </td>
-                                  <td>
-                                    <Link
-                                      className="comman_btn2 table_viewbtn"
-                                      // to={`/userDetails`}
-                                      to={`/userDetails/${user._id}`}
-                                      onClick={() => handleId(user?._id)}
-                                    >
-                                      View
-                                    </Link>
-                                  </td>
+                    {loading ? (
+                      <Spinner />
+                    ) : (
+                      <div className="row">
+                        <div className="col-12 comman_table_design px-0">
+                          <div className="table-responsive">
+                            <table className="table mb-0">
+                              <thead>
+                                <tr>
+                                  <th>S.No.</th>
+                                  <th>User Name</th>
+                                  <th>Mobile Number</th>
+                                  <th>Registration Date</th>
+                                  <th>Total Offers</th>
+                                  <th>Status</th>
+                                  <th>Action</th>
                                 </tr>
-                              ))}
-                            </tbody>
-                          </table>
+                              </thead>
+                              <tbody>
+                                {usersList?.map((user, index) => (
+                                  <tr key={user._id}>
+                                    <td>{index + 1}</td>
+                                    <td>{user?.userName}</td>
+                                    <td>{user?.mobileNumber}</td>
+                                    {/* <td>{user?.createdAt.slice(0,10)}</td> */}
+                                    <td>
+                                      {" "}
+                                      {user?.createdAt
+                                        .slice(0, 10)
+                                        .split("-")
+                                        .reverse()
+                                        .join("-")}{" "}
+                                    </td>
+                                    <td>{user?.totalOffers}</td>
+                                    <td>
+                                      <form className="table_btns d-flex align-items-center">
+                                        <div className="check_toggle">
+                                          <input
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#staticBackdrop"
+                                            type="checkbox"
+                                            defaultChecked=""
+                                            name={`check${user._id}`}
+                                            id={`check${user._id}`}
+                                            className="d-none"
+                                          />
+                                          <label
+                                            htmlFor={`check${user._id}`}
+                                          ></label>
+                                        </div>
+                                      </form>
+                                    </td>
+                                    <td>
+                                      <Link
+                                        className="comman_btn2 table_viewbtn"
+                                        // to={`/userDetails`}
+                                        to={`/userDetails/${user._id}`}
+                                        onClick={() => handleId(user?._id)}
+                                      >
+                                        View
+                                      </Link>
+                                    </td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
                         </div>
                       </div>
-                    </div>
+                    )}
                   </div>
                 </div>
               </div>

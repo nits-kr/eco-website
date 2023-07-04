@@ -12,10 +12,12 @@ import EditSubCategory from "./EditSubCategory";
 import EditAttribute from "./EditAttribute";
 import Swal from "sweetalert2";
 import Sidebar from "./Sidebar";
+import Spinner from "./Spinner";
 
-function CategoryManagement() {
+function CategoryManagement(props) {
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
+  const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [categoryList, setCategoryList] = useState([]);
   const [formData, setFormData] = useState({
@@ -62,7 +64,7 @@ function CategoryManagement() {
   const handleFileChange = (event) => {
     setFormData({ ...formData, categoryPic: event.target.files[0] });
   };
-console.log("set form data pic", formData.categoryPic);
+  console.log("set form data pic", formData.categoryPic);
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
@@ -91,6 +93,8 @@ console.log("set form data pic", formData.categoryPic);
   };
 
   const handleSave = async () => {
+    props.setProgress(10);
+    setLoading(true);
     try {
       const response = await axios.post(
         "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/category/list",
@@ -106,6 +110,8 @@ console.log("set form data pic", formData.categoryPic);
     } catch (error) {
       console.error(error);
     }
+    props.setProgress(100);
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -113,7 +119,7 @@ console.log("set form data pic", formData.categoryPic);
   }, []);
 
   const handleUpdate = (nameEn, nameAr, categoryPic, id) => {
-    console.log("category update data",nameEn, nameAr, categoryPic, id);
+    console.log("category update data", nameEn, nameAr, categoryPic, id);
     setNewCategory({
       nameEn: nameEn,
       nameAr: nameAr,
@@ -124,7 +130,8 @@ console.log("set form data pic", formData.categoryPic);
 
   return (
     <>
-    <Sidebar/>
+      {loading}
+      <Sidebar />
       <div className="admin_main">
         <div className="admin_main_inner">
           <div className="admin_panel_data height_adjust">
@@ -312,97 +319,105 @@ console.log("set form data pic", formData.categoryPic);
                                     />
                                   </div> */}
                                 </div>
-                                <div className="row">
-                                  <div className="col-12 comman_table_design px-0">
-                                    <div className="table-responsive">
-                                      <table className="table mb-0">
-                                        <thead>
-                                          <tr>
-                                            <th>S.No.</th>
-                                            <th>Category Name (En)</th>
-                                            <th>Category Name (Ar)</th>
-                                            <th>Media</th>
-                                            <th>SHIPMENT SERVICE</th>
-                                            <th>Status</th>
-                                            <th>Action</th>
-                                          </tr>
-                                        </thead>
-                                        <tbody>
-                                          {(categoryList || [])?.map(
-                                            (category, index) => (
-                                              <tr key={category._id}>
-                                                <td>{index + 1}</td>
-                                                <td>{category?.categoryName_en}</td>
-                                                <td>{category?.categoryName_ar}</td>
-                                                <td>
-                                                  <img
-                                                    className="table_img"
-                                                    src={category.categoryPic}
-                                                    alt=""
-                                                  />
-                                                </td>
-                                                <td>
-                                                  <form className="table_btns d-flex align-items-center">
-                                                    <div className="check_toggle">
-                                                      <input
-                                                        defaultChecked={
-                                                          category.shipmentService
-                                                        }
-                                                        type="checkbox"
-                                                        name={`shipment_service_${category._id}`}
-                                                        id={`shipment_service_${category._id}`}
-                                                        className="d-none"
-                                                      />
-                                                      <label
-                                                        htmlFor={`shipment_service_${category._id}`}
-                                                      ></label>
-                                                    </div>
-                                                  </form>
-                                                </td>
-                                                <td>
-                                                  <form className="table_btns d-flex align-items-center">
-                                                    <div className="check_toggle">
-                                                      <input
-                                                        defaultChecked={
-                                                          category.status
-                                                        }
-                                                        type="checkbox"
-                                                        name={`status_${category._id}`}
-                                                        id={`status_${category._id}`}
-                                                        className="d-none"
-                                                      />
-                                                      <label
-                                                        htmlFor={`status_${category._id}`}
-                                                      ></label>
-                                                    </div>
-                                                  </form>
-                                                </td>
-                                                <td>
-                                                  <Link
-                                                    data-bs-toggle="modal"
-                                                    data-bs-target="#staticBackdrop"
-                                                    className="comman_btn2 table_viewbtn"
-                                                    to=""
-                                                    onClick={() =>
-                                                      handleUpdate(
-                                                        category.categoryName_en,
-                                                        category.categoryName_en,
-                                                        category.categoryPic,
-                                                        category._id
-                                                      )
-                                                    }
-                                                  >
-                                                    Edit
-                                                  </Link>
-                                                </td>
-                                              </tr>
-                                            )
-                                          )}
-                                        </tbody>
-                                      </table>
+                                {loading ? (
+                                  <Spinner />
+                                ) : (
+                                  <div className="row">
+                                    <div className="col-12 comman_table_design px-0">
+                                      <div className="table-responsive">
+                                        <table className="table mb-0">
+                                          <thead>
+                                            <tr>
+                                              <th>S.No.</th>
+                                              <th>Category Name (En)</th>
+                                              <th>Category Name (Ar)</th>
+                                              <th>Media</th>
+                                              <th>SHIPMENT SERVICE</th>
+                                              <th>Status</th>
+                                              <th>Action</th>
+                                            </tr>
+                                          </thead>
+                                          <tbody>
+                                            {(categoryList || [])?.map(
+                                              (category, index) => (
+                                                <tr key={category._id}>
+                                                  <td>{index + 1}</td>
+                                                  <td>
+                                                    {category?.categoryName_en}
+                                                  </td>
+                                                  <td>
+                                                    {category?.categoryName_ar}
+                                                  </td>
+                                                  <td>
+                                                    <img
+                                                      className="table_img"
+                                                      src={category.categoryPic}
+                                                      alt=""
+                                                    />
+                                                  </td>
+                                                  <td>
+                                                    <form className="table_btns d-flex align-items-center">
+                                                      <div className="check_toggle">
+                                                        <input
+                                                          defaultChecked={
+                                                            category.shipmentService
+                                                          }
+                                                          type="checkbox"
+                                                          name={`shipment_service_${category._id}`}
+                                                          id={`shipment_service_${category._id}`}
+                                                          className="d-none"
+                                                        />
+                                                        <label
+                                                          htmlFor={`shipment_service_${category._id}`}
+                                                        ></label>
+                                                      </div>
+                                                    </form>
+                                                  </td>
+                                                  <td>
+                                                    <form className="table_btns d-flex align-items-center">
+                                                      <div className="check_toggle">
+                                                        <input
+                                                          defaultChecked={
+                                                            category.status
+                                                          }
+                                                          type="checkbox"
+                                                          name={`status_${category._id}`}
+                                                          id={`status_${category._id}`}
+                                                          className="d-none"
+                                                        />
+                                                        <label
+                                                          htmlFor={`status_${category._id}`}
+                                                        ></label>
+                                                      </div>
+                                                    </form>
+                                                  </td>
+                                                  <td>
+                                                    <Link
+                                                      data-bs-toggle="modal"
+                                                      data-bs-target="#staticBackdrop"
+                                                      className="comman_btn2 table_viewbtn"
+                                                      to=""
+                                                      onClick={() =>
+                                                        handleUpdate(
+                                                          category.categoryName_en,
+                                                          category.categoryName_en,
+                                                          category.categoryPic,
+                                                          category._id
+                                                        )
+                                                      }
+                                                    >
+                                                      Edit
+                                                    </Link>
+                                                  </td>
+                                                </tr>
+                                              )
+                                            )}
+                                          </tbody>
+                                        </table>
+                                      </div>
                                     </div>
                                   </div>
-                                </div>
+                                )}
                               </div>
                             </div>
                           </div>

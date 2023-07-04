@@ -5,7 +5,10 @@ import Swal from "sweetalert2";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faPencil, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import Sidebar from "./Sidebar";
+import { useGetFileQuery } from "../services/Post";
 function OrderManagement() {
+  const { data, isLoading, isError } = useGetFileQuery('file-id');
+  console.log("down load data", data);
   const [orderList, setOrderList] = useState([]);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
@@ -93,6 +96,36 @@ function OrderManagement() {
       console.log("Error deleting order:", error);
     }
   };
+  // const handleDownload = () => {
+  //   if (data) {
+  //     const blob = new Blob([data]);
+  //     const downloadUrl = URL.createObjectURL(blob);
+  //     const link = document.createElement('a');
+  //     link.href = downloadUrl;
+  //     link.download = 'file.txt';
+  //     link.click();
+  //   }
+  // };
+  const handleDownload = () => {
+    if (data && data.results && data.results.file) {
+      const downloadUrl = data.results.file;
+      const link = document.createElement('a');
+      link.href = downloadUrl;
+      link.download = 'file.xlsx';
+      link.click();
+    }
+  };
+  
+  
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (isError) {
+    return <div>Error occurred while fetching the file.</div>;
+  }
+
 
   return (
     <>
@@ -129,7 +162,7 @@ function OrderManagement() {
                         </form>
                       </div>
                       <div className="col-auto">
-                        <button className="comman_btn2">
+                        <button className="comman_btn2" onClick={handleDownload}>
                           <i className="fal fa-download me-2"></i>Excel
                         </button>
                       </div>
@@ -177,7 +210,7 @@ function OrderManagement() {
                           <table className="table mb-0">
                             <thead>
                               <tr>
-                                <th>Order Image</th>
+                                {/* <th>Order Image</th> */}
                                 <th>Order ID</th>
                                 <th>Date</th>
                                 <th>Payment Method</th>
@@ -190,19 +223,12 @@ function OrderManagement() {
                               </tr>
                             </thead>
                             <tbody>
-                              {(orderList || [])?.map((data, index) => (
+                              {orderList?.map((data, index) => (
                                 <tr key={index}>
-                                  <td>
+                                  {/* <td>
                                     <div className="table-image">
                                       <img
-                                        src={
-                                          data &&
-                                          data.products &&
-                                          data.products[0] &&
-                                          data.products[0].product_Id &&
-                                          data.products[0].product_Id
-                                            .product_Pic[0]
-                                        }
+                                        src={data?.products[0]?.product_Id?.product_Pic[0]}
                                         className="img-fluid"
                                         alt=""
                                         style={{
@@ -211,11 +237,8 @@ function OrderManagement() {
                                         }}
                                       />
                                     </div>
-                                  </td>
-                                  <td>
-                                    {" "}
-                                    {data?.products[0]?.product_Id?._id}{" "}
-                                  </td>
+                                  </td> */}
+                                  <td> {data?._id} </td>
                                   <td> {data?.createdAt?.slice(0, 10)} </td>
                                   <td> {data.paymentIntent} </td>
                                   <td> {data.orderStatus} </td>

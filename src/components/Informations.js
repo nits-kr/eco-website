@@ -55,11 +55,6 @@ function Informations() {
         console.log(error);
       });
   };
-  const updateItem = (_id) => {
-    alert(_id);
-    //handleUpdate(_id)
-    //setSelectedItemId(_id); // Set the selected item ID in the state
-  };
   return (
     <>
       <Sidebar />

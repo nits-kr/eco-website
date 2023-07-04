@@ -1,4 +1,5 @@
 import "./App.css";
+import { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import ResetPassword from "./components/ResetPassword";
 import ReportManagement from "./components/ReportManagement";
@@ -41,19 +42,30 @@ import VerificationModal from "./components/VerificationModal";
 import Agent from "./components/Agent";
 import AgentDetails from "./components/AgentDetails";
 import AgentInformation from "./components/AgentInformation";
+import LoadingBar from "react-top-loading-bar";
+import SubCategory from "./components/SubCategory";
 
 function App() {
+  const [progress, setProgress] = useState(0);
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      // Increment the progress value
+      setProgress(100);
+    }, 500); // Change the timeout duration as needed
+
+    return () => clearTimeout(timeout);
+  }, []);
   return (
     <>
       <BrowserRouter>
-        {/* <Sidebar /> */}
+        <LoadingBar height={3} color="#f11946" progress={progress} />
         <Routes>
           <Route exact className="active" path="/" element={<Login />} />
           <Route
             exact
             className="active"
             path="dashboard"
-            element={<Dashboard />}
+            element={<Dashboard setProgress={setProgress}/>}
           />
           <Route
             exact
@@ -79,7 +91,13 @@ function App() {
             exact
             className="active"
             path="/categories"
-            element={<CategoryManagement />}
+            element={<CategoryManagement setProgress={setProgress}/>}
+          />
+          <Route
+            exact
+            className="active"
+            path="/sub-categories"
+            element={<SubCategory setProgress={setProgress}/>}
           />
           <Route
             exact

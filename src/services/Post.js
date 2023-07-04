@@ -48,6 +48,12 @@ export const PostApi = createApi({
         method: "post",
       }),
     }),
+    getFile: builder.query({
+      query: (name) => ({
+        url: `admin/user/download`,
+        method: "post",
+      }),
+    }),
     searchOffer: builder.mutation({
       query: (body) => ({
         url: `admin/offer/search-offer`,
@@ -248,5 +254,6 @@ export const {
   useUpdateContentMutation,
   useUpdateCoupanMutation,
   useDeleteContactMutation,
+  useGetFileQuery,
   // useSearchOfferQuery,
 } = PostApi;
