@@ -14,6 +14,7 @@ function StaffManagement() {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
+  const [startDate1, setStartDate1] = useState("");
   const [itemId, setItemId] = useState("");
   const [email, setEmail] = useState("");
   const [staff, setStaff] = useState({
@@ -42,6 +43,38 @@ function StaffManagement() {
   useEffect(() => {
     fetchStaffList();
   }, []);
+
+  const userList2 = async () => {
+    if (!startDate1) return;
+    try {
+      const { data } = await axios.post(
+        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/staff/staff/list",
+        {
+          startDate1,
+        }
+      );
+      const filteredUsers = data?.results?.list?.filter(
+        (user) =>
+          new Date(user?.createdAt?.slice(0, 10)).toISOString().slice(0, 10) ===
+          new Date(startDate1).toISOString().slice(0, 10)
+      );
+      if (filteredUsers.length === 0) {
+        Swal.fire({
+          title: "No List Found",
+          text: "No list is available for the selected date.",
+          icon: "warning",
+          confirmButtonText: "OK",
+        });
+      }
+      setStaffList(filteredUsers);
+      console.log(data);
+    } catch (error) {
+      console.error("Error fetching user list:", error);
+    }
+  };
+  useEffect(() => {
+    userList2();
+  }, [startDate1]);
 
   const userList = async () => {
     const { data } = await axios.post(
@@ -250,9 +283,14 @@ function StaffManagement() {
                           </div>
                         </form>
                       </div>
-                      {/* <div className="col-auto">
-                        <input type="date" className="custom_date" />
-                      </div> */}
+                      <div className="col-auto">
+                        <input
+                          type="date"
+                          className="custom_date"
+                          value={startDate1}
+                          onChange={(e) => setStartDate1(e.target.value)}
+                        />
+                      </div>
                     </div>
                     <form
                       className="form-design py-4 px-3 help-support-form row align-items-end justify-content-between"

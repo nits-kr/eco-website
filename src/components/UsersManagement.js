@@ -11,6 +11,7 @@ function UsersManagement(props) {
   console.log("down load data of user management", data);
   const [usersList, setUsersList] = useState([]);
   const [startDate, setStartDate] = useState("");
+  const [startDate1, setStartDate1] = useState("");
   const [endDate, setEndDate] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   axios.defaults.headers.common["x-auth-token-user"] =
@@ -77,7 +78,6 @@ function UsersManagement(props) {
     alert(id);
   };
   useEffect(() => {
-    // userList();
     axios
       .post(
         "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/user/userList",
@@ -94,6 +94,31 @@ function UsersManagement(props) {
         console.log(error.response.data);
       });
   }, []);
+
+  const userList2 = async () => {
+    if (!startDate1) return;
+    try {
+      const { data } = await axios.post(
+        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/user/userList",
+        {
+          startDate1,
+        }
+      );
+      const filteredUsers = data?.results?.createData?.filter(
+        (user) =>
+          new Date(user?.createdAt?.slice(0, 10)).toISOString().slice(0, 10) ===
+          new Date(startDate1).toISOString().slice(0, 10)
+      );
+      setUsersList(filteredUsers);
+      console.log(data);
+    } catch (error) {
+      console.error("Error fetching user list:", error);
+    }
+  };
+  useEffect(() => {
+    userList2();
+  }, [startDate1]);
+
   const userList = async () => {
     const { data } = await axios.post(
       "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/user/userList",
@@ -113,7 +138,6 @@ function UsersManagement(props) {
     setUsersList(filteredUsers);
     console.log(data);
   };
-
   const handleSearch = (e) => {
     e.preventDefault();
     userList();
@@ -211,7 +235,12 @@ function UsersManagement(props) {
                         </button>
                       </div>
                       <div className="col-auto">
-                        <input type="date" className="custom_date" />
+                        <input
+                          type="date"
+                          className="custom_date"
+                          value={startDate1}
+                          onChange={(e) => setStartDate1(e.target.value)}
+                        />
                       </div>
                     </div>
                     <form
@@ -249,72 +278,72 @@ function UsersManagement(props) {
                     {/* {loading ? (
                       <Spinner />
                     ) : ( */}
-                      <div className="row">
-                        <div className="col-12 comman_table_design px-0">
-                          <div className="table-responsive">
-                            <table className="table mb-0">
-                              <thead>
-                                <tr>
-                                  <th>S.No.</th>
-                                  <th>User Name</th>
-                                  <th>Mobile Number</th>
-                                  <th>Registration Date</th>
-                                  {/* <th>Special Offers</th> */}
-                                  <th>Status</th>
-                                  <th>Action</th>
+                    <div className="row">
+                      <div className="col-12 comman_table_design px-0">
+                        <div className="table-responsive">
+                          <table className="table mb-0">
+                            <thead>
+                              <tr>
+                                <th>S.No.</th>
+                                <th>User Name</th>
+                                <th>Mobile Number</th>
+                                <th>Registration Date</th>
+                                {/* <th>Special Offers</th> */}
+                                <th>Status</th>
+                                <th>Action</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {usersList?.map((user, index) => (
+                                <tr key={user._id}>
+                                  <td>{index + 1}</td>
+                                  <td>{user?.userName}</td>
+                                  <td>{user?.mobileNumber}</td>
+                                  {/* <td>{user?.createdAt.slice(0,10)}</td> */}
+                                  <td>
+                                    {" "}
+                                    {user?.createdAt
+                                      .slice(0, 10)
+                                      .split("-")
+                                      .reverse()
+                                      .join("-")}{" "}
+                                  </td>
+                                  {/* <td>{user?.specialOffer}</td> */}
+                                  <td>
+                                    <form className="table_btns d-flex align-items-center">
+                                      <div className="check_toggle">
+                                        <input
+                                          data-bs-toggle="modal"
+                                          data-bs-target="#staticBackdrop"
+                                          type="checkbox"
+                                          defaultChecked=""
+                                          name={`check${user._id}`}
+                                          id={`check${user._id}`}
+                                          className="d-none"
+                                        />
+                                        <label
+                                          htmlFor={`check${user._id}`}
+                                        ></label>
+                                      </div>
+                                    </form>
+                                  </td>
+                                  <td>
+                                    <Link
+                                      className="comman_btn2 table_viewbtn"
+                                      // to={`/userDetails`}
+                                      to={`/userDetails/${user._id}`}
+                                      onClick={() => handleId(user?._id)}
+                                    >
+                                      View
+                                    </Link>
+                                  </td>
                                 </tr>
-                              </thead>
-                              <tbody>
-                                {usersList?.map((user, index) => (
-                                  <tr key={user._id}>
-                                    <td>{index + 1}</td>
-                                    <td>{user?.userName}</td>
-                                    <td>{user?.mobileNumber}</td>
-                                    {/* <td>{user?.createdAt.slice(0,10)}</td> */}
-                                    <td>
-                                      {" "}
-                                      {user?.createdAt
-                                        .slice(0, 10)
-                                        .split("-")
-                                        .reverse()
-                                        .join("-")}{" "}
-                                    </td>
-                                    {/* <td>{user?.specialOffer}</td> */}
-                                    <td>
-                                      <form className="table_btns d-flex align-items-center">
-                                        <div className="check_toggle">
-                                          <input
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#staticBackdrop"
-                                            type="checkbox"
-                                            defaultChecked=""
-                                            name={`check${user._id}`}
-                                            id={`check${user._id}`}
-                                            className="d-none"
-                                          />
-                                          <label
-                                            htmlFor={`check${user._id}`}
-                                          ></label>
-                                        </div>
-                                      </form>
-                                    </td>
-                                    <td>
-                                      <Link
-                                        className="comman_btn2 table_viewbtn"
-                                        // to={`/userDetails`}
-                                        to={`/userDetails/${user._id}`}
-                                        onClick={() => handleId(user?._id)}
-                                      >
-                                        View
-                                      </Link>
-                                    </td>
-                                  </tr>
-                                ))}
-                              </tbody>
-                            </table>
-                          </div>
+                              ))}
+                            </tbody>
+                          </table>
                         </div>
                       </div>
+                    </div>
                     {/* )} */}
                   </div>
                 </div>

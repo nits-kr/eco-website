@@ -71,9 +71,9 @@ function ReportManagement() {
                       </div>
                     </form>
                   </div>
-                  <div className="col-auto">
+                  {/* <div className="col-auto">
                     <input type="date" className="custom_date" />
-                  </div>
+                  </div> */}
                 </div>
                 <div className="row">
                   <div className="col-12 px-0">

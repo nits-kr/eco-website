@@ -6,6 +6,7 @@ import Sidebar from "./Sidebar";
 function AnnounceManagement() {
   const [announcementList, setAnnouncementList] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [startDate1, setStartDate1] = useState("");
   const [formData, setFormData] = useState({
     nameEn: "",
     nameAr: "",
@@ -15,6 +16,39 @@ function AnnounceManagement() {
   });
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
+
+  const userList2 = async () => {
+    if (!startDate1) return;
+    try {
+      const { data } = await axios.post(
+        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/announcement/announcement/list",
+        {
+          startDate1,
+        }
+      );
+      const filteredUsers = data?.results?.list?.filter(
+        (user) =>
+          new Date(user?.createdAt?.slice(0, 10)).toISOString().slice(0, 10) ===
+          new Date(startDate1).toISOString().slice(0, 10)
+      );
+      if (filteredUsers.length === 0) {
+        Swal.fire({
+          title: "No List Found",
+          text: "No list is available for the selected date.",
+          icon: "warning",
+          confirmButtonText: "OK",
+        });
+      }
+      setAnnouncementList(filteredUsers);
+      console.log(data);
+    } catch (error) {
+      console.error("Error fetching user list:", error);
+    }
+  };
+  useEffect(() => {
+    userList2();
+  }, [startDate1]);
+
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setFormData({ ...formData, [name]: value });
@@ -267,9 +301,14 @@ function AnnounceManagement() {
                           </div>
                         </form>
                       </div>
-                      {/* <div className="col-auto">
-                        <input type="date" className="custom_date" />
-                      </div> */}
+                      <div className="col-auto">
+                        <input
+                          type="date"
+                          className="custom_date"
+                          value={startDate1}
+                          onChange={(e) => setStartDate1(e.target.value)}
+                        />
+                      </div>
                     </div>
                     <div className="row p-4">
                       <div className="col-12">
@@ -288,7 +327,8 @@ function AnnounceManagement() {
                               <div className="col">
                                 <div className="notification-box-content announcement-contnt position-relative">
                                   <h2>
-                                    <i className="far fa-bullhorn fs-5"></i> {data?.heading}
+                                    <i className="far fa-bullhorn fs-5"></i>{" "}
+                                    {data?.heading}
                                   </h2>
                                   <div className="check_toggle home_toggle d-flex align-items-center'">
                                     <div className="text_home">
@@ -306,7 +346,9 @@ function AnnounceManagement() {
                                     <label htmlFor={`check${index}`}></label>
                                   </div>
                                   <h2>{data._id}</h2>
-                                  <span className="">{data.createdAt}</span>
+                                  <span className="">
+                                    {data?.createdAt?.slice(0, 10)}
+                                  </span>
                                   <p>{data.text}</p>
                                 </div>
                               </div>

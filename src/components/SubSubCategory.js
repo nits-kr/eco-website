@@ -8,6 +8,7 @@ import EditSubSubCategory from "./EditSubSubCategory";
 function SubSubCategory() {
   const [startDate, setStartDate] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
+  const [startDate1, setStartDate1] = useState("");
   const [subSubCategoryList, setSubSubCategoryList] = useState([]);
   const [categories, setCategories] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
@@ -20,6 +21,39 @@ function SubSubCategory() {
   const [newCategory, setNewCategory] = useState([]);
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
+
+  const userList2 = async () => {
+    if (!startDate1) return;
+    try {
+      const { data } = await axios.post(
+        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/subSubCategory/subSubCategoryList",
+        {
+          startDate1,
+        }
+      );
+      const filteredUsers = data?.results?.list?.filter(
+        (user) =>
+          new Date(user?.createdAt?.slice(0, 10)).toISOString().slice(0, 10) ===
+          new Date(startDate1).toISOString().slice(0, 10)
+      );
+      if (filteredUsers.length === 0) {
+        Swal.fire({
+          title: "No List Found",
+          text: "No list is available for the selected date.",
+          icon: "warning",
+          confirmButtonText: "OK",
+        });
+      }
+      setSubSubCategoryList(filteredUsers);
+      console.log(data);
+    } catch (error) {
+      console.error("Error fetching user list:", error);
+    }
+  };
+  useEffect(() => {
+    userList2();
+  }, [startDate1]);
+
   const handleSearch = async (e) => {
     e.preventDefault();
     if (searchQuery) {
@@ -243,14 +277,14 @@ function SubSubCategory() {
                   </div>
                 </form>
               </div>
-              {/* <div className="col-auto">
+              <div className="col-auto">
                 <input
                   type="date"
                   className="custom_date"
-                  value={startDate}
-                  onChange={(e) => setStartDate(e.target.value)}
+                  value={startDate1}
+                  onChange={(e) => setStartDate1(e.target.value)}
                 />
-              </div> */}
+              </div>
             </div>
             <div className="row">
               <div className="col-12 comman_table_design px-0">

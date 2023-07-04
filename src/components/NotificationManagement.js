@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import Swal from "sweetalert2";
 import Sidebar from "./Sidebar";
 
 function NotificationManagement() {
+  const [startDate1, setStartDate1] = useState("");
   const [notificationList, setNotificationList] = useState([]);
   const [reportNotification, setReportNotification] = useState({
     reports: "",
@@ -17,6 +19,39 @@ function NotificationManagement() {
   });
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
+
+  const userList2 = async () => {
+    if (!startDate1) return;
+    try {
+      const { data } = await axios.post(
+        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/notification/notification/list",
+        {
+          startDate1,
+        }
+      );
+      const filteredUsers = data?.results?.listData?.filter(
+        (user) =>
+          new Date(user?.createdAt?.slice(0, 10)).toISOString().slice(0, 10) ===
+          new Date(startDate1).toISOString().slice(0, 10)
+      );
+      if (filteredUsers.length === 0) {
+        Swal.fire({
+          title: "No List Found",
+          text: "No list is available for the selected date.",
+          icon: "warning",
+          confirmButtonText: "OK",
+        });
+      }
+      setNotificationList(filteredUsers);
+      console.log(data);
+    } catch (error) {
+      console.error("Error fetching user list:", error);
+    }
+  };
+  useEffect(() => {
+    userList2();
+  }, [startDate1]);
+
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setReportNotification({ ...reportNotification, [name]: value });
@@ -42,7 +77,7 @@ function NotificationManagement() {
       const response = await axios.post(
         "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/notification/notification/createReport",
         {
-            text_en: reportNotification.reports,
+          text_en: reportNotification.reports,
         }
       );
       console.log(response.data.results.reportData);
@@ -227,7 +262,12 @@ function NotificationManagement() {
                         </form>
                       </div>
                       <div className="col-auto">
-                        <input type="date" className="custom_date" />
+                        <input
+                          type="date"
+                          className="custom_date"
+                          value={startDate1}
+                          onChange={(e) => setStartDate1(e.target.value)}
+                        />
                       </div>
                     </div>
 
@@ -236,10 +276,7 @@ function NotificationManagement() {
                         <div className="category_btns_main">
                           <div className="row mb-5">
                             <div className="col">
-                              <Link
-                                className="category_btns active"
-                                to="#"
-                              >
+                              <Link className="category_btns active" to="#">
                                 All <span>(100)</span>
                               </Link>
                             </div>
@@ -278,8 +315,12 @@ function NotificationManagement() {
                               <div className="col">
                                 <div className="notification-box-content">
                                   <h2>{data._id}</h2>
-                                  <span className="">{data.createdAt}</span>
-                                  <p>{data?.text_en ? data?.text_en : data?.text}</p>
+                                  <span className="">
+                                    {data?.createdAt?.slice(0, 10)}
+                                  </span>
+                                  <p>
+                                    {data?.text_en ? data?.text_en : data?.text}
+                                  </p>
                                 </div>
                               </div>
                             </div>

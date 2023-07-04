@@ -10,6 +10,7 @@ function ContactUs() {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [itemId, setItemId] = useState(null);
+  const [startDate1, setStartDate1] = useState("");
   console.log("item id", itemId);
   const [viewContact, setViewContact] = useState("");
   axios.defaults.headers.common["x-auth-token-user"] =
@@ -34,6 +35,39 @@ function ContactUs() {
     );
     setContactList(data.results.list.reverse());
   };
+
+  const userList2 = async () => {
+    if (!startDate1) return;
+    try {
+      const { data } = await axios.post(
+        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/contact/contact/contactList",
+        {
+          startDate1,
+        }
+      );
+      const filteredUsers = data?.results?.list?.filter(
+        (user) =>
+          new Date(user?.createdAt?.slice(0, 10)).toISOString().slice(0, 10) ===
+          new Date(startDate1).toISOString().slice(0, 10)
+      );
+      if (filteredUsers.length === 0) {
+        Swal.fire({
+          title: "No List Found",
+          text: "No list is available for the selected date.",
+          icon: "warning",
+          confirmButtonText: "OK",
+        });
+      }
+      setContactList(filteredUsers);
+      console.log(data);
+    } catch (error) {
+      console.error("Error fetching user list:", error);
+    }
+  };
+  useEffect(() => {
+    userList2();
+  }, [startDate1]);
+
   const userList = async () => {
     const { data } = await axios.post(
       "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/contact/contact/contactList",
@@ -97,7 +131,12 @@ function ContactUs() {
                         </form>
                       </div>
                       <div className="col-auto">
-                        <input type="date" className="custom_date" />
+                        <input
+                          type="date"
+                          className="custom_date"
+                          value={startDate1}
+                          onChange={(e) => setStartDate1(e.target.value)}
+                        />
                       </div>
                     </div>
                     <form

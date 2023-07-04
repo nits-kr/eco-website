@@ -10,6 +10,7 @@ function Dashboard(props) {
   const [userCounts, setUserCounts] = useState(0);
   const [recentOrderList, setRecentOrderList] = useState([]);
   const [startDate, setStartDate] = useState("");
+  const [startDate1, setStartDate1] = useState("");
   const [endDate, setEndDate] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -44,6 +45,30 @@ function Dashboard(props) {
     props.setProgress(100);
     setLoading(false);
   }, []);
+
+  const userList2 = async () => {
+    if (!startDate1) return;
+    try {
+      const { data } = await axios.post(
+        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/agent/agent/order-list",
+        {
+          startDate1,
+        }
+      );
+      const filteredUsers = data?.results?.orderList?.filter(
+        (user) =>
+          new Date(user?.createdAt?.slice(0, 10)).toISOString().slice(0, 10) ===
+          new Date(startDate1).toISOString().slice(0, 10)
+      );
+      setRecentOrderList(filteredUsers);
+      console.log(data);
+    } catch (error) {
+      console.error("Error fetching user list:", error);
+    }
+  };
+  useEffect(() => {
+    userList2();
+  }, [startDate1]);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -208,6 +233,14 @@ function Dashboard(props) {
                               <i className="fa fa-search"></i>
                             </div>
                           </form>
+                        </div>
+                        <div className="col-auto">
+                          <input
+                            type="date"
+                            className="custom_date"
+                            value={startDate1}
+                            onChange={(e) => setStartDate1(e.target.value)}
+                          />
                         </div>
                       </div>
                       <form

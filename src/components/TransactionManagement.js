@@ -4,7 +4,9 @@ import { useGetTransactionListQuery } from "../services/Post";
 // import { useGetTransactionListDetailsQuery } from "../services/Post";
 import { useGetTransactionListDetailsMutation } from "../services/Post";
 import Sidebar from "./Sidebar";
+import { useGetFileQuery } from "../services/Post";
 function TransactionManagement() {
+  const { data, isLoading, isError } = useGetFileQuery("file-id");
     const transactionList = useGetTransactionListQuery();
     const [getTransactionDetails] = useGetTransactionListDetailsMutation();
     console.log("getTransactionDetails", getTransactionDetails);
@@ -13,6 +15,15 @@ function TransactionManagement() {
     //     console.log("getTransactionDetails", id);
     //     getTransactionDetails(id);
     //   };
+    const handleDownload = () => {
+      if (data && data.results && data.results.file) {
+        const downloadUrl = data.results.file;
+        const link = document.createElement("a");
+        link.href = downloadUrl;
+        link.download = "file.xlsx";
+        link.click();
+      }
+    };
   return (
     <>
     <Sidebar/>
@@ -40,13 +51,13 @@ function TransactionManagement() {
                     </form>
                   </div>
                   <div className="col-auto Searchbox">
-                    <button className="comman_btn2">
+                    <button className="comman_btn2" onClick={handleDownload}>
                       <i className="fal fa-download me-2"></i>Excel
                     </button>
                   </div>
-                  <div className="col-auto">
+                  {/* <div className="col-auto">
                     <input type="date" className="custom_date" />
-                  </div>
+                  </div> */}
                 </div>
                 <div className="row">
                   <div className="col-12 px-0">

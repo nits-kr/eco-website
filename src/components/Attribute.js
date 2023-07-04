@@ -9,10 +9,11 @@ function Attribute() {
   const [attributesList, setAttributesList] = useState([]);
   const [subAttributesList, setSubAttributesList] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [startDate1, setStartDate1] = useState("");
   const [categories, setCategories] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
   const [subSubCategories, setSubSubCategories] = useState([]);
-  const [itemId, setItemId] = useState([])
+  const [itemId, setItemId] = useState([]);
   const [attributes, setAttributes] = useState({
     nameEn: "",
     nameAr: "",
@@ -20,6 +21,39 @@ function Attribute() {
     categoryId1: "",
     categoryId2: "",
   });
+
+  const userList2 = async () => {
+    if (!startDate1) return;
+    try {
+      const { data } = await axios.post(
+        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/attribute/attributeList",
+        {
+          startDate1,
+        }
+      );
+      const filteredUsers = data?.results?.list?.filter(
+        (user) =>
+          new Date(user?.createdAt?.slice(0, 10)).toISOString().slice(0, 10) ===
+          new Date(startDate1).toISOString().slice(0, 10)
+      );
+      if (filteredUsers.length === 0) {
+        Swal.fire({
+          title: "No List Found",
+          text: "No list is available for the selected date.",
+          icon: "warning",
+          confirmButtonText: "OK",
+        });
+      }
+      setAttributesList(filteredUsers);
+      console.log(data);
+    } catch (error) {
+      console.error("Error fetching user list:", error);
+    }
+  };
+  useEffect(() => {
+    userList2();
+  }, [startDate1]);
+
   const handleSearch = async (e) => {
     e.preventDefault();
     if (searchQuery) {
@@ -265,9 +299,14 @@ function Attribute() {
                   </div>
                 </form>
               </div>
-              {/* <div className="col-auto">
-                <input type="date" className="custom_date" />
-              </div> */}
+              <div className="col-auto">
+                <input
+                  type="date"
+                  className="custom_date"
+                  value={startDate1}
+                  onChange={(e) => setStartDate1(e.target.value)}
+                />
+              </div>
             </div>
             <div className="row">
               <div className="col-12 comman_table_design px-0">
@@ -348,7 +387,7 @@ function Attribute() {
           </div>
         </div>
       </div>
-      <EditAttribute itemId = {itemId} />
+      <EditAttribute itemId={itemId} />
     </>
   );
 }

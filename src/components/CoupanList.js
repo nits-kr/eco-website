@@ -273,7 +273,11 @@ function CoupanList() {
                                   </div>
                                 </form>
                               </td>
-                              <td>{item?.coupanTitle ? item?.coupanTitle : item?.coupanTitle_en}</td>
+                              <td>
+                                {item?.coupanTitle
+                                  ? item?.coupanTitle
+                                  : item?.coupanTitle_en}
+                              </td>
                               <td>{item?.coupanCode}</td>
                               <td>{item?.DiscountType}</td>
                               <td>{item?.status}</td>

@@ -7,12 +7,13 @@ import { faEye, faPencil, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import Sidebar from "./Sidebar";
 import { useGetFileQuery } from "../services/Post";
 function OrderManagement() {
-  const { data, isLoading, isError } = useGetFileQuery('file-id');
+  const { data, isLoading, isError } = useGetFileQuery("file-id");
   console.log("down load data", data);
   const [orderList, setOrderList] = useState([]);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
+  const [startDate1, setStartDate1] = useState("");
 
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
@@ -47,6 +48,38 @@ function OrderManagement() {
 
     setOrderList(filteredUsers.reverse());
   };
+
+  const userList2 = async () => {
+    if (!startDate1) return;
+    try {
+      const { data } = await axios.post(
+        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/order/order/list",
+        {
+          startDate1,
+        }
+      );
+      const filteredUsers = data?.results?.list?.filter(
+        (user) =>
+          new Date(user?.createdAt?.slice(0, 10)).toISOString().slice(0, 10) ===
+          new Date(startDate1).toISOString().slice(0, 10)
+      );
+      if (filteredUsers.length === 0) {
+        Swal.fire({
+          title: "No List Found",
+          text: "No list is available for the selected date.",
+          icon: "warning",
+          confirmButtonText: "OK",
+        });
+      }
+      setOrderList(filteredUsers);
+      console.log(data);
+    } catch (error) {
+      console.error("Error fetching user list:", error);
+    }
+  };
+  useEffect(() => {
+    userList2();
+  }, [startDate1]);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -109,14 +142,12 @@ function OrderManagement() {
   const handleDownload = () => {
     if (data && data.results && data.results.file) {
       const downloadUrl = data.results.file;
-      const link = document.createElement('a');
+      const link = document.createElement("a");
       link.href = downloadUrl;
-      link.download = 'file.xlsx';
+      link.download = "file.xlsx";
       link.click();
     }
   };
-  
-  
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -125,7 +156,6 @@ function OrderManagement() {
   if (isError) {
     return <div>Error occurred while fetching the file.</div>;
   }
-
 
   return (
     <>
@@ -162,12 +192,20 @@ function OrderManagement() {
                         </form>
                       </div>
                       <div className="col-auto">
-                        <button className="comman_btn2" onClick={handleDownload}>
+                        <button
+                          className="comman_btn2"
+                          onClick={handleDownload}
+                        >
                           <i className="fal fa-download me-2"></i>Excel
                         </button>
                       </div>
                       <div className="col-auto">
-                        <input type="date" className="custom_date" />
+                        <input
+                          type="date"
+                          className="custom_date"
+                          value={startDate1}
+                          onChange={(e) => setStartDate1(e.target.value)}
+                        />
                       </div>
                     </div>
                     <form

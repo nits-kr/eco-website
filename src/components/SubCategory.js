@@ -24,6 +24,7 @@ function SubCategory(props) {
     subCategoryPic: null,
   });
   const [searchQuery, setSearchQuery] = useState("");
+  const [startDate1, setStartDate1] = useState("");
   const [newCategory, setNewCategory] = useState([]);
 
   const handleInputChange = (event) => {
@@ -35,6 +36,38 @@ function SubCategory(props) {
     setSubCategory({ ...subCategory, subCategoryPic: event.target.files[0] });
     console.log("picture", event.target.files[0]);
   };
+
+  const userList2 = async () => {
+    if (!startDate1) return;
+    try {
+      const { data } = await axios.post(
+        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/subCategory/SubCategoryList",
+        {
+          startDate1,
+        }
+      );
+      const filteredUsers = data?.results?.list?.filter(
+        (user) =>
+          new Date(user?.createdAt?.slice(0, 10)).toISOString().slice(0, 10) ===
+          new Date(startDate1).toISOString().slice(0, 10)
+      );
+      if (filteredUsers.length === 0) {
+        Swal.fire({
+          title: "No List Found",
+          text: "No list is available for the selected date.",
+          icon: "warning",
+          confirmButtonText: "OK",
+        });
+      }
+      setSubCategoryList(filteredUsers);
+      console.log(data);
+    } catch (error) {
+      console.error("Error fetching user list:", error);
+    }
+  };
+  useEffect(() => {
+    userList2();
+  }, [startDate1]);
 
   const handleSearch = async (e) => {
     e.preventDefault();
@@ -286,9 +319,14 @@ function SubCategory(props) {
                   </div>
                 </form>
               </div>
-              {/* <div className="col-auto">
-                <input type="date" className="custom_date" />
-              </div> */}
+              <div className="col-auto">
+                <input
+                  type="date"
+                  className="custom_date"
+                  value={startDate1}
+                  onChange={(e) => setStartDate1(e.target.value)}
+                />
+              </div>
             </div>
             <div className="row">
               <div className="col-12 comman_table_design px-0">

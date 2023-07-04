@@ -6,8 +6,41 @@ import Sidebar from "./Sidebar";
 function ThoughtsManagement() {
   const [thoughts, setThoughts] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [startDate1, setStartDate1] = useState("");
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
+
+  const userList2 = async () => {
+    if (!startDate1) return;
+    try {
+      const { data } = await axios.post(
+        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/thougth/thougth/list",
+        {
+          startDate1,
+        }
+      );
+      const filteredUsers = data?.results?.list?.filter(
+        (user) =>
+          new Date(user?.createdAt?.slice(0, 10)).toISOString().slice(0, 10) ===
+          new Date(startDate1).toISOString().slice(0, 10)
+      );
+      if (filteredUsers.length === 0) {
+        Swal.fire({
+          title: "No List Found",
+          text: "No list is available for the selected date.",
+          icon: "warning",
+          confirmButtonText: "OK",
+        });
+      }
+      setThoughts(filteredUsers);
+      console.log(data);
+    } catch (error) {
+      console.error("Error fetching user list:", error);
+    }
+  };
+  useEffect(() => {
+    userList2();
+  }, [startDate1]);
 
   useEffect(() => {
     userList();
@@ -84,9 +117,14 @@ function ThoughtsManagement() {
                           </div>
                         </form>
                       </div>
-                      {/* <div className="col-auto">
-                        <input type="date" className="custom_date" />
-                      </div> */}
+                      <div className="col-auto">
+                        <input
+                          type="date"
+                          className="custom_date"
+                          value={startDate1}
+                          onChange={(e) => setStartDate1(e.target.value)}
+                        />
+                      </div>
                     </div>
                     <div className="row p-4">
                       <div className="col-12">
@@ -112,7 +150,9 @@ function ThoughtsManagement() {
                               <div className="col">
                                 <div className="notification-box-content">
                                   <h2>{thought.title}</h2>
-                                  <span className="">{thought.createdAt}</span>
+                                  <span className="">
+                                    {thought?.createdAt?.slice(0, 10)}
+                                  </span>
                                   <p>{thought.description}</p>
                                 </div>
                               </div>

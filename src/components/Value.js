@@ -14,6 +14,7 @@ function Value() {
   const [subSubCategories, setSubSubCategories] = useState([]);
   const [attributes, setAttributes] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [startDate1, setStartDate1] = useState("");
   const [values, setValues] = useState({
     nameEn: "",
     nameAr: "",
@@ -22,6 +23,39 @@ function Value() {
     categoryId2: "",
     categoryId3: "",
   });
+
+  const userList2 = async () => {
+    if (!startDate1) return;
+    try {
+      const { data } = await axios.post(
+        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/values/valuesList",
+        {
+          startDate1,
+        }
+      );
+      const filteredUsers = data?.results?.list?.filter(
+        (user) =>
+          new Date(user?.createdAt?.slice(0, 10)).toISOString().slice(0, 10) ===
+          new Date(startDate1).toISOString().slice(0, 10)
+      );
+      if (filteredUsers.length === 0) {
+        Swal.fire({
+          title: "No List Found",
+          text: "No list is available for the selected date.",
+          icon: "warning",
+          confirmButtonText: "OK",
+        });
+      }
+      setValueList(filteredUsers);
+      console.log(data);
+    } catch (error) {
+      console.error("Error fetching user list:", error);
+    }
+  };
+  useEffect(() => {
+    userList2();
+  }, [startDate1]);
+
   const handleSearch1 = async (e) => {
     e.preventDefault();
     if (searchQuery) {
@@ -330,9 +364,14 @@ function Value() {
                 </form>
               </div>
 
-              {/* <div className="col-auto">
-                <input type="date" className="custom_date" />
-              </div> */}
+              <div className="col-auto">
+                <input
+                  type="date"
+                  className="custom_date"
+                  value={startDate1}
+                  onChange={(e) => setStartDate1(e.target.value)}
+                />
+              </div>
             </div>
             <div className="row">
               <div className="col-12 comman_table_design px-0">
