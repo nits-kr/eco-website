@@ -123,16 +123,16 @@ function UsersManagement(props) {
     if (searchQuery) {
       try {
         const response = await axios.post(
-          "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/dashboards/count/search",
+          " http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/user/user-search",
           {
-            sellerName: searchQuery,
+            userName: searchQuery,
           }
         );
         const { error, results } = response.data;
         if (error) {
           throw new Error("Error searching for products.Data are Not Found");
         } else {
-          setUsersList(results.searchData);
+          setUsersList(results.userData);
         }
       } catch (error) {
         Swal.fire({

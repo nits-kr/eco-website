@@ -83,7 +83,7 @@ function Dashboard(props) {
         if (error) {
           throw new Error("Error searching for products. Data is not found.");
         } else {
-          setRecentOrderList(results.searchData);
+          setRecentOrderList(results?.searchData);
         }
       } catch (error) {
         Swal.fire({
