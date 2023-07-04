@@ -109,7 +109,7 @@ function App() {
             exact
             className="active"
             path="/products"
-            element={<ProductList />}
+            element={<ProductList setProgress={setProgress}/>}
           />
           <Route
             exact
