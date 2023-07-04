@@ -141,13 +141,13 @@ function ProductManagement() {
                 marginBottom: "15px",
               }}
             >
-              <Link
+              {/* <Link
                 to="#"
                 className="btn btn-secondary "
                 style={{ marginRight: "10px" }}
               >
                 Duplicate
-              </Link>
+              </Link> */}
               <Link
                 to="/products"
                 className="btn btn-primary"
