@@ -77,7 +77,7 @@ function UsersManagement(props) {
     alert(id);
   };
   useEffect(() => {
-    userList();
+    // userList();
     axios
       .post(
         "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/user/userList",
@@ -246,9 +246,9 @@ function UsersManagement(props) {
                         </button>
                       </div>
                     </form>
-                    {loading ? (
+                    {/* {loading ? (
                       <Spinner />
-                    ) : (
+                    ) : ( */}
                       <div className="row">
                         <div className="col-12 comman_table_design px-0">
                           <div className="table-responsive">
@@ -259,7 +259,7 @@ function UsersManagement(props) {
                                   <th>User Name</th>
                                   <th>Mobile Number</th>
                                   <th>Registration Date</th>
-                                  <th>Total Offers</th>
+                                  {/* <th>Special Offers</th> */}
                                   <th>Status</th>
                                   <th>Action</th>
                                 </tr>
@@ -279,7 +279,7 @@ function UsersManagement(props) {
                                         .reverse()
                                         .join("-")}{" "}
                                     </td>
-                                    <td>{user?.totalOffers}</td>
+                                    {/* <td>{user?.specialOffer}</td> */}
                                     <td>
                                       <form className="table_btns d-flex align-items-center">
                                         <div className="check_toggle">
@@ -315,7 +315,7 @@ function UsersManagement(props) {
                           </div>
                         </div>
                       </div>
-                    )}
+                    {/* )} */}
                   </div>
                 </div>
               </div>
