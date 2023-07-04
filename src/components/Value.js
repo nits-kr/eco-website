@@ -356,12 +356,12 @@ function Value() {
                       {(valueList || [])?.map((value, index) => (
                         <tr key={index}>
                           <td>{index + 1}</td>
-                          <td>{value?.category_Id?.categoryName}</td>
-                          <td>{value?.subCategory_Id?.subCategoryName}</td>
+                          <td>{value?.category_Id?.categoryName_en}</td>
+                          <td>{value?.subCategory_Id?.subCategoryName_en}</td>
                           <td>
-                            {value?.subSubCategory_Id?.subSubCategoryName}
+                            {value?.subSubCategory_Id?.subSubCategoryName_en}
                           </td>
-                          <td>{value?.attribute_Id?.attributeName}</td>
+                          <td>{value?.attribute_Id?.attributeName_en}</td>
                           <td>{value?.valuesName_en}</td>
                           <td>{value?.valuesName_ar}</td>
                           <td>

@@ -291,9 +291,9 @@ function Attribute() {
                         <tr key={index}>
                           <td>{index + 1}</td>
                           <td>{value?.category_Id?.categoryName_en}</td>
-                          <td>{value?.subCategory_Id?.subCategoryName}</td>
+                          <td>{value?.subCategory_Id?.subCategoryName_en}</td>
                           <td>
-                            {value?.subSubCategory_Id?.subSubCategoryName}
+                            {value?.subSubCategory_Id?.subSubCategoryName_en}
                           </td>
                           <td>{value?.attributeName_en}</td>
                           <td>{value?.attributeName_ar}</td>
