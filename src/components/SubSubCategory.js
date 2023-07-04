@@ -4,7 +4,6 @@ import axios from "axios";
 import Swal from "sweetalert2";
 //import EditValues from "./EditValues";
 import EditSubSubCategory from "./EditSubSubCategory";
-import Sidebar from "./Sidebar";
 
 function SubSubCategory() {
   const [startDate, setStartDate] = useState("");
@@ -49,30 +48,6 @@ function SubSubCategory() {
       setSubSubCategoryList([]);
     }
   };
-
-  // useEffect(() => {
-  //   handleSearch3();
-  // }, [startDate]);
-  // const handleSearch3 = () => {
-  //   axios
-  //     .post(
-  //       "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/subSubCategory/subSubCategoryList",
-  //       {
-  //         startDate,
-  //       }
-  //     )
-  //     .then((response) => {
-  //       console.log("response data", response);
-  //       const filteredData = response.data.results.list.filter(
-  //         (data) => new Date(data?.createdAt) == new Date(startDate)
-  //       );
-  //       console.log("filteredData", filteredData);
-  //       setSubSubCategoryList(filteredData);
-  //     })
-  //     .catch((error) => {
-  //       console.log(error.response.data);
-  //     });
-  // };
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;

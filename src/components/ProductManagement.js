@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Editor } from "@tinymce/tinymce-react";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
@@ -10,8 +10,48 @@ import Sidebar from "./Sidebar";
 function ProductManagement() {
   const [selectedImage, setSelectedImage] = useState(null);
   const [formData, setFormData] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [subCategories, setSubCategories] = useState([]);
+  const [subSubCategory, setSubSubCategory] = useState({
+    nameEn: "",
+    nameAr: "",
+    categoryId: "",
+    categoryId1: "",
+  });
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
+  const handleInputChange1 = (event) => {
+    const { name, value } = event.target;
+    setSubSubCategory({ ...subSubCategory, [name]: value });
+  };
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.post(
+          "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/subSubCategory/selectCategory"
+        );
+        setCategories(response.data.results.categoryData);
+        console.log(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchData();
+  }, []);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.post(
+          "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/subSubCategory/selectSubCategory"
+        );
+        setSubCategories(response.data.results.subCategoryData);
+        console.log(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchData();
+  }, []);
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -45,8 +85,8 @@ function ProductManagement() {
     data.append("visibility", formData.visibility);
     data.append("publishDate", formData.datepicker);
     data.append("Tags", formData.Tags);
-    data.append("category_Id", "647eb680062671009e254fcb");
-    data.append("Subcategory_Id", "649035d1cf5408e268540ec7");
+    data.append("category_Id", subSubCategory.categoryId);
+    data.append("Subcategory_Id", subSubCategory.categoryId1);
     data.append("product_Pic", formData.uploadImage);
     // data.append("brandPic", formData.uploadImage);
 
@@ -129,7 +169,7 @@ function ProductManagement() {
                       style={{
                         marginTop: "-16px",
                         marginLeft: "-16px",
-                        width: "104%",
+                        width: "103.5%",
                       }}
                     >
                       Basic Information
@@ -228,17 +268,17 @@ function ProductManagement() {
                     <div className="form-group my-2">
                       <h3>Weight</h3>
                       <div className="selection-section">
-                      <div className="form-group">
-                        <input
-                          id="weight"
-                          name="weight"
-                          type="text"
-                          className="form-control"
-                          value={formData.weight}
-                          placeholder="1 kg"
-                          onChange={handleInputChange}
-                        />
-                      </div>
+                        <div className="form-group">
+                          <input
+                            id="weight"
+                            name="weight"
+                            type="text"
+                            className="form-control"
+                            value={formData.weight}
+                            placeholder="1 kg"
+                            onChange={handleInputChange}
+                          />
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -248,7 +288,7 @@ function ProductManagement() {
                       style={{
                         marginTop: "-16px",
                         marginLeft: "-16px",
-                        width: "104%",
+                        width: "103.5%",
                       }}
                     >
                       Pricing
@@ -299,7 +339,7 @@ function ProductManagement() {
                       style={{
                         marginTop: "-16px",
                         marginLeft: "-16px",
-                        width: "104%",
+                        width: "103.5%",
                       }}
                     >
                       Inventory
@@ -421,7 +461,7 @@ function ProductManagement() {
                       style={{
                         marginTop: "-16px",
                         marginLeft: "-16px",
-                        width: "104%",
+                        width: "103.5%",
                       }}
                     >
                       Search Engine Optimization
@@ -469,7 +509,7 @@ function ProductManagement() {
                       style={{
                         marginTop: "-16px",
                         marginLeft: "-16px",
-                        width: "114%",
+                        width: "112%",
                       }}
                     >
                       Vigibility
@@ -535,25 +575,34 @@ function ProductManagement() {
                       style={{
                         marginTop: "-16px",
                         marginLeft: "-16px",
-                        width: "114%",
+                        width: "112%",
                       }}
                     >
-                      Categories
+                      <label htmlFor="">Category</label>
                     </h3>
-                    {/* <h3 style={{ marginLeft: '15px' }}>Categories</h3> */}
-                    <div className="card-body">
-                      <form className="d-flex flex-column">
-                        <input
-                          type="text"
-                          id="taskInput"
-                          name="taskInput"
-                          className="form-control mb-2"
-                          placeholder="Add new category here..."
-                          value={formData.taskInput}
-                          onChange={handleInputChange}
-                        />
-                      </form>
-                    </div>
+
+                    <form
+                      className="form-design py-4 px-3 help-support-form row align-items-end justify-content-between"
+                      action=""
+                    >
+                      <div className="form-group col-12">
+                        <select
+                          className="select form-control w-100"
+                          size={100}
+                          name="categoryId"
+                          id="categoryId"
+                          value={subSubCategory.categoryId}
+                          onChange={handleInputChange1}
+                        >
+                          {Array.isArray(categories) &&
+                            categories.map((category) => (
+                              <option key={category._id} value={category._id}>
+                                {category.categoryName_en}
+                              </option>
+                            ))}
+                        </select>
+                      </div>
+                    </form>
                   </div>
                   <div className="card border-blue shadow p-3 mb-5 bg-white rounded">
                     <h3
@@ -561,33 +610,46 @@ function ProductManagement() {
                       style={{
                         marginTop: "-16px",
                         marginLeft: "-16px",
-                        width: "114%",
+                        width: "112%",
                       }}
                     >
-                      Subcategory
+                      <label htmlFor="">Sub Category</label>
                     </h3>
-                    {/* <h3 style={{ marginLeft: '15px' }}>Categories</h3> */}
-                    <div className="card-body">
-                      <form className="d-flex flex-column">
-                        <input
-                          type="text"
-                          id="subCategory"
-                          name="subCategory"
-                          className="form-control mb-2"
-                          placeholder="Add new Sub category here..."
-                          value={formData.subCategory}
-                          onChange={handleInputChange}
-                        />
-                      </form>
-                    </div>
+
+                    <form
+                      className="form-design pt-4 px-3 help-support-form row align-items-end justify-content-between"
+                      action=""
+                    >
+                      <div className="form-group col-12">
+                        <select
+                          className="select form-control w-100"
+                          size={100}
+                          name="categoryId1"
+                          id="categoryId1"
+                          value={subSubCategory.categoryId1}
+                          onChange={handleInputChange1}
+                        >
+                          {Array.isArray(subCategories) &&
+                            subCategories.map((subCategory) => (
+                              <option
+                                key={subCategory._id}
+                                value={subCategory._id}
+                              >
+                                {subCategory.subCategoryName_en}
+                              </option>
+                            ))}
+                        </select>
+                      </div>
+                    </form>
                   </div>
+
                   <div className="card border-blue shadow p-3 mb-5 bg-white rounded">
                     <h3
                       className="row comman_header text-light bg-danger rounded"
                       style={{
                         marginTop: "-16px",
                         marginLeft: "-16px",
-                        width: "114%",
+                        width: "112%",
                       }}
                     >
                       Brand
@@ -613,7 +675,7 @@ function ProductManagement() {
                       style={{
                         marginTop: "-16px",
                         marginLeft: "-16px",
-                        width: "114%",
+                        width: "112%",
                       }}
                     >
                       Tags
@@ -637,7 +699,7 @@ function ProductManagement() {
                       style={{
                         marginTop: "-16px",
                         marginLeft: "-16px",
-                        width: "114%",
+                        width: "112%",
                       }}
                     >
                       Product Color
