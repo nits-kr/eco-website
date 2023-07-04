@@ -35,13 +35,12 @@ function NotificationManagement() {
           new Date(startDate1).toISOString().slice(0, 10)
       );
       if (filteredUsers.length === 0) {
-        await Swal.fire({
+        Swal.fire({
           title: "No List Found",
           text: "No list is available for the selected date.",
           icon: "warning",
           confirmButtonText: "OK",
         });
-        window.location.reload();
       }
       setNotificationList(filteredUsers);
       console.log(data);
