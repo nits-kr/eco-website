@@ -109,6 +109,15 @@ function UsersManagement(props) {
           new Date(user?.createdAt?.slice(0, 10)).toISOString().slice(0, 10) ===
           new Date(startDate1).toISOString().slice(0, 10)
       );
+      if (filteredUsers.length === 0) {
+        await Swal.fire({
+          title: "No List Found",
+          text: "No list is available for the selected date.",
+          icon: "warning",
+          confirmButtonText: "OK",
+        });
+        window.location.reload();
+      }
       setUsersList(filteredUsers);
       console.log(data);
     } catch (error) {

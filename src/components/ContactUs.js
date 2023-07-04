@@ -51,12 +51,13 @@ function ContactUs() {
           new Date(startDate1).toISOString().slice(0, 10)
       );
       if (filteredUsers.length === 0) {
-        Swal.fire({
+        await Swal.fire({
           title: "No List Found",
           text: "No list is available for the selected date.",
           icon: "warning",
           confirmButtonText: "OK",
         });
+        window.location.reload();
       }
       setContactList(filteredUsers);
       console.log(data);
