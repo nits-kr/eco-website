@@ -248,7 +248,10 @@ function SubCategory(props) {
                 </select>
               </div>
               <div className="form-group col">
-                <label htmlFor="">Enter Sub Category Name (En)</label>
+                <label htmlFor="">
+                  Enter Sub Category Name (En)
+                  <span className="required-field text-danger">*</span>
+                </label>
                 <input
                   type="text"
                   className="form-control"
@@ -256,10 +259,15 @@ function SubCategory(props) {
                   id="nameEn"
                   value={subCategory.nameEn}
                   onChange={handleInputChange}
+                  required
+                  minLength="3"
                 />
               </div>
               <div className="form-group col">
-                <label htmlFor="">Enter Sub Category Name (Ar)</label>
+                <label htmlFor="">
+                  Enter Sub Category Name (Ar)
+                  <span className="required-field text-danger">*</span>
+                </label>
                 <input
                   type="text"
                   className="form-control"
@@ -267,6 +275,8 @@ function SubCategory(props) {
                   id="nameAr"
                   value={subCategory.nameAr}
                   onChange={handleInputChange}
+                  required
+                  minLength="3"
                 />
               </div>
 
@@ -287,7 +297,12 @@ function SubCategory(props) {
                     id="uploadImage"
                     onChange={handleFileChange}
                     style={{ marginLeft: "10px", width: "95%" }}
+                    required
+                    accept=".jpg, .jpeg, .png"
                   />
+                  <div className="invalid-feedback">
+                    Please choose a valid image file (JPG, JPEG, or PNG).
+                  </div>
                 </div>
               </div>
               <div className="form-group col-auto">

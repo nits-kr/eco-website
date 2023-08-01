@@ -60,7 +60,6 @@ function CategoryManagement(props) {
     userList2();
   }, [startDate1]);
 
-
   const handleSearch = async (e) => {
     e.preventDefault();
     if (searchQuery) {
@@ -268,7 +267,7 @@ function CategoryManagement(props) {
                                 >
                                   <div className="form-group mb-0 col">
                                     <label htmlFor="name-en">
-                                      Enter Category Name (En)
+                                      Enter Category Name (En)<span className="required-field text-danger">*</span>
                                     </label>
                                     <input
                                       type="text"
@@ -277,11 +276,13 @@ function CategoryManagement(props) {
                                       id="name-en"
                                       value={formData.nameEn}
                                       onChange={handleInputChange}
+                                      required
+                                      minLength="3"
                                     />
                                   </div>
                                   <div className="form-group mb-0 col">
                                     <label htmlFor="name-ar">
-                                      Enter Category Name (Ar)
+                                      Enter Category Name (Ar)<span className="required-field text-danger">*</span>
                                     </label>
                                     <input
                                       type="text"
@@ -290,6 +291,8 @@ function CategoryManagement(props) {
                                       id="name-ar"
                                       value={formData.nameAr}
                                       onChange={handleInputChange}
+                                      required
+                                      minLength="3"
                                     />
                                   </div>
                                   <div className="form-group mb-0 col choose_file position-relative">
@@ -308,7 +311,13 @@ function CategoryManagement(props) {
                                         marginLeft: "15px",
                                         width: "95%",
                                       }}
+                                      required
+                                      accept=".jpg, .jpeg, .png"
                                     />
+                                  </div>
+                                  <div className="invalid-feedback">
+                                    Please choose a valid image file (JPG, JPEG,
+                                    or PNG).
                                   </div>
                                   <div className="form-group mb-0 col-auto">
                                     <button

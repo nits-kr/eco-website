@@ -27,7 +27,6 @@ import CategoryManagement from "./components/CategoryManagement";
 import AnnounceManagement from "./components/AnnounceManagement";
 import ProductList from "./components/ProductList";
 import ProductManagement from "./components/ProductManagement";
-import Sidebar from "./components/Sidebar";
 import Varification from "./components/Varification";
 import UsersManagement from "./components/UsersManagement";
 import UserDetails2 from "./components/UserDetails2";
@@ -64,7 +63,7 @@ function App() {
           <Route
             exact
             className="active"
-            path="dashboard"
+            path="/dashboard"
             element={<Dashboard setProgress={setProgress}/>}
           />
           <Route

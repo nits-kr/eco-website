@@ -1,98 +1,153 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-import axios from "axios";
-import Sidebar from "./Sidebar";
+// import axios from "axios";
+import { useUserLoginMutation } from "../services/Post";
 function Login() {
-    const userLogin = async (userEmail, password) => {
-        const { data } = await axios.post("http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/user/login", {
-            userEmail: userEmail,
-            password: password,
-        });
-        console.log(data);
-        if (data) {
-            localStorage.removeItem("token");
-            localStorage.setItem("token", data.results.token);
-            Swal.fire({
-                title: "Logged In!",
-                text: "Your have been Logged In successfully.",
-                icon: "success",
-                confirmButtonColor: "#3085d6",
-                confirmButtonText: "OK",
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    //window.location.reload(); // refresh the page after success message is closed
-                    window.location.href = "/";
-                }
-            });
+  const [loginData, res] = useUserLoginMutation();
+  const [userName, setUserName] = useState("");
+  const [password, setPassword] = useState("");
+  const [userNameError, setUserNameError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (res.isSuccess) {
+      Swal.fire({
+        title: "Login Successful!",
+        icon: "success",
+        text: "You have successfully logged in.",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          navigate("/dashboard");
         }
-    };
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        const userEmail = document.getElementById("userEmail").value;
-        const password = document.getElementById("password").value;
-        userLogin(userEmail, password);
-    };
-    return (
-        <>
-        {/* <Sidebar/> */}
-            <section className="login_page">
-                <div className="container-fluid px-0">
-                    <div className="row justify-content-start">
-                        <div className="col-4">
-                            <div className="login_page_form shadow">
-                                <div className="row">
-                                    <div className="col-12 formheader mb-4">
-                                        <div className="text-center">
-                                            <img src="assets/img/logo.png" alt="" />
-                                        </div>
-                                        <h1>Login for Admin Panel</h1>
-                                        <p>Please enter your email and password</p>
-                                    </div>
-                                    <div className="col-12">
-                                        <form className="row form-design" onSubmit={handleSubmit}>
-                                            <div className="form-group col-12">
-                                                <label htmlFor="userEmail">User Name</label>
-                                                <input
-                                                    type="text"
-                                                    className="form-control"
-                                                    placeholder="User@gmail.com"
-                                                    name="userEmail"
-                                                    id="userEmail"
-                                                />
-                                            </div>
-                                            <div className="form-group col-12">
-                                                <label htmlFor="password">Password</label>
-                                                <input
-                                                    type="password"
-                                                    className="form-control"
-                                                    placeholder="**********"
-                                                    name="password"
-                                                    id="password"
-                                                />
-                                            </div>
-                                            <div className="form-group col-12">
-                                                <Link className="for_got" to="/forget-password">
-                                                    Forgot Password?
-                                                </Link>
-                                            </div>
-                                            <Link to="/dashboard">
-                                            <div className="form-group col-12">
-                                                <button type="submit" className="comman_btn">
-                                                    Submit
-                                                </button>
-                                            </div>
-                                            </Link>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+      });
+    }
+  }, [res, navigate]);
+  const handleSaveChanges = async (e) => {
+    e.preventDefault();
+    setUserNameError("");
+    setPasswordError("");
+
+    if (userName.trim() === "") {
+      setUserNameError("Username is required.");
+      return;
+    }
+
+    if (password.trim() === "") {
+      setPasswordError("Password is required.");
+      return;
+    }
+
+    try {
+      const response = await loginData({
+        userName: userName,
+        password: password,
+      });
+      console.log("response login", response);
+      if (response?.data?.error) {
+        Swal.fire({
+          title: "Incorrect Password!",
+          icon: "error",
+          text: response?.data?.message || "Unknown error occurred.",
+        });
+      } else {
+        Swal.fire({
+          title: "Login Successful!",
+          icon: "success",
+          text: "You have successfully logged in.",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            navigate("/dashboard");
+          }
+        });
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      // Show a generic error message if something goes wrong
+      Swal.fire({
+        title: "Login Failed!",
+        icon: "error",
+        text: "An error occurred during login.",
+      });
+    }
+  };
+  return (
+    <>
+      <section className="login_page">
+        <div className="container-fluid px-0">
+          <div className="row justify-content-start">
+            <div className="col-4">
+              <div className="login_page_form shadow">
+                <div className="row">
+                  <div className="col-12 formheader mb-4">
+                    <div className="text-center">
+                      <img src="assets/img/logo.png" alt="" />
                     </div>
+                    <h1>Login for Admin Panel</h1>
+                    <p>Please enter your email and password</p>
+                  </div>
+                  <div className="col-12">
+                    <form className="row form-design">
+                      <div className="form-group col-12">
+                        <label htmlFor="userEmail">User Name</label>
+                        <input
+                          type="text"
+                          className="form-control"
+                          placeholder="User@gmail.com"
+                          name="userEmail"
+                          id="userEmail"
+                          value={userName}
+                          onChange={(e) => setUserName(e.target.value)}
+                        />
+                        {userNameError && (
+                          <span className="error-message text-danger">
+                            {userNameError}
+                          </span>
+                        )}
+                      </div>
+                      <div className="form-group col-12">
+                        <label htmlFor="password">Password</label>
+                        <input
+                          type="password"
+                          className="form-control"
+                          placeholder="**********"
+                          name="password"
+                          id="password"
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                        />
+                        {passwordError && (
+                          <span className="error-message text-danger">
+                            {passwordError}
+                          </span>
+                        )}
+                      </div>
+                      <div className="form-group col-12">
+                        <Link className="for_got" to="/forget-password">
+                          Forgot Password?
+                        </Link>
+                      </div>
+                      <Link to="/dashboard">
+                        <div className="form-group col-12">
+                          <button
+                            type="submit"
+                            className="comman_btn"
+                            onClick={handleSaveChanges}
+                          >
+                            Submit
+                          </button>
+                        </div>
+                      </Link>
+                    </form>
+                  </div>
                 </div>
-            </section>
-        </>
-    );
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </>
+  );
 }
 
 export default Login;

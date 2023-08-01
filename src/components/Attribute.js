@@ -249,7 +249,7 @@ function Attribute() {
                 </select>
               </div>
               <div className="form-group col">
-                <label htmlFor="">Enter Attribute Name (En)</label>
+                <label htmlFor="">Enter Attribute Name (En)<span className="required-field text-danger">*</span></label>
                 <input
                   type="text"
                   className="form-control"
@@ -257,10 +257,12 @@ function Attribute() {
                   id="nameEn"
                   value={attributes.nameEn}
                   onChange={handleInputChange}
+                  required
+                  minLength="3"
                 />
               </div>
               <div className="form-group col">
-                <label htmlFor="">Enter Attribute Name (Ar)</label>
+                <label htmlFor="">Enter Attribute Name (Ar)<span className="required-field text-danger">*</span></label>
                 <input
                   type="text"
                   className="form-control"
@@ -268,6 +270,8 @@ function Attribute() {
                   id="nameAr"
                   value={attributes.nameAr}
                   onChange={handleInputChange}
+                  required
+                  minLength="3"
                 />
               </div>
               {/* <div className="form-group col-auto">

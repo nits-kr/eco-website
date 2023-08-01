@@ -176,7 +176,11 @@ function ProductManagement() {
                     </h3>
                     <div className="form-group">
                       <label htmlFor="name">
-                        <b> Name </b>
+                        <b>
+                          {" "}
+                          Product Name(EN)
+                          <span className="required-field text-danger">*</span>
+                        </b>
                       </label>
                       <input
                         type="text"
@@ -186,6 +190,28 @@ function ProductManagement() {
                         placeholder="brandix screwdriver SCREW150"
                         value={formData.productName}
                         onChange={handleInputChange}
+                        required
+                        minLength="3"
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="name">
+                        <b>
+                          {" "}
+                          Product Name(AR)
+                          <span className="required-field text-danger">*</span>
+                        </b>
+                      </label>
+                      <input
+                        type="text"
+                        id="productName"
+                        name="productName"
+                        className="form-control"
+                        placeholder="برانديكس مفك براغي 150"
+                        value={formData.productName}
+                        onChange={handleInputChange}
+                        required
+                        minLength="3"
                       />
                     </div>
                     <div className="form-group my-2">

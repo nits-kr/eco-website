@@ -11,6 +11,16 @@ export const PostApi = createApi({
     },
   }),
   endpoints: (builder) => ({
+    userLogin: builder.mutation({
+      query: (body) => {
+        console.log("update login data", body);
+        return {
+          url: `/admin/user/login`,
+          method: "post",
+          body,
+        };
+      },
+    }),
     createOffer: builder.mutation({
       query: (body) => ({
         url: `admin/offer/add-offer`,
@@ -255,5 +265,6 @@ export const {
   useUpdateCoupanMutation,
   useDeleteContactMutation,
   useGetFileQuery,
+  useUserLoginMutation,
   // useSearchOfferQuery,
 } = PostApi;

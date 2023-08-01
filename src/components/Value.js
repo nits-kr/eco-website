@@ -313,7 +313,7 @@ function Value() {
                 </select>
               </div>
               <div className="form-group col">
-                <label htmlFor="">Enter Value Name (En)</label>
+                <label htmlFor="">Enter Value Name (En)<span className="required-field text-danger">*</span></label>
                 <input
                   type="text"
                   className="form-control"
@@ -321,10 +321,12 @@ function Value() {
                   id="nameEn"
                   value={values.nameEn}
                   onChange={handleInputChange}
+                  required
+                  minLength="3"
                 />
               </div>
               <div className="form-group col">
-                <label htmlFor="">Enter Value Name (Ar)</label>
+                <label htmlFor="">Enter Value Name (Ar)<span className="required-field text-danger">*</span></label>
                 <input
                   type="text"
                   className="form-control"
@@ -332,6 +334,8 @@ function Value() {
                   id="nameAr"
                   value={values.nameAr}
                   onChange={handleInputChange}
+                  required
+                  minLength="3"
                 />
               </div>
               {/* <div className="form-group col-auto">
