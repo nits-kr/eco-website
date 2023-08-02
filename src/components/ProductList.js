@@ -4,6 +4,9 @@ import Swal from "sweetalert2";
 import axios from "axios";
 import Sidebar from "./Sidebar";
 import Spinner from "./Spinner";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 function ProductList(props) {
   const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -14,6 +17,13 @@ function ProductList(props) {
   };
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
+  const sliderSettings = {
+    dots: true,
+    // infinite: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+  };
 
   const handleSearch = async (e) => {
     e.preventDefault();
@@ -27,7 +37,7 @@ function ProductList(props) {
         );
         const { error, results } = response.data;
         if (error) {
-          throw new Error("Error searching for products.");
+          throw new Error("No Product found...");
         } else {
           setProductList(results.productData);
         }
@@ -37,6 +47,10 @@ function ProductList(props) {
           text: error.message,
           icon: "error",
           confirmButtonText: "OK",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            window.location.reload(true);
+          }
         });
       }
     } else {
@@ -53,14 +67,14 @@ function ProductList(props) {
       .then((response) => {
         setProductList(response?.data?.results?.list.reverse());
         console.log(response.data);
+        props.setProgress(100);
+        setLoading(false);
       });
-    props.setProgress(100);
-    setLoading(false);
   }, []);
   return (
     <>
-      <Sidebar />
       {loading}
+      <Sidebar />
       <div className="admin_main_inner" style={{ marginLeft: "18%" }}>
         <div className="admin_panel_data height_adjust">
           <h6 style={{ marginLeft: "2%", marginTop: "-35px" }}>
@@ -278,7 +292,7 @@ function ProductList(props) {
                                           alignItems: "left",
                                         }}
                                       >
-                                        <img
+                                        {/* <img
                                           src={product.product_Pic[0]}
                                           className="avatar lg rounded"
                                           alt=""
@@ -286,7 +300,24 @@ function ProductList(props) {
                                             width: "10vh",
                                             height: "10vh",
                                           }}
-                                        />
+                                        /> */}
+                                        {product.product_Pic.map(
+                                          (imageUrl, index) => (
+                                            <Slider {...sliderSettings}>
+                                              <img
+                                                key={index}
+                                                src={imageUrl}
+                                                className="avatar lg rounded"
+                                                alt={`Image ${index + 1}`}
+                                                style={{
+                                                  width: "10vh",
+                                                  height: "10vh",
+                                                  marginRight: "10px",
+                                                }}
+                                              />
+                                            </Slider>
+                                          )
+                                        )}
                                       </div>
                                       <div
                                         className="col-9 ms-3"
