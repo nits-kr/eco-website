@@ -6,14 +6,19 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faPencil, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import Sidebar from "./Sidebar";
 import { useGetFileQuery } from "../services/Post";
+import { useEditOrderListMutation } from "../services/Post";
 function OrderManagement() {
   const { data, isLoading, isError } = useGetFileQuery("file-id");
+  const [updateOrder] = useEditOrderListMutation();
   console.log("down load data", data);
   const [orderList, setOrderList] = useState([]);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [startDate1, setStartDate1] = useState("");
+  const [status, setStatus] = useState("");
+  const [status2, setStatus2] = useState("");
+  const [itemId, setItemId] = useState("");
 
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
@@ -132,13 +137,13 @@ function OrderManagement() {
   const deleteOrder = async (_id) => {
     try {
       const result = await Swal.fire({
-        title: 'Confirm Deletion',
-        text: 'Are you sure you want to delete this order?',
-        icon: 'warning',
+        title: "Confirm Deletion",
+        text: "Are you sure you want to delete this order?",
+        icon: "warning",
         showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'OK',
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "OK",
       });
       if (result.isConfirmed) {
         await axios.delete(
@@ -151,7 +156,7 @@ function OrderManagement() {
       console.log("Error deleting order:", error);
     }
   };
-  
+
   // const handleDownload = () => {
   //   if (data) {
   //     const blob = new Blob([data]);
@@ -179,6 +184,38 @@ function OrderManagement() {
   if (isError) {
     return <div>Error occurred while fetching the file.</div>;
   }
+
+  const handleItem = (item) => {
+    setStatus2(item?.orderStatus || "");
+    // setTitle2(item?.title || "");
+    // setCode2(item?.code || "");
+    // setDiscount2(item?.Discount || "");
+  };
+  const handleSaveChanges1 = async (e) => {
+    e.preventDefault();
+    console.log("handleSaveChanges1", itemId);
+    const editOffer = {
+      id: itemId,
+      orderStatus: status,
+    };
+    try {
+      await updateOrder(editOffer);
+      Swal.fire({
+        title: "Changes Saved",
+        text: "The offer has been updated successfully.",
+        icon: "success",
+        confirmButtonText: "OK",
+      }).then((result) => {
+        // Check if the user clicked "OK" (result.isConfirmed) and then reload the page
+        if (result.isConfirmed) {
+          window.location.reload();
+        }
+      });
+    } catch (error) {
+      // Handle error if necessary
+    }
+  };
+  
 
   return (
     <>
@@ -277,7 +314,7 @@ function OrderManagement() {
                                 <th>Payment Method</th>
                                 <th>Delivery Status</th>
                                 <th>Amount</th>
-                                <th style={{textAlign:"right"}}>Action</th>
+                                <th style={{ textAlign: "right" }}>Action</th>
                                 {/* <th></th> */}
                                 {/* <th></th> */}
                               </tr>
@@ -306,10 +343,18 @@ function OrderManagement() {
                                   {/* <td>
                                     <FontAwesomeIcon icon={faEye} />
                                   </td> */}
-                                  <td style={{textAlign:"center"}}>
+                                  <td
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#edittoffer"
+                                    style={{ textAlign: "center" }}
+                                    onClick={() => {
+                                      handleItem(data);
+                                      setItemId(data?._id);
+                                    }}
+                                  >
                                     <FontAwesomeIcon icon={faPencil} />
                                   </td>
-                                  <td style={{textAlign:"left"}}>
+                                  <td style={{ textAlign: "left" }}>
                                     <button
                                       type="button"
                                       className="border border-none bg-light"
@@ -328,6 +373,90 @@ function OrderManagement() {
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        className="modal fade Edit_modal"
+        id="edittoffer"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+        tabIndex={-1}
+        aria-labelledby="staticBackdropLabel"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog modal-dialog-centered">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title" id="staticBackdropLabel">
+                Edit Offer
+              </h5>
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              />
+            </div>
+            <div className="modal-body">
+              <form
+                className="form-design py-4 px-3 help-support-form row align-items-end justify-content-between"
+                action=""
+                onSubmit={handleSaveChanges1}
+              >
+                <div className="form-group col-6">
+                  <label htmlFor=""> DELIVERY STATUS</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    // value={productName}
+                    defaultValue={status2}
+                    onChange={(e) => setStatus(e.target.value)}
+                    name="name"
+                    id="name"
+                  />
+                </div>
+                {/* <div className="form-group col-6">
+                  <label htmlFor="">Title</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    // value={title}
+                    defaultValue={title2}
+                    onChange={(e) => setTitle(e.target.value)}
+                    name="title"
+                    id="title"
+                  />
+                </div>
+                <div className="form-group mb-0 col">
+                  <label htmlFor="">Code</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    // value={code}
+                    defaultValue={code2}
+                    onChange={(e) => setCode(e.target.value)}
+                    name="code"
+                    id="code"
+                  />
+                </div>
+                <div className="form-group mb-0 col">
+                  <label htmlFor="">Discount</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    // value={discount}
+                    // defaultValue={discount2}
+                    // onChange={(e) => setDiscount(e.target.value)}
+                    name="name"
+                    id="name"
+                  />
+                </div> */}
+                <div className="form-group mb-0 col-auto">
+                  <button className="comman_btn2">Add</button>
+                </div>
+              </form>
             </div>
           </div>
         </div>

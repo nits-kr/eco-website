@@ -246,6 +246,18 @@ export const PostApi = createApi({
         };
       },
     }),
+    editOrderList: builder.mutation({
+      query: (body) => {
+        console.log("update category", body);
+        const { id, ...data } = body;
+        console.log("update offer body data", data);
+        return {
+          url: `/admin/order/order/order-update/${id}`,
+          method: "post",
+          body: data,
+        };
+      },
+    }),
     deleteProductList: builder.mutation({
       query: (id) => ({
         url: `/admin/product/delete-product/${id}`,
@@ -287,5 +299,6 @@ export const {
   useUserLoginMutation,
   useEditProductListMutation,
   useDeleteProductListMutation,
+  useEditOrderListMutation,
   // useSearchOfferQuery,
 } = PostApi;
