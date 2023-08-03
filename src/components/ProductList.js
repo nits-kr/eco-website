@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 import axios from "axios";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye, faPencil, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import Sidebar from "./Sidebar";
 import Spinner from "./Spinner";
 import Slider from "react-slick";
@@ -88,7 +90,7 @@ function ProductList(props) {
     console.log("handleSaveChanges1", itemId);
     const editOffer = {
       id: itemId,
-      productName_en:"School Tables"
+      productName_en: "School Tables",
     };
     try {
       await editProductList(editOffer);
@@ -286,7 +288,7 @@ function ProductList(props) {
                                     ></i>
                                   </span>
                                 </th>
-                                <th style={{ textAlign: "left" }}>Action</th>
+                                <th style={{ textAlign: "right" }}>Action</th>
                               </tr>
                             </thead>
                             <tbody>
@@ -424,91 +426,48 @@ function ProductList(props) {
                                       ₹{product?.oldPrice}{" "}
                                     </del>
                                   </td>
-                                  <td>
-                                    <div className="dropdown">
-                                      <button
-                                        className="dropdown-toggle"
-                                        type="button"
-                                        id="optionsMenu"
-                                        data-bs-toggle="dropdown"
-                                        aria-expanded="false"
-                                      >
-                                        <i className="fa-solid fa-ellipsis-vertical"></i>
-                                      </button>
-                                      <ul
-                                        className="dropdown-menu"
-                                        aria-labelledby="optionsMenu"
-                                      >
-                                        <li>
-                                          <Link
-                                            className="dropdown-item"
-                                            to="#"
-                                            onClick={() => {
-                                              handleItem(product);
-                                              setItemId(product?._id);
-                                            }}
-                                          >
-                                            Edit
-                                          </Link>
-                                        </li>
-                                        {/* <li>
-                                          <Link
-                                            className="dropdown-item"
-                                            to="#"
-                                          >
-                                            Duplicate
-                                          </Link>
-                                        </li>
-                                        <li>
-                                          <Link
-                                            className="dropdown-item"
-                                            to="#"
-                                          >
-                                            Add Tag
-                                          </Link>
-                                        </li>
-                                        <li>
-                                          <Link
-                                            className="dropdown-item"
-                                            to="#"
-                                          >
-                                            Remove Tag
-                                          </Link>
-                                        </li> */}
-                                        <li>
-                                          <Link
-                                            className="dropdown-item"
-                                            to="#"
-                                            style={{ backgroundColor: "red" }}
-                                            onClick={() => {
-                                              Swal.fire({
-                                                title: "Are you sure?",
-                                                text: "You won't be able to revert this!",
-                                                icon: "warning",
-                                                showCancelButton: true,
-                                                confirmButtonColor: "#3085d6",
-                                                cancelButtonColor: "#d33",
-                                                confirmButtonText:
-                                                  "Yes, delete it!",
-                                              }).then((result) => {
-                                                if (result.isConfirmed) {
-                                                  deleteProductList(product?._id);
-                                                  Swal.fire(
-                                                    "Deleted!",
-                                                    `${product?.productName_en}  item has been deleted.`,
-                                                    "success"
-                                                  ).then(() => {
-                                                    window.location.reload(); // Reload the page
-                                                  });
-                                                }
-                                              });
-                                            }}
-                                          >
-                                            Delete
-                                          </Link>
-                                        </li>
-                                      </ul>
-                                    </div>
+                                  <td style={{textAlign:"center"}}>
+                                    <Link
+                                      className=""
+                                      to="#"
+                                      onClick={() => {
+                                        handleItem(product);
+                                        setItemId(product?._id);
+                                      }}
+                                    >
+                                      <FontAwesomeIcon icon={faPencil} />
+                                    </Link>
+                                  </td>
+                                  <td style={{textAlign:"left"}}>
+                                    <Link
+                                      className="dropdown-item"
+                                      to="#"
+                                      style={{ color: "red" }}
+                                      onClick={() => {
+                                        Swal.fire({
+                                          title: "Are you sure?",
+                                          text: "You won't be able to revert this!",
+                                          icon: "warning",
+                                          showCancelButton: true,
+                                          confirmButtonColor: "#3085d6",
+                                          cancelButtonColor: "#d33",
+                                          confirmButtonText: "Yes, delete it!",
+                                        }).then((result) => {
+                                          if (result.isConfirmed) {
+                                            deleteProductList(product?._id);
+                                            Swal.fire(
+                                              "Deleted!",
+                                              `${product?.productName_en}  item has been deleted.`,
+                                              "success"
+                                            ).then(() => {
+                                              window.location.reload(); // Reload the page
+                                            });
+                                          }
+                                        });
+                                      }}
+                                    >
+                                      <FontAwesomeIcon icon={faTrashCan} />
+                                    </Link>
                                   </td>
                                 </tr>
                               ))}
