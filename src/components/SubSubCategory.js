@@ -354,8 +354,8 @@ function SubSubCategory() {
                                 handleUpdate(
                                   value.category_Id,
                                   value.subCategory_Id,
-                                  value.subSubCategoryName,
-                                  value.subSubCategoryName
+                                  value.subSubCategoryName_en,
+                                  value.subSubCategoryName_ar
                                 )
                               }
                             >

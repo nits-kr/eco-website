@@ -20,7 +20,7 @@ function ProductManagement() {
   });
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
-    const navigate = useNavigate();
+  const navigate = useNavigate();
   const handleInputChange1 = (event) => {
     const { name, value } = event.target;
     setSubSubCategory({ ...subSubCategory, [name]: value });
@@ -101,7 +101,9 @@ function ProductManagement() {
     data.append("category_Id", subSubCategory.categoryId);
     data.append("Subcategory_Id", subSubCategory.categoryId1);
     data.append("brand_Id", "64c25a9524e0f35295000500");
-    selectedImage.map((item, index)=>{ data.append(`product_Pic`, item)})
+    selectedImage.map((item, index) => {
+      data.append(`product_Pic`, item);
+    });
     axios
       .post(
         "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/product/createProduct",
@@ -118,7 +120,7 @@ function ProductManagement() {
           confirmButtonText: "OK",
         }).then((result) => {
           if (result.isConfirmed) {
-            navigate("/products")
+            navigate("/products");
           }
         });
       })
@@ -149,7 +151,7 @@ function ProductManagement() {
               className="col-auto d-flex"
               style={{
                 justifyContent: "flex-end",
-                marginTop: "-55px",
+                marginTop: "-30px",
                 marginBottom: "15px",
               }}
             >
@@ -169,23 +171,32 @@ function ProductManagement() {
                 Save
               </button> */}
             </span>
-            <div className="row-12">
+            <div className="row-12" style={{ marginTop: "-60px" }}>
               <form
+                action=""
                 className="row justify-content-between"
+                onSubmit={handleOnSave}
                 // style={{ marginTop: "-30px" }}
               >
-                <button
-                  // to="/products"
-                  className="btn btn-primary mt-4"
-                  style={{
-                    display: "flex",
-                    alignItems: "flex-end",
-                    justifyContent: "flex-end",
-                  }}
-                  onClick={handleOnSave}
-                >
-                  Save
-                </button>
+                <div className="col-12 text-end">
+                  <button
+                    // type="submit"
+                    // className="btn btn-primary mt-4"
+                    className="comman_btn2 bg-primary text-light border border-none"
+                    type="submit"
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "flex-end",
+                      justifyContent: "flex-end",
+                      marginBottom: "-40px",
+                      borderRadius:"10px"
+                    }}
+                    // onClick={handleOnSave}
+                  >
+                    Save
+                  </button>
+                </div>
+
                 <div className=" col-9  my-5">
                   <div className="card p-3 shadow">
                     <h3
@@ -193,7 +204,7 @@ function ProductManagement() {
                       style={{
                         marginTop: "-16px",
                         marginLeft: "-16px",
-                        width: "103.5%",
+                        width: "103.9%",
                       }}
                     >
                       Basic Information
@@ -382,13 +393,16 @@ function ProductManagement() {
                       style={{
                         marginTop: "-16px",
                         marginLeft: "-16px",
-                        width: "103.5%",
+                        width: "103.9%",
                       }}
                     >
                       Pricing
                     </h3>
                     <div className="d-flex justify-content-between">
-                      <div className="form-group" style={{ marginRight: '10px' }}>
+                      <div
+                        className="form-group"
+                        style={{ marginRight: "10px" }}
+                      >
                         <label htmlFor="price">Price</label>
                         <input
                           id="Price"
@@ -400,7 +414,10 @@ function ProductManagement() {
                           onChange={handleInputChange}
                         />
                       </div>
-                      <div className="form-group" style={{ marginRight: '10px' }}>
+                      <div
+                        className="form-group"
+                        style={{ marginRight: "10px" }}
+                      >
                         <label htmlFor="old_price">Old Price</label>
                         <input
                           id="oldPrice"
@@ -411,7 +428,10 @@ function ProductManagement() {
                           onChange={handleInputChange}
                         />
                       </div>
-                      <div className="form-group" style={{ marginRight: '10px' }}>
+                      <div
+                        className="form-group"
+                        style={{ marginRight: "10px" }}
+                      >
                         <label htmlFor="old_price">dollarPrice</label>
                         <input
                           id="dollar"
@@ -444,7 +464,7 @@ function ProductManagement() {
                       style={{
                         marginTop: "-16px",
                         marginLeft: "-16px",
-                        width: "103.5%",
+                        width: "103.9%",
                       }}
                     >
                       Inventory
@@ -630,14 +650,14 @@ function ProductManagement() {
                         style={{ width: "98%", marginLeft: "4px" }}
                       /> */}
                       <input
-                      type="file"
-                      className="form-control shadow-none"
-                      defaultValue=""
-                      accept="image/*"
-                      name="gallery_images"
-                      onChange={(e) => handleFileChange(e, "gallery_images")}
-                      multiple
-                    />
+                        type="file"
+                        className="form-control shadow-none"
+                        defaultValue=""
+                        accept="image/*"
+                        name="gallery_images"
+                        onChange={(e) => handleFileChange(e, "gallery_images")}
+                        multiple
+                      />
                     </div>
                   </div>
                   <div className="card border rounded p-3 mt-4 mb-5 shadow">
@@ -646,7 +666,7 @@ function ProductManagement() {
                       style={{
                         marginTop: "-16px",
                         marginLeft: "-16px",
-                        width: "103.5%",
+                        width: "103.9%",
                       }}
                     >
                       Search Engine Optimization
@@ -729,7 +749,7 @@ function ProductManagement() {
                       style={{
                         marginTop: "-16px",
                         marginLeft: "-16px",
-                        width: "112%",
+                        width: "114%",
                       }}
                     >
                       Vigibility(EN)
@@ -794,7 +814,7 @@ function ProductManagement() {
                       style={{
                         marginTop: "-16px",
                         marginLeft: "-16px",
-                        width: "112%",
+                        width: "114%",
                       }}
                     >
                       Vigibility(AR)
@@ -865,7 +885,7 @@ function ProductManagement() {
                       style={{
                         marginTop: "-16px",
                         marginLeft: "-16px",
-                        width: "112%",
+                        width: "114%",
                       }}
                     >
                       <label htmlFor="">Category</label>
@@ -900,7 +920,7 @@ function ProductManagement() {
                       style={{
                         marginTop: "-16px",
                         marginLeft: "-16px",
-                        width: "112%",
+                        width: "114%",
                       }}
                     >
                       <label htmlFor="">Sub Category</label>
@@ -939,7 +959,7 @@ function ProductManagement() {
                       style={{
                         marginTop: "-16px",
                         marginLeft: "-16px",
-                        width: "112%",
+                        width: "114%",
                       }}
                     >
                       Brand
@@ -965,7 +985,7 @@ function ProductManagement() {
                       style={{
                         marginTop: "-16px",
                         marginLeft: "-16px",
-                        width: "112%",
+                        width: "114%",
                       }}
                     >
                       Tags(EN)
@@ -989,7 +1009,7 @@ function ProductManagement() {
                       style={{
                         marginTop: "-16px",
                         marginLeft: "-16px",
-                        width: "112%",
+                        width: "114%",
                       }}
                     >
                       Tags(AR)
@@ -1013,7 +1033,7 @@ function ProductManagement() {
                       style={{
                         marginTop: "-16px",
                         marginLeft: "-16px",
-                        width: "112%",
+                        width: "114%",
                       }}
                     >
                       Product Color(EN)
@@ -1036,7 +1056,7 @@ function ProductManagement() {
                       style={{
                         marginTop: "-16px",
                         marginLeft: "-16px",
-                        width: "112%",
+                        width: "114%",
                       }}
                     >
                       Product Color(AR)

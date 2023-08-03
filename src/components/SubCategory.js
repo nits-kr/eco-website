@@ -12,6 +12,9 @@ function SubCategory(props) {
   const [itemId, setItemId] = useState("");
   const [editSubCategoryNameEn, setEditSubCategoryNameEn] = useState("");
   const [editSubCategoryNameAr, setEditSubCategoryNameAr] = useState("");
+  const [subCategoryNameEn2, setSubCategoryNameEn2] = useState("");
+  const [subCategoryNameAr2, setSubCategoryNameAr2] = useState("");
+  const [image2, setImage2] = useState("")
   console.log("update sub category", update);
   const [subCategoryList, setSubCategoryList] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -208,6 +211,11 @@ function SubCategory(props) {
         text: "An error occurred while updating the subcategory.",
       });
     }
+  };
+  const handleItem = (item) => {
+    setSubCategoryNameEn2(item?.subCategoryName_en || "");
+    setSubCategoryNameAr2(item?.subCategoryName_ar || "");
+    setImage2(item?.categoryPic || "");
   };
   return (
     <>
@@ -407,7 +415,9 @@ function SubCategory(props) {
                               data-bs-target="#staticBackdrop10"
                               className="comman_btn2 table_viewbtn"
                               to=""
-                              onClick={() => setItemId(value?._id)}
+                              onClick={() => {
+                                handleItem(value)
+                                setItemId(value?._id)}}
                             >
                               Edit
                             </Link>
@@ -480,7 +490,7 @@ function SubCategory(props) {
                   >
                     {categories.map((category) => (
                       <option key={category._id} value={category._id}>
-                        {category.categoryName}
+                        {category.categoryName_en}
                       </option>
                     ))}
                   </select>
@@ -492,7 +502,7 @@ function SubCategory(props) {
                     className="form-control"
                     name="nameEn"
                     id="nameEn"
-                    defaultValue=""
+                    defaultValue={subCategoryNameEn2}
                     onChange={(e) => setEditSubCategoryNameEn(e.target.value)}
                     // onChange={handleInputChange}
                   />
@@ -504,7 +514,7 @@ function SubCategory(props) {
                     className="form-control"
                     name="nameAr"
                     id="nameAr"
-                    defaultValue=""
+                    defaultValue={subCategoryNameAr2}
                     onChange={(e) => setEditSubCategoryNameAr(e.target.value)}
                     // onChange={(e) => setEditSubCategoryName(e.target.value)}
                     // onChange={handleInputChange}
@@ -519,7 +529,7 @@ function SubCategory(props) {
                   <input
                     type="file"
                     className="form-control"
-                    defaultValue=""
+                    defaultValue={image2}
                     name="uploadImage"
                     id="uploadImage"
                     onChange={(e) => handleFileChange(e, "uploadImage")}

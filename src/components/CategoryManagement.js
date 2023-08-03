@@ -447,7 +447,7 @@ function CategoryManagement(props) {
                                                       onClick={() =>
                                                         handleUpdate(
                                                           category.categoryName_en,
-                                                          category.categoryName_en,
+                                                          category.categoryName_ar,
                                                           category.categoryPic,
                                                           category._id
                                                         )

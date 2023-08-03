@@ -116,12 +116,19 @@ function StaffManagement() {
           confirm_password: staff.confirmPassword,
         }
       );
+  
       console.log(response.data.results.saveData);
-
+  
       if (!response.data.error) {
-        alert("Saved!");
-        // handleSave();
-        userList();
+        // Display SweetAlert2 popup
+        Swal.fire({
+          icon: 'success',
+          title: 'Saved!',
+          showConfirmButton: true,
+        }).then(() => {
+          // Reload the page
+          window.location.reload();
+        });
       }
     } catch (error) {
       console.error(error);
@@ -197,7 +204,7 @@ function StaffManagement() {
                       onSubmit={handleSubmit}
                     >
                       <div className="form-group col-4">
-                        <label htmlFor="">Staff Name</label>
+                        <label htmlFor="">Staff Name<span className="required-field text-danger">*</span></label>
                         <input
                           type="text"
                           className="form-control"
@@ -205,10 +212,12 @@ function StaffManagement() {
                           id="nameEn"
                           value={staff.nameEn}
                           onChange={handleInputChange}
+                          required
+                          minLength="3"
                         />
                       </div>
                       <div className="form-group col-4">
-                        <label htmlFor="">Module</label>
+                        <label htmlFor="">Module<span className="required-field text-danger">*</span></label>
                         <input
                           type="text"
                           className="form-control"
@@ -216,10 +225,12 @@ function StaffManagement() {
                           id="modules"
                           value={staff.modules}
                           onChange={handleInputChange}
+                          required
+                          minLength="3"
                         />
                       </div>
                       <div className="form-group col-4">
-                        <label htmlFor="">Email</label>
+                        <label htmlFor="email">Email<span className="required-field text-danger">*</span></label>
                         <input
                           type="email"
                           className="form-control"
@@ -227,10 +238,12 @@ function StaffManagement() {
                           id="email"
                           value={staff.email}
                           onChange={handleInputChange}
+                          required
+                          minLength="3"
                         />
                       </div>
                       <div className="form-group mb-0 col">
-                        <label htmlFor="">Password</label>
+                        <label htmlFor="">Password<span className="required-field text-danger">*</span></label>
                         <input
                           type="password"
                           className="form-control"
@@ -238,10 +251,12 @@ function StaffManagement() {
                           id="password"
                           value={staff.password}
                           onChange={handleInputChange}
+                          required
+                          minLength="3"
                         />
                       </div>
                       <div className="form-group mb-0 col">
-                        <label htmlFor="">Confirm Password</label>
+                        <label htmlFor="">Confirm Password<span className="required-field text-danger">*</span></label>
                         <input
                           type="password"
                           className="form-control"
@@ -249,6 +264,8 @@ function StaffManagement() {
                           id="confirmPassword"
                           value={staff.confirmPassword}
                           onChange={handleInputChange}
+                          required
+                          minLength="3"
                         />
                       </div>
                       <div className="form-group mb-0 col-auto">

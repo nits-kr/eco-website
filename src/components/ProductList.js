@@ -39,7 +39,7 @@ function ProductList(props) {
         if (error) {
           throw new Error("No Product found...");
         } else {
-          setProductList(results.productData);
+          setProductList(results?.productData);
         }
       } catch (error) {
         Swal.fire({
@@ -292,7 +292,7 @@ function ProductList(props) {
                                           alignItems: "left",
                                         }}
                                       >
-                                        {/* <img
+                                        <img
                                           src={product.product_Pic[0]}
                                           className="avatar lg rounded"
                                           alt=""
@@ -300,8 +300,8 @@ function ProductList(props) {
                                             width: "10vh",
                                             height: "10vh",
                                           }}
-                                        /> */}
-                                        {product.product_Pic.map(
+                                        />
+                                        {/* {product.product_Pic.map(
                                           (imageUrl, index) => (
                                             <Slider {...sliderSettings}>
                                               <img
@@ -317,7 +317,7 @@ function ProductList(props) {
                                               />
                                             </Slider>
                                           )
-                                        )}
+                                        )} */}
                                       </div>
                                       <div
                                         className="col-9 ms-3"

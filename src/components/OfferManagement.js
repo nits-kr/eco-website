@@ -6,45 +6,41 @@ import { useGetOfferListQuery } from "../services/Post";
 import { useUpdateOfferMutation } from "../services/Post";
 import { useDeleteOfferMutation } from "../services/Post";
 import { useSearchOfferMutation } from "../services/Post";
+import { increment } from "../app/Slice";
 import Sidebar from "./Sidebar";
+import { useSelector, useDispatch } from "react-redux";
 function OfferManagement() {
+  const dispatch = useDispatch();
+  const count = useSelector((state) => state?.user?.value);
+  const state = useSelector((state) => state.user);
+  // const { value, offerList, productName, productName2, title, title2, title3, startDate, endDate, code, code2, discount, discount2, itemId } = state;
+  console.log("count", count);
   const [createOffer, responseInfo] = useCreateOfferMutation();
   const [updateOffer] = useUpdateOfferMutation();
-  // const [deleteOffer, response] = useDeleteOfferMutation();
-  const [searchOffer] = useSearchOfferMutation();
+  const [searchOffer, res] = useSearchOfferMutation();
+  console.log("useSearchOfferMutation", res);
   const offerListItems = useGetOfferListQuery();
+  const [offerList, setOfferList] = useState([]);
   const [productName, setProductName] = useState("");
+  const [productName2, setProductName2] = useState("");
   const [title, setTitle] = useState("");
+  const [title2, setTitle2] = useState("");
+  const [title3, setTitle3] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [code, setCode] = useState("");
+  const [code2, setCode2] = useState("");
   const [discount, setDiscount] = useState("");
+  const [discount2, setDiscount2] = useState("");
   const [itemId, setItemId] = useState("");
   const [deleteOffer, response] = useDeleteOfferMutation();
+  useEffect(() => {
+    setOfferList(offerListItems?.data?.results?.list ?? []);
+  }, [offerListItems]);
 
-  const handleDeleteOffer = async (offerId) => {
-    try {
-      await deleteOffer(offerId);
-      offerListItems.refetch();
-      Swal.fire({
-        title: "Offer Deleted",
-        text: "The offer has been deleted successfully.",
-        icon: "success",
-        confirmButtonText: "OK",
-      });
-    } catch (error) {
-      // Handle error if necessary
-    }
-  };
   useEffect(() => {
     if (responseInfo.isSuccess) {
       offerListItems.refetch();
-      Swal.fire({
-        title: "Offer list updated!",
-        text: "The offer has been Updated successfully.",
-        icon: "success",
-        confirmButtonText: "OK",
-      });
     }
   }, [responseInfo.isSuccess]);
 
@@ -65,13 +61,37 @@ function OfferManagement() {
       confirmButtonText: "OK",
     });
   };
-  const handleSaveChanges2 = (e) => {
+  const handleSaveChanges2 = async (e) => {
     e.preventDefault();
     const newOffer = {
-      title: title,
+      title: title3,
     };
-    searchOffer(newOffer);
+    try {
+      const response = await searchOffer(newOffer);
+      console.log("response", response);
+      if (response?.data?.results?.offerData) {
+        setOfferList(response?.data?.results?.offerData);
+        console.log(
+          "response?.data?.results?.offerData",
+          response?.data?.results?.offerData
+        );
+      } else {
+        Swal.fire({
+          title: "No Results",
+          text: "No offers found for the given search criteria.",
+          icon: "info",
+          confirmButtonText: "OK",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            window.location.reload();
+          }
+        });
+      }
+    } catch (error) {
+      console.error("Error:", error.message);
+    }
   };
+
   const handleSaveChanges1 = async (e) => {
     e.preventDefault();
     console.log("handleSaveChanges1", itemId);
@@ -95,6 +115,12 @@ function OfferManagement() {
       // Handle error if necessary
     }
   };
+  const handleItem = (item) => {
+    setProductName2(item?.productName || "");
+    setTitle2(item?.title || "");
+    setCode2(item?.code || "");
+    setDiscount2(item?.Discount || "");
+  };
 
   return (
     <>
@@ -108,12 +134,19 @@ function OfferManagement() {
                   <div className="col-12 design_outter_comman mb-4 shadow">
                     <div className="row comman_header justify-content-between">
                       <div className="col">
-                        <h2>Add New Offer</h2>
+                        <h2
+                        // onClick={() => dispatch(increment())}
+                        >
+                          Add New Offer
+                          {/* <span>{count} */}
+                          {/* </span> */}
+                        </h2>
                       </div>
                     </div>
                     <form
                       className="form-design py-4 px-3 help-support-form row align-items-end justify-content-between"
                       action=""
+                      onSubmit={handleSaveChanges}
                     >
                       <div className="form-group col-6">
                         <label htmlFor="">Product Name</label>
@@ -127,7 +160,7 @@ function OfferManagement() {
                         />
                       </div>
                       <div className="form-group col-6">
-                        <label htmlFor="">Title</label>
+                        <label htmlFor="">Title<span className="required-field text-danger">*</span></label>
                         <input
                           type="text"
                           className="form-control"
@@ -135,10 +168,12 @@ function OfferManagement() {
                           id="title"
                           value={title}
                           onChange={(e) => setTitle(e.target.value)}
+                          required
+                          minLength="3"
                         />
                       </div>
                       <div className="form-group mb-0 col">
-                        <label htmlFor="">Code</label>
+                        <label htmlFor="">Code<span className="required-field text-danger">*</span></label>
                         <input
                           type="text"
                           className="form-control"
@@ -146,10 +181,12 @@ function OfferManagement() {
                           id="code"
                           value={code}
                           onChange={(e) => setCode(e.target.value)}
+                          required
+                          minLength="3"
                         />
                       </div>
                       <div className="form-group mb-0 col">
-                        <label htmlFor="">Discount</label>
+                        <label htmlFor="">Discount<span className="required-field text-danger">*</span></label>
                         <input
                           type="text"
                           className="form-control"
@@ -157,12 +194,14 @@ function OfferManagement() {
                           id="discount"
                           value={discount}
                           onChange={(e) => setDiscount(e.target.value)}
+                          required
+                          minLength="3"
                         />
                       </div>
                       <div className="form-group mb-0 col-auto">
                         <button
                           className="comman_btn2"
-                          onClick={handleSaveChanges}
+                          // onClick={handleSaveChanges}
                         >
                           Add
                         </button>
@@ -187,8 +226,8 @@ function OfferManagement() {
                               placeholder="Search"
                               name="name"
                               id="name"
-                              value={title}
-                              onChange={(e) => setTitle(e.target.value)}
+                              value={title3}
+                              onChange={(e) => setTitle3(e.target.value)}
                             />
                             <i className="far fa-search" />
                           </div>
@@ -238,7 +277,7 @@ function OfferManagement() {
                               </tr>
                             </thead>
                             <tbody>
-                              {offerListItems?.data?.results?.list
+                              {offerList
                                 ?.slice()
                                 .reverse()
                                 ?.map((item, index) => {
@@ -271,7 +310,10 @@ function OfferManagement() {
                                           data-bs-toggle="modal"
                                           data-bs-target="#edittoffer"
                                           to="#"
-                                          onClick={() => setItemId(item?._id)}
+                                          onClick={() => {
+                                            handleItem(item);
+                                            setItemId(item?._id);
+                                          }}
                                         >
                                           Edit
                                         </Link>
@@ -279,7 +321,27 @@ function OfferManagement() {
                                           className="comman_btn2 table_viewbtn ms-2"
                                           to="#"
                                           onClick={() => {
-                                            handleDeleteOffer(item?._id);
+                                            Swal.fire({
+                                              title: "Are you sure?",
+                                              text: "You won't be able to revert this!",
+                                              icon: "warning",
+                                              showCancelButton: true,
+                                              confirmButtonColor: "#3085d6",
+                                              cancelButtonColor: "#d33",
+                                              confirmButtonText:
+                                                "Yes, delete it!",
+                                            }).then((result) => {
+                                              if (result.isConfirmed) {
+                                                deleteOffer(item?._id);
+                                                Swal.fire(
+                                                  "Deleted!",
+                                                  `${item?.title}  item has been deleted.`,
+                                                  "success"
+                                                ).then(() => {
+                                                  window.location.reload(); // Reload the page
+                                                });
+                                              }
+                                            });
                                           }}
                                         >
                                           Delete
@@ -360,13 +422,15 @@ function OfferManagement() {
               <form
                 className="form-design py-4 px-3 help-support-form row align-items-end justify-content-between"
                 action=""
+                onSubmit={handleSaveChanges1}
               >
                 <div className="form-group col-6">
                   <label htmlFor="">Product Name</label>
                   <input
                     type="text"
                     className="form-control"
-                    value={productName}
+                    // value={productName}
+                    defaultValue={productName2}
                     onChange={(e) => setProductName(e.target.value)}
                     name="name"
                     id="name"
@@ -377,7 +441,8 @@ function OfferManagement() {
                   <input
                     type="text"
                     className="form-control"
-                    value={title}
+                    // value={title}
+                    defaultValue={title2}
                     onChange={(e) => setTitle(e.target.value)}
                     name="title"
                     id="title"
@@ -388,7 +453,8 @@ function OfferManagement() {
                   <input
                     type="text"
                     className="form-control"
-                    value={code}
+                    // value={code}
+                    defaultValue={code2}
                     onChange={(e) => setCode(e.target.value)}
                     name="code"
                     id="code"
@@ -399,16 +465,15 @@ function OfferManagement() {
                   <input
                     type="text"
                     className="form-control"
-                    value={discount}
+                    // value={discount}
+                    defaultValue={discount2}
                     onChange={(e) => setDiscount(e.target.value)}
                     name="name"
                     id="name"
                   />
                 </div>
                 <div className="form-group mb-0 col-auto">
-                  <button className="comman_btn2" onClick={handleSaveChanges1}>
-                    Add
-                  </button>
+                  <button className="comman_btn2">Add</button>
                 </div>
               </form>
             </div>
