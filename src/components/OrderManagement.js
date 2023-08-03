@@ -277,10 +277,9 @@ function OrderManagement() {
                                 <th>Payment Method</th>
                                 <th>Delivery Status</th>
                                 <th>Amount</th>
-                                <th></th>
-                                <th>Action</th>
-                                <th></th>
-                                <th></th>
+                                <th style={{textAlign:"right"}}>Action</th>
+                                {/* <th></th> */}
+                                {/* <th></th> */}
                               </tr>
                             </thead>
                             <tbody>
@@ -304,13 +303,13 @@ function OrderManagement() {
                                   <td> {data.paymentIntent} </td>
                                   <td> {data.orderStatus} </td>
                                   <td> {data.cartsTotal} </td>
-                                  <td>
+                                  {/* <td>
                                     <FontAwesomeIcon icon={faEye} />
-                                  </td>
-                                  <td>
+                                  </td> */}
+                                  <td style={{textAlign:"center"}}>
                                     <FontAwesomeIcon icon={faPencil} />
                                   </td>
-                                  <td>
+                                  <td style={{textAlign:"left"}}>
                                     <button
                                       type="button"
                                       className="border border-none bg-light"
