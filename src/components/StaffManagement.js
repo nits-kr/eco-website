@@ -17,6 +17,16 @@ function StaffManagement() {
   const [startDate1, setStartDate1] = useState("");
   const [itemId, setItemId] = useState("");
   const [email, setEmail] = useState("");
+  const [staffName2, setStaffName2] = useState("");
+  const [module2, setModule2] = useState("");
+  const [email2, setEmail2] = useState("");
+  const [password2, setPassword2] = useState("");
+  const [confirmPassword2, setConfirmPassword2] = useState("");
+  const [staffName, setStaffName] = useState("");
+  const [module, setModule] = useState("");
+  // const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [staff, setStaff] = useState({
     nameEn: "",
     email: "",
@@ -116,14 +126,14 @@ function StaffManagement() {
           confirm_password: staff.confirmPassword,
         }
       );
-  
+
       console.log(response.data.results.saveData);
-  
+
       if (!response.data.error) {
         // Display SweetAlert2 popup
         Swal.fire({
-          icon: 'success',
-          title: 'Saved!',
+          icon: "success",
+          title: "Saved!",
           showConfirmButton: true,
         }).then(() => {
           // Reload the page
@@ -168,20 +178,33 @@ function StaffManagement() {
     console.log("handleSaveChanges1", itemId);
     const editOffer = {
       id: itemId,
+      staffName: staffName,
       userEmail: email,
+      modules: module,
+      // password: password,
+      // confirm_password: confirmPassword
     };
     try {
       await updateStaff(editOffer);
-      StaffListItems.refetch();
       Swal.fire({
         title: "Changes Saved",
         text: "The offer has been updated successfully.",
         icon: "success",
         confirmButtonText: "OK",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          window.location.reload();
+        }
       });
     } catch (error) {
-      // Handle error if necessary
     }
+  };
+  const handleItem = (item) => {
+    setStaffName2(item?.staffName || "");
+    setModule2(item?.modules[0] || "");
+    setEmail2(item?.userEmail || "");
+    setPassword2(item?.password || "");
+    setConfirmPassword2(item?.confirm_password || "");
   };
 
   return (
@@ -204,7 +227,10 @@ function StaffManagement() {
                       onSubmit={handleSubmit}
                     >
                       <div className="form-group col-4">
-                        <label htmlFor="">Staff Name<span className="required-field text-danger">*</span></label>
+                        <label htmlFor="">
+                          Staff Name
+                          <span className="required-field text-danger">*</span>
+                        </label>
                         <input
                           type="text"
                           className="form-control"
@@ -217,7 +243,10 @@ function StaffManagement() {
                         />
                       </div>
                       <div className="form-group col-4">
-                        <label htmlFor="">Module<span className="required-field text-danger">*</span></label>
+                        <label htmlFor="">
+                          Module
+                          <span className="required-field text-danger">*</span>
+                        </label>
                         <input
                           type="text"
                           className="form-control"
@@ -230,7 +259,10 @@ function StaffManagement() {
                         />
                       </div>
                       <div className="form-group col-4">
-                        <label htmlFor="email">Email<span className="required-field text-danger">*</span></label>
+                        <label htmlFor="email">
+                          Email
+                          <span className="required-field text-danger">*</span>
+                        </label>
                         <input
                           type="email"
                           className="form-control"
@@ -243,7 +275,10 @@ function StaffManagement() {
                         />
                       </div>
                       <div className="form-group mb-0 col">
-                        <label htmlFor="">Password<span className="required-field text-danger">*</span></label>
+                        <label htmlFor="">
+                          Password
+                          <span className="required-field text-danger">*</span>
+                        </label>
                         <input
                           type="password"
                           className="form-control"
@@ -256,7 +291,10 @@ function StaffManagement() {
                         />
                       </div>
                       <div className="form-group mb-0 col">
-                        <label htmlFor="">Confirm Password<span className="required-field text-danger">*</span></label>
+                        <label htmlFor="">
+                          Confirm Password
+                          <span className="required-field text-danger">*</span>
+                        </label>
                         <input
                           type="password"
                           className="form-control"
@@ -296,7 +334,7 @@ function StaffManagement() {
                               value={searchQuery}
                               onChange={(e) => setSearchQuery(e.target.value)}
                             />
-                            <i className="far fa-search"></i>
+                            <i className="far fa-search" onClick={handleSearch1}></i>
                           </div>
                         </form>
                       </div>
@@ -386,7 +424,11 @@ function StaffManagement() {
                                       data-bs-target="#staticBackdrop"
                                       className="comman_btn2 table_viewbtn"
                                       to=""
-                                      onClick={() => setItemId(data?._id)}
+                                      // onClick={() => setItemId(data?._id)}
+                                      onClick={() => {
+                                        handleItem(data);
+                                        setItemId(data?._id);
+                                      }}
                                     >
                                       Edit
                                     </Link>
@@ -432,6 +474,7 @@ function StaffManagement() {
               <form
                 className="form-design p-3 help-support-form row align-items-start justify-content-center"
                 action=""
+                onSubmit={handleSaveChanges1}
               >
                 <div className="form-group col-6">
                   <label htmlFor="">Staff Name</label>
@@ -441,7 +484,8 @@ function StaffManagement() {
                     name="nameEn"
                     id="nameEn"
                     // value={staff ? staff.nameEn : ""}
-                    // onChange={handleInputChange}
+                    defaultValue={staffName2}
+                    onChange={(e) => setStaffName(e.target.value)}
                   />
                 </div>
                 <div className="form-group col-6">
@@ -451,37 +495,34 @@ function StaffManagement() {
                     className="form-control"
                     name="email"
                     id="email"
-                    value={email}
+                    // value={email}
+                    defaultValue={email2}
                     onChange={(e) => setEmail(e.target.value)}
                   />
                 </div>
                 <div className="form-group col-12">
                   <label htmlFor="">Select Module</label>
-                  <select
-                    className="select form-control"
-                    size={15}
-                    name="models"
-                    id="models"
-                    // value={staff ? staff.modules : ""}
-                    // onChange={handleInputChange}
-                  >
-                    {/* {Array.isArray(modules) &&
-                      modules.map((module) => (
-                        <option key={module._id} value={module._id}>
-                          {module.modules}
-                        </option>
-                      ))} */}
-                  </select>
+                  <input
+                    type="text"
+                    className="form-control"
+                    name="modules"
+                    id="modules"
+                    // value={staff.modules}
+                    defaultValue={module2}
+                    onChange={(e) => setModule(e.target.value)}
+                  />
                 </div>
-                <div className="form-group col-6">
+                {/* <div className="form-group col-6">
                   <label htmlFor="">Password</label>
                   <input
                     type="text"
                     className="form-control"
                     // value={staff ? staff.password : ""}
+                    defaultValue={password2}
                     // onChange={handleInputChange}
                     name="password"
                     id="password"
+                    onChange={(e) => setPassword(e.target.value)}
                   />
                 </div>
                 <div className="form-group col-6">
@@ -490,14 +531,16 @@ function StaffManagement() {
                     type="text"
                     className="form-control"
                     // value={staff ? staff.confirmPassword : ""}
+                    defaultValue={confirmPassword2}
                     // onChange={handleInputChange}
                     name="confirmPassword"
                     id="confirmPassword"
+                    onChange={(e) => setConfirmPassword(e.target.value)}
                   />
-                </div>
+                </div> */}
                 <div className="form-group mb-0 col-auto">
                   {" "}
-                  <button className="comman_btn2" onClick={handleSaveChanges1}>
+                  <button className="comman_btn2">
                     Save
                   </button>{" "}
                 </div>

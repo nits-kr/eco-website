@@ -376,9 +376,9 @@ function ProductList(props) {
                                               : product.productName &&
                                                 product.productName.toUpperCase()}
                                           </strong>
-                                          <strong className="text-body-secondary">
+                                          {/* <strong className="text-body-secondary">
                                             ID: {product._id}
-                                          </strong>
+                                          </strong> */}
                                           <strong className="text-body-tertiary">
                                             SKU: {product.SKU}
                                           </strong>

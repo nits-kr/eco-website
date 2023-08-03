@@ -230,7 +230,7 @@ function UsersManagement(props) {
                               value={searchQuery}
                               onChange={(e) => setSearchQuery(e.target.value)}
                             />
-                            <i className="far fa-search"></i>
+                            <i className="far fa-search" onClick={handleSearch1}></i>
                           </div>
                         </form>
                       </div>

@@ -67,7 +67,7 @@ function CategoryManagement(props) {
         const response = await axios.post(
           "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/category/search-category",
           {
-            categoryName: searchQuery,
+            categoryName_en: searchQuery,
           }
         );
         const { error, results } = response.data;

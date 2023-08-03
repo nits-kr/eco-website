@@ -43,6 +43,7 @@ import AgentDetails from "./components/AgentDetails";
 import AgentInformation from "./components/AgentInformation";
 import LoadingBar from "react-top-loading-bar";
 import SubCategory from "./components/SubCategory";
+import ProductManagement2 from "./components/ProductManagement2";
 
 function App() {
   const [progress, setProgress] = useState(0);
@@ -102,8 +103,9 @@ function App() {
             exact
             className="active"
             path="/product-management"
-            element={<ProductManagement />}
+            element={<ProductManagement2 />}
           />
+          {/* <ProductManagement2/> */}
           <Route
             exact
             className="active"

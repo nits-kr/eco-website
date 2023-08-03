@@ -115,15 +115,17 @@ function OfferManagement() {
     };
     try {
       await updateOffer(editOffer);
-      offerListItems.refetch();
       Swal.fire({
         title: "Changes Saved",
         text: "The offer has been updated successfully.",
         icon: "success",
         confirmButtonText: "OK",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          window.location.reload();
+        }
       });
     } catch (error) {
-      // Handle error if necessary
     }
   };
   const handleItem = (item) => {
@@ -285,7 +287,7 @@ function OfferManagement() {
                               value={title3}
                               onChange={(e) => setTitle3(e.target.value)}
                             />
-                            <i className="far fa-search" />
+                            <i className="far fa-search" onClick={handleSaveChanges2}/>
                           </div>
                         </form>
                       </div>

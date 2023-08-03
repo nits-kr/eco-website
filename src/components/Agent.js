@@ -140,6 +140,7 @@ function Agent() {
                                     type="button"
                                     id="button-addon2"
                                     fdprocessedid="b7cmd"
+                                    onClick={handleSearch}
                                   >
                                     <svg
                                       xmlns="http://www.w3.org/2000/svg"
@@ -174,7 +175,7 @@ function Agent() {
                                   <FontAwesomeIcon icon={faFileExport} /> Export
                                 </button>
                                 <Link to="/agents-details">
-                                  <button className="btn btn-danger ms-1">
+                                  <button className="btn ms-1" style={{backgroundColor:"#f71010", color:"white"}}>
                                     {" "}
                                     + Add New Agent
                                   </button>
@@ -191,7 +192,7 @@ function Agent() {
                                 role="grid"
                                 aria-describedby="myDataTable_info"
                               >
-                                <thead>
+                                <thead style={{backgroundColor:"#f71010", color:"white"}}>
                                   <tr role="row">
                                     <th
                                       className="sorting"
@@ -273,7 +274,6 @@ function Agent() {
                                       colSpan={1}
                                       aria-label="Status: activate to sort column ascending"
                                     >
-                                      Action
                                     </th>
                                     <th
                                       className="dt-body-right sorting"
@@ -282,7 +282,7 @@ function Agent() {
                                       rowSpan={1}
                                       colSpan={1}
                                       aria-label="Status: activate to sort column ascending"
-                                    ></th>
+                                    >Action</th>
                                     <th
                                       className="dt-body-right sorting"
                                       tabIndex={0}

@@ -12,11 +12,13 @@ function ProductManagement() {
   const [formData, setFormData] = useState([]);
   const [categories, setCategories] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
+  const [brands, setBrands] = useState([]);
   const [subSubCategory, setSubSubCategory] = useState({
     nameEn: "",
     nameAr: "",
     categoryId: "",
     categoryId1: "",
+    brandId1 :"",
   });
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
@@ -52,6 +54,20 @@ function ProductManagement() {
       }
     };
     fetchData();
+  }, []);
+  useEffect(() => {
+    const fetchData2 = async () => {
+      try {
+        const response = await axios.post(
+          "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/product/brand-list"
+        );
+        setBrands(response.data.results.list);
+        console.log(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchData2();
   }, []);
 
   const handleInputChange = (event) => {
@@ -442,7 +458,7 @@ function ProductManagement() {
                           onChange={handleInputChange}
                         />
                       </div>
-                      <div className="form-group">
+                      {/* <div className="form-group">
                         <label htmlFor="old_price">Discount</label>
                         <input
                           id="Discount"
@@ -452,7 +468,7 @@ function ProductManagement() {
                           value={formData.discount}
                           onChange={handleInputChange}
                         />
-                      </div>
+                      </div> */}
                     </div>
                     {/* <Link to="#" className="text-decoration-none">
                       Scheduled Discount
@@ -952,7 +968,6 @@ function ProductManagement() {
                       </div>
                     </form>
                   </div>
-
                   <div className="card border-blue shadow p-3 mb-5 bg-white rounded">
                     <h3
                       className="row comman_header text-light bg-danger rounded"
@@ -962,22 +977,34 @@ function ProductManagement() {
                         width: "114%",
                       }}
                     >
-                      Brand
+                      <label htmlFor="">Brand</label>
                     </h3>
-                    {/* <h3 style={{ marginLeft: '15px' }}>Categories</h3> */}
-                    <div className="card-body">
-                      <form className="d-flex flex-column">
-                        <input
-                          type="text"
-                          id="brand"
-                          name="brand"
-                          className="form-control mb-2"
-                          placeholder="Puma"
-                          value={formData.brand}
-                          onChange={handleInputChange}
-                        />
-                      </form>
-                    </div>
+
+                    <form
+                      className="form-design pt-4 px-3 help-support-form row align-items-end justify-content-between"
+                      action=""
+                    >
+                      <div className="form-group col-12">
+                        <select
+                          className="select form-control w-100"
+                          size={100}
+                          name="brandId1"
+                          id="brandId1"
+                          value={subSubCategory.brandId1}
+                          onChange={handleInputChange1}
+                        >
+                          {Array.isArray(brands) &&
+                            brands.map((subCategory) => (
+                              <option
+                                key={subCategory._id}
+                                value={subCategory._id}
+                              >
+                                {subCategory.brandName_en}
+                              </option>
+                            ))}
+                        </select>
+                      </div>
+                    </form>
                   </div>
                   <div className="card shadow p-3 mb-5 bg-white rounded">
                     <h3

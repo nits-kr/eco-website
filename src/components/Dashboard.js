@@ -239,7 +239,7 @@ function Dashboard(props) {
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                               />
-                              <i className="fa fa-search"></i>
+                              <i className="fa fa-search" onClick={handleSearch1}></i>
                             </div>
                           </form>
                         </div>

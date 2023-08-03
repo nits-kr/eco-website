@@ -366,11 +366,10 @@ function UserDetails2() {
                         <div className="form-group col-4 d-flex align-items-start justify-content-between w-100">
                           <label htmlFor=""></label>
                           <div className="col-8">
-                              <div className="col-8 mt-2">
-                                {userListDetails?.list?.address_Id}
-                              </div>
+                            <div className="col-8 mt-2">
+                              {userListDetails?.list?.address_Id}
                             </div>
-                        
+                          </div>
                         </div>
                       </form>
                     </div>
@@ -530,7 +529,12 @@ function UserDetails2() {
                                 width: "95%",
                               }}
                             >
-                              <thead>
+                              <thead
+                                style={{
+                                  backgroundColor: "#f71010",
+                                  color: "white !important",
+                                }}
+                              >
                                 <tr>
                                   <th>Order Id</th>
                                   <th>Vendor</th>
@@ -566,20 +570,31 @@ function UserDetails2() {
                                             {/* <p>
                                               Product ID: {product.product_Id}
                                             </p> */}
-                                            <p>Quantity: {product.quantity}</p>
+                                            {product.quantity}
+                                            {/* <p>Quantity: {product.quantity}</p> */}
                                           </div>
                                         ))}
                                       </td>
                                       <td>{order.cartsTotal}</td>
                                       <td>{order.orderStatus}</td>
-                                      <td>{order.paymentIntent}</td>
-                                      <td>{order.deliverdBy}</td>
+                                      <td>{order?.createdAt?.slice(0, 10)}</td>
+                                      {/* <td>{order.deliverdBy}</td> */}
                                       <td>
-                                        <Link to={`/edit/${order._id}`}>
-                                          <FontAwesomeIcon icon={faEdit} />
-                                        </Link>
-                                        <FontAwesomeIcon icon={faTrash} />
-                                        <FontAwesomeIcon icon={faCheck} />
+                                        <div
+                                          style={{
+                                            display: "flex",
+                                            justifyContent: "space-between",
+                                          }}
+                                        >
+                                          <Link to={`/edit/${order._id}`}>
+                                            <button className="comman_btn2 table_viewbtn">
+                                              <FontAwesomeIcon icon={faEdit} />
+                                            </button>
+                                          </Link>
+                                          <button className="comman_btn2 table_viewbtn">
+                                            <FontAwesomeIcon icon={faTrash} />
+                                          </button>
+                                        </div>
                                       </td>
                                     </tr>
                                   );
@@ -622,7 +637,12 @@ function UserDetails2() {
                                 width: "95%",
                               }}
                             >
-                              <thead>
+                              <thead
+                                style={{
+                                  backgroundColor: "#f71010",
+                                  color: "white !important",
+                                }}
+                              >
                                 <tr>
                                   <th>Order Id</th>
                                   <th>Review By</th>

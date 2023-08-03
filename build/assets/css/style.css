@@ -2154,3 +2154,54 @@ strong.box_tag_left {
   border-radius: 5px;
   border: 1px solid #ffa53b;
 }
+.Slug_text {
+  font-weight: 500;
+  font-size: 13px;
+  margin-top: 4px;
+}
+.Infor {
+  font-size: 14px;
+}
+.form-design .new_radio_design label {
+  position: relative;
+  display: inline-block;
+  margin: 0;
+  padding-left: 26px;
+}
+.form-design .new_radio_design label::before {
+  content: "";
+  font-family: "Font Awesome 5 Pro";
+  top: 2px;
+  position: absolute;
+  left: 0px;
+  height: 16px;
+  width: 16px;
+  border-radius: 50px;
+  z-index: auto;
+  opacity: 0;
+  transition: 0.5s all;
+  background-color: #DA3C3B;
+  z-index: 1;
+}
+.form-design .new_radio_design label::after {
+  content: '';
+  top: 1px;
+  position: absolute;
+  left: -1px;
+  border: 2px solid #DA3C3B;
+  background-color: #fff;
+  height: 18px;
+  width: 18px;
+  border-radius: 50px;
+}
+.form-design .new_radio_design input:checked ~ label::before {
+  opacity: 1;
+}
+.main_head {
+  display: grid;
+  align-items: center;
+  height: 100%;
+  font-weight: 600;
+  font-size: 30px;
+  color: #144881;
+}

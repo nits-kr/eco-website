@@ -163,7 +163,7 @@ function TransactionManagement() {
                                 </div>
                               </div>
                             </div>
-                            <div className="row Total_amt mx-0 my-3 py-3">
+                            {/* <div className="row Total_amt mx-0 my-3 py-3">
                               <div className="col-6 text-end">
                                 <strong>Total Revenue : </strong>
                               </div>
@@ -172,7 +172,7 @@ function TransactionManagement() {
                                   2000 SAR
                                 </span>
                               </div>
-                            </div>
+                            </div> */}
                           </div>
                         </div>
                       </div>
