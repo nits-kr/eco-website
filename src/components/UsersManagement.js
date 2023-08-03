@@ -75,7 +75,7 @@ function UsersManagement(props) {
     ["4", "Total User 9", 34.593839, -98.409974, "Total User 9"],
   ];
   const handleId = (id) => {
-    alert(id);
+    // alert(id);
   };
   useEffect(() => {
     axios
