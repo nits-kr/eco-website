@@ -90,13 +90,13 @@ function Dashboard(props) {
         }
       )
       .then((response) => {
-        const filteredData = response.data.results.orderList.filter(
-          (data) =>
-            new Date(data.createdAt) >= new Date(startDate) &&
-            new Date(data.createdAt) <= new Date(endDate)
-        );
-        console.log("filteredData dashboard", filteredData);
-        setRecentOrderList(filteredData.reverse());
+        // const filteredData = response.data.results.orderList.filter(
+        //   (data) =>
+        //     new Date(data.createdAt) >= new Date(startDate) &&
+        //     new Date(data.createdAt) <= new Date(endDate)
+        // );
+        // console.log("filteredData dashboard", filteredData);
+        setRecentOrderList(response.data.results.orderList.reverse());
       })
       .catch((error) => {
         console.log(error.response.data);
@@ -134,7 +134,7 @@ function Dashboard(props) {
   return (
     <>
       {loading}
-      <Sidebar />
+      <Sidebar Dash={"dashboard"}/>
       {loading ? (
         <Spinner />
       ) : (

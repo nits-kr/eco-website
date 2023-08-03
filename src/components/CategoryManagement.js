@@ -164,7 +164,7 @@ function CategoryManagement(props) {
   return (
     <>
       {loading}
-      <Sidebar />
+      <Sidebar Dash={"categories"}/>
       <div className="admin_main">
         <div className="admin_main_inner">
           <div className="admin_panel_data height_adjust">

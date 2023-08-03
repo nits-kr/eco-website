@@ -26,7 +26,7 @@ function TransactionManagement() {
     };
   return (
     <>
-    <Sidebar/>
+    <Sidebar Dash={"transactions"}/>
       <div className="admin_main">
         <div className="admin_main_inner">
           <div className="admin_panel_data height_adjust">

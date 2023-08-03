@@ -134,7 +134,7 @@ h6 {
 --------------------------------------------------------------*/
 
 .admin_main {
-  margin-left: 280px;
+  margin-left: 250px;
   transition: 0.1s all;
 }
 
@@ -160,7 +160,7 @@ h6 {
   left: 0;
   top: 0;
   z-index: 9;
-  width: 280px;
+  width: 250px;
   height: 100vh;
   background-image: url(../img/verification_bg.png);
   background-repeat: no-repeat;

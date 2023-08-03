@@ -155,7 +155,7 @@ function OfferManagement() {
 
   return (
     <>
-      <Sidebar />
+      <Sidebar Dash={"offers"}/>
       <div className="admin_main">
         <div className="admin_main_inner">
           <div className="admin_panel_data height_adjust">

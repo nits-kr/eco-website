@@ -109,7 +109,7 @@ function ProductList(props) {
   return (
     <>
       {loading}
-      <Sidebar />
+      <Sidebar Dash={"products"}/>
       <div className="admin_main_inner" style={{ marginLeft: "18%" }}>
         <div className="admin_panel_data height_adjust">
           <h6 style={{ marginLeft: "2%", marginTop: "-35px" }}>

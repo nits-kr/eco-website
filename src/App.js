@@ -26,7 +26,6 @@ import ChangePassword from "./components/ChangePassword";
 import CategoryManagement from "./components/CategoryManagement";
 import AnnounceManagement from "./components/AnnounceManagement";
 import ProductList from "./components/ProductList";
-import ProductManagement from "./components/ProductManagement";
 import Varification from "./components/Varification";
 import UsersManagement from "./components/UsersManagement";
 import UserDetails2 from "./components/UserDetails2";
@@ -44,6 +43,7 @@ import AgentInformation from "./components/AgentInformation";
 import LoadingBar from "react-top-loading-bar";
 import SubCategory from "./components/SubCategory";
 import ProductManagement2 from "./components/ProductManagement2";
+import ProductList2 from "./components/ProductList2";
 
 function App() {
   const [progress, setProgress] = useState(0);
@@ -67,6 +67,7 @@ function App() {
             path="/dashboard"
             element={<Dashboard setProgress={setProgress}/>}
           />
+          {/* <Dashboard2/> */}
           <Route
             exact
             className="active"
@@ -110,8 +111,9 @@ function App() {
             exact
             className="active"
             path="/products"
-            element={<ProductList setProgress={setProgress}/>}
+            element={<ProductList2 setProgress={setProgress}/>}
           />
+          {/* <ProductList2/> */}
           <Route
             exact
             className="active"

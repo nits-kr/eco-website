@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
-function Sidebar() {
-    const [sidebarVisible, setSidebarVisible] = useState(true);
+function Sidebar({ Dash }) {
+  const [sidebarVisible, setSidebarVisible] = useState(true);
   const handleClick = () => {
     setSidebarVisible(false);
     // Perform desired action when the icon is clicked
@@ -25,45 +25,44 @@ function Sidebar() {
             </div>
             <div className="sidebar_menus">
               <ul className="list-unstyled ps-1 m-0">
-                <li className={activeItem === "dashboard" ? "active" : ""}>
-                  <Link
-                    className=""
-                    to="/dashboard"
-                    onClick={() => handleItemClick("dashboard")}
-                  >
+                <li
+                  className={
+                    Dash === "dashboard" ? "nav-link active" : "nav-link"
+                  }
+                >
+                  <Link className="" to="/dashboard">
                     <i className="fal fa-home"></i>Dashboard
                   </Link>
                 </li>
-                <li className={activeItem === "users" ? "active" : ""}>
-                  <Link
-                    className=""
-                    to="/users"
-                    onClick={() => handleItemClick("users")}
-                  >
+                <li
+                  className={Dash === "users" ? "nav-link active" : "nav-link"}
+                >
+                  <Link className="" to="/users">
                     <i className="fal fa-user"></i>Users Management
                   </Link>
                 </li>
-                <li className={activeItem === "agents" ? "active" : ""}>
-                  <Link
-                    className=""
-                    to="/agents"
-                    onClick={() => handleItemClick("agents")}
-                  >
+                <li
+                  className={Dash === "agents" ? "nav-link active" : "nav-link"}
+                >
+                  <Link className="" to="/agents">
                     <i className="fal fa-users"></i>Agent Management
                   </Link>
                 </li>
 
-                <li className={activeItem === "categories" ? "active" : ""}>
+                <li
+                  className={
+                    Dash === "categories" ? "nav-link active" : "nav-link"
+                  }
+                >
                   <div className="d-flex">
                     <Link
                       to="/categories"
-                      onClick={() => handleItemClick("categories")}
                     >
                       <i className="fas fa-list-ol"></i>
                       Category Management
                     </Link>
                     <Link
-                      className={activeItem === "products" ? "active" : ""}
+                      className={Dash === "products" ? "nav-link active" : "nav-link"}
                       to="#"
                       onClick={(e) => {
                         e.preventDefault();
@@ -92,11 +91,15 @@ function Sidebar() {
                   </div>
                 </li>
                 <ul className="sub-menu collapse" id="menu-product">
-                  <li className={activeItem === "products" ? "active" : ""}>
+                  <li
+                    className={
+                      Dash === "products" ? "nav-link active" : "nav-link"
+                    }
+                  >
                     <Link
                       className="ms-link"
                       to="/products"
-                      onClick={() => handleItemClick("products")}
+                      // onClick={() => handleItemClick("products")}
                     >
                       <i className="fas fa-check-square"></i>
                       <span> Product List</span>
@@ -105,161 +108,144 @@ function Sidebar() {
                 </ul>
 
                 <li
-                  className={activeItem === "productManagement" ? "active" : ""}
+                  className={
+                    Dash === "product-management"
+                      ? "nav-link active"
+                      : "nav-link"
+                  }
                 >
-                  <Link
-                    className="ms-link "
-                    to="/product-management"
-                    onClick={() => handleItemClick("productManagement")}
-                  >
+                  <Link className="ms-link " to="/product-management">
                     <i className="fas fa-cogs"></i>
                     <span>Product Management</span>
                   </Link>
                 </li>
-                <li className={activeItem === "offers" ? "active" : ""}>
-                  <Link
-                    className=""
-                    to="/offers"
-                    onClick={() => handleItemClick("offers")}
-                  >
+                <li
+                  className={Dash === "offers" ? "nav-link active" : "nav-link"}
+                >
+                  <Link className="" to="/offers">
                     <i className="fad fa-gift-card"></i>Offers Management
                   </Link>
                 </li>
-                <li className={activeItem === "orders" ? "active" : ""}>
-                  <Link
-                    className=""
-                    to="/orders"
-                    onClick={() => handleItemClick("orders")}
-                  >
+                <li
+                  className={Dash === "orders" ? "nav-link active" : "nav-link"}
+                >
+                  <Link className="" to="/orders">
                     <i className="fal fa-box-full"></i>Order Management
                   </Link>
                 </li>
-                <li className={activeItem === "staff" ? "active" : ""}>
-                  <Link
-                    className=""
-                    to="/staff"
-                    onClick={() => handleItemClick("staff")}
-                  >
+                <li
+                  className={Dash === "staff" ? "nav-link active" : "nav-link"}
+                >
+                  <Link className="" to="/staff">
                     <i className="fal fa-clipboard-user"></i>Staff Management
                   </Link>
                 </li>
-                <li className={activeItem === "transactions" ? "active" : ""}>
-                  <Link
-                    className=" "
-                    to="/transactions"
-                    onClick={() => handleItemClick("transactions")}
-                  >
+                <li
+                  className={
+                    Dash === "transactions" ? "nav-link active" : "nav-link"
+                  }
+                >
+                  <Link className=" " to="/transactions">
                     <i className="far fa-repeat-1"></i>Transaction Management
                   </Link>
                 </li>
-                <li className={activeItem === "reports" ? "active" : ""}>
-                  <Link
-                    className=""
-                    to="/reports"
-                    onClick={() => handleItemClick("reports")}
-                  >
+                <li
+                  className={
+                    Dash === "reports" ? "nav-link active" : "nav-link"
+                  }
+                >
+                  <Link className="" to="/reports">
                     <i className="far fa-file-spreadsheet"></i>Reports
                     Management
                   </Link>
                 </li>
                 <li
                   className={
-                    activeItem === "Home-Screen-banners" ? "active" : ""
+                    Dash === "Home-Screen-banners"
+                      ? "nav-link active"
+                      : "nav-link"
                   }
                 >
-                  <Link
-                    className=""
-                    to="/Home-Screen-banners"
-                    onClick={() => handleItemClick("Home-Screen-banners")}
-                  >
+                  <Link className="" to="/Home-Screen-banners">
                     <i className="fal fa-sign-in-alt"></i>Home Screen Banners
                     Management
                   </Link>
                 </li>
                 <li
                   className={
-                    activeItem === "notification-management" ? "active" : ""
+                    Dash === "notification-management"
+                      ? "nav-link active"
+                      : "nav-link"
                   }
                 >
-                  <Link
-                    className=""
-                    to="/notification-management"
-                    onClick={() => handleItemClick("notification-management")}
-                  >
+                  <Link className="" to="/notification-management">
                     <i className="far fa-bell"></i>Notification Management
                   </Link>
                 </li>
                 <li
                   className={
-                    activeItem === "announcement-management" ? "active" : ""
+                    Dash === "announcement-management"
+                      ? "nav-link active"
+                      : "nav-link"
                   }
                 >
-                  <Link
-                    className=""
-                    to="/announcement-management"
-                    onClick={() => handleItemClick("announcement-management")}
-                  >
+                  <Link className="" to="/announcement-management">
                     <i className="far fa-bullhorn"></i> Announcement Management
                   </Link>
                 </li>
                 <li
                   className={
-                    activeItem === "thoughts-management" ? "active" : ""
+                    Dash === "thoughts-management"
+                      ? "nav-link active"
+                      : "nav-link"
                   }
                 >
-                  <Link
-                    className=""
-                    to="/thoughts-management"
-                    onClick={() => handleItemClick("thoughts-management")}
-                  >
+                  <Link className="" to="/thoughts-management">
                     <i className="fal fa-lightbulb-on"></i> Thoughts Management
                   </Link>
                 </li>
                 <li
                   className={
-                    activeItem === "content-management" ? "active" : ""
+                    Dash === "content-management"
+                      ? "nav-link active"
+                      : "nav-link"
                   }
                 >
-                  <Link
-                    className=""
-                    to="/content-management"
-                    onClick={() => handleItemClick("content-management")}
-                  >
+                  <Link className="" to="/content-management">
                     <i className="fal fa-user-edit"></i>Content Management
                   </Link>
                 </li>
-                <li className={activeItem === "coupanList" ? "active" : ""}>
-                  <Link
-                    className=""
-                    to="/coupanList"
-                    onClick={() => handleItemClick("coupanList")}
-                  >
+                <li
+                  className={
+                    Dash === "coupanList" ? "nav-link active" : "nav-link"
+                  }
+                >
+                  <Link className="" to="/coupanList">
                     <i className="fal fa-user-edit"></i>Coupan Management
                   </Link>
                 </li>
-                <li className={activeItem === "informations" ? "active" : ""}>
-                  <Link
-                    to="/informations"
-                    onClick={() => handleItemClick("informations")}
-                  >
+                <li
+                  className={
+                    Dash === "informations" ? "nav-link active" : "nav-link"
+                  }
+                >
+                  <Link to="/informations">
                     <i className="fas fa-info"></i>Informations Management
                   </Link>
                 </li>
-                <li className={activeItem === "contact-us" ? "active" : ""}>
-                  <Link
-                    className=""
-                    to="/contact-us"
-                    onClick={() => handleItemClick("contact-us")}
-                  >
+                <li
+                  className={
+                    Dash === "contact-us" ? "nav-link active" : "nav-link"
+                  }
+                >
+                  <Link className="" to="/contact-us">
                     <i className="fas fa-cogs"></i>Contact us
                   </Link>
                 </li>
-                <li className={activeItem === "help" ? "active" : ""}>
-                  <Link
-                    className=""
-                    to="/help"
-                    onClick={() => handleItemClick("help")}
-                  >
+                <li
+                  className={Dash === "help" ? "nav-link active" : "nav-link"}
+                >
+                  <Link className="" to="/help">
                     <i className="fal fa-hands-heart"></i>Help
                   </Link>
                 </li>
