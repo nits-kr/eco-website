@@ -156,7 +156,7 @@ function Dashboard(props) {
                         </div>
                         <div className="col pe-0">
                           <div className="dashboard_boxcontent">
-                            <h2>Total Revenue</h2>
+                            <h2>Total Customers</h2>
                             <span>{userCounts.userCount}</span>
                           </div>
                         </div>
@@ -210,7 +210,7 @@ function Dashboard(props) {
                         </div>
                         <div className="col pe-0">
                           <div className="dashboard_boxcontent">
-                            <h2>Total Customers</h2>
+                            <h2>Total Revenue</h2>
                             <span>SAR 20000</span>
                           </div>
                         </div>

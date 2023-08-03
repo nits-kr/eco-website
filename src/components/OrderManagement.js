@@ -114,21 +114,44 @@ function OrderManagement() {
     }
   };
 
+  // const deleteOrder = async (_id) => {
+  //   try {
+  //     await axios.delete(
+  //       `http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/order/order/delete-order/${_id}`
+  //     );
+  //     console.log("delete Order", _id);
+
+  //     const response = await axios.post(
+  //       "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/order/order/list"
+  //     );
+  //     setOrderList(response?.data?.results?.list?.reverse());
+  //   } catch (error) {
+  //     console.log("Error deleting order:", error);
+  //   }
+  // };
   const deleteOrder = async (_id) => {
     try {
-      await axios.delete(
-        `http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/order/order/delete-order/${_id}`
-      );
-      console.log("delete Order", _id);
-
-      const response = await axios.post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/order/order/list"
-      );
-      setOrderList(response?.data?.results?.list?.reverse());
+      const result = await Swal.fire({
+        title: 'Confirm Deletion',
+        text: 'Are you sure you want to delete this order?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'OK',
+      });
+      if (result.isConfirmed) {
+        await axios.delete(
+          `http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/order/order/delete-order/${_id}`
+        );
+        console.log("delete Order", _id);
+        window.location.reload();
+      }
     } catch (error) {
       console.log("Error deleting order:", error);
     }
   };
+  
   // const handleDownload = () => {
   //   if (data) {
   //     const blob = new Blob([data]);

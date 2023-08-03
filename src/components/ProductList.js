@@ -7,11 +7,17 @@ import Spinner from "./Spinner";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import { useEditProductListMutation } from "../services/Post";
+import { useDeleteProductListMutation } from "../services/Post";
 function ProductList(props) {
+  const [deleteProductList, response] = useDeleteProductListMutation();
+  const [editProductList] = useEditProductListMutation();
+  const [productName2, setProductName2] = useState("");
   const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [productList, setProductList] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
+  const [itemId, setItemId] = useState("");
   const handleSelectAll = () => {
     setSelectAll(!selectAll);
   };
@@ -71,6 +77,33 @@ function ProductList(props) {
         setLoading(false);
       });
   }, []);
+  const handleItem = (item) => {
+    setProductName2(item?.productName || "");
+    // setTitle2(item?.title || "");
+    // setCode2(item?.code || "");
+    // setDiscount2(item?.Discount || "");
+  };
+  const handleSaveChanges1 = async (e) => {
+    e.preventDefault();
+    console.log("handleSaveChanges1", itemId);
+    const editOffer = {
+      id: itemId,
+      productName_en:"School Tables"
+    };
+    try {
+      await editProductList(editOffer);
+      // setProductList.refetch();
+      // window.location.reload();
+      Swal.fire({
+        title: "Changes Saved",
+        text: "The offer has been updated successfully.",
+        icon: "success",
+        confirmButtonText: "OK",
+      });
+    } catch (error) {
+      // Handle error if necessary
+    }
+  };
   return (
     <>
       {loading}
@@ -96,13 +129,13 @@ function ProductList(props) {
               marginBottom: "15px",
             }}
           >
-            <Link
+            {/* <Link
               to="#"
               className="btn btn-secondary "
               style={{ marginRight: "10px" }}
             >
               Import
-            </Link>
+            </Link> */}
             <Link
               to="#"
               className="btn btn-secondary "
@@ -206,7 +239,7 @@ function ProductList(props) {
                                   </span>
                                 </th>
                                 <th style={{ textAlign: "left" }}>
-                                  Category
+                                  Sub Category
                                   <span style={{ float: "right" }}>
                                     <i
                                       className="fa fa-sort-up"
@@ -410,6 +443,10 @@ function ProductList(props) {
                                           <Link
                                             className="dropdown-item"
                                             to="#"
+                                            onClick={() => {
+                                              handleItem(product);
+                                              setItemId(product?._id);
+                                            }}
                                           >
                                             Edit
                                           </Link>
@@ -443,6 +480,29 @@ function ProductList(props) {
                                             className="dropdown-item"
                                             to="#"
                                             style={{ backgroundColor: "red" }}
+                                            onClick={() => {
+                                              Swal.fire({
+                                                title: "Are you sure?",
+                                                text: "You won't be able to revert this!",
+                                                icon: "warning",
+                                                showCancelButton: true,
+                                                confirmButtonColor: "#3085d6",
+                                                cancelButtonColor: "#d33",
+                                                confirmButtonText:
+                                                  "Yes, delete it!",
+                                              }).then((result) => {
+                                                if (result.isConfirmed) {
+                                                  deleteProductList(product?._id);
+                                                  Swal.fire(
+                                                    "Deleted!",
+                                                    `${product?.productName_en}  item has been deleted.`,
+                                                    "success"
+                                                  ).then(() => {
+                                                    window.location.reload(); // Reload the page
+                                                  });
+                                                }
+                                              });
+                                            }}
                                           >
                                             Delete
                                           </Link>

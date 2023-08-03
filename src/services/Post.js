@@ -234,8 +234,27 @@ export const PostApi = createApi({
         };
       },
     }),
+    editProductList: builder.mutation({
+      query: (body) => {
+        console.log("update category", body);
+        const { id, ...data } = body;
+        console.log("update offer body data", data);
+        return {
+          url: `/admin/product/updateProduct/${id}`,
+          method: "PATCH",
+          body: data,
+        };
+      },
+    }),
+    deleteProductList: builder.mutation({
+      query: (id) => ({
+        url: `/admin/product/delete-product/${id}`,
+        method: "DELETE",
+      }),
+    }),
   }),
 });
+
 
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
@@ -266,5 +285,7 @@ export const {
   useDeleteContactMutation,
   useGetFileQuery,
   useUserLoginMutation,
+  useEditProductListMutation,
+  useDeleteProductListMutation,
   // useSearchOfferQuery,
 } = PostApi;

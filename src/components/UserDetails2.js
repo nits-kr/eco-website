@@ -74,7 +74,7 @@ function UserDetails2() {
                                 }}
                               >
                                 <img
-                                  src="../assets/img/profile_img1.jpg"
+                                  src={userListDetails?.list?.profile_Pic}
                                   alt=""
                                 />
                               </div>
@@ -563,9 +563,9 @@ function UserDetails2() {
                                       <td>
                                         {order.products.map((product, i) => (
                                           <div key={i}>
-                                            <p>
+                                            {/* <p>
                                               Product ID: {product.product_Id}
-                                            </p>
+                                            </p> */}
                                             <p>Quantity: {product.quantity}</p>
                                           </div>
                                         ))}

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Swal from "sweetalert2";
+import axios from "axios";
 import { Link } from "react-router-dom";
 import { useCreateOfferMutation } from "../services/Post";
 import { useGetOfferListQuery } from "../services/Post";
@@ -33,7 +34,17 @@ function OfferManagement() {
   const [discount, setDiscount] = useState("");
   const [discount2, setDiscount2] = useState("");
   const [itemId, setItemId] = useState("");
+  const [categories, setCategories] = useState([]);
+  const [subCategory, setSubCategory] = useState({
+    nameEn: "",
+    nameAr: "",
+    categoryId: "",
+    subCategoryId: "",
+    subCategoryPic: null,
+  });
   const [deleteOffer, response] = useDeleteOfferMutation();
+  axios.defaults.headers.common["x-auth-token-user"] =
+    localStorage.getItem("token");
   useEffect(() => {
     setOfferList(offerListItems?.data?.results?.list ?? []);
   }, [offerListItems]);
@@ -100,7 +111,7 @@ function OfferManagement() {
       title: title,
       code: code,
       Discount: discount,
-      product_Id: "6482bea984e5342a120adbde",
+      product_Id: subCategory.categoryId,
     };
     try {
       await updateOffer(editOffer);
@@ -116,11 +127,29 @@ function OfferManagement() {
     }
   };
   const handleItem = (item) => {
-    setProductName2(item?.productName || "");
+    setProductName2(item?.product_Id?.productName_en || "");
     setTitle2(item?.title || "");
     setCode2(item?.code || "");
     setDiscount2(item?.Discount || "");
   };
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    setSubCategory({ ...subCategory, [name]: value });
+  };
+  useEffect(() => {
+    // props.setProgress(10);
+    // setLoading(true);
+    axios
+      .post(
+        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/product/productList"
+      )
+      .then((response) => {
+        setCategories(response?.data?.results?.list.reverse());
+        console.log(response.data);
+        // props.setProgress(100);
+        // setLoading(false);
+      });
+  }, []);
 
   return (
     <>
@@ -148,7 +177,7 @@ function OfferManagement() {
                       action=""
                       onSubmit={handleSaveChanges}
                     >
-                      <div className="form-group col-6">
+                      {/* <div className="form-group col-6">
                         <label htmlFor="">Product Name</label>
                         <input
                           type="text"
@@ -158,9 +187,30 @@ function OfferManagement() {
                           value={productName}
                           onChange={(e) => setProductName(e.target.value)}
                         />
+                      </div> */}
+                      <div className="form-group col-6">
+                        <label htmlFor="">Select Product</label>
+                        <select
+                          className="select form-control"
+                          size={15}
+                          name="categoryId"
+                          id="selectCategory"
+                          value={subCategory.categoryId}
+                          onChange={handleInputChange}
+                        >
+                          {Array.isArray(categories) &&
+                            categories.map((category) => (
+                              <option key={category._id} value={category._id}>
+                                {category.productName_en}
+                              </option>
+                            ))}
+                        </select>
                       </div>
                       <div className="form-group col-6">
-                        <label htmlFor="">Title<span className="required-field text-danger">*</span></label>
+                        <label htmlFor="">
+                          Title
+                          <span className="required-field text-danger">*</span>
+                        </label>
                         <input
                           type="text"
                           className="form-control"
@@ -173,7 +223,10 @@ function OfferManagement() {
                         />
                       </div>
                       <div className="form-group mb-0 col">
-                        <label htmlFor="">Code<span className="required-field text-danger">*</span></label>
+                        <label htmlFor="">
+                          Code
+                          <span className="required-field text-danger">*</span>
+                        </label>
                         <input
                           type="text"
                           className="form-control"
@@ -186,7 +239,10 @@ function OfferManagement() {
                         />
                       </div>
                       <div className="form-group mb-0 col">
-                        <label htmlFor="">Discount<span className="required-field text-danger">*</span></label>
+                        <label htmlFor="">
+                          Discount
+                          <span className="required-field text-danger">*</span>
+                        </label>
                         <input
                           type="text"
                           className="form-control"
@@ -284,7 +340,7 @@ function OfferManagement() {
                                   return (
                                     <tr key={index}>
                                       <td> {index + 1} </td>
-                                      <td> {item?.product_Id?.productName} </td>
+                                      <td> {item?.product_Id?.productName_en} </td>
                                       <td> {item?.title} </td>
                                       <td> {item?.code} </td>
                                       <td> {item?.Discount} </td>
