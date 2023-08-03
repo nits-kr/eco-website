@@ -414,7 +414,7 @@ function ProductList(props) {
                                             Edit
                                           </Link>
                                         </li>
-                                        <li>
+                                        {/* <li>
                                           <Link
                                             className="dropdown-item"
                                             to="#"
@@ -437,7 +437,7 @@ function ProductList(props) {
                                           >
                                             Remove Tag
                                           </Link>
-                                        </li>
+                                        </li> */}
                                         <li>
                                           <Link
                                             className="dropdown-item"
