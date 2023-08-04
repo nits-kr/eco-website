@@ -44,6 +44,7 @@ import LoadingBar from "react-top-loading-bar";
 import SubCategory from "./components/SubCategory";
 import ProductManagement2 from "./components/ProductManagement2";
 import ProductList2 from "./components/ProductList2";
+import ProductManagementEdit from "./components/ProductManagementEdit";
 
 function App() {
   const [progress, setProgress] = useState(0);
@@ -106,7 +107,14 @@ function App() {
             path="/product-management"
             element={<ProductManagement2 />}
           />
+          <Route
+            exact
+            className="active"
+            path="/product-management-edit/:id"
+            element={<ProductManagementEdit/>}
+          />
           {/* <ProductManagement2/> */}
+          
           <Route
             exact
             className="active"

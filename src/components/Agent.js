@@ -12,12 +12,17 @@ import {
   faFileExport,
 } from "@fortawesome/free-solid-svg-icons";
 import Sidebar from "./Sidebar";
+import Spinner from "./Spinner";
 
 function Agent() {
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
+  const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [agentList, setAgentList] = useState([]);
+  const [startDate, setStartDate] = useState("");
+  const [startDate1, setStartDate1] = useState("");
+  const [endDate, setEndDate] = useState("");
   const handleSearch = async (e) => {
     e.preventDefault();
     if (searchQuery) {
@@ -73,303 +78,217 @@ function Agent() {
 
   return (
     <>
-      <Sidebar Dash={"agents"}/>
+      {loading}
+      <Sidebar Dash={"agents"} />
       <div className="admin_main">
         <div className="admin_main_inner">
           <div className="admin_panel_data height_adjust">
-            <div className="body d-flex">
-              <div className="container-xxl" style={{ marginTop: "-50px" }}>
-                <div className=" mb-4">
-                  <div className="card-header py-3 no-bg bg-transparent d-flex align-items-center px-0 justify-content-between  flex-wrap">
-                    <h3 className="fw-bold mb-0">Agents</h3>
+            <div className="admin_panel_data height_adjust">
+              <div className="row dashboard_part justify-content-center">
+                <div className="col-12">
+                  <div className="col-9 mb-4">
+                    <div className="main_head">
+                      {" "}
+                      <strong>Agent List</strong>{" "}
+                    </div>
                   </div>
-                </div>
-                {/* Row end  */}
-                <div className="row g-3 mb-3 shadow">
-                  <div className="col-md-12">
-                    <div className="">
-                      <div className="card-body">
-                        <div
-                          id="myDataTable_wrapper"
-                          className="dataTables_wrapper dt-bootstrap5 no-footer"
-                        >
-                          <div className="row-12 d-flex">
-                            <div className="col-md-2 d-flex">
-                              <div
-                                className="dataTables_length "
-                                id="myDataTable_length"
+                  <span
+                    className="col-auto d-flex "
+                    style={{
+                      justifyContent: "flex-end",
+                      marginTop: "-55px",
+                      marginBottom: "15px",
+                    }}
+                  >
+                    <Link
+                      to="#"
+                      className="btn btn-secondary "
+                      style={{ marginRight: "10px" }}
+                    >
+                      <FontAwesomeIcon icon={faDownload} /> Import
+                    </Link>
+                    <Link
+                      to="#"
+                      className="btn btn-secondary "
+                      style={{ marginRight: "10px" }}
+                    >
+                      <FontAwesomeIcon icon={faFileExport} /> Export
+                    </Link>
+                    <Link
+                      to="/agents-details"
+                      className="btn btn-primary"
+                      style={{ marginRight: "24px" }}
+                    >
+                      + Add New Agent
+                    </Link>
+                  </span>
+                  <div className="row mx-0">
+                    <div className="col-12 design_outter_comman shadow">
+                      <div className="row comman_header justify-content-between">
+                        <div className="col">
+                          {/* <h2>Product List</h2> */}
+                          <div className="row-md-2 d-flex">
+                            <div
+                              className="dataTables_length "
+                              id="myDataTable_length"
+                            >
+                              <label
+                                htmlFor="myDataTable_length"
+                                style={{ marginRight: "5px", color: "white" }}
                               >
-                                <label
-                                  htmlFor="myDataTable_length"
-                                  style={{ marginRight: "5px" }}
+                                <strong>Filter By: </strong>
+                              </label>
+                              <div style={{ display: "inline-block" }}>
+                                <select
+                                  name="myDataTable_length"
+                                  aria-controls="myDataTable"
+                                  className="form-select form-select-sm"
+                                  fdprocessedid="lqxz4"
+                                  style={{ width: "auto", height: "38px" }}
                                 >
-                                  Filter By
-                                </label>
-                                <div style={{ display: "inline-block" }}>
-                                  <select
-                                    name="myDataTable_length"
-                                    aria-controls="myDataTable"
-                                    className="form-select form-select-sm"
-                                    fdprocessedid="lqxz4"
-                                    style={{ width: "auto" }}
-                                  >
-                                    <option value={10}>All</option>
-                                    <option value={25}>25</option>
-                                    <option value={50}>50</option>
-                                    <option value={100}>100</option>
-                                  </select>
-                                </div>
-                              </div>
-                            </div>
-                            <div className="search-box col-sm-4">
-                              <form onSubmit={handleSearch}>
-                                <div className="input-group">
-                                  <input
-                                    type="search"
-                                    className="form-control"
-                                    placeholder="I'm searching for..."
-                                    aria-label="Recipient's username"
-                                    aria-describedby="button-addon2"
-                                    value={searchQuery}
-                                    onChange={(e) =>
-                                      setSearchQuery(e.target.value)
-                                    }
-                                  />
-                                  <button
-                                    className="btn"
-                                    type="button"
-                                    id="button-addon2"
-                                    fdprocessedid="b7cmd"
-                                    onClick={handleSearch}
-                                  >
-                                    <svg
-                                      xmlns="http://www.w3.org/2000/svg"
-                                      width={24}
-                                      height={24}
-                                      viewBox="0 0 24 24"
-                                      fill="none"
-                                      stroke="currentColor"
-                                      strokeWidth={2}
-                                      strokeLinecap="round"
-                                      strokeLinejoin="round"
-                                      className="feather feather-search"
-                                    >
-                                      <circle cx={11} cy={11} r={8} />
-                                      <line
-                                        x1={21}
-                                        y1={21}
-                                        x2="16.65"
-                                        y2="16.65"
-                                      />
-                                    </svg>
-                                  </button>
-                                </div>
-                              </form>
-                            </div>
-                            <div className="col-sm-4 ms-auto">
-                              <div className="button-group">
-                                <button className="btn btn-muted border me-1">
-                                  <FontAwesomeIcon icon={faDownload} /> Import
-                                </button>
-                                <button className="btn btn-muted border mx-1">
-                                  <FontAwesomeIcon icon={faFileExport} /> Export
-                                </button>
-                                <Link to="/agents-details">
-                                  <button className="btn ms-1" style={{backgroundColor:"#f71010", color:"white"}}>
-                                    {" "}
-                                    + Add New Agent
-                                  </button>
-                                </Link>
+                                  <option value={10}>All</option>
+                                  <option value={25}>Action</option>
+                                  <option value={50}>Another Action</option>
+                                  <option value={100}>Something else</option>
+                                </select>
                               </div>
                             </div>
                           </div>
-                          <div className="row my-3">
-                            <div className="col-sm-12">
-                              <table
-                                id="myDataTable"
-                                className="table table-hover align-middle mb-0 nowrap dataTable no-footer dtr-inline"
-                                style={{ width: "100%" }}
-                                role="grid"
-                                aria-describedby="myDataTable_info"
-                              >
-                                <thead style={{backgroundColor:"#f71010", color:"white"}}>
-                                  <tr role="row">
-                                    <th
-                                      className="sorting"
-                                      tabIndex={0}
-                                      aria-controls="myDataTable"
-                                      rowSpan={1}
-                                      colSpan={1}
-                                      aria-label="Id: activate to sort column ascending"
-                                    >
-                                      <input type="checkbox" />
-                                    </th>
-                                    <th
-                                      className="sorting"
-                                      tabIndex={0}
-                                      aria-controls="myDataTable"
-                                      rowSpan={1}
-                                      colSpan={1}
-                                      aria-label="Products: activate to sort column ascending"
-                                    >
-                                      Name
-                                    </th>
-                                    <th
-                                      className="sorting_asc"
-                                      tabIndex={0}
-                                      aria-controls="myDataTable"
-                                      rowSpan={1}
-                                      colSpan={1}
-                                      aria-label="Category: activate to sort column descending"
-                                      aria-sort="ascending"
-                                    >
-                                      Email
-                                    </th>
-                                    <th
-                                      className="sorting"
-                                      tabIndex={0}
-                                      aria-controls="myDataTable"
-                                      rowSpan={1}
-                                      colSpan={1}
-                                      aria-label="Date Added: activate to sort column ascending"
-                                    >
-                                      Mobile
-                                    </th>
-                                    <th
-                                      className="sorting"
-                                      tabIndex={0}
-                                      aria-controls="myDataTable"
-                                      rowSpan={1}
-                                      colSpan={1}
-                                      aria-label="Stock: activate to sort column ascending"
-                                    >
-                                      Status
-                                    </th>
-                                    <th
-                                      className="dt-body-right sorting"
-                                      tabIndex={0}
-                                      aria-controls="myDataTable"
-                                      rowSpan={1}
-                                      colSpan={1}
-                                      aria-label="In Stock: activate to sort column ascending"
-                                    >
-                                      Online Status
-                                    </th>
-
-                                    <th
-                                      className="dt-body-right sorting"
-                                      tabIndex={0}
-                                      aria-controls="myDataTable"
-                                      rowSpan={1}
-                                      colSpan={1}
-                                      aria-label="Status: activate to sort column ascending"
-                                    >
-                                      Registered At
-                                    </th>
-                                    <th
-                                      className="dt-body-right sorting"
-                                      tabIndex={0}
-                                      aria-controls="myDataTable"
-                                      rowSpan={1}
-                                      colSpan={1}
-                                      aria-label="Status: activate to sort column ascending"
-                                    >
-                                    </th>
-                                    <th
-                                      className="dt-body-right sorting"
-                                      tabIndex={0}
-                                      aria-controls="myDataTable"
-                                      rowSpan={1}
-                                      colSpan={1}
-                                      aria-label="Status: activate to sort column ascending"
-                                    >Action</th>
-                                    <th
-                                      className="dt-body-right sorting"
-                                      tabIndex={0}
-                                      aria-controls="myDataTable"
-                                      rowSpan={1}
-                                      colSpan={1}
-                                      aria-label="Status: activate to sort column ascending"
-                                    ></th>
-                                    <th
-                                      className="dt-body-right sorting"
-                                      tabIndex={0}
-                                      aria-controls="myDataTable"
-                                      rowSpan={1}
-                                      colSpan={1}
-                                      aria-label="Status: activate to sort column ascending"
-                                    ></th>
+                        </div>
+                        <div className="col-3">
+                          <form
+                            className="form-design"
+                            action=""
+                            onSubmit={handleSearch}
+                          >
+                            <div className="form-group mb-0 position-relative icons_set">
+                              <input
+                                type="text"
+                                className="form-control"
+                                placeholder="Search"
+                                name="name"
+                                id="name"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                              />
+                              <i
+                                className="fa fa-search"
+                                onClick={handleSearch}
+                              ></i>
+                            </div>
+                          </form>
+                        </div>
+                        {/* <div className="col-auto">
+                        <input
+                          type="date"
+                          className="custom_date"
+                          value={startDate1}
+                          onChange={(e) => setStartDate1(e.target.value)}
+                        />
+                      </div> */}
+                      </div>
+                      <form
+                        className="form-design py-4 px-3 help-support-form row align-items-end justify-content-between"
+                        action=""
+                        // onSubmit={handleSearch1}
+                      >
+                        <div className="form-group mb-0 col-5">
+                          <label htmlFor="">From</label>
+                          <input
+                            type="date"
+                            className="form-control"
+                            id="startDate"
+                            value={startDate}
+                            onChange={(e) => setStartDate(e.target.value)}
+                          />
+                        </div>
+                        <div className="form-group mb-0 col-5">
+                          <label htmlFor="">To</label>
+                          <input
+                            type="date"
+                            className="form-control"
+                            id="endDate"
+                            value={endDate}
+                            onChange={(e) => setEndDate(e.target.value)}
+                          />
+                        </div>
+                        <div className="form-group mb-0 col-auto">
+                          <button
+                            className="comman_btn2"
+                            disabled={startDate > endDate}
+                          >
+                            Search
+                          </button>
+                        </div>
+                      </form>
+                      {loading ? (
+                        <Spinner />
+                      ) : (
+                        <div className="row">
+                          <div className="col-12 comman_table_design px-0">
+                            <div className="table-responsive">
+                              <table className="table mb-0">
+                                <thead>
+                                  <tr>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Mobile Number</th>
+                                    <th>Status</th>
+                                    <th>Online Status</th>
+                                    <th>Registered At</th>
+                                    <th>Action</th>
                                   </tr>
                                 </thead>
                                 <tbody>
-                                  {agentList?.map((agent, index) => (
-                                    <tr role="row" className="odd" key={index}>
-                                      <td tabIndex={0} className="">
-                                        <input type="checkbox" />
-                                      </td>
-                                      <td> {agent.name} </td>
-                                      <td className="sorting_1">
-                                        {agent.Email}
-                                      </td>
-                                      <td> {agent.mobileNumber} </td>
-                                      <td className="text-warning">
+                                  {(agentList || [])?.map((agent, index) => (
+                                    <tr key={index}>
+                                      <td> {agent.name}</td>
+                                      <td> {agent.Email} </td>
+                                      {/* <td> {order?.createdAt.slice(0,10)} </td> */}
+                                      <td>{agent.mobileNumber}</td>
+                                      <td> {agent.status} </td>
+                                      <td> {agent.onlineStatus} </td>
+                                      <td>
                                         {" "}
-                                        {agent.status}{" "}
+                                        {agent?.createdAt?.slice(0, 10)}{" "}
                                       </td>
-                                      <td className=" dt-body-right">
-                                        {" "}
-                                        {agent.onlineStatus}{" "}
-                                      </td>
-
-                                      <td className=" dt-body-right">
-                                        <span className="badge text-secondary">
-                                          {agent?.createdAt?.slice(0, 10)}
-                                        </span>
-                                      </td>
-                                      <td className="dt-body-right">
-                                        {/* <Link to="/agents-information"> */}
+                                      <td>
                                         <Link
+                                          className="comman_btn table_viewbtn"
                                           to={`/agents-information/${agent._id}`}
+                                          onClick={() => viewAgent(agent._id)}
                                         >
-                                          <span className="badge text-dark">
-                                            <button
-                                              type="button"
-                                              className="border border-none bg-light"
-                                              onClick={() =>
-                                                viewAgent(agent._id)
-                                              }
-                                            >
-                                              <FontAwesomeIcon icon={faEye} />
-                                            </button>
-                                          </span>
+                                          <FontAwesomeIcon icon={faEye} />
                                         </Link>
-                                      </td>
-                                      <td className=" dt-body-right">
-                                        <span className="badge text-dark">
-                                          <button
-                                            type="button"
-                                            className="border border-none bg-light"
-                                            onClick={() =>
-                                              deleteAgent(agent?._id)
-                                            }
-                                          >
-                                            <FontAwesomeIcon icon={faTrash} />
-                                          </button>
-                                        </span>
-                                      </td>
-                                      <td className=" dt-body-right">
-                                        <span className="badge text-dark">
-                                          <FontAwesomeIcon
-                                            icon={faDollarSign}
-                                          />
-                                        </span>
-                                      </td>
-                                      <td className=" dt-body-right">
-                                        <span className="badge text-dark">
-                                          <FontAwesomeIcon
-                                            icon={faMoneyBill1Wave}
-                                          />
-                                        </span>
+                                        <Link
+                                          className="comman_btn2 table_viewbtn ms-2"
+                                          to="#"
+                                          onClick={() => {
+                                            Swal.fire({
+                                              title: "Are you sure?",
+                                              text: "You won't be able to revert this!",
+                                              icon: "warning",
+                                              showCancelButton: true,
+                                              confirmButtonColor: "#3085d6",
+                                              cancelButtonColor: "#d33",
+                                              confirmButtonText:
+                                                "Yes, delete it!",
+                                            }).then((result) => {
+                                              if (result.isConfirmed) {
+                                                deleteAgent(agent?._id);
+                                                Swal.fire(
+                                                  "Deleted!",
+                                                  `${agent?.name}  item has been deleted.`,
+                                                  "success"
+                                                ).then(() => {
+                                                  window.location.reload(); // Reload the page
+                                                });
+                                              }
+                                            });
+                                          }}
+                                        >
+                                          <FontAwesomeIcon icon={faTrash} />
+                                        </Link>
                                       </td>
                                     </tr>
                                   ))}
@@ -377,71 +296,71 @@ function Agent() {
                               </table>
                             </div>
                           </div>
-                          <div className="row d-flex">
-                            <div className="col-sm-12 col-md-3">
-                              <div
-                                className="dataTables_info"
-                                id="myDataTable_info"
-                                role="status"
-                                aria-live="polite"
-                              >
-                                Showing 1 to 8 of 8 entries
-                              </div>
-                            </div>
-                            <div className="col-sm-12 col-md-9">
-                              <div
-                                className="dataTables_paginate paging_simple_numbers"
-                                id="myDataTable_paginate"
-                              >
-                                <ul
-                                  className="pagination"
-                                  style={{ marginLeft: "75%" }}
-                                >
-                                  <li
-                                    className="paginate_button page-item previous disabled"
-                                    id="myDataTable_previous"
-                                  >
-                                    <a
-                                      href="#"
-                                      aria-controls="myDataTable"
-                                      data-dt-idx={0}
-                                      tabIndex={0}
-                                      className="page-link"
-                                    >
-                                      Previous
-                                    </a>
-                                  </li>
-                                  <li className="paginate_button page-item active">
-                                    <a
-                                      href="#"
-                                      aria-controls="myDataTable"
-                                      data-dt-idx={1}
-                                      tabIndex={0}
-                                      className="page-link"
-                                    >
-                                      1
-                                    </a>
-                                  </li>
-                                  <li
-                                    className="paginate_button page-item next disabled"
-                                    id="myDataTable_next"
-                                  >
-                                    <a
-                                      href="#"
-                                      aria-controls="myDataTable"
-                                      data-dt-idx={2}
-                                      tabIndex={0}
-                                      className="page-link"
-                                    >
-                                      Next
-                                    </a>
-                                  </li>
-                                </ul>
-                              </div>
-                            </div>
+                        </div>
+                      )}
+                      {/* <div className="row d-flex mt-2">
+                        <div className="col-sm-12 col-md-3">
+                          <div
+                            className="dataTables_info"
+                            id="myDataTable_info"
+                            role="status"
+                            aria-live="polite"
+                          >
+                            Showing 1 to 8 of 8 entries
                           </div>
                         </div>
-                      </div>
+                        <div className="col-sm-12 col-md-9">
+                          <div
+                            className="dataTables_paginate paging_simple_numbers"
+                            id="myDataTable_paginate"
+                          >
+                            <ul
+                              className="pagination"
+                              style={{ marginLeft: "75%" }}
+                            >
+                              <li
+                                className="paginate_button page-item previous disabled"
+                                id="myDataTable_previous"
+                              >
+                                <a
+                                  href="#"
+                                  aria-controls="myDataTable"
+                                  data-dt-idx={0}
+                                  tabIndex={0}
+                                  className="page-link"
+                                >
+                                  Previous
+                                </a>
+                              </li>
+                              <li className="paginate_button page-item active">
+                                <a
+                                  href="#"
+                                  aria-controls="myDataTable"
+                                  data-dt-idx={1}
+                                  tabIndex={0}
+                                  className="page-link"
+                                >
+                                  1
+                                </a>
+                              </li>
+                              <li
+                                className="paginate_button page-item next disabled"
+                                id="myDataTable_next"
+                              >
+                                <a
+                                  href="#"
+                                  aria-controls="myDataTable"
+                                  data-dt-idx={2}
+                                  tabIndex={0}
+                                  className="page-link"
+                                >
+                                  Next
+                                </a>
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div> */}
                     </div>
                   </div>
                 </div>
