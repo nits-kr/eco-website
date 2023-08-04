@@ -125,12 +125,28 @@ function Dashboard(props) {
         );
       }
     } catch (error) {
-      Swal.fire({
-        title: "Error!",
-        text: error.message,
-        icon: "error",
-        confirmButtonText: "OK",
-      });
+      if (error.response) {
+        Swal.fire({
+          title: "Error!",
+          text: error.response.data,
+          icon: "error",
+          confirmButtonText: "OK",
+        });
+      } else if (error.request) {
+        Swal.fire({
+          title: "Error!",
+          text: "Network error. Please try again later.",
+          icon: "error",
+          confirmButtonText: "OK",
+        });
+      } else {
+        Swal.fire({
+          title: "Error!",
+          text: error.message,
+          icon: "error",
+          confirmButtonText: "OK",
+        });
+      }
     }
   };
   return (
