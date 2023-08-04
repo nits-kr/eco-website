@@ -80,12 +80,7 @@ function UsersManagement(props) {
   useEffect(() => {
     axios
       .post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/user/userList",
-        {
-          page: "3",
-          userName: "n",
-          pageSize: "4",
-        }
+        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/user/userList"
       )
       .then((response) => {
         setUsersList(response?.data?.results?.createData?.reverse());
@@ -134,16 +129,10 @@ function UsersManagement(props) {
         page: "3",
         userName: "n",
         pageSize: "4",
-        from:startDate,
-        to:endDate,
+        from: startDate,
+        to: endDate,
       }
     );
-    // const filteredUsers = data.results.createData.filter(
-    //   (user) =>
-    //     new Date(user.createdAt) >= new Date(startDate) &&
-    //     new Date(user.createdAt) <= new Date(endDate)
-    // );
-    // setUsersList(filteredUsers);
     setUsersList(data?.results?.createData);
     console.log(data);
   };
@@ -152,22 +141,22 @@ function UsersManagement(props) {
     userList();
   };
   console.log("search query", searchQuery);
-  // useEffect(() => {
-  //   handleSearch1();
-  // },[searchQuery])
+  useEffect(() => {
+    handleSearch1();
+  }, [searchQuery]);
   const handleSearch1 = async (e) => {
-    e.preventDefault();
+    // e.preventDefault();
     if (searchQuery) {
       try {
         const response = await axios.post(
-          " http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/user/user-search",
+          "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/user/user-search",
           {
             userName: searchQuery,
           }
         );
         const { error, results } = response?.data;
         if (error) {
-          throw new Error("Error searching for products.Data are Not Found");
+          throw new Error("Error searching for products. Data are Not Found");
         } else {
           setUsersList(results?.userData);
         }
@@ -178,11 +167,13 @@ function UsersManagement(props) {
           icon: "error",
           confirmButtonText: "OK",
         });
+        setUsersList([]); // Set usersList to empty when there is an error in the search
       }
     } else {
-      setUsersList([]);
+      setUsersList([]); // Set usersList to empty when searchQuery is empty
     }
   };
+
   // const handleDownload = () => {
   //   if (data) {
   //     const blob = new Blob([data]);
@@ -206,7 +197,7 @@ function UsersManagement(props) {
   return (
     <>
       {loading}
-      <Sidebar Dash={"users"}/>
+      <Sidebar Dash={"users"} />
       <div className="admin_main">
         <div className="admin_main_inner">
           <div className="admin_panel_data height_adjust">
@@ -235,7 +226,10 @@ function UsersManagement(props) {
                               value={searchQuery}
                               onChange={(e) => setSearchQuery(e.target.value)}
                             />
-                            <i className="far fa-search" onClick={handleSearch1}></i>
+                            <i
+                              className="far fa-search"
+                              onClick={handleSearch1}
+                            ></i>
                           </div>
                         </form>
                       </div>
