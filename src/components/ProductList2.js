@@ -372,9 +372,6 @@ function ProductList2(props) {
                                     <td>
                                       <Link
                                         className="comman_btn table_viewbtn"
-                                        // data-bs-toggle="modal"
-                                        // data-bs-target="#edittoffer"
-                                        // to="/product-management-edit"
                                         to={`/product-management-edit/${product?._id}`}
                                         onClick={() => {
                                           handleItem(product);

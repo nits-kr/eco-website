@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import Swal from "sweetalert2";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit } from "@fortawesome/free-solid-svg-icons";
@@ -31,7 +32,7 @@ function AgentDetails() {
       commissionType: commissionType,
     }));
   };
-  
+
   console.log("form data global", formData);
   const [selectedImage, setSelectedImage] = useState(null);
   const handleInputChange = (event) => {
@@ -44,6 +45,36 @@ function AgentDetails() {
     setFormData({ ...formData, profilePic: event.target.files[0] });
   };
 
+  // const handleSubmit = async (event) => {
+  //   event.preventDefault();
+  //   try {
+  //     const data = new FormData();
+  //     data.append("name", formData.fullName);
+  //     data.append("Email", formData.email);
+  //     data.append("accountNumber", formData.accountNumber);
+  //     data.append("bankName", formData.bankName);
+  //     data.append("password", formData.password);
+  //     data.append("commisionType", formData.commissionType);
+  //     data.append("profile_Pic", formData.profilePic);
+  //     data.append("mobileNumber", formData.mobileNumber);
+  //     data.append("address", formData.address);
+  //     data.append("accountName", formData.accountName);
+  //     data.append("routingNumber", formData.routing);
+  //     const response = await axios.post(
+  //       "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/agent/agent/addUser",
+  //       data
+  //     );
+  //     console.log(response.data.results.saveUser);
+
+  //     if (!response.data.error) {
+  //       alert("List saved!");
+  //       //handleSave();
+  //       setFormData(response.data.results.saveUser);
+  //     }
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
@@ -64,11 +95,18 @@ function AgentDetails() {
         data
       );
       console.log(response.data.results.saveUser);
-
+  
       if (!response.data.error) {
-        alert("List saved!");
-        //handleSave();
-        setFormData(response.data.results.saveUser);
+        Swal.fire({
+          title: "List saved!",
+          icon: "success",
+          confirmButtonText: "Confirm",
+        }).then(() => {
+          window.location.href = "/agents";
+          setTimeout(() => {
+            window.location.reload();
+          }, 500);
+        });
       }
     } catch (error) {
       console.error(error);
@@ -88,19 +126,37 @@ function AgentDetails() {
                 <strong>Add</strong>
               </Link>{" "}
             </h6>
+            <div
+              className="row comman_header justify-content-between"
+              style={{ borderRadius: "10px 10px 0px 0px" }}
+            >
+              <div className="col">
+                <h2>Add Ajent</h2>
+              </div>
+            </div>
             <div className="row dashboard_part justify-content-center">
-              <div className="col-12 d-flex shadow">
+              <form
+                action="#"
+                className="col-12 d-flex shadow"
+                style={{ backgroundColor: "#fff" }}
+                // onSubmit={handleSubmit}
+              >
                 <div className="col-6 row">
                   <div className="col-12 mt-2">
                     <div className="users_right mt-3">
                       <div className="row justify-content-between">
-                        <form
+                        <div
                           action="#"
                           className="form-design row position-relative"
                         >
                           <div className="form-group col-12">
                             <div className="col-12">
-                              <label htmlFor="fullNme">Full Name:</label>
+                              <label htmlFor="fullNme">
+                                Full Name
+                                <span className="required-field text-danger">
+                                  *
+                                </span>
+                              </label>
                             </div>
                             <div className="col-12">
                               <input
@@ -110,6 +166,8 @@ function AgentDetails() {
                                 id="fullName"
                                 value={formData.fullName}
                                 onChange={handleInputChange}
+                                required
+                                minLength="3"
                               />
                             </div>
                           </div>
@@ -119,6 +177,9 @@ function AgentDetails() {
                               className="form-label"
                             >
                               Email address
+                              <span className="required-field text-danger">
+                                *
+                              </span>
                             </label>
                             <input
                               type="email"
@@ -128,12 +189,19 @@ function AgentDetails() {
                               name="email"
                               value={formData.email}
                               onChange={handleInputChange}
+                              required
+                              minLength="3"
                             />
                           </div>
 
                           <div className="form-group col-12">
                             <div className="col-12">
-                              <label htmlFor="account">Account Number:</label>
+                              <label htmlFor="account">
+                                Account Number
+                                <span className="required-field text-danger">
+                                  *
+                                </span>
+                              </label>
                             </div>
                             <div className="col-12">
                               <input
@@ -143,12 +211,19 @@ function AgentDetails() {
                                 id="accountNumber"
                                 value={formData.accountNumber}
                                 onChange={handleInputChange}
+                                required
+                                minLength="3"
                               />
                             </div>
                           </div>
                           <div className="form-group col-12">
                             <div className="col-4">
-                              <label htmlFor="bankName">Bank Name:</label>
+                              <label htmlFor="bankName">
+                                Bank Name
+                                <span className="required-field text-danger">
+                                  *
+                                </span>
+                              </label>
                             </div>
                             <div className="col-12">
                               <input
@@ -158,12 +233,19 @@ function AgentDetails() {
                                 id="bankName"
                                 value={formData.bankName}
                                 onChange={handleInputChange}
+                                required
+                                minLength="3"
                               />
                             </div>
                           </div>
                           <div className="form-group col-12">
                             <div className="col-4">
-                              <label htmlFor="password">Password:</label>
+                              <label htmlFor="password">
+                                Password
+                                <span className="required-field text-danger">
+                                  *
+                                </span>
+                              </label>
                             </div>
                             <div className="col-12">
                               <input
@@ -173,6 +255,8 @@ function AgentDetails() {
                                 id="password"
                                 value={formData.password}
                                 onChange={handleInputChange}
+                                required
+                                minLength="3"
                               />
                             </div>
                           </div>
@@ -199,7 +283,7 @@ function AgentDetails() {
                               </label>
                             </div>
                           </div>
-                        </form>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -249,13 +333,18 @@ function AgentDetails() {
                   <div className="col-12 mt-2">
                     <div className="users_right mt-3">
                       <div className="row justify-content-between">
-                        <form
+                        <div
                           action="#"
                           className="form-design row position-relative"
                         >
                           <div className="form-group col-12">
                             <div className="col-12">
-                              <label htmlFor="">Mobile Number:</label>
+                              <label htmlFor="">
+                                Mobile Number
+                                <span className="required-field text-danger">
+                                  *
+                                </span>
+                              </label>
                             </div>
                             <div className="col-12">
                               <input
@@ -265,12 +354,19 @@ function AgentDetails() {
                                 id="mobileNumber"
                                 value={formData.mobileNumber}
                                 onChange={handleInputChange}
+                                required
+                                minLength="10"
                               />
                             </div>
                           </div>
                           <div className="form-group col-12">
                             <div className="col-12">
-                              <label htmlFor="address">Address:</label>
+                              <label htmlFor="address">
+                                Address
+                                <span className="required-field text-danger">
+                                  *
+                                </span>
+                              </label>
                             </div>
                             <div className="col-12">
                               <input
@@ -282,12 +378,19 @@ function AgentDetails() {
                                 id="address"
                                 value={formData.address}
                                 onChange={handleInputChange}
+                                required
+                                minLength="3"
                               />
                             </div>
                           </div>
                           <div className="form-group col-12">
                             <div className="col-12">
-                              <label htmlFor="accountName">Account Name:</label>
+                              <label htmlFor="accountName">
+                                Account Name
+                                <span className="required-field text-danger">
+                                  *
+                                </span>
+                              </label>
                             </div>
                             <div className="col-12">
                               <input
@@ -297,12 +400,19 @@ function AgentDetails() {
                                 id="accountName"
                                 value={formData.accountName}
                                 onChange={handleInputChange}
+                                required
+                                minLength="3"
                               />
                             </div>
                           </div>
                           <div className="form-group col-12">
                             <div className="col-4">
-                              <label htmlFor="routing">Routing Number:</label>
+                              <label htmlFor="routing">
+                                Routing Number
+                                <span className="required-field text-danger">
+                                  *
+                                </span>
+                              </label>
                             </div>
                             <div className="col-12">
                               <input
@@ -312,12 +422,14 @@ function AgentDetails() {
                                 id="routing"
                                 value={formData.routing}
                                 onChange={handleInputChange}
+                                required
+                                minLength="3"
                               />
                             </div>
                           </div>
                           <div className="form-group col-12">
                             <div className="col-4">
-                              <label htmlFor="status">Status:</label>
+                              <label htmlFor="status">Status</label>
                             </div>
                             <div className="col-12">
                               <button
@@ -329,12 +441,12 @@ function AgentDetails() {
                               </button>
                             </div>
                           </div>
-                        </form>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
+              </form>
             </div>
           </div>
         </div>
