@@ -2,13 +2,47 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import Sidebar from "./Sidebar";
+import Swal from "sweetalert2";
 
-export default function UserReports() {
+export default function UserReports(props) {
+  console.log("UserReports(props)", props);
   const [reporterList, setReporterList] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
+
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
+  useEffect(() => {
+    handleSearch1();
+  }, [props?.searchQuery]);
+  const handleSearch1 = async (e) => {
+    // e.preventDefault();
+    if (props?.searchQuery) {
+      try {
+        const response = await axios.post(
+          "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/reporter/reporter/search",
+          {
+            reporter: props?.searchQuery,
+          }
+        );
+        const { error, results } = response.data;
+        if (error) {
+          throw new Error("Error searching for products.Data are Not Found");
+        } else {
+          setReporterList(results?.repoterData);
+        }
+      } catch (error) {
+        Swal.fire({
+          title: "Error!",
+          text: error.message,
+          icon: "error",
+          confirmButtonText: "OK",
+        });
+      }
+    } else {
+      setReporterList([]);
+    }
+  };
   const fetchStaffList = async () => {
     try {
       const response = await axios.post(
@@ -28,8 +62,8 @@ export default function UserReports() {
     const { data } = await axios.post(
       "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/reporter/reporter/list",
       {
-       from: startDate,
-       to: endDate,
+        from: startDate,
+        to: endDate,
       }
     );
     // const filteredUsers = data.results.list.filter(

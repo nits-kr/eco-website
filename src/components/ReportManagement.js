@@ -115,7 +115,7 @@ function ReportManagement() {
                       </div>
                     </nav>
                     <div className="tab-content" id="nav-tabContent">
-                      <UserReports />
+                      <UserReports searchQuery={searchQuery}/>
                       <ProductReports />
                     </div>
                   </div>
