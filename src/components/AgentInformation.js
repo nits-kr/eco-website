@@ -167,7 +167,7 @@ function AgentInformation() {
                       </span>
                     </div>
                   </div>
-                  <div className="col-12 pe-5 mt-2 shadow">
+                  <div className="col-12 pe-5 mt-2 shadow" style={{backgroundColor:"#fff"}}>
                     <div
                       className="users_right pe-2 mt-3"
                       style={{ width: "115%" }}

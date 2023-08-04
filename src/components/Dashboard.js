@@ -90,13 +90,14 @@ function Dashboard(props) {
         }
       )
       .then((response) => {
-        // const filteredData = response.data.results.orderList.filter(
-        //   (data) =>
-        //     new Date(data.createdAt) >= new Date(startDate) &&
-        //     new Date(data.createdAt) <= new Date(endDate)
-        // );
-        // console.log("filteredData dashboard", filteredData);
-        setRecentOrderList(response.data.results.orderList.reverse());
+        const filteredData = response.data.results.orderList.filter(
+          (data) =>
+            new Date(data.createdAt) >= new Date(startDate) &&
+            new Date(data.createdAt) <= new Date(endDate)
+        );
+        console.log("filteredData dashboard", filteredData);
+        // setRecentOrderList(response.data.results.orderList.reverse());
+        setRecentOrderList(filteredData.reverse());
       })
       .catch((error) => {
         console.log(error.response.data);

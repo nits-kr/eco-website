@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import axios from "axios";
+import Swal from "sweetalert2";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faEdit,
@@ -32,6 +33,28 @@ function UserDetails2() {
     console.log("order list", data?.results?.order);
     console.log("User List Details", data.results.list);
     console.log("id", id);
+  };
+  const deleteOrder = async (_id) => {
+    try {
+      const result = await Swal.fire({
+        title: "Confirm Deletion",
+        text: "Are you sure you want to delete this order?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "OK",
+      });
+      if (result.isConfirmed) {
+        await axios.delete(
+          `http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/order/order/delete-order/${_id}`
+        );
+        console.log("delete Order", _id);
+        window.location.reload();
+      }
+    } catch (error) {
+      console.log("Error deleting order:", error);
+    }
   };
 
   return (
@@ -155,7 +178,10 @@ function UserDetails2() {
                       </div>
                     </div>
                   </div>
-                  <div className="col-12 pe-5 mt-2 shadow">
+                  <div
+                    className="col-12 pe-5 mt-2 shadow"
+                    style={{ backgroundColor: "#fff" }}
+                  >
                     <div
                       className="users_right pe-2 mt-3"
                       style={{ width: "115%" }}
@@ -169,7 +195,7 @@ function UserDetails2() {
                             style={{
                               color: "red",
                               display: "flex",
-                              alignItems: "center",
+                              alignItems: "left",
                             }}
                           >
                             <FontAwesomeIcon icon={faEdit} />
@@ -583,15 +609,20 @@ function UserDetails2() {
                                         <div
                                           style={{
                                             display: "flex",
-                                            justifyContent: "space-between",
+                                            justifyContent: "center",
                                           }}
                                         >
-                                          <Link to={`/edit/${order._id}`}>
+                                          {/* <Link to={`/edit/${order._id}`}>
                                             <button className="comman_btn2 table_viewbtn">
                                               <FontAwesomeIcon icon={faEdit} />
                                             </button>
-                                          </Link>
-                                          <button className="comman_btn2 table_viewbtn">
+                                          </Link> */}
+                                          <button
+                                            className="comman_btn2 table_viewbtn"
+                                            onClick={() =>
+                                              deleteOrder(order._id)
+                                            }
+                                          >
                                             <FontAwesomeIcon icon={faTrash} />
                                           </button>
                                         </div>
