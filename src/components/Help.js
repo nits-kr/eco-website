@@ -105,16 +105,16 @@ function Help() {
     const { data } = await axios.post(
       "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/help/help/list",
       {
-        startDate,
-        endDate,
+        from:startDate,
+        to:endDate,
       }
     );
-    const filteredUsers = data.results.list.filter(
-      (user) =>
-        new Date(user.createdAt) >= new Date(startDate) &&
-        new Date(user.createdAt) <= new Date(endDate)
-    );
-    setHelpList(filteredUsers.reverse());
+    // const filteredUsers = data.results.list.filter(
+    //   (user) =>
+    //     new Date(user.createdAt) >= new Date(startDate) &&
+    //     new Date(user.createdAt) <= new Date(endDate)
+    // );
+    setHelpList(data?.results?.list?.reverse());
     console.log(data);
   };
   const handleSearch = (e) => {
@@ -129,6 +129,8 @@ function Help() {
         {
           categoryName: category.categoryNameEn,
           subCategoryName: subCategory.nameEn,
+          categoryName_ar: category.categoryNameAr,
+          subCategoryName_ar: subCategory.nameAr,
         }
       );
       console.log(response.data.results.helpData);
@@ -171,7 +173,7 @@ function Help() {
                       onSubmit={handleSubmit}
                     >
                       <div className="form-group col-6">
-                        <label htmlFor="">Category (En)</label>
+                        <label htmlFor="">Category (En)<span className="required-field text-danger">*</span></label>
                         <input
                           type="text"
                           className="form-control"
@@ -179,10 +181,12 @@ function Help() {
                           id="categoryNameEn"
                           value={category.categoryNameEn}
                           onChange={handleCategoryInputChange}
+                          required
+                          minLength="3"
                         />
                       </div>
                       <div className="form-group col-6">
-                        <label htmlFor="">Category (Ar)</label>
+                        <label htmlFor="">Category (Ar)<span className="required-field text-danger">*</span></label>
                         <input
                           type="text"
                           className="form-control"
@@ -190,10 +194,12 @@ function Help() {
                           id="categoryNameAr"
                           value={category.categoryNameAr}
                           onChange={handleCategoryInputChange}
+                          required
+                          minLength="3"
                         />
                       </div>
                       <div className="form-group mb-0 col">
-                        <label htmlFor="">Sub Category (En)</label>
+                        <label htmlFor="">Sub Category (En)<span className="required-field text-danger">*</span></label>
                         <input
                           type="text"
                           className="form-control"
@@ -201,10 +207,12 @@ function Help() {
                           id="nameEn"
                           value={subCategory.nameEn}
                           onChange={handleSubCategoryInputChange}
+                          required
+                          minLength="3"
                         />
                       </div>
                       <div className="form-group mb-0 col">
-                        <label htmlFor="">Sub Category (Ar)</label>
+                        <label htmlFor="">Sub Category (Ar)<span className="required-field text-danger">*</span></label>
                         <input
                           type="text"
                           className="form-control"
@@ -212,6 +220,8 @@ function Help() {
                           id="nameAr"
                           value={subCategory.nameAr}
                           onChange={handleSubCategoryInputChange}
+                          required
+                          minLength="3"
                         />
                       </div>
                       <div className="form-group mb-0 col-auto">
@@ -240,7 +250,7 @@ function Help() {
                               value={searchQuery}
                               onChange={(e) => setSearchQuery(e.target.value)}
                             />
-                            <i className="far fa-search"></i>
+                            <i className="far fa-search" onClick={handleSearchCategoryName}></i>
                           </div>
                         </form>
                       </div>
@@ -304,9 +314,9 @@ function Help() {
                                 <tr key={index}>
                                   <td>{index + 1}</td>
                                   <td>{value.categoryName}</td>
-                                  <td>{value.categoryName}</td>
+                                  <td>{value.categoryName_ar}</td>
                                   <td>{value.subCategoryName}</td>
-                                  <td>{value.subCategoryName}</td>
+                                  <td>{value.subCategoryName_ar}</td>
                                   <td>
                                     <Link
                                       className="comman_btn table_viewbtn"

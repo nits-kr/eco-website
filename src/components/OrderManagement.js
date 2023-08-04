@@ -40,18 +40,18 @@ function OrderManagement() {
     const { data } = await axios.post(
       "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/order/order/list",
       {
-        startDate,
-        endDate,
+       from: startDate,
+       to: endDate,
       }
     );
 
-    const filteredUsers = data?.results?.list?.filter(
-      (user) =>
-        new Date(user.createdAt) >= new Date(startDate) &&
-        new Date(user.createdAt) <= new Date(endDate)
-    );
+    // const filteredUsers = data?.results?.list?.filter(
+    //   (user) =>
+    //     new Date(user.createdAt) >= new Date(startDate) &&
+    //     new Date(user.createdAt) <= new Date(endDate)
+    // );
 
-    setOrderList(filteredUsers.reverse());
+    setOrderList(data?.results?.list?.reverse());
   };
 
   const userList2 = async () => {

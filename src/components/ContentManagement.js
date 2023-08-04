@@ -9,8 +9,10 @@ import { useUpdateContentMutation } from "../services/Post";
 function ContentManagement() {
   const contentListItems = useGetContentListQuery();
   const [update, res] = useUpdateContentMutation();
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
+  const [titleEn, setTitleEn] = useState("");
+  const [descriptionEn, setDescriptionEn] = useState("");
+  const [titleEn2, setTitleEn2] = useState("");
+  const [descriptionEn2, setDescriptionEn2] = useState("");
   const [itemId, setItemId] = useState([]);
   console.log("content item id ", itemId);
   axios.defaults.headers.common["x-auth-token-user"] =
@@ -20,8 +22,8 @@ function ContentManagement() {
     console.log("handleSaveChanges1", itemId);
     const editAddress = {
       id: itemId,
-      title: title,
-      Description: description,
+      title: titleEn,
+      Description: descriptionEn,
     };
     try {
       await update(editAddress);
@@ -44,6 +46,10 @@ function ContentManagement() {
       });
     }
   };
+  const handleItem = (item) => {
+    setTitleEn2(item?.title || "");
+    setDescriptionEn2(item?.Description || "");
+  };
   return (
     <>
       <Sidebar Dash={"content-management"}/>
@@ -62,11 +68,14 @@ function ContentManagement() {
                           data-bs-toggle="modal"
                           data-bs-target="#staticBackdrop"
                           to="#"
-                          onClick={() => setItemId(data?._id)}
+                          onClick={() => {
+                            handleItem(data);
+                            setItemId(data?._id);
+                          }}
                         >
                           <i className="far fa-edit me-2"></i>Edit
                         </Link>
-                        <p>{data.Description}</p>
+                        <p>{data?.Description}</p>
                       </div>
                     </div>
                     <div className="col-md-6 d-flex align-items-stretch">
@@ -138,8 +147,8 @@ function ContentManagement() {
                     type="text"
                     id="questions"
                     name="questions"
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
+                    defaultValue={titleEn2}
+                    onChange={(e) => setTitleEn(e.target.value)}
                   />
                 </div>
                 <div className="form-group col-12">
@@ -149,8 +158,8 @@ function ContentManagement() {
                     name="answers"
                     id="answers"
                     style={{ height: "150px" }}
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
+                    defaultValue={descriptionEn2}
+                    onChange={(e) => setDescriptionEn(e.target.value)}
                   />
                 </div>
                 <div className="form-group col-12 text-center mb-0">

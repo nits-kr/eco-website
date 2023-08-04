@@ -11,6 +11,7 @@ function ContactUs() {
   const [endDate, setEndDate] = useState("");
   const [itemId, setItemId] = useState(null);
   const [startDate1, setStartDate1] = useState("");
+  const [descriptionEn2, setDescriptionEn2] = useState("");
   console.log("item id", itemId);
   const [viewContact, setViewContact] = useState("");
   axios.defaults.headers.common["x-auth-token-user"] =
@@ -72,16 +73,16 @@ function ContactUs() {
     const { data } = await axios.post(
       "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/contact/contact/contactList",
       {
-        startDate,
-        endDate,
+        from:startDate,
+        to:endDate,
       }
     );
-    const filteredUsers = data.results.list.filter(
-      (user) =>
-        new Date(user.createdAt) >= new Date(startDate) &&
-        new Date(user.createdAt) <= new Date(endDate)
-    );
-    setContactList(filteredUsers.reverse());
+    // const filteredUsers = data.results.list.filter(
+    //   (user) =>
+    //     new Date(user.createdAt) >= new Date(startDate) &&
+    //     new Date(user.createdAt) <= new Date(endDate)
+    // );
+    setContactList(data?.results?.list?.reverse());
     console.log(data);
   };
   const handleSearch = (e) => {
@@ -101,6 +102,9 @@ function ContactUs() {
     } catch (error) {
       // Handle error if necessary
     }
+  };
+  const handleItem = (item) => {
+    setDescriptionEn2(item?.description || "");
   };
   return (
     <>
@@ -191,7 +195,7 @@ function ContactUs() {
                               {(contactList || []).map((data, index) => (
                                 <tr key={index}>
                                   <td>{index + 1}</td>
-                                  <td>{data.userName}</td>
+                                  <td>{data.userName_en}</td>
                                   <td>{data.Email}</td>
                                   <td>{data.subject}</td>
                                   <td>{data.description}</td>
@@ -220,7 +224,10 @@ function ContactUs() {
                                       data-bs-target="#staticBackdrop"
                                       className="comman_btn table_viewbtn me-2"
                                       to="#"
-                                      onClick={() => setItemId(data?._id)}
+                                      onClick={() => {
+                                        handleItem(data);
+                                        setItemId(data?._id);
+                                      }}
                                     >
                                       View
                                     </Link>
@@ -228,7 +235,27 @@ function ContactUs() {
                                       className="comman_btn2 table_viewbtn"
                                       to="#"
                                       onClick={() => {
-                                        handleDeleteContact(data?._id);
+                                        Swal.fire({
+                                          title: "Are you sure?",
+                                          text: "You won't be able to revert this!",
+                                          icon: "warning",
+                                          showCancelButton: true,
+                                          confirmButtonColor: "#3085d6",
+                                          cancelButtonColor: "#d33",
+                                          confirmButtonText:
+                                            "Yes, delete it!",
+                                        }).then((result) => {
+                                          if (result.isConfirmed) {
+                                            deleteContact(data?._id);
+                                            Swal.fire(
+                                              "Deleted!",
+                                              `${data?.userName_en}  item has been deleted.`,
+                                              "success"
+                                            ).then(() => {
+                                              window.location.reload();
+                                            });
+                                          }
+                                        });
                                       }}
                                     >
                                       Delete

@@ -134,16 +134,17 @@ function UsersManagement(props) {
         page: "3",
         userName: "n",
         pageSize: "4",
-        startDate,
-        endDate,
+        from:startDate,
+        to:endDate,
       }
     );
-    const filteredUsers = data.results.createData.filter(
-      (user) =>
-        new Date(user.createdAt) >= new Date(startDate) &&
-        new Date(user.createdAt) <= new Date(endDate)
-    );
-    setUsersList(filteredUsers);
+    // const filteredUsers = data.results.createData.filter(
+    //   (user) =>
+    //     new Date(user.createdAt) >= new Date(startDate) &&
+    //     new Date(user.createdAt) <= new Date(endDate)
+    // );
+    // setUsersList(filteredUsers);
+    setUsersList(data?.results?.createData);
     console.log(data);
   };
   const handleSearch = (e) => {

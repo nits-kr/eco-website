@@ -75,6 +75,59 @@ function Agent() {
   const viewAgent = (_id) => {
     console.log("viewAgent", _id);
   };
+  // const userList2 = async () => {
+  //   if (!startDate1) return;
+  //   try {
+  //     const { data } = await axios.post(
+  //       "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/agent/agent/user-List",
+  //       {
+  //         startDate1,
+  //       }
+  //     );
+  //     const filteredUsers = data?.results?.createData?.filter(
+  //       (user) =>
+  //         new Date(user?.createdAt?.slice(0, 10)).toISOString().slice(0, 10) ===
+  //         new Date(startDate1).toISOString().slice(0, 10)
+  //     );
+  //     if (filteredUsers.length === 0) {
+  //       Swal.fire({
+  //         title: "No List Found",
+  //         text: "No list is available for the selected date.",
+  //         icon: "warning",
+  //         confirmButtonText: "OK",
+  //       });
+  //     }
+  //     setUsersList(filteredUsers);
+  //     console.log(data);
+  //   } catch (error) {
+  //     console.error("Error fetching user list:", error);
+  //   }
+  // };
+  // useEffect(() => {
+  //   userList2();
+  // }, [startDate1]);
+
+  const userList3 = async () => {
+    const { data } = await axios.post(
+      "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/agent/agent/user-List",
+      {
+        from:startDate,
+        to:endDate,
+      }
+    );
+    // const filteredUsers = data.results.createData.filter(
+    //   (user) =>
+    //     new Date(user.createdAt) >= new Date(startDate) &&
+    //     new Date(user.createdAt) <= new Date(endDate)
+    // );
+    // setUsersList(filteredUsers);
+    setAgentList(data?.results?.list);
+    console.log(data);
+  };
+  const handleSearch3 = (e) => {
+    e.preventDefault();
+    userList3();
+  };
 
   return (
     <>
@@ -190,7 +243,7 @@ function Agent() {
                       <form
                         className="form-design py-4 px-3 help-support-form row align-items-end justify-content-between"
                         action=""
-                        // onSubmit={handleSearch1}
+                        onSubmit={handleSearch3}
                       >
                         <div className="form-group mb-0 col-5">
                           <label htmlFor="">From</label>

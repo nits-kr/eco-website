@@ -264,6 +264,18 @@ export const PostApi = createApi({
         method: "DELETE",
       }),
     }),
+    deleteCoupanList: builder.mutation({
+      query: (id) => ({
+        url: `/admin/coupan/coupan/delete/${id}`,
+        method: "DELETE",
+      }),
+    }),
+    deleteHelpList: builder.mutation({
+      query: (id) => ({
+        url: `/admin/contact/contact/contactDelete/${id}`,
+        method: "DELETE",
+      }),
+    }),
   }),
 });
 
@@ -300,5 +312,7 @@ export const {
   useEditProductListMutation,
   useDeleteProductListMutation,
   useEditOrderListMutation,
+  useDeleteCoupanListMutation,
+  useDeleteHelpListMutation,
   // useSearchOfferQuery,
 } = PostApi;

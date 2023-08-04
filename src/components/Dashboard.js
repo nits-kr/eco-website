@@ -33,10 +33,11 @@ function Dashboard(props) {
     props.setProgress(50);
     axios
       .post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/agent/agent/order-list"
+        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/dashboards/count/list"
       )
       .then((response) => {
-        setRecentOrderList(response.data.results.orderList.reverse());
+        setRecentOrderList(response?.data?.results?.list?.reverse());
+        console.log("setRecentOrderList",response?.data?.results?.list?.reverse());
       })
 
       .catch((error) => {
@@ -50,12 +51,12 @@ function Dashboard(props) {
     if (!startDate1) return;
     try {
       const { data } = await axios.post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/agent/agent/order-list",
+        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/dashboards/count/list",
         {
           startDate1,
         }
       );
-      const filteredUsers = data?.results?.orderList?.filter(
+      const filteredUsers = data?.results?.list?.filter(
         (user) =>
           new Date(user?.createdAt?.slice(0, 10)).toISOString().slice(0, 10) ===
           new Date(startDate1).toISOString().slice(0, 10)
@@ -83,21 +84,21 @@ function Dashboard(props) {
     e.preventDefault();
     axios
       .post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/agent/agent/order-list",
+        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/dashboards/count/list",
         {
-          startDate,
-          endDate,
+          from:startDate,
+          to:endDate,
         }
       )
       .then((response) => {
-        const filteredData = response.data.results.orderList.filter(
-          (data) =>
-            new Date(data.createdAt) >= new Date(startDate) &&
-            new Date(data.createdAt) <= new Date(endDate)
-        );
-        console.log("filteredData dashboard", filteredData);
+        // const filteredData = response.data.results.orderList.filter(
+        //   (data) =>
+        //     new Date(data.createdAt) >= new Date(startDate) &&
+        //     new Date(data.createdAt) <= new Date(endDate)
+        // );
+        // console.log("filteredData dashboard", filteredData);
         // setRecentOrderList(response.data.results.orderList.reverse());
-        setRecentOrderList(filteredData.reverse());
+        setRecentOrderList(response?.data?.results?.list?.reverse());
       })
       .catch((error) => {
         console.log(error.response.data);
@@ -306,7 +307,7 @@ function Dashboard(props) {
                                 {(recentOrderList || [])?.map(
                                   (order, index) => (
                                     <tr key={index}>
-                                      <td> {order.products[0].product_Id} </td>
+                                      <td> {order?.products[0]?.product_Id} </td>
                                       <td> {order?.user_Id?.userName} </td>
                                       {/* <td> {order?.createdAt.slice(0,10)} </td> */}
                                       <td>

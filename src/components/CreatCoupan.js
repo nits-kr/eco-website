@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 import Sidebar from "./Sidebar";
@@ -27,6 +27,26 @@ export default function CreatCoupan() {
     coupanTitle: "",
     coupanCode: "",
   });
+  const [categories, setCategories] = useState([]);
+  const [categories2, setCategories2] = useState([]);
+  const [subCategory, setSubCategory] = useState({
+    nameEn: "",
+    nameAr: "",
+    categoryId: "",
+    subCategoryId: "",
+    subCategoryPic: null,
+  });
+  const [subSubCategory, setSubSubCategory] = useState({
+    nameEn: "",
+    nameAr: "",
+    categoryId: "",
+    categoryId1: "",
+    brandId1: "",
+  });
+  const handleInputChange4 = (event) => {
+    const { name, value } = event.target;
+    setSubSubCategory({ ...subSubCategory, [name]: value });
+  };
 
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
@@ -41,6 +61,10 @@ export default function CreatCoupan() {
   const handleInputChange2 = (event) => {
     const { name, value } = event.target;
     setUsage({ ...restriction, [name]: value });
+  };
+  const handleInputChange3 = (event) => {
+    const { name, value } = event.target;
+    setSubCategory({ ...subCategory, [name]: value });
   };
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -75,14 +99,38 @@ export default function CreatCoupan() {
       console.error(error);
     }
   };
+  useEffect(() => {
+    axios
+      .post(
+        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/product/productList"
+      )
+      .then((response) => {
+        setCategories(response?.data?.results?.list.reverse());
+        console.log(response.data);
+      });
+  }, []);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.post(
+          "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/subSubCategory/selectCategory"
+        );
+        setCategories2(response.data.results.categoryData);
+        console.log(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchData();
+  }, []);
   const handleSubmit1 = async (event) => {
     event.preventDefault();
     try {
       const response = await axios.post(
         "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/coupan/coupan/restriction",
         {
-          product_Id: restriction.products,
-          category_Id: restriction.category,
+          product_Id: subCategory.categoryId,
+          category_Id: subSubCategory.categoryId1,
           MinimumSpend: restriction.minummSpeed,
           MaximumSpend: restriction.maximumSpeed,
         }
@@ -207,7 +255,12 @@ export default function CreatCoupan() {
                             onSubmit={handleSubmit}
                           >
                             <div className="form-group col-4">
-                              <label htmlFor="">Coupon Title</label>
+                              <label htmlFor="">
+                                Coupon Title
+                                <span className="required-field text-danger">
+                                  *
+                                </span>
+                              </label>
                               <input
                                 type="text"
                                 className="form-control"
@@ -215,10 +268,17 @@ export default function CreatCoupan() {
                                 id="coupanTitle"
                                 value={coupan.coupanTitle}
                                 onChange={handleInputChange}
+                                required
+                                minLength="3"
                               />
                             </div>
                             <div className="form-group col-4">
-                              <label htmlFor="">Coupon Code</label>
+                              <label htmlFor="">
+                                Coupon Code
+                                <span className="required-field text-danger">
+                                  *
+                                </span>
+                              </label>
                               <input
                                 type="text"
                                 className="form-control"
@@ -226,10 +286,17 @@ export default function CreatCoupan() {
                                 id="coupanCode"
                                 value={coupan.coupanCode}
                                 onChange={handleInputChange}
+                                required
+                                minLength="3"
                               />
                             </div>
                             <div className="form-group col-4">
-                              <label htmlFor="">Start Date</label>
+                              <label htmlFor="">
+                                Start Date
+                                <span className="required-field text-danger">
+                                  *
+                                </span>
+                              </label>
                               <input
                                 type="date"
                                 className="form-control"
@@ -237,10 +304,17 @@ export default function CreatCoupan() {
                                 id="startDate"
                                 value={coupan.startDate}
                                 onChange={handleInputChange}
+                                required
+                                minLength="3"
                               />
                             </div>
                             <div className="form-group col-4">
-                              <label htmlFor="">End Date</label>
+                              <label htmlFor="">
+                                End Date
+                                <span className="required-field text-danger">
+                                  *
+                                </span>
+                              </label>
                               <input
                                 type="date"
                                 className="form-control"
@@ -248,10 +322,17 @@ export default function CreatCoupan() {
                                 id="endDate"
                                 value={coupan.endDate}
                                 onChange={handleInputChange}
+                                required
+                                minLength="3"
                               />
                             </div>
                             <div className="form-group col-4">
-                              <label htmlFor="">Quantity</label>
+                              <label htmlFor="">
+                                Quantity
+                                <span className="required-field text-danger">
+                                  *
+                                </span>
+                              </label>
                               <input
                                 type="text"
                                 className="form-control"
@@ -259,10 +340,17 @@ export default function CreatCoupan() {
                                 id="quantity"
                                 value={coupan.quantity}
                                 onChange={handleInputChange}
+                                required
+                                minLength="3"
                               />
                             </div>
                             <div className="form-group col-4">
-                              <label htmlFor="">Discount Type</label>
+                              <label htmlFor="">
+                                Discount Type
+                                <span className="required-field text-danger">
+                                  *
+                                </span>
+                              </label>
                               <input
                                 type="text"
                                 className="form-control"
@@ -270,10 +358,17 @@ export default function CreatCoupan() {
                                 id="discountType"
                                 value={coupan.discountType}
                                 onChange={handleInputChange}
+                                required
+                                minLength="3"
                               />
                             </div>
                             <div className="form-group col-4">
-                              <label htmlFor="">Coupan status</label>
+                              <label htmlFor="">
+                                Coupan status
+                                <span className="required-field text-danger">
+                                  *
+                                </span>
+                              </label>
                               <input
                                 type="text"
                                 className="form-control"
@@ -281,6 +376,8 @@ export default function CreatCoupan() {
                                 id="coupanStatus"
                                 value={coupan.coupanStatus}
                                 onChange={handleInputChange}
+                                required
+                                minLength="3"
                               />
                             </div>
                             <div className="form-group col-4 coupon_checkbox">
@@ -327,29 +424,80 @@ export default function CreatCoupan() {
                             onSubmit={handleSubmit1}
                           >
                             <div className="form-group col-6">
-                              <label htmlFor="">Products</label>
-                              <input
+                              <label htmlFor="">
+                                Products Name
+                                <span className="required-field text-danger">
+                                  *
+                                </span>
+                              </label>
+                              <select
+                                className="select form-control"
+                                multiple=""
+                                name="categoryId"
+                                id="selectCategory"
+                                value={subCategory.categoryId}
+                                onChange={handleInputChange3}
+                              >
+                                {Array.isArray(categories) &&
+                                  categories.map((category) => (
+                                    <option
+                                      key={category._id}
+                                      value={category._id}
+                                    >
+                                      {category.productName_en}
+                                    </option>
+                                  ))}
+                              </select>
+                              {/* <input
                                 type="text"
                                 className="form-control"
                                 name="products"
                                 id="products"
                                 value={restriction.products}
                                 onChange={handleInputChange}
-                              />
+                              /> */}
                             </div>
                             <div className="form-group col-6">
-                              <label htmlFor="">Category</label>
-                              <input
+                              <label htmlFor="">
+                                Category
+                                <span className="required-field text-danger">
+                                  *
+                                </span>
+                              </label>
+                              <select
+                                className="select form-control"
+                                multiple=""
+                                name="categoryId1"
+                                id="categoryId1"
+                                value={subSubCategory.categoryId1}
+                                onChange={handleInputChange4}
+                              >
+                                {Array.isArray(categories2) &&
+                                  categories2.map((category) => (
+                                    <option
+                                      key={category._id}
+                                      value={category._id}
+                                    >
+                                      {category.categoryName_en}
+                                    </option>
+                                  ))}
+                              </select>
+                              {/* <input
                                 type="text"
                                 className="form-control"
                                 name="category"
                                 id="category"
                                 value={restriction.category}
                                 onChange={handleInputChange1}
-                              />
+                              /> */}
                             </div>
                             <div className="form-group col-6">
-                              <label htmlFor="">Minimum Spend</label>
+                              <label htmlFor="">
+                                Minimum Spend
+                                <span className="required-field text-danger">
+                                  *
+                                </span>
+                              </label>
                               <input
                                 type="text"
                                 className="form-control"
@@ -357,10 +505,16 @@ export default function CreatCoupan() {
                                 id="minummSpeed"
                                 value={restriction.minummSpeed}
                                 onChange={handleInputChange1}
+                                required
                               />
                             </div>
                             <div className="form-group col-6">
-                              <label htmlFor="">Maximum Spend</label>
+                              <label htmlFor="">
+                                Maximum Spend
+                                <span className="required-field text-danger">
+                                  *
+                                </span>
+                              </label>
                               <input
                                 type="text"
                                 className="form-control"
@@ -368,6 +522,7 @@ export default function CreatCoupan() {
                                 id="maximumSpeed"
                                 value={restriction.maximumSpeed}
                                 onChange={handleInputChange1}
+                                required
                               />
                             </div>
                             <div className="form-group mb-0 mt-3 col-12 text-center">

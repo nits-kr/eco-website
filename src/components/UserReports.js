@@ -28,16 +28,16 @@ export default function UserReports() {
     const { data } = await axios.post(
       "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/reporter/reporter/list",
       {
-        startDate,
-        endDate,
+       from: startDate,
+       to: endDate,
       }
     );
-    const filteredUsers = data.results.list.filter(
-      (user) =>
-        new Date(user.createdAt) >= new Date(startDate) &&
-        new Date(user.createdAt) <= new Date(endDate)
-    );
-    setReporterList(filteredUsers.reverse());
+    // const filteredUsers = data.results.list.filter(
+    //   (user) =>
+    //     new Date(user.createdAt) >= new Date(startDate) &&
+    //     new Date(user.createdAt) <= new Date(endDate)
+    // );
+    setReporterList(data?.results?.list?.reverse());
     console.log(data);
   };
   const handleSearch = (e) => {
@@ -118,12 +118,12 @@ export default function UserReports() {
                             >
                               View
                             </Link>
-                            <Link
+                            {/* <Link
                               className="comman_btn ms-1 table_viewbtn"
                               to=""
                             >
                               Notify
-                            </Link>
+                            </Link> */}
                           </td>
                         </tr>
                       ))}

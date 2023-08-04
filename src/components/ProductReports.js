@@ -27,16 +27,16 @@ export default function ProductReports() {
     const { data } = await axios.post(
       "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/reporter/reporter/list",
       {
-        startDate,
-        endDate,
+        from:startDate,
+        to:endDate,
       }
     );
-    const filteredUsers = data.results.list.filter(
-      (user) =>
-        new Date(user.createdAt) >= new Date(startDate) &&
-        new Date(user.createdAt) <= new Date(endDate)
-    );
-    setReporterList(filteredUsers.reverse());
+    // const filteredUsers = data.results.list.filter(
+    //   (user) =>
+    //     new Date(user.createdAt) >= new Date(startDate) &&
+    //     new Date(user.createdAt) <= new Date(endDate)
+    // );
+    setReporterList(data?.results?.list?.reverse());
     console.log(data);
   };
   const handleSearch = (e) => {
@@ -98,10 +98,8 @@ export default function ProductReports() {
                       <tr>
                         <th>S.No.</th>
                         <th>Reporter</th>
-                        <th>Product Name</th>
                         <th>Reported Against</th>
                         <th>Reason</th>
-                        {/* <th>Status</th> */}
                         <th>Action</th>
                       </tr>
                     </thead>
@@ -110,23 +108,8 @@ export default function ProductReports() {
                         <tr key={index}>
                           <td>{index + 1}</td>
                           <td>{data.reporter}</td>
-                          <td>{data.product_Id}</td>
                           <td>{data.reporterAgainst}</td>
                           <td>{data.reason}</td>
-                          {/* <td>
-                                                        <form className="table_btns d-flex align-items-center">
-                                                            <div className="check_toggle">
-                                                                <input
-                                                                    defaultChecked
-                                                                    type="checkbox"
-                                                                    name={`check${index}`}
-                                                                    id={`check${index}`}
-                                                                    className="d-none"
-                                                                />
-                                                                <label htmlFor={`check${index}`}></label>
-                                                            </div>
-                                                        </form>
-                                                    </td> */}
                           <td>
                             <Link
                               className="comman_btn2 table_viewbtn"
@@ -134,12 +117,12 @@ export default function ProductReports() {
                             >
                               View
                             </Link>
-                            <Link
+                            {/* <Link
                               className="comman_btn ms-1 table_viewbtn"
                               to=""
                             >
                               Notify
-                            </Link>
+                            </Link> */}
                           </td>
                         </tr>
                       ))}

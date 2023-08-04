@@ -7,6 +7,7 @@ import Sidebar from "./Sidebar";
 function NotificationManagement() {
   const [startDate1, setStartDate1] = useState("");
   const [notificationList, setNotificationList] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
   const [reportNotification, setReportNotification] = useState({
     reports: "",
     reportsAr: "",
@@ -105,9 +106,37 @@ function NotificationManagement() {
       console.error(error);
     }
   };
+  const handleSearch1 = async (e) => {
+    e.preventDefault();
+    if (searchQuery) {
+      try {
+        const response = await axios.post(
+          "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/coupan/coupan/search-coupan",
+          {
+            text_en: searchQuery,
+          }
+        );
+        const { error, results } = response.data;
+        if (error) {
+          throw new Error("Error searching for products.Data are Not Found");
+        } else {
+          setNotificationList(results.coupanData);
+        }
+      } catch (error) {
+        Swal.fire({
+          title: "Error!",
+          text: error.message,
+          icon: "error",
+          confirmButtonText: "OK",
+        });
+      }
+    } else {
+      setNotificationList([]);
+    }
+  };
   return (
     <>
-      <Sidebar Dash={"notification-management"}/>
+      <Sidebar Dash={"notification-management"} />
       <div className="admin_main">
         <div className="admin_main_inner">
           <div className="admin_panel_data height_adjust">
@@ -168,7 +197,12 @@ function NotificationManagement() {
                                 onSubmit={handleSubmit}
                               >
                                 <div className="form-group mb-0 col">
-                                  <label htmlFor="">Enter Text Here (En)</label>
+                                  <label htmlFor="">
+                                    Enter Text Here (En)
+                                    <span className="required-field text-danger">
+                                      *
+                                    </span>
+                                  </label>
                                   <textarea
                                     className="form-control"
                                     name="reports"
@@ -176,10 +210,16 @@ function NotificationManagement() {
                                     style={{ height: "120px" }}
                                     value={reportNotification.reports}
                                     onChange={handleInputChange}
+                                    required
                                   ></textarea>
                                 </div>
                                 <div className="form-group mb-0 col">
-                                  <label htmlFor="">Enter Text Here (Ar)</label>
+                                  <label htmlFor="">
+                                    Enter Text Here (Ar)
+                                    <span className="required-field text-danger">
+                                      *
+                                    </span>
+                                  </label>
                                   <textarea
                                     className="form-control"
                                     name="reportsAr"
@@ -187,6 +227,7 @@ function NotificationManagement() {
                                     style={{ height: "120px" }}
                                     value={reportNotification.reportsAr}
                                     onChange={handleInputChange}
+                                    required
                                   ></textarea>
                                 </div>
                                 <div className="form-group mb-0 col-auto">
@@ -208,7 +249,12 @@ function NotificationManagement() {
                                 onSubmit={handleSubmit1}
                               >
                                 <div className="form-group mb-0 col">
-                                  <label htmlFor="">Enter Text Here (En)</label>
+                                  <label htmlFor="">
+                                    Enter Text Here (En)
+                                    <span className="required-field text-danger">
+                                      *
+                                    </span>
+                                  </label>
                                   <textarea
                                     className="form-control"
                                     name="custom"
@@ -216,10 +262,16 @@ function NotificationManagement() {
                                     style={{ height: "120px" }}
                                     value={customNotification.custom}
                                     onChange={handleInputChange1}
+                                    required
                                   ></textarea>
                                 </div>
                                 <div className="form-group mb-0 col">
-                                  <label htmlFor="">Enter Text Here (Ar)</label>
+                                  <label htmlFor="">
+                                    Enter Text Here (Ar)
+                                    <span className="required-field text-danger">
+                                      *
+                                    </span>
+                                  </label>
                                   <textarea
                                     className="form-control"
                                     name="customAr"
@@ -227,6 +279,7 @@ function NotificationManagement() {
                                     style={{ height: "120px" }}
                                     value={customNotification.customAr}
                                     onChange={handleInputChange1}
+                                    required
                                   ></textarea>
                                 </div>
                                 <div className="form-group mb-0 col-auto">
@@ -244,11 +297,16 @@ function NotificationManagement() {
                     <div className="row comman_header justify-content-between">
                       <div className="col">
                         <h2>
-                          Notification <span>(10)</span>
+                          Notification{" "}
+                          <span> ({notificationList?.length}) </span>
                         </h2>
                       </div>
                       <div className="col-3 Searchbox">
-                        <form className="form-design" action="">
+                        <form
+                          className="form-design"
+                          action=""
+                          onSubmit={handleSearch1}
+                        >
                           <div className="form-group mb-0 position-relative icons_set">
                             <input
                               type="text"
@@ -256,8 +314,13 @@ function NotificationManagement() {
                               placeholder="Search"
                               name="name"
                               id="name"
+                              value={searchQuery}
+                              onChange={(e) => setSearchQuery(e.target.value)}
                             />
-                            <i className="far fa-search"></i>
+                            <i
+                              className="far fa-search"
+                              onClick={handleSearch1}
+                            ></i>
                           </div>
                         </form>
                       </div>

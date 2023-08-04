@@ -5,8 +5,10 @@ import Swal from "sweetalert2";
 import axios from "axios";
 import Sidebar from "./Sidebar";
 import { useUpdateCoupanMutation } from "../services/Post";
+import { useDeleteCoupanListMutation } from "../services/Post";
 function CoupanList() {
   const [update, res] = useUpdateCoupanMutation();
+  const [deleteCoupan, response] = useDeleteCoupanListMutation();
   const [coupanList, setCoupanList] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [itemId, setItemId] = useState([]);
@@ -40,16 +42,16 @@ function CoupanList() {
     const { data } = await axios.post(
       "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/coupan/coupan/list",
       {
-        startDate,
-        endDate,
+        from:startDate,
+        to:endDate,
       }
     );
-    const filteredUsers = data.results.list.filter(
-      (user) =>
-        new Date(user.createdAt) >= new Date(startDate) &&
-        new Date(user.createdAt) <= new Date(endDate)
-    );
-    setCoupanList(filteredUsers.reverse());
+    // const filteredUsers = data.results.list.filter(
+    //   (user) =>
+    //     new Date(user.createdAt) >= new Date(startDate) &&
+    //     new Date(user.createdAt) <= new Date(endDate)
+    // );
+    setCoupanList(data?.results?.list?.reverse());
     console.log(data);
   };
   const handleSearch = (e) => {
@@ -95,7 +97,7 @@ function CoupanList() {
         const response = await axios.post(
           "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/coupan/coupan/search-coupan",
           {
-            coupanTitle: searchQuery,
+            coupanTitle_en: searchQuery,
           }
         );
         const { error, results } = response.data;
@@ -191,7 +193,7 @@ function CoupanList() {
                           value={searchQuery}
                           onChange={(e) => setSearchQuery(e.target.value)}
                         />
-                        <i className="far fa-search"></i>
+                        <i className="far fa-search" onClick={handleSearch1}></i>
                       </div>
                     </form>
                   </div>
@@ -293,10 +295,32 @@ function CoupanList() {
                                 </Link>
                                 <Link
                                   className="comman_btn2 table_viewbtn"
-                                  data-bs-toggle="modal"
-                                  data-bs-target="#delete"
+                                  // data-bs-toggle="modal"
+                                  // data-bs-target="#delete"
                                   to="#"
-                                  onClick={() => handleDelete(item._id)}
+                                  onClick={() => {
+                                    Swal.fire({
+                                      title: "Are you sure?",
+                                      text: "You won't be able to revert this!",
+                                      icon: "warning",
+                                      showCancelButton: true,
+                                      confirmButtonColor: "#3085d6",
+                                      cancelButtonColor: "#d33",
+                                      confirmButtonText:
+                                        "Yes, delete it!",
+                                    }).then((result) => {
+                                      if (result.isConfirmed) {
+                                        deleteCoupan(item?._id);
+                                        Swal.fire(
+                                          "Deleted!",
+                                          `${item?.coupanTitle_en}  item has been deleted.`,
+                                          "success"
+                                        ).then(() => {
+                                          window.location.reload();
+                                        });
+                                      }
+                                    });
+                                  }}
                                 >
                                   Delete
                                 </Link>

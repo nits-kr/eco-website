@@ -64,17 +64,47 @@ function AnnounceManagement() {
       "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/announcement/announcement/list",
       {}
     );
-    setAnnouncementList(data.results.list);
+    setAnnouncementList(data?.results?.list?.reverse());
     console.log(data);
   };
 
+  // const handleSubmit = async (event) => {
+  //   event.preventDefault();
+  //   try {
+  //     const data = new FormData();
+  //     data.append("heading", formData.nameEn);
+  //     data.append("heading_ar", formData.nameAr);
+  //     data.append("pic", formData.categoryPic);
+  //     data.append("text", formData.nameEnText);
+  //     data.append("text_ar", formData.nameArText);
+  //     const response = await axios.post(
+  //       "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/announcement/announcement/create",
+  //       data,
+  //       {
+  //         headers: {
+  //           "Content-Type": "multipart/form-data",
+  //           "x-auth-token-user": localStorage.getItem("token"),
+  //         },
+  //       }
+  //     );
+  //     console.log(response.data.results.saveData);
+  //     if (!response.data.error) {
+  //       alert("List saved!");
+  //       handleSave();
+  //     }
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
       const data = new FormData();
       data.append("heading", formData.nameEn);
+      data.append("heading_ar", formData.nameAr);
       data.append("pic", formData.categoryPic);
       data.append("text", formData.nameEnText);
+      data.append("text_ar", formData.nameArText);
       const response = await axios.post(
         "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/announcement/announcement/create",
         data,
@@ -85,13 +115,30 @@ function AnnounceManagement() {
           },
         }
       );
-      console.log(response.data.results.saveData);
+
       if (!response.data.error) {
-        alert("List saved!");
+        // Show SweetAlert success message
+        Swal.fire({
+          icon: "success",
+          title: "Success",
+          text: "List saved!",
+          confirmButtonText: "OK",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            window.location.reload();
+          }
+        });
+
         handleSave();
       }
     } catch (error) {
       console.error(error);
+      // Show SweetAlert error message
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "An error occurred while saving the list.",
+      });
     }
   };
 
@@ -106,7 +153,7 @@ function AnnounceManagement() {
           },
         }
       );
-      setAnnouncementList(response.data.results.list.reverse());
+      setAnnouncementList(response?.data?.results?.list?.reverse());
       console.log(response.data);
     } catch (error) {
       console.error(error);
@@ -147,7 +194,7 @@ function AnnounceManagement() {
 
   return (
     <>
-      <Sidebar Dash={"announcement-management"}/>
+      <Sidebar Dash={"announcement-management"} />
       <div className="admin_main">
         <div className="admin_main_inner">
           <div className="admin_panel_data height_adjust">
@@ -209,6 +256,7 @@ function AnnounceManagement() {
                       <div className="form-group mb-0 col-4">
                         <label htmlFor="">
                           Enter Announcement Heading (En)
+                          <span className="required-field text-danger">*</span>
                         </label>
                         <input
                           type="text"
@@ -218,11 +266,13 @@ function AnnounceManagement() {
                           id="nameEn"
                           value={formData.nameEn}
                           onChange={handleInputChange}
+                          required
                         />
                       </div>
                       <div className="form-group mb-0 col-4">
                         <label htmlFor="">
                           Enter Announcement Heading (Ar)
+                          <span className="required-field text-danger">*</span>
                         </label>
                         <input
                           type="text"
@@ -232,10 +282,14 @@ function AnnounceManagement() {
                           id="nameAr"
                           value={formData.nameAr}
                           onChange={handleInputChange}
+                          required
                         />
                       </div>
                       <div className="form-group col-6">
-                        <label htmlFor="">Enter Text Here (En)</label>
+                        <label htmlFor="">
+                          Enter Text Here (En)
+                          <span className="required-field text-danger">*</span>
+                        </label>
                         <textarea
                           className="form-control"
                           name="nameEnText"
@@ -243,10 +297,14 @@ function AnnounceManagement() {
                           style={{ height: "120px" }}
                           value={formData.nameEnText}
                           onChange={handleInputChange}
+                          required
                         ></textarea>
                       </div>
                       <div className="form-group col-6">
-                        <label htmlFor="">Enter Text Here (Ar)</label>
+                        <label htmlFor="">
+                          Enter Text Here (Ar)
+                          <span className="required-field text-danger">*</span>
+                        </label>
                         <textarea
                           className="form-control"
                           name="nameArText"
@@ -254,6 +312,7 @@ function AnnounceManagement() {
                           style={{ height: "120px" }}
                           value={formData.nameArText}
                           onChange={handleInputChange}
+                          required
                         ></textarea>
                       </div>
                       <div className="form-group col-auto mt-2 text-center">
@@ -297,7 +356,10 @@ function AnnounceManagement() {
                               value={searchQuery}
                               onChange={(e) => setSearchQuery(e.target.value)}
                             />
-                            <i className="far fa-search"></i>
+                            <i
+                              className="far fa-search"
+                              onClick={handleSearch1}
+                            ></i>
                           </div>
                         </form>
                       </div>

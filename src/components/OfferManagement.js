@@ -34,6 +34,7 @@ function OfferManagement() {
   const [discount, setDiscount] = useState("");
   const [discount2, setDiscount2] = useState("");
   const [itemId, setItemId] = useState("");
+  console.log("offer id", itemId);
   const [categories, setCategories] = useState([]);
   const [subCategory, setSubCategory] = useState({
     nameEn: "",
@@ -111,7 +112,7 @@ function OfferManagement() {
       title: title,
       code: code,
       Discount: discount,
-      product_Id: subCategory.categoryId,
+      // productName_en: productName,
     };
     try {
       await updateOffer(editOffer);
@@ -125,8 +126,7 @@ function OfferManagement() {
           window.location.reload();
         }
       });
-    } catch (error) {
-    }
+    } catch (error) {}
   };
   const handleItem = (item) => {
     setProductName2(item?.product_Id?.productName_en || "");
@@ -139,8 +139,6 @@ function OfferManagement() {
     setSubCategory({ ...subCategory, [name]: value });
   };
   useEffect(() => {
-    // props.setProgress(10);
-    // setLoading(true);
     axios
       .post(
         "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/product/productList"
@@ -148,14 +146,33 @@ function OfferManagement() {
       .then((response) => {
         setCategories(response?.data?.results?.list.reverse());
         console.log(response.data);
-        // props.setProgress(100);
-        // setLoading(false);
       });
   }, []);
+  const userList = async () => {
+    const { data } = await axios.post(
+      "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/offer/offer-list",
+      {
+        from: startDate,
+        to: endDate,
+      }
+    );
+    // const filteredUsers = data.results.createData.filter(
+    //   (user) =>
+    //     new Date(user.createdAt) >= new Date(startDate) &&
+    //     new Date(user.createdAt) <= new Date(endDate)
+    // );
+    // setUsersList(filteredUsers);
+    setOfferList(data?.results?.list);
+    console.log(data);
+  };
+  const handleSearch = (e) => {
+    e.preventDefault();
+    userList();
+  };
 
   return (
     <>
-      <Sidebar Dash={"offers"}/>
+      <Sidebar Dash={"offers"} />
       <div className="admin_main">
         <div className="admin_main_inner">
           <div className="admin_panel_data height_adjust">
@@ -287,7 +304,10 @@ function OfferManagement() {
                               value={title3}
                               onChange={(e) => setTitle3(e.target.value)}
                             />
-                            <i className="far fa-search" onClick={handleSaveChanges2}/>
+                            <i
+                              className="far fa-search"
+                              onClick={handleSaveChanges2}
+                            />
                           </div>
                         </form>
                       </div>
@@ -295,7 +315,7 @@ function OfferManagement() {
                     <form
                       className="form-design py-4 px-3 help-support-form row align-items-end justify-content-between"
                       action=""
-                      onSubmit={handleSaveChanges2}
+                      onSubmit={handleSearch}
                     >
                       <div className="form-group mb-0 col-5">
                         <label htmlFor="">From</label>
@@ -342,7 +362,10 @@ function OfferManagement() {
                                   return (
                                     <tr key={index}>
                                       <td> {index + 1} </td>
-                                      <td> {item?.product_Id?.productName_en} </td>
+                                      <td>
+                                        {" "}
+                                        {item?.product_Id?.productName_en}{" "}
+                                      </td>
                                       <td> {item?.title} </td>
                                       <td> {item?.code} </td>
                                       <td> {item?.Discount} </td>
@@ -396,7 +419,7 @@ function OfferManagement() {
                                                   `${item?.title}  item has been deleted.`,
                                                   "success"
                                                 ).then(() => {
-                                                  window.location.reload(); // Reload the page
+                                                  window.location.reload();
                                                 });
                                               }
                                             });
@@ -482,7 +505,7 @@ function OfferManagement() {
                 action=""
                 onSubmit={handleSaveChanges1}
               >
-                <div className="form-group col-6">
+                {/* <div className="form-group col-6">
                   <label htmlFor="">Product Name</label>
                   <input
                     type="text"
@@ -493,8 +516,8 @@ function OfferManagement() {
                     name="name"
                     id="name"
                   />
-                </div>
-                <div className="form-group col-6">
+                </div> */}
+                <div className="form-group col-12">
                   <label htmlFor="">Title</label>
                   <input
                     type="text"
