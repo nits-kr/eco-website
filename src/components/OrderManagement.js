@@ -215,11 +215,10 @@ function OrderManagement() {
       // Handle error if necessary
     }
   };
-  
 
   return (
     <>
-      <Sidebar Dash={"orders"}/>
+      <Sidebar Dash={"orders"} />
       <div className="admin_main">
         <div className="admin_main_inner">
           <div className="admin_panel_data height_adjust">
@@ -247,7 +246,10 @@ function OrderManagement() {
                               value={searchQuery}
                               onChange={(e) => setSearchQuery(e.target.value)}
                             />
-                            <i className="far fa-search" onClick={handleSearch1}></i>
+                            <i
+                              className="far fa-search"
+                              onClick={handleSearch1}
+                            ></i>
                           </div>
                         </form>
                       </div>
@@ -314,7 +316,7 @@ function OrderManagement() {
                                 <th>Payment Method</th>
                                 <th>Delivery Status</th>
                                 <th>Amount</th>
-                                <th style={{ textAlign: "right" }}>Action</th>
+                                <th>Action</th>
                                 {/* <th></th> */}
                                 {/* <th></th> */}
                               </tr>
@@ -322,46 +324,52 @@ function OrderManagement() {
                             <tbody>
                               {orderList?.map((data, index) => (
                                 <tr key={index}>
-                                  {/* <td>
-                                    <div className="table-image">
-                                      <img
-                                        src={data?.products[0]?.product_Id?.product_Pic[0]}
-                                        className="img-fluid"
-                                        alt=""
-                                        style={{
-                                          width: "50px",
-                                          height: "50px",
-                                        }}
-                                      />
-                                    </div>
-                                  </td> */}
                                   <td> {data?._id} </td>
                                   <td> {data?.createdAt?.slice(0, 10)} </td>
                                   <td> {data.paymentIntent} </td>
                                   <td> {data.orderStatus} </td>
                                   <td> {data.cartsTotal} </td>
-                                  {/* <td>
-                                    <FontAwesomeIcon icon={faEye} />
-                                  </td> */}
-                                  <td
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#edittoffer"
-                                    style={{ textAlign: "center" }}
-                                    onClick={() => {
-                                      handleItem(data);
-                                      setItemId(data?._id);
-                                    }}
-                                  >
-                                    <FontAwesomeIcon icon={faPencil} />
-                                  </td>
-                                  <td style={{ textAlign: "left" }}>
-                                    <button
-                                      type="button"
-                                      className="border border-none bg-light"
-                                      onClick={() => deleteOrder(data._id)}
+                                  <td>
+                                    <Link
+                                      className="comman_btn table_viewbtn"
+                                      data-bs-toggle="modal"
+                                      data-bs-target="#edittoffer"
+                                      to="#"
+                                      onClick={() => {
+                                        handleItem(data);
+                                        setItemId(data?._id);
+                                      }}
                                     >
-                                      <FontAwesomeIcon icon={faTrashCan} />
-                                    </button>
+                                      Edit
+                                    </Link>
+                                    <Link
+                                      className="comman_btn2 table_viewbtn ms-2"
+                                      to="#"
+                                      onClick={() => {
+                                        Swal.fire({
+                                          title: "Are you sure?",
+                                          text: "You won't be able to revert this!",
+                                          icon: "warning",
+                                          showCancelButton: true,
+                                          confirmButtonColor: "#3085d6",
+                                          cancelButtonColor: "#d33",
+                                          confirmButtonText: "Yes, delete it!",
+                                        }).then((result) => {
+                                          if (result.isConfirmed) {
+                                            deleteOrder(data?._id);
+                                            Swal.fire(
+                                              "Deleted!",
+                                              `${data?.title}  item has been deleted.`,
+                                              "success"
+                                            ).then(() => {
+                                              window.location.reload();
+                                            });
+                                          }
+                                        });
+                                      }}
+                                    >
+                                      Delete
+                                    </Link>
                                   </td>
                                 </tr>
                               ))}
