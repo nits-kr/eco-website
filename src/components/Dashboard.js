@@ -37,7 +37,10 @@ function Dashboard(props) {
       )
       .then((response) => {
         setRecentOrderList(response?.data?.results?.list?.reverse());
-        console.log("setRecentOrderList",response?.data?.results?.list?.reverse());
+        console.log(
+          "setRecentOrderList",
+          response?.data?.results?.list?.reverse()
+        );
       })
 
       .catch((error) => {
@@ -61,7 +64,7 @@ function Dashboard(props) {
           new Date(user?.createdAt?.slice(0, 10)).toISOString().slice(0, 10) ===
           new Date(startDate1).toISOString().slice(0, 10)
       );
-       if (filteredUsers.length === 0) {
+      if (filteredUsers.length === 0) {
         await Swal.fire({
           title: "No List Found",
           text: "No list is available for the selected date.",
@@ -86,18 +89,11 @@ function Dashboard(props) {
       .post(
         "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/dashboards/count/list",
         {
-          from:startDate,
-          to:endDate,
+          from: startDate,
+          to: endDate,
         }
       )
       .then((response) => {
-        // const filteredData = response.data.results.orderList.filter(
-        //   (data) =>
-        //     new Date(data.createdAt) >= new Date(startDate) &&
-        //     new Date(data.createdAt) <= new Date(endDate)
-        // );
-        // console.log("filteredData dashboard", filteredData);
-        // setRecentOrderList(response.data.results.orderList.reverse());
         setRecentOrderList(response?.data?.results?.list?.reverse());
       })
       .catch((error) => {
@@ -105,41 +101,42 @@ function Dashboard(props) {
       });
   };
   useEffect(() => {
-    handleSearch1()
-  }, [searchQuery])
+    handleSearch1();
+  }, [searchQuery]);
 
-  const handleSearch1 = async (e) => {
-    // e.preventDefault();
-    if (searchQuery) {
-      try {
-        const response = await axios.post(
-          "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/dashboards/count/search",
-          {
-            orderStatus: searchQuery,
-          }
+  const handleSearch1 = async () => {
+    try {
+      const url =
+        searchQuery !== ""
+          ? "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/dashboards/count/search"
+          : "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/dashboards/count/list";
+
+      const response = await axios.post(url, {
+        orderStatus: searchQuery,
+      });
+
+      const { error, results } = response.data;
+
+      if (error) {
+        throw new Error("Error searching for products. Data is not found.");
+      } else {
+        setRecentOrderList(
+          searchQuery !== "" ? results?.searchData : results?.list?.reverse()
         );
-        const { error, results } = response.data;
-        if (error) {
-          throw new Error("Error searching for products. Data is not found.");
-        } else {
-          setRecentOrderList(results?.searchData);
-        }
-      } catch (error) {
-        Swal.fire({
-          title: "Error!",
-          text: error.message,
-          icon: "error",
-          confirmButtonText: "OK",
-        });
       }
-    } else {
-      setRecentOrderList([]);
+    } catch (error) {
+      Swal.fire({
+        title: "Error!",
+        text: error.message,
+        icon: "error",
+        confirmButtonText: "OK",
+      });
     }
   };
   return (
     <>
       {loading}
-      <Sidebar Dash={"dashboard"}/>
+      <Sidebar Dash={"dashboard"} />
       {loading ? (
         <Spinner />
       ) : (
@@ -244,7 +241,10 @@ function Dashboard(props) {
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                               />
-                              <i className="fa fa-search" onClick={handleSearch1}></i>
+                              <i
+                                className="fa fa-search"
+                                onClick={handleSearch1}
+                              ></i>
                             </div>
                           </form>
                         </div>
@@ -310,7 +310,10 @@ function Dashboard(props) {
                                 {(recentOrderList || [])?.map(
                                   (order, index) => (
                                     <tr key={index}>
-                                      <td> {order?.products[0]?.product_Id} </td>
+                                      <td>
+                                        {" "}
+                                        {order?.products[0]?.product_Id}{" "}
+                                      </td>
                                       <td> {order?.user_Id?.userName} </td>
                                       {/* <td> {order?.createdAt.slice(0,10)} </td> */}
                                       <td>
