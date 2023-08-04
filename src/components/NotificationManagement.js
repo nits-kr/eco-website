@@ -111,7 +111,7 @@ function NotificationManagement() {
     if (searchQuery) {
       try {
         const response = await axios.post(
-          "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/coupan/coupan/search-coupan",
+          " http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/notification/notification/search-notification",
           {
             text_en: searchQuery,
           }
@@ -120,7 +120,7 @@ function NotificationManagement() {
         if (error) {
           throw new Error("Error searching for products.Data are Not Found");
         } else {
-          setNotificationList(results.coupanData);
+          setNotificationList(results?.listData);
         }
       } catch (error) {
         Swal.fire({
@@ -365,7 +365,7 @@ function NotificationManagement() {
                             </div>
                           </div>
 
-                          {notificationList.map((data, index) => (
+                          {(notificationList || []).map((data, index) => (
                             <div
                               className="row mx-0 notification-box shadow mb-4"
                               key={index}

@@ -8,7 +8,7 @@ import Sidebar from "./Sidebar";
 import { useGetReportListQuery } from "../services/Post";
 
 function ReportManagement() {
-    const reportListItems = useGetReportListQuery();
+  const reportListItems = useGetReportListQuery();
   const [searchQuery, setSearchQuery] = useState("");
   const [reportList, setReportList] = useState([]);
   const handleSearch1 = async (e) => {
@@ -16,16 +16,16 @@ function ReportManagement() {
     if (searchQuery) {
       try {
         const response = await axios.post(
-          "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/coupan/coupan/search-coupan",
+          "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/reporter/reporter/search",
           {
-            coupanTitle: searchQuery,
+            reporter: searchQuery,
           }
         );
         const { error, results } = response.data;
         if (error) {
           throw new Error("Error searching for products.Data are Not Found");
         } else {
-          setReportList(results.coupanData);
+          setReportList(results?.repoterData);
         }
       } catch (error) {
         Swal.fire({
@@ -41,7 +41,7 @@ function ReportManagement() {
   };
   return (
     <>
-      <Sidebar Dash={"reports"}/>
+      <Sidebar Dash={"reports"} />
       <div className="admin_main">
         <div className="admin_main_inner">
           <div className="admin_panel_data height_adjust">
@@ -67,7 +67,10 @@ function ReportManagement() {
                           value={searchQuery}
                           onChange={(e) => setSearchQuery(e.target.value)}
                         />
-                        <i className="far fa-search" onClick={handleSearch1}></i>
+                        <i
+                          className="far fa-search"
+                          onClick={handleSearch1}
+                        ></i>
                       </div>
                     </form>
                   </div>
