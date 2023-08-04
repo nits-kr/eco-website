@@ -88,7 +88,7 @@ function UsersManagement(props) {
         }
       )
       .then((response) => {
-        setUsersList(response.data.results.createData.reverse());
+        setUsersList(response?.data?.results?.createData?.reverse());
       })
       .catch((error) => {
         console.log(error.response.data);
@@ -151,6 +151,10 @@ function UsersManagement(props) {
     e.preventDefault();
     userList();
   };
+  console.log("search query", searchQuery);
+  // useEffect(() => {
+  //   handleSearch1();
+  // },[searchQuery])
   const handleSearch1 = async (e) => {
     e.preventDefault();
     if (searchQuery) {
@@ -161,11 +165,11 @@ function UsersManagement(props) {
             userName: searchQuery,
           }
         );
-        const { error, results } = response.data;
+        const { error, results } = response?.data;
         if (error) {
           throw new Error("Error searching for products.Data are Not Found");
         } else {
-          setUsersList(results.userData);
+          setUsersList(results?.userData);
         }
       } catch (error) {
         Swal.fire({
@@ -303,7 +307,7 @@ function UsersManagement(props) {
                               </tr>
                             </thead>
                             <tbody>
-                              {usersList?.map((user, index) => (
+                              {(usersList || [])?.map((user, index) => (
                                 <tr key={user._id}>
                                   <td>{index + 1}</td>
                                   <td>{user?.userName}</td>

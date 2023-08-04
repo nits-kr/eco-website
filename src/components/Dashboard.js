@@ -104,9 +104,12 @@ function Dashboard(props) {
         console.log(error.response.data);
       });
   };
+  useEffect(() => {
+    handleSearch1()
+  }, [searchQuery])
 
   const handleSearch1 = async (e) => {
-    e.preventDefault();
+    // e.preventDefault();
     if (searchQuery) {
       try {
         const response = await axios.post(
