@@ -15,7 +15,7 @@ import Sidebar from "./Sidebar";
 import Spinner from "./Spinner";
 import { useDeleteAgentListMutation } from "../services/Post";
 
-function Agent() {
+function Agent(props) {
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
   const [deleteAgent] = useDeleteAgentListMutation();
@@ -33,10 +33,14 @@ function Agent() {
     agentManagementList();
   }, []);
   const agentManagementList = () => {
+    props.setProgress(10);
+    setLoading(true);
     axios
       .post(url)
       .then((response) => {
         setAgentList(response?.data?.results?.list?.reverse());
+        props.setProgress(100);
+        setLoading(false);
       })
       .catch((error) => {
         console.log(error.response.data);

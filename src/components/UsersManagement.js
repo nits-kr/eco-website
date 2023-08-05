@@ -82,57 +82,22 @@ function UsersManagement(props) {
   const url2 =
     "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/user/user-search";
   useEffect(() => {
-    // axios
-    //   .post(
-    //     "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/user/userList"
-    //   )
-    //   .then((response) => {
-    //     setUsersList(response?.data?.results?.createData?.reverse());
-    //   })
-    //   .catch((error) => {
-    //     console.log(error.response.data);
-    //   });
     userManagementList();
   }, []);
   const userManagementList = () => {
+    props.setProgress(10);
+    setLoading(true);
     axios
       .post(url)
       .then((response) => {
         setUsersList(response?.data?.results?.createData?.reverse());
+        props.setProgress(100);
+        setLoading(false);
       })
       .catch((error) => {
         console.log(error.response.data);
       });
   };
-
-  // const userList2 = async () => {
-  //   if (!startDate1) return;
-  //   try {
-  //     const { data } = await axios.post(
-  //       "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/user/userList",
-  //       {
-  //         startDate1,
-  //       }
-  //     );
-  //     const filteredUsers = data?.results?.createData?.filter(
-  //       (user) =>
-  //         new Date(user?.createdAt?.slice(0, 10)).toISOString().slice(0, 10) ===
-  //         new Date(startDate1).toISOString().slice(0, 10)
-  //     );
-  //     if (filteredUsers.length === 0) {
-  //       Swal.fire({
-  //         title: "No List Found",
-  //         text: "No list is available for the selected date.",
-  //         icon: "warning",
-  //         confirmButtonText: "OK",
-  //       });
-  //     }
-  //     setUsersList(filteredUsers);
-  //     console.log(data);
-  //   } catch (error) {
-  //     console.error("Error fetching user list:", error);
-  //   }
-  // };
   const userList2 = async () => {
     if (!startDate1) return;
     try {
@@ -416,76 +381,76 @@ function UsersManagement(props) {
                         </button>
                       </div>
                     </form>
-                    {/* {loading ? (
+                    {loading ? (
                       <Spinner />
-                    ) : ( */}
-                    <div className="row">
-                      <div className="col-12 comman_table_design px-0">
-                        <div className="table-responsive">
-                          <table className="table mb-0">
-                            <thead>
-                              <tr>
-                                <th>S.No.</th>
-                                <th>User Name</th>
-                                <th>Mobile Number</th>
-                                <th>Registration Date</th>
-                                {/* <th>Special Offers</th> */}
-                                <th>Status</th>
-                                <th>Action</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {(usersList || [])?.map((user, index) => (
-                                <tr key={user._id}>
-                                  <td>{index + 1}</td>
-                                  <td>{user?.userName}</td>
-                                  <td>{user?.mobileNumber}</td>
-                                  {/* <td>{user?.createdAt.slice(0,10)}</td> */}
-                                  <td>
-                                    {" "}
-                                    {user?.createdAt
-                                      .slice(0, 10)
-                                      .split("-")
-                                      .reverse()
-                                      .join("-")}{" "}
-                                  </td>
-                                  {/* <td>{user?.specialOffer}</td> */}
-                                  <td>
-                                    <form className="table_btns d-flex align-items-center">
-                                      <div className="check_toggle">
-                                        <input
-                                          data-bs-toggle="modal"
-                                          data-bs-target="#staticBackdrop"
-                                          type="checkbox"
-                                          defaultChecked=""
-                                          name={`check${user._id}`}
-                                          id={`check${user._id}`}
-                                          className="d-none"
-                                        />
-                                        <label
-                                          htmlFor={`check${user._id}`}
-                                        ></label>
-                                      </div>
-                                    </form>
-                                  </td>
-                                  <td>
-                                    <Link
-                                      className="comman_btn2 table_viewbtn"
-                                      // to={`/userDetails`}
-                                      to={`/userDetails/${user._id}`}
-                                      onClick={() => handleId(user?._id)}
-                                    >
-                                      View
-                                    </Link>
-                                  </td>
+                    ) : (
+                      <div className="row">
+                        <div className="col-12 comman_table_design px-0">
+                          <div className="table-responsive">
+                            <table className="table mb-0">
+                              <thead>
+                                <tr>
+                                  <th>S.No.</th>
+                                  <th>User Name</th>
+                                  <th>Mobile Number</th>
+                                  <th>Registration Date</th>
+                                  {/* <th>Special Offers</th> */}
+                                  <th>Status</th>
+                                  <th>Action</th>
                                 </tr>
-                              ))}
-                            </tbody>
-                          </table>
+                              </thead>
+                              <tbody>
+                                {(usersList || [])?.map((user, index) => (
+                                  <tr key={user._id}>
+                                    <td>{index + 1}</td>
+                                    <td>{user?.userName}</td>
+                                    <td>{user?.mobileNumber}</td>
+                                    {/* <td>{user?.createdAt.slice(0,10)}</td> */}
+                                    <td>
+                                      {" "}
+                                      {user?.createdAt
+                                        .slice(0, 10)
+                                        .split("-")
+                                        .reverse()
+                                        .join("-")}{" "}
+                                    </td>
+                                    {/* <td>{user?.specialOffer}</td> */}
+                                    <td>
+                                      <form className="table_btns d-flex align-items-center">
+                                        <div className="check_toggle">
+                                          <input
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#staticBackdrop"
+                                            type="checkbox"
+                                            defaultChecked=""
+                                            name={`check${user._id}`}
+                                            id={`check${user._id}`}
+                                            className="d-none"
+                                          />
+                                          <label
+                                            htmlFor={`check${user._id}`}
+                                          ></label>
+                                        </div>
+                                      </form>
+                                    </td>
+                                    <td>
+                                      <Link
+                                        className="comman_btn2 table_viewbtn"
+                                        // to={`/userDetails`}
+                                        to={`/userDetails/${user._id}`}
+                                        onClick={() => handleId(user?._id)}
+                                      >
+                                        View
+                                      </Link>
+                                    </td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                    {/* )} */}
+                    )}
                   </div>
                 </div>
               </div>

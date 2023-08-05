@@ -440,6 +440,8 @@ function SubCategory(props) {
                                   name={`s${index}`}
                                   id={`s${index}`}
                                   className="d-none"
+                                  data-bs-toggle="modal"
+                                  data-bs-target="#staticBackdrop2"
                                 />
                                 <label htmlFor={`s${index}`}></label>
                               </div>
@@ -454,6 +456,8 @@ function SubCategory(props) {
                                   name={`r${index}`}
                                   id={`r${index}`}
                                   className="d-none"
+                                  data-bs-toggle="modal"
+                                  data-bs-target="#staticBackdrop3"
                                 />
                                 <label htmlFor={`r${index}`}></label>
                               </div>
@@ -510,24 +514,6 @@ function SubCategory(props) {
                 className="form-design p-3 help-support-form row align-items-end justify-content-center"
                 action=""
               >
-                {/* <div className="form-group col-12">
-                  <label htmlFor="">Select Category</label>
-                  <select
-                    className="select form-control"
-                    multiple
-                    name="categoryId"
-                  id="selectCategory"
-                  value={subCategory.categoryId}
-                  onChange={handleInputChange}
-                  >
-                    <option defaultValue="1">Lorem</option>
-                    <option defaultValue="2">ipsum</option>
-                    <option defaultValue="3">Lorem</option>
-                    <option defaultValue="1">Lorem</option>
-                    <option defaultValue="2">ipsum</option>
-                    <option defaultValue="3">Lorem</option>
-                  </select>
-                </div> */}
                 <div className="form-group col-12">
                   <label htmlFor="">Select Category</label>
                   <select
@@ -593,6 +579,90 @@ function SubCategory(props) {
                   </button>
                 </div>
               </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        className="modal fade Update_modal"
+        id="staticBackdrop2"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+        tabIndex="-1"
+        aria-labelledby="staticBackdropLabel"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog modal-dialog-centered">
+          <div className="modal-content">
+            <div className="modal-body p-4">
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+              <div className="row">
+                <div className="col-12 Update_modal_content py-4">
+                  <h2>Update</h2>
+                  <p>Are you sure, Want to update this?</p>
+                  <Link
+                    className="comman_btn mx-2"
+                    data-bs-dismiss="modal"
+                    to="javscript:;"
+                  >
+                    Yes
+                  </Link>
+                  <Link
+                    className="comman_btn2 mx-2 bg-red"
+                    data-bs-dismiss="modal"
+                    to="javscript:;"
+                  >
+                    NO
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        className="modal fade Update_modal"
+        id="staticBackdrop3"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+        tabIndex="-1"
+        aria-labelledby="staticBackdropLabel"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog modal-dialog-centered">
+          <div className="modal-content">
+            <div className="modal-body p-4">
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+              <div className="row">
+                <div className="col-12 Update_modal_content py-4">
+                  <h2>Update</h2>
+                  <p>Are you sure, Want to update this?</p>
+                  <Link
+                    className="comman_btn mx-2"
+                    data-bs-dismiss="modal"
+                    to="javscript:;"
+                  >
+                    Yes
+                  </Link>
+                  <Link
+                    className="comman_btn2 mx-2 bg-red"
+                    data-bs-dismiss="modal"
+                    to="javscript:;"
+                  >
+                    NO
+                  </Link>
+                </div>
+              </div>
             </div>
           </div>
         </div>

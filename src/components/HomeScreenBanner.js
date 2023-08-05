@@ -17,10 +17,21 @@ function HomeScreenBanner() {
   const [selectedImage2, setSelectedImage2] = useState(null);
   const [selectedImage3, setSelectedImage3] = useState(null);
   const [selectedImage4, setSelectedImage4] = useState(null);
-  const [formData, setFormData] = useState({});
+  const [formData, setFormData] = useState({
+    nameEn: "",
+    nameAr: "",
+    profilePic: null,
+    profilePic1: null,
+    profilePic2: null,
+    profilePic3: null,
+    profilePic4: null,
+  });
 
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
+    const handleFileChange = (event) => {
+      setFormData({ ...formData, categoryPic: event.target.files[0] });
+    };
 
   const handleImageUpload = (event) => {
     const file = event.target.files[0];
@@ -183,8 +194,8 @@ function HomeScreenBanner() {
 
   return (
     <>
-    <Sidebar Dash={"Home-Screen-banners"}/>
-      <div className="admin_main">
+      <Sidebar Dash={"Home-Screen-banners"} />
+      {/* <div className="admin_main">
         <div className="admin_main_inner">
           <div className="admin_panel_data height_adjust">
             <div className="row signup_management justify-content-center">
@@ -267,7 +278,12 @@ function HomeScreenBanner() {
                                           className="file-upload"
                                           type="file"
                                           accept="image/*"
-                                          onChange={handleImageUpload}
+                                          name="file1"
+                                          id="file1"
+                                          onChange={(e) =>
+                                            handleImageUpload(e, "file1")
+                                          }
+                                          // onChange={handleImageUpload}
                                         />
                                       </div>
                                     </div>
@@ -286,14 +302,14 @@ function HomeScreenBanner() {
                               <div className="banner_sliders_box mx-2">
                                 <div className="row Onboarding_box mb-4 mx-0">
                                   <span className="head_spann">
-                                    Home Screen 1
+                                    Home Screen 2
                                   </span>
                                   <div className="check_toggle">
                                     <input
                                       type="checkbox"
                                       defaultChecked=""
-                                      name="check1"
-                                      id="check1"
+                                      name="check2"
+                                      id="check2"
                                       className="d-none"
                                     />
                                     <label htmlFor="check1" />
@@ -315,8 +331,13 @@ function HomeScreenBanner() {
                                         <input
                                           className="file-upload"
                                           type="file"
+                                          name="file2"
+                                          id="file2"
                                           accept="image/*"
-                                          onChange={handleImageUpload1}
+                                          onChange={(e) =>
+                                            handleImageUpload1(e, "file2")
+                                          }
+                                          // onChange={handleImageUpload1}
                                         />
                                       </div>
                                     </div>
@@ -335,14 +356,14 @@ function HomeScreenBanner() {
                               <div className="banner_sliders_box mx-2">
                                 <div className="row Onboarding_box mb-4 mx-0">
                                   <span className="head_spann">
-                                    Home Screen 1
+                                    Home Screen 3
                                   </span>
                                   <div className="check_toggle">
                                     <input
                                       type="checkbox"
                                       defaultChecked=""
-                                      name="check1"
-                                      id="check1"
+                                      name="check3"
+                                      id="check3"
                                       className="d-none"
                                     />
                                     <label htmlFor="check1" />
@@ -364,8 +385,13 @@ function HomeScreenBanner() {
                                         <input
                                           className="file-upload"
                                           type="file"
+                                          name="file3"
+                                          id="file3"
                                           accept="image/*"
-                                          onChange={handleImageUpload2}
+                                          onChange={(e) =>
+                                            handleImageUpload2(e, "file3")
+                                          }
+                                          // onChange={handleImageUpload2}
                                         />
                                       </div>
                                     </div>
@@ -384,17 +410,17 @@ function HomeScreenBanner() {
                               <div className="banner_sliders_box mx-2">
                                 <div className="row Onboarding_box mb-4 mx-0">
                                   <span className="head_spann">
-                                    Home Screen 1
+                                    Home Screen 4
                                   </span>
                                   <div className="check_toggle">
                                     <input
                                       type="checkbox"
                                       defaultChecked=""
-                                      name="check1"
-                                      id="check1"
+                                      name="check4"
+                                      id="check4"
                                       className="d-none"
                                     />
-                                    <label htmlFor="check1" />
+                                    <label htmlFor="check4" />
                                   </div>
                                   <div className="form-group mb-0 col-12">
                                     <div className="banner-profile position-relative">
@@ -413,8 +439,13 @@ function HomeScreenBanner() {
                                         <input
                                           className="file-upload"
                                           type="file"
+                                          name="file4"
+                                          id="file4"
                                           accept="image/*"
-                                          onChange={handleImageUpload3}
+                                          onChange={(e) =>
+                                            handleImageUpload3(e, "file4")
+                                          }
+                                          // onChange={handleImageUpload3}
                                         />
                                       </div>
                                     </div>
@@ -433,14 +464,14 @@ function HomeScreenBanner() {
                               <div className="banner_sliders_box mx-2">
                                 <div className="row Onboarding_box mb-4 mx-0">
                                   <span className="head_spann">
-                                    Home Screen 1
+                                    Home Screen 5
                                   </span>
                                   <div className="check_toggle">
                                     <input
                                       type="checkbox"
                                       defaultChecked=""
-                                      name="check1"
-                                      id="check1"
+                                      name="check5"
+                                      id="check5"
                                       className="d-none"
                                     />
                                     <label htmlFor="check1" />
@@ -462,8 +493,13 @@ function HomeScreenBanner() {
                                         <input
                                           className="file-upload"
                                           type="file"
+                                          name="file5"
+                                          id="file5"
                                           accept="image/*"
-                                          onChange={handleImageUpload4}
+                                          onChange={(e) =>
+                                            handleImageUpload4(e, "file5")
+                                          }
+                                          // onChange={handleImageUpload4}
                                         />
                                       </div>
                                     </div>
@@ -484,6 +520,286 @@ function HomeScreenBanner() {
                         </div>
                       </div>
                       <div className="owl-dots disabled" />
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        className="modal  fade Edit_modal"
+        id="staticBackdrop4"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+        tabIndex={-1}
+        aria-labelledby="staticBackdropLabel"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog modal-lg modal-dialog-centered">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title" id="staticBackdropLabel">
+                Preview
+              </h5>
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              />
+            </div>
+            <div className="modal-body">
+              <div className="row">
+                <div className="col-6 p-3 text-center">
+                  <img
+                    className="demo_img"
+                    src="assets/img/Picsart_22-12-09_13-51-53-094.png"
+                    alt=""
+                  />
+                </div>
+                <div className="col-6 p-3 text-center ">
+                  <img
+                    className="demo_img2"
+                    src="assets/img/Picsart_22-12-09_13-49-54-977.png"
+                    alt=""
+                  />
+                </div>
+              </div>
+              <div className="row">
+                <div className="col-6 p-3 text-center">
+                  <h1>Android</h1>
+                </div>
+                <div className="col-6 p-3 text-center ">
+                  <h1>IPhone</h1>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div> */}
+      <div className="admin_main">
+        <div className="admin_main_inner">
+          <div className="admin_panel_data height_adjust">
+            <div className="row signup_management justify-content-center">
+              <div className="col-12">
+                <div className="row mx-0">
+                  <div className="col-12 design_outter_comman shadow">
+                    <div className="row comman_header justify-content-between">
+                      <div className="col-auto">
+                        <h2>Home Screen Banners</h2>
+                      </div>
+                      <div className="col-auto">
+                        <button
+                          className="comman_btn2 mx-2"
+                          data-bs-toggle="modal"
+                          data-bs-target="#staticBackdrop4"
+                        >
+                          Preview
+                        </button>
+                        <button className="comman_btn2">Save</button>
+                      </div>
+                    </div>
+                    <form
+                      className="form-design banner_sliders owl-carousel py-5 px-5 row mx-0 align-items-end justify-content-between"
+                      action=""
+                    >
+                      <div className="banner_sliders_box">
+                        <div className="row Onboarding_box mb-4 mx-0">
+                          <span className="head_spann">Home Screen 1</span>
+                          <div className="check_toggle">
+                            <input
+                              type="checkbox"
+                              defaultChecked=""
+                              name="check1"
+                              id="check1"
+                              className="d-none"
+                            />
+                            <label htmlFor="check1" />
+                          </div>
+                          <div className="form-group mb-0 col-12">
+                            <div className="banner-profile position-relative">
+                              <div className="banner-Box bg-dark">
+                                <img
+                                  className="home-banner"
+                                  src="assets/img/Group 3994.png"
+                                />
+                              </div>
+                              <div className="p-image">
+                                <i className="upload-button fas fa-camera" />
+                                <input
+                                  className="file-upload"
+                                  type="file"
+                                  accept="image/*"
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="row">
+                          <div className="form-group mb-0 col-12">
+                            <label htmlFor="">Upload Url</label>
+                            <input className="form-control" type="text" />
+                          </div>
+                        </div>
+                      </div>
+                      <div className="banner_sliders_box">
+                        <div className="row Onboarding_box mb-4 mx-0">
+                          <span className="head_spann">Home Screen 2</span>
+                          <div className="check_toggle">
+                            <input
+                              type="checkbox"
+                              defaultChecked=""
+                              name="check2"
+                              id="check2"
+                              className="d-none"
+                            />
+                            <label htmlFor="check2" />
+                          </div>
+                          <div className="form-group mb-0 col-12">
+                            <div className="banner-profile position-relative">
+                              <div className="banner-Box bg-dark">
+                                <img
+                                  className="home-banner"
+                                  src="assets/img/Group 3994.png"
+                                />
+                              </div>
+                              <div className="p-image">
+                                <i className="upload-button fas fa-camera" />
+                                <input
+                                  className="file-upload"
+                                  type="file"
+                                  accept="image/*"
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="row">
+                          <div className="form-group mb-0 col-12">
+                            <label htmlFor="">Upload Url</label>
+                            <input className="form-control" type="text" />
+                          </div>
+                        </div>
+                      </div>
+                      <div className="banner_sliders_box">
+                        <div className="row Onboarding_box mb-4 mx-0">
+                          <span className="head_spann">Home Screen 3</span>
+                          <div className="check_toggle">
+                            <input
+                              type="checkbox"
+                              defaultChecked=""
+                              name="check3"
+                              id="check3"
+                              className="d-none"
+                            />
+                            <label htmlFor="check3" />
+                          </div>
+                          <div className="form-group mb-0 col-12">
+                            <div className="banner-profile position-relative">
+                              <div className="banner-Box bg-dark">
+                                <img
+                                  className="home-banner"
+                                  src="assets/img/Group 3994.png"
+                                />
+                              </div>
+                              <div className="p-image">
+                                <i className="upload-button fas fa-camera" />
+                                <input
+                                  className="file-upload"
+                                  type="file"
+                                  accept="image/*"
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="row">
+                          <div className="form-group mb-0 col-12">
+                            <label htmlFor="">Upload Url</label>
+                            <input className="form-control" type="text" />
+                          </div>
+                        </div>
+                      </div>
+                      <div className="banner_sliders_box">
+                        <div className="row Onboarding_box mb-4 mx-0">
+                          <span className="head_spann">Home Screen 4</span>
+                          <div className="check_toggle">
+                            <input
+                              type="checkbox"
+                              defaultChecked=""
+                              name="check4"
+                              id="check4"
+                              className="d-none"
+                            />
+                            <label htmlFor="check4" />
+                          </div>
+                          <div className="form-group mb-0 col-12">
+                            <div className="banner-profile position-relative">
+                              <div className="banner-Box bg-dark">
+                                <img
+                                  className="home-banner"
+                                  src="assets/img/Group 3994.png"
+                                />
+                              </div>
+                              <div className="p-image">
+                                <i className="upload-button fas fa-camera" />
+                                <input
+                                  className="file-upload"
+                                  type="file"
+                                  accept="image/*"
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="row">
+                          <div className="form-group mb-0 col-12">
+                            <label htmlFor="">Upload Url</label>
+                            <input className="form-control" type="text" />
+                          </div>
+                        </div>
+                      </div>
+                      <div className="banner_sliders_box">
+                        <div className="row Onboarding_box mb-4 mx-0">
+                          <span className="head_spann">Home Screen 5</span>
+                          <div className="check_toggle">
+                            <input
+                              type="checkbox"
+                              defaultChecked=""
+                              name="check5"
+                              id="check5"
+                              className="d-none"
+                            />
+                            <label htmlFor="check5" />
+                          </div>
+                          <div className="form-group mb-0 col-12">
+                            <div className="banner-profile position-relative">
+                              <div className="banner-Box bg-dark">
+                                <img
+                                  className="home-banner"
+                                  src="assets/img/Group 3994.png"
+                                />
+                              </div>
+                              <div className="p-image">
+                                <i className="upload-button fas fa-camera" />
+                                <input
+                                  className="file-upload"
+                                  type="file"
+                                  accept="image/*"
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="row">
+                          <div className="form-group mb-0 col-12">
+                            <label htmlFor="">Upload Url</label>
+                            <input className="form-control" type="text" />
+                          </div>
+                        </div>
+                      </div>
                     </form>
                   </div>
                 </div>

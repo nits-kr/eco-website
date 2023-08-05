@@ -227,7 +227,7 @@ function ContactUs() {
                                         <input
                                           data-bs-toggle="modal"
                                           data-bs-target="#staticBackdrop2"
-                                          defaultChecked={data.status}
+                                          defaultChecked={data?.status}
                                           type="checkbox"
                                           name={`check${index}`}
                                           id={`check${index}`}

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 function EditCategory(props) {
+  console.log("props?.newCategory?.categoryPic", props?.newCategory?.categoryPic);
   const [category, setCategory] = useState({
     nameEn: "",
     nameAr: "",
@@ -114,11 +115,12 @@ function EditCategory(props) {
                   <input
                     type="file"
                     className="form-control"
-                    defaultValue=""
+                    defaultValue={props?.newCategory?.categoryPic}
                     name="upload_video"
                     id="upload_video"
                     onChange={(e) => handleFileChange(e, "uploadImage")}
                   />
+                  {props?.newCategory?.categoryPic}
                 </div>
                 <div className="form-group mb-0 col-auto">
                   <button

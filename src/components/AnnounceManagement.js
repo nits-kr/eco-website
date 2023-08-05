@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
+import { Link } from "react-router-dom";
 import Sidebar from "./Sidebar";
 
 function AnnounceManagement() {
@@ -29,7 +30,6 @@ function AnnounceManagement() {
     console.log(data);
   };
 
-  
   const userList2 = async () => {
     if (!startDate1) return;
     try {
@@ -104,7 +104,7 @@ function AnnounceManagement() {
           title: "Success",
           text: "Announcement Created!",
           confirmButtonText: "OK",
-        })
+        });
         // .then((result) => {
         //   if (result.isConfirmed) {
         //     window.location.reload();
@@ -123,7 +123,6 @@ function AnnounceManagement() {
     }
   };
 
-  
   useEffect(() => {
     handleSearch1();
   }, [searchQuery]);
@@ -386,9 +385,9 @@ function AnnounceManagement() {
                                     </div>
                                     <input
                                       data-bs-toggle="modal"
-                                      data-bs-target="#staticBackdrop"
+                                      data-bs-target="#staticBackdrop2"
                                       type="checkbox"
-                                      defaultChecked=""
+                                      defaultChecked={data?.status}
                                       name={`check${index}`}
                                       id={`check${index}`}
                                       className="d-none"
@@ -408,6 +407,48 @@ function AnnounceManagement() {
                       </div>
                     </div>
                   </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        className="modal fade Update_modal"
+        id="staticBackdrop2"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+        tabIndex="-1"
+        aria-labelledby="staticBackdropLabel"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog modal-dialog-centered">
+          <div className="modal-content">
+            <div className="modal-body p-4">
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+              <div className="row">
+                <div className="col-12 Update_modal_content py-4">
+                  <h2>Update</h2>
+                  <p>Are you sure, Want to update this?</p>
+                  <Link
+                    className="comman_btn mx-2"
+                    data-bs-dismiss="modal"
+                    to="javscript:;"
+                  >
+                    Yes
+                  </Link>
+                  <Link
+                    className="comman_btn2 mx-2 bg-red"
+                    data-bs-dismiss="modal"
+                    to="javscript:;"
+                  >
+                    NO
+                  </Link>
                 </div>
               </div>
             </div>

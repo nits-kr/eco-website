@@ -201,13 +201,13 @@ function CategoryManagement(props) {
     handleSave();
   }, []);
 
-  const handleUpdate = (nameEn, nameAr, categoryPic, id) => {
-    console.log("category update data", nameEn, nameAr, categoryPic, id);
+  const handleUpdate = (item) => {
+    // console.log("category update data", nameEn, nameAr, categoryPic, id);
     setNewCategory({
-      nameEn: nameEn,
-      nameAr: nameAr,
-      categoryPic: categoryPic,
-      id,
+      nameEn: item?.categoryName_en,
+      nameAr: item?.categoryName_ar,
+      categoryPic: item?.categoryPic,
+      id: item?._id,
     });
   };
 
@@ -407,7 +407,10 @@ function CategoryManagement(props) {
                                             setSearchQuery(e.target.value)
                                           }
                                         />
-                                        <i className="far fa-search" onClick={handleSearch1}></i>
+                                        <i
+                                          className="far fa-search"
+                                          onClick={handleSearch1}
+                                        ></i>
                                       </div>
                                     </form>
                                   </div>
@@ -462,13 +465,15 @@ function CategoryManagement(props) {
                                                     <form className="table_btns d-flex align-items-center">
                                                       <div className="check_toggle">
                                                         <input
+                                                          className="d-none"
+                                                          data-bs-toggle="modal"
+                                                          data-bs-target="#staticBackdrop2"
                                                           defaultChecked={
                                                             category.shipmentService
                                                           }
                                                           type="checkbox"
                                                           name={`shipment_service_${category._id}`}
                                                           id={`shipment_service_${category._id}`}
-                                                          className="d-none"
                                                         />
                                                         <label
                                                           htmlFor={`shipment_service_${category._id}`}
@@ -480,13 +485,15 @@ function CategoryManagement(props) {
                                                     <form className="table_btns d-flex align-items-center">
                                                       <div className="check_toggle">
                                                         <input
+                                                          className="d-none"
+                                                          data-bs-toggle="modal"
+                                                          data-bs-target="#staticBackdrop3"
                                                           defaultChecked={
                                                             category.status
                                                           }
                                                           type="checkbox"
                                                           name={`status_${category._id}`}
                                                           id={`status_${category._id}`}
-                                                          className="d-none"
                                                         />
                                                         <label
                                                           htmlFor={`status_${category._id}`}
@@ -502,10 +509,11 @@ function CategoryManagement(props) {
                                                       to=""
                                                       onClick={() =>
                                                         handleUpdate(
-                                                          category.categoryName_en,
-                                                          category.categoryName_ar,
-                                                          category.categoryPic,
-                                                          category._id
+                                                          // category?.categoryName_en,
+                                                          // category?.categoryName_ar,
+                                                          // category?.categoryPic,
+                                                          // category?._id
+                                                          category
                                                         )
                                                       }
                                                     >
@@ -532,6 +540,90 @@ function CategoryManagement(props) {
                       </div>
                     </div>
                   </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        className="modal fade Update_modal"
+        id="staticBackdrop2"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+        tabIndex="-1"
+        aria-labelledby="staticBackdropLabel"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog modal-dialog-centered">
+          <div className="modal-content">
+            <div className="modal-body p-4">
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+              <div className="row">
+                <div className="col-12 Update_modal_content py-4">
+                  <h2>Update</h2>
+                  <p>Are you sure, Want to update this?</p>
+                  <Link
+                    className="comman_btn mx-2"
+                    data-bs-dismiss="modal"
+                    to="javscript:;"
+                  >
+                    Yes
+                  </Link>
+                  <Link
+                    className="comman_btn2 mx-2 bg-red"
+                    data-bs-dismiss="modal"
+                    to="javscript:;"
+                  >
+                    NO
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        className="modal fade Update_modal"
+        id="staticBackdrop3"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+        tabIndex="-1"
+        aria-labelledby="staticBackdropLabel"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog modal-dialog-centered">
+          <div className="modal-content">
+            <div className="modal-body p-4">
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+              <div className="row">
+                <div className="col-12 Update_modal_content py-4">
+                  <h2>Update</h2>
+                  <p>Are you sure, Want to update this?</p>
+                  <Link
+                    className="comman_btn mx-2"
+                    data-bs-dismiss="modal"
+                    to="javscript:;"
+                  >
+                    Yes
+                  </Link>
+                  <Link
+                    className="comman_btn2 mx-2 bg-red"
+                    data-bs-dismiss="modal"
+                    to="javscript:;"
+                  >
+                    NO
+                  </Link>
                 </div>
               </div>
             </div>

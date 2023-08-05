@@ -45,6 +45,7 @@ import SubCategory from "./components/SubCategory";
 import ProductManagement2 from "./components/ProductManagement2";
 import ProductList2 from "./components/ProductList2";
 import ProductManagementEdit from "./components/ProductManagementEdit";
+import HomeScreenBanner2 from "./components/HomeScreenBanner2";
 
 function App() {
   const [progress, setProgress] = useState(0);
@@ -66,16 +67,21 @@ function App() {
             exact
             className="active"
             path="/dashboard"
-            element={<Dashboard setProgress={setProgress}/>}
+            element={<Dashboard setProgress={setProgress} />}
           />
           {/* <Dashboard2/> */}
           <Route
             exact
             className="active"
             path="/users"
-            element={<UsersManagement />}
+            element={<UsersManagement setProgress={setProgress} />}
           />
-          <Route exact className="active" path="/agents" element={<Agent />} />
+          <Route
+            exact
+            className="active"
+            path="/agents"
+            element={<Agent setProgress={setProgress} />}
+          />
           <Route
             exact
             className="active"
@@ -93,13 +99,13 @@ function App() {
             exact
             className="active"
             path="/categories"
-            element={<CategoryManagement setProgress={setProgress}/>}
+            element={<CategoryManagement setProgress={setProgress} />}
           />
           <Route
             exact
             className="active"
             path="/sub-categories"
-            element={<SubCategory setProgress={setProgress}/>}
+            element={<SubCategory setProgress={setProgress} />}
           />
           <Route
             exact
@@ -111,15 +117,15 @@ function App() {
             exact
             className="active"
             path="/product-management-edit/:id"
-            element={<ProductManagementEdit/>}
+            element={<ProductManagementEdit />}
           />
           {/* <ProductManagement2/> */}
-          
+
           <Route
             exact
             className="active"
             path="/products"
-            element={<ProductList2 setProgress={setProgress}/>}
+            element={<ProductList2 setProgress={setProgress} />}
           />
           {/* <ProductList2/> */}
           <Route
@@ -156,8 +162,9 @@ function App() {
             exact
             className="active"
             path="/Home-Screen-banners"
-            element={<HomeScreenBanner />}
+            element={<HomeScreenBanner2 />}
           />
+          {/* <HomeScreenBanner2/> */}
           <Route
             exact
             className="active"
