@@ -16,7 +16,6 @@ function Dashboard(props) {
 
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
-
   useEffect(() => {
     props.setProgress(10);
     setLoading(true);
@@ -29,6 +28,11 @@ function Dashboard(props) {
       })
       .catch((error) => {
         console.log(error);
+        Swal.fire({
+          icon: "error",
+          title: "Network Error",
+          text: "Failed to fetch user count data. Please try again later.",
+        });
       });
     props.setProgress(50);
     axios
@@ -42,10 +46,15 @@ function Dashboard(props) {
           response?.data?.results?.list?.reverse()
         );
       })
-
       .catch((error) => {
         console.log(error.response.data);
+        Swal.fire({
+          icon: "error",
+          title: "Network Error",
+          text: "Failed to fetch recent order list data. Please try again later.",
+        });
       });
+
     props.setProgress(100);
     setLoading(false);
   }, []);
