@@ -314,7 +314,7 @@ function UsersManagement(props) {
       const downloadUrl = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = downloadUrl;
-      link.download = "file.txt";
+      link.download = "file.xlsx";
       link.click();
     }
   };
