@@ -20,8 +20,6 @@ function Dashboard(props) {
   const url2 =
     "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/dashboards/count/search";
   useEffect(() => {
-    props.setProgress(10);
-    setLoading(true);
     axios
       .post(
         "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/dashboards/count/userCount"
@@ -37,21 +35,18 @@ function Dashboard(props) {
           text: "Failed to fetch user count data. Please try again later.",
         });
       });
-    props.setProgress(50);
     dashBoardList();
-    props.setProgress(100);
-    setLoading(false);
   }, []);
   const dashBoardList = async (e) => {
     // e.preventDefault();
+    props.setProgress(10);
+    setLoading(true);
     axios
       .post(url)
       .then((response) => {
         setRecentOrderList(response?.data?.results?.list?.reverse());
-        console.log(
-          "setRecentOrderList",
-          response?.data?.results?.list?.reverse()
-        );
+        props.setProgress(100);
+        setLoading(false);
       })
       .catch((error) => {
         console.log(error.response.data);
@@ -197,160 +192,161 @@ function Dashboard(props) {
     <>
       {loading}
       <Sidebar Dash={"dashboard"} />
-      {loading ? (
-        <Spinner />
-      ) : (
-        <div className="admin_main">
-          <div className="admin_main_inner">
-            <div className="admin_panel_data height_adjust">
-              <div className="row dashboard_part justify-content-center">
-                <div className="col-12">
-                  <div className="row ms-3 mb-5 justify-content-center">
-                    <div className="col d-flex align-items-stretch">
-                      <Link
-                        to="/users"
-                        className="row dashboard_box box_design me-3 w-100"
-                      >
-                        <div className="col-auto px-0">
-                          <span className="dashboard_icon">
-                            <i className="fas fa-user"></i>
-                          </span>
-                        </div>
-                        <div className="col pe-0">
-                          <div className="dashboard_boxcontent">
-                            <h2>Total Customers</h2>
-                            <span>{userCounts.userCount}</span>
-                          </div>
-                        </div>
-                      </Link>
-                    </div>
-                    <div className="col d-flex align-items-stretch">
-                      <Link
-                        to="/orders"
-                        className="row dashboard_box box_design me-3 w-100"
-                      >
-                        <div className="col-auto px-0">
-                          <span className="dashboard_icon">
-                            <i className="fal fa-box-full"></i>
-                          </span>
-                        </div>
-                        <div className="col pe-0">
-                          <div className="dashboard_boxcontent">
-                            <h2>Total Orders</h2>
-                            <span>{userCounts.orderCount}</span>
-                          </div>
-                        </div>
-                      </Link>
-                    </div>
-                    <div className="col d-flex align-items-stretch">
-                      <Link
-                        to="/offers"
-                        className="row dashboard_box box_design me-3 w-100"
-                      >
-                        <div className="col-auto px-0">
-                          <span className="dashboard_icon">
-                            <i className="fal fa-gift-card"></i>
-                          </span>
-                        </div>
-                        <div className="col pe-0">
-                          <div className="dashboard_boxcontent">
-                            <h2>Total Products</h2>
-                            <span>{userCounts?.productCount} </span>
-                          </div>
-                        </div>
-                      </Link>
-                    </div>
-                    <div className="col d-flex align-items-stretch pe-0">
-                      <Link
-                        to="/transactions"
-                        className="row dashboard_box box_design me-0 w-100"
-                      >
-                        <div className="col-auto px-0">
-                          <span className="dashboard_icon">
-                            <i className="far fa-dollar-sign"></i>
-                          </span>
-                        </div>
-                        <div className="col pe-0">
-                          <div className="dashboard_boxcontent">
-                            <h2>Total Revenue</h2>
-                            <span>SAR 20000</span>
-                          </div>
-                        </div>
-                      </Link>
-                    </div>
-                  </div>
-                  <div className="row mx-0">
-                    <div className="col-12 design_outter_comman shadow">
-                      <div className="row comman_header justify-content-between">
-                        <div className="col">
-                          <h2>Recent Orders</h2>
-                        </div>
-                        <div className="col-3">
-                          <form
-                            className="form-design"
-                            action=""
-                            onSubmit={handleSearch1}
-                          >
-                            <div className="form-group mb-0 position-relative icons_set">
-                              <input
-                                type="text"
-                                className="form-control"
-                                placeholder="Search"
-                                name="name"
-                                id="name"
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                              />
-                              <i
-                                className="fa fa-search"
-                                onClick={handleSearch1}
-                              ></i>
-                            </div>
-                          </form>
-                        </div>
-                        <div className="col-auto">
-                          <input
-                            type="date"
-                            className="custom_date"
-                            value={startDate1}
-                            onChange={(e) => setStartDate1(e.target.value)}
-                          />
+
+      <div className="admin_main">
+        <div className="admin_main_inner">
+          <div className="admin_panel_data height_adjust">
+            <div className="row dashboard_part justify-content-center">
+              <div className="col-12">
+                <div className="row ms-3 mb-5 justify-content-center">
+                  <div className="col d-flex align-items-stretch">
+                    <Link
+                      to="/users"
+                      className="row dashboard_box box_design me-3 w-100"
+                    >
+                      <div className="col-auto px-0">
+                        <span className="dashboard_icon">
+                          <i className="fas fa-user"></i>
+                        </span>
+                      </div>
+                      <div className="col pe-0">
+                        <div className="dashboard_boxcontent">
+                          <h2>Total Customers</h2>
+                          <span>{userCounts.userCount}</span>
                         </div>
                       </div>
-                      <form
-                        className="form-design py-4 px-3 help-support-form row align-items-end justify-content-between"
-                        action=""
-                        onSubmit={handleSearch}
-                      >
-                        <div className="form-group mb-0 col-5">
-                          <label htmlFor="">From</label>
-                          <input
-                            type="date"
-                            className="form-control"
-                            id="startDate"
-                            value={startDate}
-                            onChange={(e) => setStartDate(e.target.value)}
-                          />
+                    </Link>
+                  </div>
+                  <div className="col d-flex align-items-stretch">
+                    <Link
+                      to="/orders"
+                      className="row dashboard_box box_design me-3 w-100"
+                    >
+                      <div className="col-auto px-0">
+                        <span className="dashboard_icon">
+                          <i className="fal fa-box-full"></i>
+                        </span>
+                      </div>
+                      <div className="col pe-0">
+                        <div className="dashboard_boxcontent">
+                          <h2>Total Orders</h2>
+                          <span>{userCounts.orderCount}</span>
                         </div>
-                        <div className="form-group mb-0 col-5">
-                          <label htmlFor="">To</label>
-                          <input
-                            type="date"
-                            className="form-control"
-                            id="endDate"
-                            value={endDate}
-                            onChange={(e) => setEndDate(e.target.value)}
-                          />
+                      </div>
+                    </Link>
+                  </div>
+                  <div className="col d-flex align-items-stretch">
+                    <Link
+                      to="/offers"
+                      className="row dashboard_box box_design me-3 w-100"
+                    >
+                      <div className="col-auto px-0">
+                        <span className="dashboard_icon">
+                          <i className="fal fa-gift-card"></i>
+                        </span>
+                      </div>
+                      <div className="col pe-0">
+                        <div className="dashboard_boxcontent">
+                          <h2>Total Products</h2>
+                          <span>{userCounts?.productCount} </span>
                         </div>
-                        <div className="form-group mb-0 col-auto">
-                          <button
-                            className="comman_btn2"
-                            disabled={startDate > endDate}
-                          >
-                            Search
-                          </button>
+                      </div>
+                    </Link>
+                  </div>
+                  <div className="col d-flex align-items-stretch pe-0">
+                    <Link
+                      to="/transactions"
+                      className="row dashboard_box box_design me-0 w-100"
+                    >
+                      <div className="col-auto px-0">
+                        <span className="dashboard_icon">
+                          <i className="far fa-dollar-sign"></i>
+                        </span>
+                      </div>
+                      <div className="col pe-0">
+                        <div className="dashboard_boxcontent">
+                          <h2>Total Revenue</h2>
+                          <span>SAR 20000</span>
                         </div>
-                      </form>
+                      </div>
+                    </Link>
+                  </div>
+                </div>
+                <div className="row mx-0">
+                  <div className="col-12 design_outter_comman shadow">
+                    <div className="row comman_header justify-content-between">
+                      <div className="col">
+                        <h2>Recent Orders</h2>
+                      </div>
+                      <div className="col-3">
+                        <form
+                          className="form-design"
+                          action=""
+                          onSubmit={handleSearch1}
+                        >
+                          <div className="form-group mb-0 position-relative icons_set">
+                            <input
+                              type="text"
+                              className="form-control"
+                              placeholder="Search"
+                              name="name"
+                              id="name"
+                              value={searchQuery}
+                              onChange={(e) => setSearchQuery(e.target.value)}
+                            />
+                            <i
+                              className="fa fa-search"
+                              onClick={handleSearch1}
+                            ></i>
+                          </div>
+                        </form>
+                      </div>
+                      <div className="col-auto">
+                        <input
+                          type="date"
+                          className="custom_date"
+                          value={startDate1}
+                          onChange={(e) => setStartDate1(e.target.value)}
+                        />
+                      </div>
+                    </div>
+                    <form
+                      className="form-design py-4 px-3 help-support-form row align-items-end justify-content-between"
+                      action=""
+                      onSubmit={handleSearch}
+                    >
+                      <div className="form-group mb-0 col-5">
+                        <label htmlFor="">From</label>
+                        <input
+                          type="date"
+                          className="form-control"
+                          id="startDate"
+                          value={startDate}
+                          onChange={(e) => setStartDate(e.target.value)}
+                        />
+                      </div>
+                      <div className="form-group mb-0 col-5">
+                        <label htmlFor="">To</label>
+                        <input
+                          type="date"
+                          className="form-control"
+                          id="endDate"
+                          value={endDate}
+                          onChange={(e) => setEndDate(e.target.value)}
+                        />
+                      </div>
+                      <div className="form-group mb-0 col-auto">
+                        <button
+                          className="comman_btn2"
+                          disabled={startDate > endDate}
+                        >
+                          Search
+                        </button>
+                      </div>
+                    </form>
+                    {loading ? (
+                      <Spinner />
+                    ) : (
                       <div className="row">
                         <div className="col-12 comman_table_design px-0">
                           <div className="table-responsive">
@@ -395,14 +391,14 @@ function Dashboard(props) {
                           </div>
                         </div>
                       </div>
-                    </div>
+                    )}
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      )}
+      </div>
     </>
   );
 }
