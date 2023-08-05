@@ -13,9 +13,12 @@ function Dashboard(props) {
   const [startDate1, setStartDate1] = useState("");
   const [endDate, setEndDate] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
-
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
+  const url =
+    "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/dashboards/count/list";
+  const url2 =
+    "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/dashboards/count/search";
   useEffect(() => {
     props.setProgress(10);
     setLoading(true);
@@ -35,10 +38,14 @@ function Dashboard(props) {
         });
       });
     props.setProgress(50);
+    dashBoardList();
+    props.setProgress(100);
+    setLoading(false);
+  }, []);
+  const dashBoardList = async (e) => {
+    // e.preventDefault();
     axios
-      .post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/dashboards/count/list"
-      )
+      .post(url)
       .then((response) => {
         setRecentOrderList(response?.data?.results?.list?.reverse());
         console.log(
@@ -54,31 +61,30 @@ function Dashboard(props) {
           text: "Failed to fetch recent order list data. Please try again later.",
         });
       });
-
-    props.setProgress(100);
-    setLoading(false);
-  }, []);
+  };
 
   const userList2 = async () => {
     if (!startDate1) return;
     try {
-      const { data } = await axios.post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/dashboards/count/list",
-        {
-          startDate1,
-        }
-      );
+      const { data } = await axios.post(url, {
+        startDate1,
+      });
       const filteredUsers = data?.results?.list?.filter(
         (user) =>
           new Date(user?.createdAt?.slice(0, 10)).toISOString().slice(0, 10) ===
           new Date(startDate1).toISOString().slice(0, 10)
       );
       if (filteredUsers.length === 0) {
+        setRecentOrderList([]);
         await Swal.fire({
           title: "No List Found",
           text: "No list is available for the selected date.",
           icon: "warning",
           confirmButtonText: "OK",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            dashBoardList();
+          }
         });
         // window.location.reload();
       }
@@ -95,15 +101,27 @@ function Dashboard(props) {
   const handleSearch = (e) => {
     e.preventDefault();
     axios
-      .post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/dashboards/count/list",
-        {
-          from: startDate,
-          to: endDate,
-        }
-      )
+      .post(url, {
+        from: startDate,
+        to: endDate,
+      })
       .then((response) => {
-        setRecentOrderList(response?.data?.results?.list?.reverse());
+        const list = response?.data?.results?.list?.reverse();
+        if (list && list.length > 0) {
+          setRecentOrderList(list);
+        } else {
+          setRecentOrderList([]);
+          Swal.fire({
+            icon: "warning",
+            title: "No data found!",
+            text: "There is no list between the selected dates.",
+            confirmButtonText: "OK",
+          }).then((result) => {
+            if (result.isConfirmed) {
+              dashBoardList();
+            }
+          });
+        }
       })
       .catch((error) => {
         console.log(error.response.data);
@@ -115,17 +133,11 @@ function Dashboard(props) {
 
   const handleSearch1 = async () => {
     try {
-      const url =
-        searchQuery !== ""
-          ? "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/dashboards/count/search"
-          : "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/dashboards/count/list";
-
-      const response = await axios.post(url, {
+      const url1 = searchQuery !== "" ? url2 : url;
+      const response = await axios.post(url1, {
         orderStatus: searchQuery,
       });
-
       const { error, results } = response.data;
-
       if (error) {
         throw new Error("Error searching for products. Data is not found.");
       } else {
