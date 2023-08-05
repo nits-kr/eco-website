@@ -87,6 +87,19 @@ function Dashboard(props) {
           }
         });
         // window.location.reload();
+      } else if (filteredUsers.length > 0) {
+        // setRecentOrderList([]);
+        await Swal.fire({
+          title: "List Found!",
+          text: "list is available for the selected date.",
+          icon: "success",
+          confirmButtonText: "OK",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            setRecentOrderList(filteredUsers);
+          }
+        });
+        // window.location.reload();
       }
       setRecentOrderList(filteredUsers);
       console.log(data);
@@ -108,7 +121,17 @@ function Dashboard(props) {
       .then((response) => {
         const list = response?.data?.results?.list?.reverse();
         if (list && list.length > 0) {
-          setRecentOrderList(list);
+          Swal.fire({
+            title: "List Found!",
+            text: "list is available for the selected date.",
+            icon: "success",
+            confirmButtonText: "OK",
+          }).then((result) => {
+            if (result.isConfirmed) {
+              setRecentOrderList(list);
+            }
+          });
+          // setRecentOrderList(list);
         } else {
           setRecentOrderList([]);
           Swal.fire({

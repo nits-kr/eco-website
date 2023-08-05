@@ -27,27 +27,62 @@ function CategoryManagement(props) {
     categoryPic: null,
   });
   const [newCategory, setNewCategory] = useState([]);
+  const url =
+    "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/category/list";
+  const url2 =
+    "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/category/search-category";
+  useEffect(() => {
+    categoryManagementList();
+  }, []);
 
+  const categoryManagementList = async (e) => {
+    axios
+      .post(url)
+      .then((response) => {
+        setCategoryList(response?.data?.results?.list?.reverse());
+      })
+      .catch((error) => {
+        console.log(error.response.data);
+        Swal.fire({
+          icon: "error",
+          title: "Network Error",
+          text: "Failed to fetch recent order list data. Please try again later.",
+        });
+      });
+  };
   const userList2 = async () => {
     if (!startDate1) return;
     try {
-      const { data } = await axios.post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/category/list",
-        {
-          startDate1,
-        }
-      );
+      const { data } = await axios.post(url, {
+        startDate1,
+      });
       const filteredUsers = data?.results?.list?.filter(
         (user) =>
           new Date(user?.createdAt?.slice(0, 10)).toISOString().slice(0, 10) ===
           new Date(startDate1).toISOString().slice(0, 10)
       );
       if (filteredUsers.length === 0) {
-        Swal.fire({
+        setCategoryList([]);
+        await Swal.fire({
           title: "No List Found",
           text: "No list is available for the selected date.",
           icon: "warning",
           confirmButtonText: "OK",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            categoryManagementList();
+          }
+        });
+      } else if (filteredUsers.length > 0) {
+        await Swal.fire({
+          title: "List Found!",
+          text: "list is available for the selected date.",
+          icon: "success",
+          confirmButtonText: "OK",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            setCategoryList(filteredUsers);
+          }
         });
       }
       setCategoryList(filteredUsers);
@@ -60,23 +95,40 @@ function CategoryManagement(props) {
     userList2();
   }, [startDate1]);
 
-  const handleSearch = async (e) => {
-    e.preventDefault();
-    if (searchQuery) {
-      try {
-        const response = await axios.post(
-          "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/category/search-category",
-          {
-            categoryName_en: searchQuery,
-          }
+  useEffect(() => {
+    handleSearch1();
+  }, [searchQuery]);
+
+  const handleSearch1 = async () => {
+    try {
+      const url1 = searchQuery !== "" ? url2 : url;
+      const response = await axios.post(url1, {
+        categoryName_en: searchQuery,
+      });
+      const { error, results } = response.data;
+      if (error) {
+        throw new Error("Error searching for products. Data is not found.");
+      } else {
+        setCategoryList(
+          searchQuery !== "" ? results?.categoryData : results?.list?.reverse()
         );
-        const { error, results } = response.data;
-        if (error) {
-          throw new Error("Error searching for products.");
-        } else {
-          setCategoryList(results.categoryData);
-        }
-      } catch (error) {
+      }
+    } catch (error) {
+      if (error.response) {
+        Swal.fire({
+          title: "Error!",
+          text: error.response.data,
+          icon: "error",
+          confirmButtonText: "OK",
+        });
+      } else if (error.request) {
+        Swal.fire({
+          title: "Error!",
+          text: "Network error. Please try again later.",
+          icon: "error",
+          confirmButtonText: "OK",
+        });
+      } else {
         Swal.fire({
           title: "Error!",
           text: error.message,
@@ -84,8 +136,6 @@ function CategoryManagement(props) {
           confirmButtonText: "OK",
         });
       }
-    } else {
-      setCategoryList([]);
     }
   };
 
@@ -164,7 +214,7 @@ function CategoryManagement(props) {
   return (
     <>
       {loading}
-      <Sidebar Dash={"categories"}/>
+      <Sidebar Dash={"categories"} />
       <div className="admin_main">
         <div className="admin_main_inner">
           <div className="admin_panel_data height_adjust">
@@ -267,7 +317,10 @@ function CategoryManagement(props) {
                                 >
                                   <div className="form-group mb-0 col">
                                     <label htmlFor="name-en">
-                                      Enter Category Name (En)<span className="required-field text-danger">*</span>
+                                      Enter Category Name (En)
+                                      <span className="required-field text-danger">
+                                        *
+                                      </span>
                                     </label>
                                     <input
                                       type="text"
@@ -282,7 +335,10 @@ function CategoryManagement(props) {
                                   </div>
                                   <div className="form-group mb-0 col">
                                     <label htmlFor="name-ar">
-                                      Enter Category Name (Ar)<span className="required-field text-danger">*</span>
+                                      Enter Category Name (Ar)
+                                      <span className="required-field text-danger">
+                                        *
+                                      </span>
                                     </label>
                                     <input
                                       type="text"
@@ -337,7 +393,7 @@ function CategoryManagement(props) {
                                   <div className="col-3">
                                     <form
                                       className="form-design"
-                                      onSubmit={handleSearch}
+                                      onSubmit={handleSearch1}
                                     >
                                       <div className="form-group mb-0 position-relative icons_set">
                                         <input
@@ -351,7 +407,7 @@ function CategoryManagement(props) {
                                             setSearchQuery(e.target.value)
                                           }
                                         />
-                                        <i className="far fa-search"></i>
+                                        <i className="far fa-search" onClick={handleSearch1}></i>
                                       </div>
                                     </form>
                                   </div>

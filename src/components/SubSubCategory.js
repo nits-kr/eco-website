@@ -21,27 +21,62 @@ function SubSubCategory() {
   const [newCategory, setNewCategory] = useState([]);
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
+  const url =
+    "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/subSubCategory/subSubCategoryList";
+  const url2 =
+    "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/subSubCategory/subSubCategorySearch";
+  useEffect(() => {
+    subSubCategoryManagementList();
+  }, []);
+  const subSubCategoryManagementList = () => {
+    axios
+      .post(url)
+      .then((response) => {
+        setSubSubCategoryList(response?.data?.results?.list?.reverse());
+      })
+      .catch((error) => {
+        console.log(error.response.data);
+        Swal.fire({
+          icon: "error",
+          title: "Network Error",
+          text: "Failed to fetch recent order list data. Please try again later.",
+        });
+      });
+  };
 
   const userList2 = async () => {
     if (!startDate1) return;
     try {
-      const { data } = await axios.post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/subSubCategory/subSubCategoryList",
-        {
-          startDate1,
-        }
-      );
+      const { data } = await axios.post(url, {
+        startDate1,
+      });
       const filteredUsers = data?.results?.list?.filter(
         (user) =>
           new Date(user?.createdAt?.slice(0, 10)).toISOString().slice(0, 10) ===
           new Date(startDate1).toISOString().slice(0, 10)
       );
       if (filteredUsers.length === 0) {
-        Swal.fire({
+        setSubSubCategoryList([]);
+        await Swal.fire({
           title: "No List Found",
           text: "No list is available for the selected date.",
           icon: "warning",
           confirmButtonText: "OK",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            subSubCategoryManagementList();
+          }
+        });
+      } else if (filteredUsers.length > 0) {
+        await Swal.fire({
+          title: "List Found!",
+          text: "list is available for the selected date.",
+          icon: "success",
+          confirmButtonText: "OK",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            setSubSubCategoryList(filteredUsers);
+          }
         });
       }
       setSubSubCategoryList(filteredUsers);
@@ -54,23 +89,40 @@ function SubSubCategory() {
     userList2();
   }, [startDate1]);
 
-  const handleSearch = async (e) => {
-    e.preventDefault();
-    if (searchQuery) {
-      try {
-        const response = await axios.post(
-          "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/subSubCategory/subSubCategorySearch",
-          {
-            subSubCategoryName_en: searchQuery,
-          }
+  useEffect(() => {
+    handleSearch1();
+  }, [searchQuery]);
+
+  const handleSearch1 = async () => {
+    try {
+      const url1 = searchQuery !== "" ? url2 : url;
+      const response = await axios.post(url1, {
+        subSubCategoryName_en: searchQuery,
+      });
+      const { error, results } = response.data;
+      if (error) {
+        throw new Error("Error searching for products. Data is not found.");
+      } else {
+        setSubSubCategoryList(
+          searchQuery !== "" ? results?.categoryData : results?.list?.reverse()
         );
-        const { error, results } = response.data;
-        if (error) {
-          throw new Error("Error searching for products.");
-        } else {
-          setSubSubCategoryList(results.categoryData);
-        }
-      } catch (error) {
+      }
+    } catch (error) {
+      if (error.response) {
+        Swal.fire({
+          title: "Error!",
+          text: error.response.data,
+          icon: "error",
+          confirmButtonText: "OK",
+        });
+      } else if (error.request) {
+        Swal.fire({
+          title: "Error!",
+          text: "Network error. Please try again later.",
+          icon: "error",
+          confirmButtonText: "OK",
+        });
+      } else {
         Swal.fire({
           title: "Error!",
           text: error.message,
@@ -78,8 +130,6 @@ function SubSubCategory() {
           confirmButtonText: "OK",
         });
       }
-    } else {
-      setSubSubCategoryList([]);
     }
   };
 
@@ -227,7 +277,10 @@ function SubSubCategory() {
                 </select>
               </div>
               <div className="form-group col">
-                <label htmlFor="">Enter Sub Sub Category Name (En)<span className="required-field text-danger">*</span></label>
+                <label htmlFor="">
+                  Enter Sub Sub Category Name (En)
+                  <span className="required-field text-danger">*</span>
+                </label>
                 <input
                   type="text"
                   className="form-control"
@@ -240,7 +293,10 @@ function SubSubCategory() {
                 />
               </div>
               <div className="form-group col">
-                <label htmlFor="">Enter Sub Sub Category Name (Ar)<span className="required-field text-danger">*</span></label>
+                <label htmlFor="">
+                  Enter Sub Sub Category Name (Ar)
+                  <span className="required-field text-danger">*</span>
+                </label>
                 <input
                   type="text"
                   className="form-control"
@@ -266,7 +322,11 @@ function SubSubCategory() {
                 <h2>Sub Sub Categories List</h2>
               </div>
               <div className="col-3">
-                <form className="form-design" action="" onSubmit={handleSearch}>
+                <form
+                  className="form-design"
+                  action=""
+                  onSubmit={handleSearch1}
+                >
                   <div className="form-group mb-0 position-relative icons_set">
                     <input
                       type="text"
@@ -277,7 +337,7 @@ function SubSubCategory() {
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                     />
-                    <i className="far fa-search"></i>
+                    <i className="far fa-search" onClick={handleSearch1}></i>
                   </div>
                 </form>
               </div>

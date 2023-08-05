@@ -73,8 +73,12 @@ function OfferManagement() {
       confirmButtonText: "OK",
     });
   };
+  useEffect(() => {
+    handleSaveChanges2();
+  }, [title3]);
+
   const handleSaveChanges2 = async (e) => {
-    e.preventDefault();
+    // e.preventDefault();
     const newOffer = {
       title: title3,
     };
@@ -88,6 +92,7 @@ function OfferManagement() {
           response?.data?.results?.offerData
         );
       } else {
+        setOfferList([]);
         Swal.fire({
           title: "No Results",
           text: "No offers found for the given search criteria.",
@@ -95,6 +100,7 @@ function OfferManagement() {
           confirmButtonText: "OK",
         }).then((result) => {
           if (result.isConfirmed) {
+            window.location.reload();
             window.location.reload();
           }
         });
@@ -112,7 +118,6 @@ function OfferManagement() {
       title: title,
       code: code,
       Discount: discount,
-      // productName_en: productName,
     };
     try {
       await updateOffer(editOffer);
@@ -156,12 +161,6 @@ function OfferManagement() {
         to: endDate,
       }
     );
-    // const filteredUsers = data.results.createData.filter(
-    //   (user) =>
-    //     new Date(user.createdAt) >= new Date(startDate) &&
-    //     new Date(user.createdAt) <= new Date(endDate)
-    // );
-    // setUsersList(filteredUsers);
     setOfferList(data?.results?.list);
     console.log(data);
   };

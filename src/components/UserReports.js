@@ -12,6 +12,20 @@ export default function UserReports(props) {
 
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
+  const fetchStaffList = async () => {
+    try {
+      const response = await axios.post(
+        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/reporter/reporter/list"
+      );
+      setReporterList(response?.data?.results?.list?.reverse());
+    } catch (error) {
+      console.log(error.response.data);
+    }
+  };
+  useEffect(() => {
+    fetchStaffList();
+  }, []);
+
   useEffect(() => {
     handleSearch1();
   }, [props?.searchQuery]);
@@ -27,7 +41,19 @@ export default function UserReports(props) {
         );
         const { error, results } = response.data;
         if (error) {
-          throw new Error("Error searching for products.Data are Not Found");
+          setReporterList([]);
+          Swal.fire({
+            title: "Error!",
+            // text: error.response.data,
+            text: "Error searching for products. Data is not found",
+            icon: "error",
+            confirmButtonText: "OK",
+          }).then((result) => {
+            if (result.isConfirmed) {
+              fetchStaffList();
+            }
+          });
+          // throw new Error("Error searching for products.Data are Not Found");
         } else {
           setReporterList(results?.repoterData);
         }
@@ -43,40 +69,48 @@ export default function UserReports(props) {
       setReporterList([]);
     }
   };
-  const fetchStaffList = async () => {
-    try {
-      const response = await axios.post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/reporter/reporter/list"
-      );
-      setReporterList(response?.data?.results?.list?.reverse());
-    } catch (error) {
-      console.log(error.response.data);
-    }
-  };
 
-  useEffect(() => {
-    fetchStaffList();
-  }, []);
-
-  const userList = async () => {
-    const { data } = await axios.post(
-      "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/reporter/reporter/list",
-      {
-        from: startDate,
-        to: endDate,
-      }
-    );
-    // const filteredUsers = data.results.list.filter(
-    //   (user) =>
-    //     new Date(user.createdAt) >= new Date(startDate) &&
-    //     new Date(user.createdAt) <= new Date(endDate)
-    // );
-    setReporterList(data?.results?.list?.reverse());
-    console.log(data);
-  };
   const handleSearch = (e) => {
     e.preventDefault();
-    userList();
+    axios
+      .post(
+        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/reporter/reporter/list",
+        {
+          from: startDate,
+          to: endDate,
+        }
+      )
+      .then((response) => {
+        const list = response?.data?.results?.list?.reverse();
+        if (list && list.length > 0) {
+          Swal.fire({
+            title: "List Found!",
+            text: "list is available for the selected date.",
+            icon: "success",
+            confirmButtonText: "OK",
+          }).then((result) => {
+            if (result.isConfirmed) {
+              setReporterList(list);
+            }
+          });
+          // setReporterList(list);
+        } else {
+          setReporterList([]);
+          Swal.fire({
+            icon: "warning",
+            title: "No data found!",
+            text: "There is no list between the selected dates.",
+            confirmButtonText: "OK",
+          }).then((result) => {
+            if (result.isConfirmed) {
+              fetchStaffList();
+            }
+          });
+        }
+      })
+      .catch((error) => {
+        console.log(error.response.data);
+      });
   };
   return (
     <>

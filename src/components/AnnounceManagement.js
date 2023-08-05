@@ -16,27 +16,53 @@ function AnnounceManagement() {
   });
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
+  const url =
+    "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/announcement/announcement/list";
+  const url2 =
+    "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/announcement/announcement/search";
+  useEffect(() => {
+    userList();
+  }, []);
+  const userList = async () => {
+    const { data } = await axios.post(url);
+    setAnnouncementList(data?.results?.list?.reverse());
+    console.log(data);
+  };
 
+  
   const userList2 = async () => {
     if (!startDate1) return;
     try {
-      const { data } = await axios.post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/announcement/announcement/list",
-        {
-          startDate1,
-        }
-      );
+      const { data } = await axios.post(url, {
+        startDate1,
+      });
       const filteredUsers = data?.results?.list?.filter(
         (user) =>
           new Date(user?.createdAt?.slice(0, 10)).toISOString().slice(0, 10) ===
           new Date(startDate1).toISOString().slice(0, 10)
       );
       if (filteredUsers.length === 0) {
-        Swal.fire({
+        setAnnouncementList([]);
+        await Swal.fire({
           title: "No List Found",
           text: "No list is available for the selected date.",
           icon: "warning",
           confirmButtonText: "OK",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            userList();
+          }
+        });
+      } else if (filteredUsers.length > 0) {
+        await Swal.fire({
+          title: "List Found!",
+          text: "list is available for the selected date.",
+          icon: "success",
+          confirmButtonText: "OK",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            setAnnouncementList(filteredUsers);
+          }
         });
       }
       setAnnouncementList(filteredUsers);
@@ -56,46 +82,7 @@ function AnnounceManagement() {
   const handleFileChange = (event) => {
     setFormData({ ...formData, categoryPic: event.target.files[0] });
   };
-  useEffect(() => {
-    userList();
-  }, []);
-  const userList = async () => {
-    const { data } = await axios.post(
-      "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/announcement/announcement/list",
-      {}
-    );
-    setAnnouncementList(data?.results?.list?.reverse());
-    console.log(data);
-  };
 
-  // const handleSubmit = async (event) => {
-  //   event.preventDefault();
-  //   try {
-  //     const data = new FormData();
-  //     data.append("heading", formData.nameEn);
-  //     data.append("heading_ar", formData.nameAr);
-  //     data.append("pic", formData.categoryPic);
-  //     data.append("text", formData.nameEnText);
-  //     data.append("text_ar", formData.nameArText);
-  //     const response = await axios.post(
-  //       "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/announcement/announcement/create",
-  //       data,
-  //       {
-  //         headers: {
-  //           "Content-Type": "multipart/form-data",
-  //           "x-auth-token-user": localStorage.getItem("token"),
-  //         },
-  //       }
-  //     );
-  //     console.log(response.data.results.saveData);
-  //     if (!response.data.error) {
-  //       alert("List saved!");
-  //       handleSave();
-  //     }
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // };
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
@@ -107,13 +94,7 @@ function AnnounceManagement() {
       data.append("text_ar", formData.nameArText);
       const response = await axios.post(
         "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/announcement/announcement/create",
-        data,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            "x-auth-token-user": localStorage.getItem("token"),
-          },
-        }
+        data
       );
 
       if (!response.data.error) {
@@ -121,15 +102,15 @@ function AnnounceManagement() {
         Swal.fire({
           icon: "success",
           title: "Success",
-          text: "List saved!",
+          text: "Announcement Created!",
           confirmButtonText: "OK",
-        }).then((result) => {
-          if (result.isConfirmed) {
-            window.location.reload();
-          }
-        });
-
-        handleSave();
+        })
+        // .then((result) => {
+        //   if (result.isConfirmed) {
+        //     window.location.reload();
+        //   }
+        // });
+        userList();
       }
     } catch (error) {
       console.error(error);
@@ -142,44 +123,53 @@ function AnnounceManagement() {
     }
   };
 
-  const handleSave = async () => {
-    try {
-      const response = await axios.post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/announcement/announcement/list",
-        null,
-        {
-          headers: {
-            "x-auth-token-user": localStorage.getItem("token"),
-          },
-        }
-      );
-      setAnnouncementList(response?.data?.results?.list?.reverse());
-      console.log(response.data);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
+  
   useEffect(() => {
-    handleSave();
-  }, []);
-  const handleSearch1 = async (e) => {
-    e.preventDefault();
-    if (searchQuery) {
-      try {
-        const response = await axios.post(
-          "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/announcement/announcement/search",
-          {
-            heading: searchQuery,
+    handleSearch1();
+  }, [searchQuery]);
+
+  const handleSearch1 = async () => {
+    try {
+      const url1 = searchQuery !== "" ? url2 : url;
+      const response = await axios.post(url1, {
+        heading: searchQuery,
+      });
+      const { error, results } = response.data;
+      if (error) {
+        setAnnouncementList([]);
+        Swal.fire({
+          title: "Error!",
+          // text: error.response.data,
+          text: "Error searching for products. Data is not found",
+          icon: "error",
+          confirmButtonText: "OK",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            userList();
           }
+        });
+        // throw new Error("Error searching for products. Data is not found.");
+      } else {
+        setAnnouncementList(
+          searchQuery !== "" ? results?.searchData : results?.list?.reverse()
         );
-        const { error, results } = response.data;
-        if (error) {
-          throw new Error("Error searching for products.Data are Not Found");
-        } else {
-          setAnnouncementList(results.searchData);
-        }
-      } catch (error) {
+      }
+    } catch (error) {
+      if (error.response) {
+        Swal.fire({
+          title: "Error!",
+          text: error.response.data,
+          icon: "error",
+          confirmButtonText: "OK",
+        });
+      } else if (error.request) {
+        Swal.fire({
+          title: "Error!",
+          text: "Network error. Please try again later.",
+          icon: "error",
+          confirmButtonText: "OK",
+        });
+      } else {
         Swal.fire({
           title: "Error!",
           text: error.message,
@@ -187,8 +177,6 @@ function AnnounceManagement() {
           confirmButtonText: "OK",
         });
       }
-    } else {
-      setAnnouncementList([]);
     }
   };
 

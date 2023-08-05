@@ -13,33 +13,117 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import Sidebar from "./Sidebar";
 import Spinner from "./Spinner";
+import { useDeleteAgentListMutation } from "../services/Post";
 
 function Agent() {
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
+  const [deleteAgent] = useDeleteAgentListMutation();
   const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [agentList, setAgentList] = useState([]);
   const [startDate, setStartDate] = useState("");
   const [startDate1, setStartDate1] = useState("");
   const [endDate, setEndDate] = useState("");
-  const handleSearch = async (e) => {
+  const url =
+    "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/agent/agent/user-List";
+  const url2 =
+    "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/agent/agent/search-user";
+  useEffect(() => {
+    agentManagementList();
+  }, []);
+  const agentManagementList = () => {
+    axios
+      .post(url)
+      .then((response) => {
+        setAgentList(response?.data?.results?.list?.reverse());
+      })
+      .catch((error) => {
+        console.log(error.response.data);
+        Swal.fire({
+          icon: "error",
+          title: "Network Error",
+          text: "Failed to fetch recent order list data. Please try again later.",
+        });
+      });
+  };
+
+  const viewAgent = (_id) => {
+    console.log("viewAgent", _id);
+  };
+  const handleSearch = (e) => {
     e.preventDefault();
-    if (searchQuery) {
-      try {
-        const response = await axios.post(
-          "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/agent/agent/search-user",
-          {
-            name: searchQuery,
-          }
-        );
-        const { error, results } = response.data;
-        if (error) {
-          throw new Error("Error searching for products.");
+    axios
+      .post(url, {
+        from: startDate,
+        to: endDate,
+      })
+      .then((response) => {
+        const list = response?.data?.results?.list?.reverse();
+        if (list && list.length > 0) {
+          Swal.fire({
+            title: "List Found!",
+            text: "list is available for the selected date.",
+            icon: "success",
+            confirmButtonText: "OK",
+          }).then((result) => {
+            if (result.isConfirmed) {
+              setAgentList(list);
+            }
+          });
+          // setAgentList(list);
         } else {
-          setAgentList(results.searchData);
+          setAgentList([]);
+          Swal.fire({
+            icon: "warning",
+            title: "No data found!",
+            text: "There is no list between the selected dates.",
+            confirmButtonText: "OK",
+          }).then((result) => {
+            if (result.isConfirmed) {
+              agentManagementList();
+            }
+          });
         }
-      } catch (error) {
+      })
+      .catch((error) => {
+        console.log(error.response.data);
+      });
+  };
+  useEffect(() => {
+    handleSearch1();
+  }, [searchQuery]);
+
+  const handleSearch1 = async () => {
+    try {
+      const url1 = searchQuery !== "" ? url2 : url;
+      const response = await axios.post(url1, {
+        name: searchQuery,
+      });
+      const { error, results } = response.data;
+      if (error) {
+        throw new Error("Error searching for products. Data is not found.");
+      } else {
+        setAgentList(
+          searchQuery !== "" ? results?.searchData : results?.list?.reverse()
+        );
+      }
+    } catch (error) {
+      if (error.response) {
+        Swal.fire({
+          title: "Error!",
+          text: error.response.data,
+          icon: "error",
+          confirmButtonText: "OK",
+        });
+      } else if (error.request) {
+        Swal.fire({
+          title: "Error!",
+          text: "Network error. Please try again later.",
+          icon: "error",
+          confirmButtonText: "OK",
+        });
+      } else {
         Swal.fire({
           title: "Error!",
           text: error.message,
@@ -47,88 +131,8 @@ function Agent() {
           confirmButtonText: "OK",
         });
       }
-    } else {
-      agentList([]);
     }
   };
-  useEffect(() => {
-    userList();
-  }, []);
-  const userList = async () => {
-    const { data } = await axios.post(
-      "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/agent/agent/user-List"
-    );
-    setAgentList(data.results.list.reverse());
-    console.log("Agent List", data);
-  };
-  const deleteAgent = async (_id) => {
-    try {
-      await axios.delete(
-        `http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/agent/agent/delete-user/${_id}`
-      );
-      setAgentList((prevList) => prevList.filter((agent) => agent._id !== _id));
-      console.log("Deleted agent", _id);
-    } catch (error) {
-      console.log("Error deleting agent", error);
-    }
-  };
-  const viewAgent = (_id) => {
-    console.log("viewAgent", _id);
-  };
-  // const userList2 = async () => {
-  //   if (!startDate1) return;
-  //   try {
-  //     const { data } = await axios.post(
-  //       "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/agent/agent/user-List",
-  //       {
-  //         startDate1,
-  //       }
-  //     );
-  //     const filteredUsers = data?.results?.createData?.filter(
-  //       (user) =>
-  //         new Date(user?.createdAt?.slice(0, 10)).toISOString().slice(0, 10) ===
-  //         new Date(startDate1).toISOString().slice(0, 10)
-  //     );
-  //     if (filteredUsers.length === 0) {
-  //       Swal.fire({
-  //         title: "No List Found",
-  //         text: "No list is available for the selected date.",
-  //         icon: "warning",
-  //         confirmButtonText: "OK",
-  //       });
-  //     }
-  //     setUsersList(filteredUsers);
-  //     console.log(data);
-  //   } catch (error) {
-  //     console.error("Error fetching user list:", error);
-  //   }
-  // };
-  // useEffect(() => {
-  //   userList2();
-  // }, [startDate1]);
-
-  const userList3 = async () => {
-    const { data } = await axios.post(
-      "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/agent/agent/user-List",
-      {
-        from:startDate,
-        to:endDate,
-      }
-    );
-    // const filteredUsers = data.results.createData.filter(
-    //   (user) =>
-    //     new Date(user.createdAt) >= new Date(startDate) &&
-    //     new Date(user.createdAt) <= new Date(endDate)
-    // );
-    // setUsersList(filteredUsers);
-    setAgentList(data?.results?.list);
-    console.log(data);
-  };
-  const handleSearch3 = (e) => {
-    e.preventDefault();
-    userList3();
-  };
-
   return (
     <>
       {loading}
@@ -226,7 +230,7 @@ function Agent() {
                               />
                               <i
                                 className="fa fa-search"
-                                onClick={handleSearch}
+                                onClick={handleSearch1}
                               ></i>
                             </div>
                           </form>
@@ -243,7 +247,7 @@ function Agent() {
                       <form
                         className="form-design py-4 px-3 help-support-form row align-items-end justify-content-between"
                         action=""
-                        onSubmit={handleSearch3}
+                        onSubmit={handleSearch}
                       >
                         <div className="form-group mb-0 col-5">
                           <label htmlFor="">From</label>

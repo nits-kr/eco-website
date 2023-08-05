@@ -22,6 +22,17 @@ function Help() {
   const [endDate, setEndDate] = useState("");
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
+  const url =
+    "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/help/help/list";
+  const url2 =
+    "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/help/help/helpSearch";
+  useEffect(() => {
+    fetchHelpList();
+  }, []);
+  const fetchHelpList = async () => {
+    const { data } = await axios.post(url);
+    setHelpList(data.results.list.reverse());
+  };
   const handleCategoryInputChange = (event) => {
     const { name, value } = event.target;
     setCategory({ ...category, [name]: value });
@@ -31,23 +42,53 @@ function Help() {
     const { name, value } = event.target;
     setSubCategory({ ...subCategory, [name]: value });
   };
-  const handleSearchCategoryName = async (e) => {
-    e.preventDefault();
-    if (searchQuery) {
-      try {
-        const response = await axios.post(
-          "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/help/help/helpSearch",
-          {
-            categoryName: searchQuery,
+
+  useEffect(() => {
+    handleSearch1();
+  }, [searchQuery]);
+
+  const handleSearch1 = async () => {
+    try {
+      const url1 = searchQuery !== "" ? url2 : url;
+      const response = await axios.post(url1, {
+        categoryName: searchQuery,
+      });
+      const { error, results } = response.data;
+      if (error) {
+        setHelpList([]);
+        Swal.fire({
+          title: "Error!",
+          // text: error.response.data,
+          text: "Error searching for products. Data is not found",
+          icon: "error",
+          confirmButtonText: "OK",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            fetchHelpList();
           }
+        });
+        // throw new Error("Error searching for products. Data is not found.");
+      } else {
+        setHelpList(
+          searchQuery !== "" ? results?.searchData : results?.list?.reverse()
         );
-        const { error, results } = response.data;
-        if (error) {
-          throw new Error("Error searching for products.");
-        } else {
-          setHelpList(results.searchData);
-        }
-      } catch (error) {
+      }
+    } catch (error) {
+      if (error.response) {
+        Swal.fire({
+          title: "Error!",
+          text: error.response.data,
+          icon: "error",
+          confirmButtonText: "OK",
+        });
+      } else if (error.request) {
+        Swal.fire({
+          title: "Error!",
+          text: "Network error. Please try again later.",
+          icon: "error",
+          confirmButtonText: "OK",
+        });
+      } else {
         Swal.fire({
           title: "Error!",
           text: error.message,
@@ -55,31 +96,42 @@ function Help() {
           confirmButtonText: "OK",
         });
       }
-    } else {
-      helpList([]);
     }
   };
 
   const userList2 = async () => {
     if (!startDate1) return;
     try {
-      const { data } = await axios.post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/help/help/list",
-        {
-          startDate1,
-        }
-      );
+      const { data } = await axios.post(url, {
+        startDate1,
+      });
       const filteredUsers = data?.results?.list?.filter(
         (user) =>
           new Date(user?.createdAt?.slice(0, 10)).toISOString().slice(0, 10) ===
           new Date(startDate1).toISOString().slice(0, 10)
       );
       if (filteredUsers.length === 0) {
-        Swal.fire({
+        setHelpList([]);
+        await Swal.fire({
           title: "No List Found",
           text: "No list is available for the selected date.",
           icon: "warning",
           confirmButtonText: "OK",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            fetchHelpList();
+          }
+        });
+      } else if (filteredUsers.length > 0) {
+        await Swal.fire({
+          title: "List Found!",
+          text: "list is available for the selected date.",
+          icon: "success",
+          confirmButtonText: "OK",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            setHelpList(filteredUsers);
+          }
         });
       }
       setHelpList(filteredUsers);
@@ -88,38 +140,48 @@ function Help() {
       console.error("Error fetching user list:", error);
     }
   };
-
   useEffect(() => {
     userList2();
   }, [startDate1]);
-  useEffect(() => {
-    informationList();
-  }, []);
-  const informationList = async () => {
-    const { data } = await axios.post(
-      "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/help/help/list"
-    );
-    setHelpList(data.results.list.reverse());
-  };
-  const userList = async () => {
-    const { data } = await axios.post(
-      "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/help/help/list",
-      {
-        from:startDate,
-        to:endDate,
-      }
-    );
-    // const filteredUsers = data.results.list.filter(
-    //   (user) =>
-    //     new Date(user.createdAt) >= new Date(startDate) &&
-    //     new Date(user.createdAt) <= new Date(endDate)
-    // );
-    setHelpList(data?.results?.list?.reverse());
-    console.log(data);
-  };
+
   const handleSearch = (e) => {
     e.preventDefault();
-    userList();
+    axios
+      .post(url, {
+        from: startDate,
+        to: endDate,
+      })
+      .then((response) => {
+        const list = response?.data?.results?.list?.reverse();
+        if (list && list.length > 0) {
+          Swal.fire({
+            title: "List Found!",
+            text: "list is available for the selected date.",
+            icon: "success",
+            confirmButtonText: "OK",
+          }).then((result) => {
+            if (result.isConfirmed) {
+              setHelpList(list);
+            }
+          });
+          // setHelpList(list);
+        } else {
+          setHelpList([]);
+          Swal.fire({
+            icon: "warning",
+            title: "No data found!",
+            text: "There is no list between the selected dates.",
+            confirmButtonText: "OK",
+          }).then((result) => {
+            if (result.isConfirmed) {
+              fetchHelpList();
+            }
+          });
+        }
+      })
+      .catch((error) => {
+        console.log(error.response.data);
+      });
   };
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -155,7 +217,7 @@ function Help() {
   };
   return (
     <>
-      <Sidebar Dash={"help"}/>
+      <Sidebar Dash={"help"} />
       <div className="admin_main">
         <div className="admin_main_inner">
           <div className="admin_panel_data height_adjust">
@@ -173,7 +235,10 @@ function Help() {
                       onSubmit={handleSubmit}
                     >
                       <div className="form-group col-6">
-                        <label htmlFor="">Category (En)<span className="required-field text-danger">*</span></label>
+                        <label htmlFor="">
+                          Category (En)
+                          <span className="required-field text-danger">*</span>
+                        </label>
                         <input
                           type="text"
                           className="form-control"
@@ -186,7 +251,10 @@ function Help() {
                         />
                       </div>
                       <div className="form-group col-6">
-                        <label htmlFor="">Category (Ar)<span className="required-field text-danger">*</span></label>
+                        <label htmlFor="">
+                          Category (Ar)
+                          <span className="required-field text-danger">*</span>
+                        </label>
                         <input
                           type="text"
                           className="form-control"
@@ -199,7 +267,10 @@ function Help() {
                         />
                       </div>
                       <div className="form-group mb-0 col">
-                        <label htmlFor="">Sub Category (En)<span className="required-field text-danger">*</span></label>
+                        <label htmlFor="">
+                          Sub Category (En)
+                          <span className="required-field text-danger">*</span>
+                        </label>
                         <input
                           type="text"
                           className="form-control"
@@ -212,7 +283,10 @@ function Help() {
                         />
                       </div>
                       <div className="form-group mb-0 col">
-                        <label htmlFor="">Sub Category (Ar)<span className="required-field text-danger">*</span></label>
+                        <label htmlFor="">
+                          Sub Category (Ar)
+                          <span className="required-field text-danger">*</span>
+                        </label>
                         <input
                           type="text"
                           className="form-control"
@@ -238,7 +312,7 @@ function Help() {
                         <form
                           className="form-design"
                           action=""
-                          onSubmit={handleSearchCategoryName}
+                          onSubmit={handleSearch1}
                         >
                           <div className="form-group mb-0 position-relative icons_set">
                             <input
@@ -250,7 +324,10 @@ function Help() {
                               value={searchQuery}
                               onChange={(e) => setSearchQuery(e.target.value)}
                             />
-                            <i className="far fa-search" onClick={handleSearchCategoryName}></i>
+                            <i
+                              className="far fa-search"
+                              onClick={handleSearch1}
+                            ></i>
                           </div>
                         </form>
                       </div>

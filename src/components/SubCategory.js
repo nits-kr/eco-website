@@ -14,7 +14,7 @@ function SubCategory(props) {
   const [editSubCategoryNameAr, setEditSubCategoryNameAr] = useState("");
   const [subCategoryNameEn2, setSubCategoryNameEn2] = useState("");
   const [subCategoryNameAr2, setSubCategoryNameAr2] = useState("");
-  const [image2, setImage2] = useState("")
+  const [image2, setImage2] = useState("");
   console.log("update sub category", update);
   const [subCategoryList, setSubCategoryList] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -39,27 +39,62 @@ function SubCategory(props) {
     setSubCategory({ ...subCategory, subCategoryPic: event.target.files[0] });
     console.log("picture", event.target.files[0]);
   };
+  const url =
+    "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/subCategory/SubCategoryList";
+  const url2 =
+    "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/subCategory/subCategorySearch";
+  useEffect(() => {
+    subCategoryManagementList();
+  }, []);
+  const subCategoryManagementList = () => {
+    axios
+      .post(url)
+      .then((response) => {
+        setSubCategoryList(response?.data?.results?.list?.reverse());
+      })
+      .catch((error) => {
+        console.log(error.response.data);
+        Swal.fire({
+          icon: "error",
+          title: "Network Error",
+          text: "Failed to fetch recent order list data. Please try again later.",
+        });
+      });
+  };
 
   const userList2 = async () => {
     if (!startDate1) return;
     try {
-      const { data } = await axios.post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/subCategory/SubCategoryList",
-        {
-          startDate1,
-        }
-      );
+      const { data } = await axios.post(url, {
+        startDate1,
+      });
       const filteredUsers = data?.results?.list?.filter(
         (user) =>
           new Date(user?.createdAt?.slice(0, 10)).toISOString().slice(0, 10) ===
           new Date(startDate1).toISOString().slice(0, 10)
       );
       if (filteredUsers.length === 0) {
-        Swal.fire({
+        setSubCategoryList([]);
+        await Swal.fire({
           title: "No List Found",
           text: "No list is available for the selected date.",
           icon: "warning",
           confirmButtonText: "OK",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            subCategoryManagementList();
+          }
+        });
+      } else if (filteredUsers.length > 0) {
+        await Swal.fire({
+          title: "List Found!",
+          text: "list is available for the selected date.",
+          icon: "success",
+          confirmButtonText: "OK",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            setSubCategoryList(filteredUsers);
+          }
         });
       }
       setSubCategoryList(filteredUsers);
@@ -72,23 +107,40 @@ function SubCategory(props) {
     userList2();
   }, [startDate1]);
 
-  const handleSearch = async (e) => {
-    e.preventDefault();
-    if (searchQuery) {
-      try {
-        const response = await axios.post(
-          "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/subCategory/subCategorySearch",
-          {
-            subCategoryName_en: searchQuery,
-          }
+  useEffect(() => {
+    handleSearch1();
+  }, [searchQuery]);
+
+  const handleSearch1 = async () => {
+    try {
+      const url1 = searchQuery !== "" ? url2 : url;
+      const response = await axios.post(url1, {
+        subCategoryName_en: searchQuery,
+      });
+      const { error, results } = response.data;
+      if (error) {
+        throw new Error("Error searching for products. Data is not found.");
+      } else {
+        setSubCategoryList(
+          searchQuery !== "" ? results?.categoryData : results?.list?.reverse()
         );
-        const { error, results } = response.data;
-        if (error) {
-          throw new Error("Error searching for products.");
-        } else {
-          setSubCategoryList(results.categoryData);
-        }
-      } catch (error) {
+      }
+    } catch (error) {
+      if (error.response) {
+        Swal.fire({
+          title: "Error!",
+          text: error.response.data,
+          icon: "error",
+          confirmButtonText: "OK",
+        });
+      } else if (error.request) {
+        Swal.fire({
+          title: "Error!",
+          text: "Network error. Please try again later.",
+          icon: "error",
+          confirmButtonText: "OK",
+        });
+      } else {
         Swal.fire({
           title: "Error!",
           text: error.message,
@@ -96,8 +148,6 @@ function SubCategory(props) {
           confirmButtonText: "OK",
         });
       }
-    } else {
-      setSubCategoryList([]);
     }
   };
 
@@ -125,7 +175,7 @@ function SubCategory(props) {
         });
         // setSubCategoryList((prevList) => [...prevList, response.data.results]);
         // fetchData(); // Fetch updated subcategory list after creating a new subcategory
-        handleSave();
+        subCategoryManagementList();
       }
     } catch (error) {
       console.error(error);
@@ -147,24 +197,24 @@ function SubCategory(props) {
     }
   };
 
-  const handleSave = async () => {
-    // props.setProgress(10);
-    // setLoading(true);
-    try {
-      const response = await axios.post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/subCategory/SubCategoryList"
-      );
-      setSubCategoryList(response?.data?.results?.list?.reverse());
-    } catch (error) {
-      console.error(error);
-    }
-    // props.setProgress(100);
-    // setLoading(false);
-  };
+  // const handleSave = async () => {
+  //   // props.setProgress(10);
+  //   // setLoading(true);
+  //   try {
+  //     const response = await axios.post(
+  //       "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/subCategory/SubCategoryList"
+  //     );
+  //     setSubCategoryList(response?.data?.results?.list?.reverse());
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  //   // props.setProgress(100);
+  //   // setLoading(false);
+  // };
 
-  useEffect(() => {
-    handleSave();
-  }, []);
+  // useEffect(() => {
+  //   handleSave();
+  // }, []);
 
   const handleUpdate = (id, nameEn, nameAr) => {
     console.log(nameEn, nameAr, id);
@@ -326,7 +376,7 @@ function SubCategory(props) {
                 <h2>Sub Category List</h2>
               </div>
               <div className="col-3">
-                <form className="form-design" onSubmit={handleSearch}>
+                <form className="form-design" onSubmit={handleSearch1}>
                   <div className="form-group mb-0 position-relative icons_set">
                     <input
                       type="text"
@@ -416,8 +466,9 @@ function SubCategory(props) {
                               className="comman_btn2 table_viewbtn"
                               to=""
                               onClick={() => {
-                                handleItem(value)
-                                setItemId(value?._id)}}
+                                handleItem(value);
+                                setItemId(value?._id);
+                              }}
                             >
                               Edit
                             </Link>

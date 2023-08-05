@@ -38,42 +38,62 @@ function StaffManagement() {
 
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
-
-  const fetchStaffList = async () => {
-    try {
-      const response = await axios.post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/staff/staff/list"
-      );
-      setStaffList(response?.data?.results?.list?.reverse());
-    } catch (error) {
-      console.log(error.response.data);
-    }
-  };
-
+  const url =
+    "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/staff/staff/list";
+  const url2 =
+    "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/staff/staff/staffSearch";
   useEffect(() => {
-    fetchStaffList();
+    subStaffList();
   }, []);
+  const subStaffList = async (e) => {
+    axios
+      .post(url)
+      .then((response) => {
+        setStaffList(response?.data?.results?.list?.reverse());
+      })
+      .catch((error) => {
+        console.log(error.response.data);
+        Swal.fire({
+          icon: "error",
+          title: "Network Error",
+          text: "Failed to fetch recent order list data. Please try again later.",
+        });
+      });
+  };
 
   const userList2 = async () => {
     if (!startDate1) return;
     try {
-      const { data } = await axios.post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/staff/staff/list",
-        {
-          startDate1,
-        }
-      );
+      const { data } = await axios.post(url, {
+        startDate1,
+      });
       const filteredUsers = data?.results?.list?.filter(
         (user) =>
           new Date(user?.createdAt?.slice(0, 10)).toISOString().slice(0, 10) ===
           new Date(startDate1).toISOString().slice(0, 10)
       );
       if (filteredUsers.length === 0) {
-        Swal.fire({
+        setStaffList([]);
+        await Swal.fire({
           title: "No List Found",
           text: "No list is available for the selected date.",
           icon: "warning",
           confirmButtonText: "OK",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            subStaffList();
+          }
+        });
+      } else if (filteredUsers.length > 0) {
+        await Swal.fire({
+          title: "List Found!",
+          text: "list is available for the selected date.",
+          icon: "success",
+          confirmButtonText: "OK",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            setStaffList(filteredUsers);
+          }
         });
       }
       setStaffList(filteredUsers);
@@ -86,26 +106,100 @@ function StaffManagement() {
     userList2();
   }, [startDate1]);
 
-  const userList = async () => {
-    const { data } = await axios.post(
-      "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/staff/staff/list",
-      {
-        from:startDate,
-        to:endDate,
-      }
-    );
-    // const filteredUsers = data.results.list.filter(
-    //   (user) =>
-    //     new Date(user.createdAt) >= new Date(startDate) &&
-    //     new Date(user.createdAt) <= new Date(endDate)
-    // );
-    setStaffList(data?.results?.list?.reverse());
-    console.log(data);
-  };
-
   const handleSearch = (e) => {
     e.preventDefault();
-    userList();
+    axios
+      .post(url, {
+        from: startDate,
+        to: endDate,
+      })
+      .then((response) => {
+        const list = response?.data?.results?.list?.reverse();
+        if (list && list.length > 0) {
+          Swal.fire({
+            title: "List Found!",
+            text: "list is available for the selected date.",
+            icon: "success",
+            confirmButtonText: "OK",
+          }).then((result) => {
+            if (result.isConfirmed) {
+              setStaffList(list);
+            }
+          });
+          // setStaffList(list);
+        } else {
+          setStaffList([]);
+          Swal.fire({
+            icon: "warning",
+            title: "No data found!",
+            text: "There is no list between the selected dates.",
+            confirmButtonText: "OK",
+          }).then((result) => {
+            if (result.isConfirmed) {
+              subStaffList();
+            }
+          });
+        }
+      })
+      .catch((error) => {
+        console.log(error.response.data);
+      });
+  };
+
+  useEffect(() => {
+    handleSearch1();
+  }, [searchQuery]);
+
+  const handleSearch1 = async () => {
+    try {
+      const url1 = searchQuery !== "" ? url2 : url;
+      const response = await axios.post(url1, {
+        staffName: searchQuery,
+      });
+      const { error, results } = response.data;
+      if (error) {
+        setStaffList([]);
+        Swal.fire({
+          title: "Error!",
+          // text: error.response.data,
+          text: "Error searching for products. Data is not found",
+          icon: "error",
+          confirmButtonText: "OK",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            setStaffList();
+          }
+        });
+        // throw new Error("Error searching for products. Data is not found.");
+      } else {
+        setStaffList(
+          searchQuery !== "" ? results?.staffData : results?.list?.reverse()
+        );
+      }
+    } catch (error) {
+      if (error.response) {
+        Swal.fire({
+          title: "Error!",
+          text: error.response.data,
+          icon: "error",
+          confirmButtonText: "OK",
+        });
+      } else if (error.request) {
+        Swal.fire({
+          title: "Error!",
+          text: "Network error. Please try again later.",
+          icon: "error",
+          confirmButtonText: "OK",
+        });
+      } else {
+        Swal.fire({
+          title: "Error!",
+          text: error.message,
+          icon: "error",
+          confirmButtonText: "OK",
+        });
+      }
+    }
   };
 
   const handleInputChange = (event) => {
@@ -145,34 +239,6 @@ function StaffManagement() {
     }
   };
 
-  const handleSearch1 = async (e) => {
-    e.preventDefault();
-    if (searchQuery) {
-      try {
-        const response = await axios.post(
-          "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/staff/staff/staffSearch",
-          {
-            staffName: searchQuery,
-          }
-        );
-        const { error, results } = response.data;
-        if (error) {
-          throw new Error("Error searching for products. Data is not found.");
-        } else {
-          setStaffList(results.staffData);
-        }
-      } catch (error) {
-        Swal.fire({
-          title: "Error!",
-          text: error.message,
-          icon: "error",
-          confirmButtonText: "OK",
-        });
-      }
-    } else {
-      setStaffList([]);
-    }
-  };
   const handleSaveChanges1 = async (e) => {
     e.preventDefault();
     console.log("handleSaveChanges1", itemId);
@@ -196,8 +262,7 @@ function StaffManagement() {
           window.location.reload();
         }
       });
-    } catch (error) {
-    }
+    } catch (error) {}
   };
   const handleItem = (item) => {
     setStaffName2(item?.staffName || "");
@@ -209,7 +274,7 @@ function StaffManagement() {
 
   return (
     <>
-      <Sidebar Dash={"staff"}/>
+      <Sidebar Dash={"staff"} />
       <div className="admin_main">
         <div className="admin_main_inner">
           <div className="admin_panel_data height_adjust">
@@ -334,7 +399,10 @@ function StaffManagement() {
                               value={searchQuery}
                               onChange={(e) => setSearchQuery(e.target.value)}
                             />
-                            <i className="far fa-search" onClick={handleSearch1}></i>
+                            <i
+                              className="far fa-search"
+                              onClick={handleSearch1}
+                            ></i>
                           </div>
                         </form>
                       </div>
@@ -540,9 +608,7 @@ function StaffManagement() {
                 </div> */}
                 <div className="form-group mb-0 col-auto">
                   {" "}
-                  <button className="comman_btn2">
-                    Save
-                  </button>{" "}
+                  <button className="comman_btn2">Save</button>{" "}
                 </div>
               </form>
             </div>

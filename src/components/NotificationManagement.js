@@ -20,27 +20,92 @@ function NotificationManagement() {
   });
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
+  const url =
+    "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/notification/notification/list";
+  const url2 =
+    " http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/notification/notification/search-notification";
+  useEffect(() => {
+    subNotificationList();
+  }, []);
+  const subNotificationList = async (e) => {
+    await axios
+      .post(url)
+      .then((response) => {
+        setNotificationList(response?.data?.results?.listData?.reverse());
+      })
+      .catch((error) => {
+        console.log(error.response.data);
+        Swal.fire({
+          icon: "error",
+          title: "Network Error",
+          text: "Failed to fetch recent order list data. Please try again later.",
+        });
+      });
+  };
+
+  // const handleSearch = (e) => {
+  //   e.preventDefault();
+  //   axios
+  //     .post(url, {
+  //       from: startDate,
+  //       to: endDate,
+  //     })
+  //     .then((response) => {
+  //       const list = response?.data?.results?.list?.reverse();
+  //       if (list && list.length > 0) {
+  //         setNotificationList(list);
+  //       } else {
+  //         setNotificationList([]);
+  //         Swal.fire({
+  //           icon: "warning",
+  //           title: "No data found!",
+  //           text: "There is no list between the selected dates.",
+  //           confirmButtonText: "OK",
+  //         }).then((result) => {
+  //           if (result.isConfirmed) {
+  //             subOrderList();
+  //           }
+  //         });
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       console.log(error.response.data);
+  //     });
+  // };
 
   const userList2 = async () => {
     if (!startDate1) return;
     try {
-      const { data } = await axios.post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/notification/notification/list",
-        {
-          startDate1,
-        }
-      );
+      const { data } = await axios.post(url, {
+        startDate1,
+      });
       const filteredUsers = data?.results?.listData?.filter(
         (user) =>
           new Date(user?.createdAt?.slice(0, 10)).toISOString().slice(0, 10) ===
           new Date(startDate1).toISOString().slice(0, 10)
       );
       if (filteredUsers.length === 0) {
-        Swal.fire({
+        setNotificationList([]);
+        await Swal.fire({
           title: "No List Found",
           text: "No list is available for the selected date.",
           icon: "warning",
           confirmButtonText: "OK",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            subNotificationList();
+          }
+        });
+      } else if (filteredUsers.length > 0) {
+        await Swal.fire({
+          title: "List Found!",
+          text: "list is available for the selected date.",
+          icon: "success",
+          confirmButtonText: "OK",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            setNotificationList(filteredUsers);
+          }
         });
       }
       setNotificationList(filteredUsers);
@@ -53,6 +118,62 @@ function NotificationManagement() {
     userList2();
   }, [startDate1]);
 
+  useEffect(() => {
+    handleSearch1();
+  }, [searchQuery]);
+
+  const handleSearch1 = async () => {
+    try {
+      const url1 = searchQuery !== "" ? url2 : url;
+      const response = await axios.post(url1, {
+        text_en: searchQuery,
+      });
+      const { error, results } = response.data;
+      if (error) {
+        setNotificationList([]);
+        Swal.fire({
+          title: "Error!",
+          // text: error.response.data,
+          text: "Error searching for products. Data is not found",
+          icon: "error",
+          confirmButtonText: "OK",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            subNotificationList();
+          }
+        });
+        // throw new Error("Error searching for products. Data is not found.");
+      } else {
+        setNotificationList(
+          searchQuery !== "" ? results?.listData : results?.listData?.reverse()
+        );
+      }
+    } catch (error) {
+      if (error.response) {
+        Swal.fire({
+          title: "Error!",
+          text: error.response.data,
+          icon: "error",
+          confirmButtonText: "OK",
+        });
+      } else if (error.request) {
+        Swal.fire({
+          title: "Error!",
+          text: "Network error. Please try again later.",
+          icon: "error",
+          confirmButtonText: "OK",
+        });
+      } else {
+        Swal.fire({
+          title: "Error!",
+          text: error.message,
+          icon: "error",
+          confirmButtonText: "OK",
+        });
+      }
+    }
+  };
+
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setReportNotification({ ...reportNotification, [name]: value });
@@ -61,17 +182,17 @@ function NotificationManagement() {
     const { name, value } = event.target;
     setCustomNotification({ ...customNotification, [name]: value });
   };
-  useEffect(() => {
-    userList();
-  }, []);
-  const userList = async () => {
-    const { data } = await axios.post(
-      "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/notification/notification/list",
-      {}
-    );
-    setNotificationList(data?.results?.listData?.reverse());
-    console.log(data);
-  };
+  // useEffect(() => {
+  //   userList();
+  // }, []);
+  // const userList = async () => {
+  //   const { data } = await axios.post(
+  //     "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/notification/notification/list",
+  //     {}
+  //   );
+  //   setNotificationList(data?.results?.listData?.reverse());
+  //   console.log(data);
+  // };
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
@@ -106,34 +227,7 @@ function NotificationManagement() {
       console.error(error);
     }
   };
-  const handleSearch1 = async (e) => {
-    e.preventDefault();
-    if (searchQuery) {
-      try {
-        const response = await axios.post(
-          " http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/notification/notification/search-notification",
-          {
-            text_en: searchQuery,
-          }
-        );
-        const { error, results } = response.data;
-        if (error) {
-          throw new Error("Error searching for products.Data are Not Found");
-        } else {
-          setNotificationList(results?.listData);
-        }
-      } catch (error) {
-        Swal.fire({
-          title: "Error!",
-          text: error.message,
-          icon: "error",
-          confirmButtonText: "OK",
-        });
-      }
-    } else {
-      setNotificationList([]);
-    }
-  };
+
   return (
     <>
       <Sidebar Dash={"notification-management"} />
@@ -292,7 +386,6 @@ function NotificationManagement() {
                       </div>
                     </div>
                   </div>
-
                   <div className="col-12 design_outter_comman shadow">
                     <div className="row comman_header justify-content-between">
                       <div className="col">

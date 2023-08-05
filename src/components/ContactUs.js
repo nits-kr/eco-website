@@ -16,6 +16,10 @@ function ContactUs() {
   const [viewContact, setViewContact] = useState("");
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
+  const url =
+    "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/contact/contact/contactList";
+  const url2 =
+    "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/order/order/search";
   useEffect(() => {
     handleView();
   }, [itemId]);
@@ -28,35 +32,46 @@ function ContactUs() {
   };
 
   useEffect(() => {
-    informationList();
+    fetchInformationList();
   }, []);
-  const informationList = async () => {
-    const { data } = await axios.post(
-      "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/contact/contact/contactList"
-    );
+  const fetchInformationList = async () => {
+    const { data } = await axios.post(url);
     setContactList(data.results.list.reverse());
   };
 
   const userList2 = async () => {
     if (!startDate1) return;
     try {
-      const { data } = await axios.post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/contact/contact/contactList",
-        {
-          startDate1,
-        }
-      );
+      const { data } = await axios.post(url, {
+        startDate1,
+      });
       const filteredUsers = data?.results?.list?.filter(
         (user) =>
           new Date(user?.createdAt?.slice(0, 10)).toISOString().slice(0, 10) ===
           new Date(startDate1).toISOString().slice(0, 10)
       );
       if (filteredUsers.length === 0) {
-        Swal.fire({
+        setContactList([]);
+        await Swal.fire({
           title: "No List Found",
           text: "No list is available for the selected date.",
           icon: "warning",
           confirmButtonText: "OK",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            fetchInformationList();
+          }
+        });
+      } else if (filteredUsers.length > 0) {
+        await Swal.fire({
+          title: "List Found!",
+          text: "list is available for the selected date.",
+          icon: "success",
+          confirmButtonText: "OK",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            setContactList(filteredUsers);
+          }
         });
       }
       setContactList(filteredUsers);
@@ -69,46 +84,52 @@ function ContactUs() {
     userList2();
   }, [startDate1]);
 
-  const userList = async () => {
-    const { data } = await axios.post(
-      "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/contact/contact/contactList",
-      {
-        from:startDate,
-        to:endDate,
-      }
-    );
-    // const filteredUsers = data.results.list.filter(
-    //   (user) =>
-    //     new Date(user.createdAt) >= new Date(startDate) &&
-    //     new Date(user.createdAt) <= new Date(endDate)
-    // );
-    setContactList(data?.results?.list?.reverse());
-    console.log(data);
-  };
   const handleSearch = (e) => {
     e.preventDefault();
-    userList();
-  };
-  const handleDeleteContact = async (offerId) => {
-    try {
-      await deleteContact(offerId);
-      contactList.refetch();
-      Swal.fire({
-        title: "Offer Deleted",
-        text: "The offer has been deleted successfully.",
-        icon: "success",
-        confirmButtonText: "OK",
+    axios
+      .post(url, {
+        from: startDate,
+        to: endDate,
+      })
+      .then((response) => {
+        const list = response?.data?.results?.list?.reverse();
+        if (list && list.length > 0) {
+          Swal.fire({
+            title: "List Found!",
+            text: "list is available for the selected date.",
+            icon: "success",
+            confirmButtonText: "OK",
+          }).then((result) => {
+            if (result.isConfirmed) {
+              setContactList(list);
+            }
+          });
+          // setContactList(list);
+        } else {
+          setContactList([]);
+          Swal.fire({
+            icon: "warning",
+            title: "No data found!",
+            text: "There is no list between the selected dates.",
+            confirmButtonText: "OK",
+          }).then((result) => {
+            if (result.isConfirmed) {
+              fetchInformationList();
+            }
+          });
+        }
+      })
+      .catch((error) => {
+        console.log(error.response.data);
       });
-    } catch (error) {
-      // Handle error if necessary
-    }
   };
+
   const handleItem = (item) => {
     setDescriptionEn2(item?.description || "");
   };
   return (
     <>
-      <Sidebar Dash={"contact-us"}/>
+      <Sidebar Dash={"contact-us"} />
       <div className="admin_main">
         <div className="admin_main_inner">
           <div className="admin_panel_data height_adjust">
@@ -198,7 +219,7 @@ function ContactUs() {
                                   <td>{data.userName_en}</td>
                                   <td>{data.Email}</td>
                                   <td>{data.subject}</td>
-                                  <td>{data.description}</td>
+                                  <td>{data?.description?.slice(0, 20)}...</td>
                                   <td>{data?.createdAt?.slice(0, 10)}</td>
                                   <td>
                                     <form className="table_btns d-flex align-items-center">
@@ -242,8 +263,7 @@ function ContactUs() {
                                           showCancelButton: true,
                                           confirmButtonColor: "#3085d6",
                                           cancelButtonColor: "#d33",
-                                          confirmButtonText:
-                                            "Yes, delete it!",
+                                          confirmButtonText: "Yes, delete it!",
                                         }).then((result) => {
                                           if (result.isConfirmed) {
                                             deleteContact(data?._id);

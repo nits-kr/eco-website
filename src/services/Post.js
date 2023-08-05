@@ -276,6 +276,12 @@ export const PostApi = createApi({
         method: "DELETE",
       }),
     }),
+    deleteAgentList: builder.mutation({
+      query: (id) => ({
+        url: `/admin/agent/agent/delete-user/${id}`,
+        method: "DELETE",
+      }),
+    }),
   }),
 });
 
@@ -314,5 +320,6 @@ export const {
   useEditOrderListMutation,
   useDeleteCoupanListMutation,
   useDeleteHelpListMutation,
+  useDeleteAgentListMutation,
   // useSearchOfferQuery,
 } = PostApi;

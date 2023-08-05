@@ -77,39 +77,95 @@ function UsersManagement(props) {
   const handleId = (id) => {
     // alert(id);
   };
+  const url =
+    "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/user/userList";
+  const url2 =
+    "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/user/user-search";
   useEffect(() => {
+    // axios
+    //   .post(
+    //     "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/user/userList"
+    //   )
+    //   .then((response) => {
+    //     setUsersList(response?.data?.results?.createData?.reverse());
+    //   })
+    //   .catch((error) => {
+    //     console.log(error.response.data);
+    //   });
+    userManagementList();
+  }, []);
+  const userManagementList = () => {
     axios
-      .post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/user/userList"
-      )
+      .post(url)
       .then((response) => {
         setUsersList(response?.data?.results?.createData?.reverse());
       })
       .catch((error) => {
         console.log(error.response.data);
       });
-  }, []);
+  };
 
+  // const userList2 = async () => {
+  //   if (!startDate1) return;
+  //   try {
+  //     const { data } = await axios.post(
+  //       "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/user/userList",
+  //       {
+  //         startDate1,
+  //       }
+  //     );
+  //     const filteredUsers = data?.results?.createData?.filter(
+  //       (user) =>
+  //         new Date(user?.createdAt?.slice(0, 10)).toISOString().slice(0, 10) ===
+  //         new Date(startDate1).toISOString().slice(0, 10)
+  //     );
+  //     if (filteredUsers.length === 0) {
+  //       Swal.fire({
+  //         title: "No List Found",
+  //         text: "No list is available for the selected date.",
+  //         icon: "warning",
+  //         confirmButtonText: "OK",
+  //       });
+  //     }
+  //     setUsersList(filteredUsers);
+  //     console.log(data);
+  //   } catch (error) {
+  //     console.error("Error fetching user list:", error);
+  //   }
+  // };
   const userList2 = async () => {
     if (!startDate1) return;
     try {
-      const { data } = await axios.post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/user/userList",
-        {
-          startDate1,
-        }
-      );
+      const { data } = await axios.post(url, {
+        startDate1,
+      });
       const filteredUsers = data?.results?.createData?.filter(
         (user) =>
           new Date(user?.createdAt?.slice(0, 10)).toISOString().slice(0, 10) ===
           new Date(startDate1).toISOString().slice(0, 10)
       );
       if (filteredUsers.length === 0) {
-        Swal.fire({
+        setUsersList([]);
+        await Swal.fire({
           title: "No List Found",
           text: "No list is available for the selected date.",
           icon: "warning",
           confirmButtonText: "OK",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            userManagementList();
+          }
+        });
+      } else if (filteredUsers.length > 0) {
+        await Swal.fire({
+          title: "List Found!",
+          text: "list is available for the selected date.",
+          icon: "success",
+          confirmButtonText: "OK",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            setUsersList(filteredUsers);
+          }
         });
       }
       setUsersList(filteredUsers);
@@ -122,77 +178,155 @@ function UsersManagement(props) {
     userList2();
   }, [startDate1]);
 
-  const userList = async () => {
-    const { data } = await axios.post(
-      "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/user/userList",
-      {
-        page: "3",
-        userName: "n",
-        pageSize: "4",
-        from: startDate,
-        to: endDate,
-      }
-    );
-    setUsersList(data?.results?.createData);
-    console.log(data);
-  };
   const handleSearch = (e) => {
     e.preventDefault();
-    userList();
+    axios
+      .post(url, {
+        from: startDate,
+        to: endDate,
+      })
+      .then((response) => {
+        const list = response?.data?.results?.createData?.reverse();
+        if (list && list.length > 0) {
+          Swal.fire({
+            title: "List Found!",
+            text: "list is available for the selected date.",
+            icon: "success",
+            confirmButtonText: "OK",
+          }).then((result) => {
+            if (result.isConfirmed) {
+              setUsersList(list);
+            }
+          });
+          // setUsersList(list);
+        } else {
+          setUsersList([]);
+          Swal.fire({
+            icon: "warning",
+            title: "No data found!",
+            text: "There is no list between the selected dates.",
+            confirmButtonText: "OK",
+          }).then((result) => {
+            if (result.isConfirmed) {
+              userManagementList();
+            }
+          });
+        }
+      })
+      .catch((error) => {
+        console.log(error.response.data);
+      });
   };
-  console.log("search query", searchQuery);
+  // console.log("search query", searchQuery);
+  // useEffect(() => {
+  //   handleSearch1();
+  // }, [searchQuery]);
+  // const handleSearch1 = async (e) => {
+  //   // e.preventDefault();
+  //   if (searchQuery) {
+  //     try {
+  //       const response = await axios.post(
+  //         "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/user/user-search",
+  //         {
+  //           userName: searchQuery,
+  //         }
+  //       );
+  //       const { error, results } = response?.data;
+  //       if (error) {
+  //         throw new Error("Error searching for products. Data are Not Found");
+  //       } else {
+  //         setUsersList(results?.userData);
+  //       }
+  //     } catch (error) {
+  //       Swal.fire({
+  //         title: "Error!",
+  //         text: error.message,
+  //         icon: "error",
+  //         confirmButtonText: "OK",
+  //       });
+  //       setUsersList([]); // Set usersList to empty when there is an error in the search
+  //     }
+  //   } else {
+  //     setUsersList([]); // Set usersList to empty when searchQuery is empty
+  //   }
+  // };
   useEffect(() => {
     handleSearch1();
   }, [searchQuery]);
-  const handleSearch1 = async (e) => {
-    // e.preventDefault();
-    if (searchQuery) {
-      try {
-        const response = await axios.post(
-          "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/user/user-search",
-          {
-            userName: searchQuery,
+
+  const handleSearch1 = async () => {
+    try {
+      const url1 = searchQuery !== "" ? url2 : url;
+      const response = await axios.post(url1, {
+        userName: searchQuery,
+      });
+      const { error, results } = response.data;
+      if (error) {
+        setUsersList([]);
+        Swal.fire({
+          title: "Error!",
+          // text: error.response.data,
+          text: "Error searching for products. Data is not found",
+          icon: "error",
+          confirmButtonText: "OK",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            userManagementList();
           }
+        });
+        // throw new Error("Error searching for products. Data is not found.");
+      } else {
+        setUsersList(
+          searchQuery !== ""
+            ? results?.userData
+            : results?.createData?.reverse()
         );
-        const { error, results } = response?.data;
-        if (error) {
-          throw new Error("Error searching for products. Data are Not Found");
-        } else {
-          setUsersList(results?.userData);
-        }
-      } catch (error) {
+      }
+    } catch (error) {
+      if (error.response) {
+        Swal.fire({
+          title: "Error!",
+          text: error.response.data,
+          icon: "error",
+          confirmButtonText: "OK",
+        });
+      } else if (error.request) {
+        Swal.fire({
+          title: "Error!",
+          text: "Network error. Please try again later.",
+          icon: "error",
+          confirmButtonText: "OK",
+        });
+      } else {
         Swal.fire({
           title: "Error!",
           text: error.message,
           icon: "error",
           confirmButtonText: "OK",
         });
-        setUsersList([]); // Set usersList to empty when there is an error in the search
       }
-    } else {
-      setUsersList([]); // Set usersList to empty when searchQuery is empty
     }
   };
 
-  // const handleDownload = () => {
-  //   if (data) {
-  //     const blob = new Blob([data]);
-  //     const downloadUrl = URL.createObjectURL(blob);
-  //     const link = document.createElement('a');
-  //     link.href = downloadUrl;
-  //     link.download = 'file.txt';
-  //     link.click();
-  //   }
-  // };
   const handleDownload = () => {
-    if (data && data.results && data.results.file) {
-      const downloadUrl = data.results.file;
+    if (data) {
+      const blob = new Blob([data]);
+      const downloadUrl = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = downloadUrl;
-      link.download = "file.xlsx";
+      link.download = "file.txt";
       link.click();
     }
   };
+  // const handleDownload = () => {
+  //   if (data && data.results && data.results.file) {
+  //     const downloadUrl = data.results.file;
+  //     const link = document.createElement("a");
+  //     link.href = downloadUrl;
+  //     link.download = "file.xlsx";
+  //     link.click();
+  //   }
+  // };
 
   return (
     <>

@@ -22,58 +22,102 @@ function OrderManagement() {
 
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
+  const url =
+    "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/order/order/list";
+  const url2 =
+    "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/order/order/search";
   useEffect(() => {
-    axios
-      .post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/order/order/list"
-      )
+    subOrderList();
+  }, []);
+  const subOrderList = async (e) => {
+    await axios
+      .post(url)
       .then((response) => {
         setOrderList(response?.data?.results?.list?.reverse());
       })
       .catch((error) => {
         console.log(error.response.data);
+        Swal.fire({
+          icon: "error",
+          title: "Network Error",
+          text: "Failed to fetch recent order list data. Please try again later.",
+        });
       });
-    // userList();
-  }, []);
+  };
 
-  const userList = async () => {
-    const { data } = await axios.post(
-      "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/order/order/list",
-      {
-       from: startDate,
-       to: endDate,
-      }
-    );
-
-    // const filteredUsers = data?.results?.list?.filter(
-    //   (user) =>
-    //     new Date(user.createdAt) >= new Date(startDate) &&
-    //     new Date(user.createdAt) <= new Date(endDate)
-    // );
-
-    setOrderList(data?.results?.list?.reverse());
+  const handleSearch = (e) => {
+    e.preventDefault();
+    axios
+      .post(url, {
+        from: startDate,
+        to: endDate,
+      })
+      .then((response) => {
+        const list = response?.data?.results?.list?.reverse();
+        if (list && list.length > 0) {
+          Swal.fire({
+            title: "List Found!",
+            text: "list is available for the selected date.",
+            icon: "success",
+            confirmButtonText: "OK",
+          }).then((result) => {
+            if (result.isConfirmed) {
+              setOrderList(list);
+            }
+          });
+          // setOrderList(list);
+        } else {
+          setOrderList([]);
+          Swal.fire({
+            icon: "warning",
+            title: "No data found!",
+            text: "There is no list between the selected dates.",
+            confirmButtonText: "OK",
+          }).then((result) => {
+            if (result.isConfirmed) {
+              subOrderList();
+            }
+          });
+        }
+      })
+      .catch((error) => {
+        console.log(error.response.data);
+      });
   };
 
   const userList2 = async () => {
     if (!startDate1) return;
     try {
-      const { data } = await axios.post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/order/order/list",
-        {
-          startDate1,
-        }
-      );
+      const { data } = await axios.post(url, {
+        startDate1,
+      });
       const filteredUsers = data?.results?.list?.filter(
         (user) =>
           new Date(user?.createdAt?.slice(0, 10)).toISOString().slice(0, 10) ===
           new Date(startDate1).toISOString().slice(0, 10)
       );
       if (filteredUsers.length === 0) {
-        Swal.fire({
+        setOrderList([]);
+        await Swal.fire({
           title: "No List Found",
           text: "No list is available for the selected date.",
           icon: "warning",
           confirmButtonText: "OK",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            subOrderList();
+          }
+        });
+      } else if (filteredUsers.length > 0) {
+        await Swal.fire({
+          title: "List Found!",
+          text: "list is available for the selected date.",
+          icon: "success",
+          confirmButtonText: "OK",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            setOrderList(filteredUsers);
+          }
         });
       }
       setOrderList(filteredUsers);
@@ -86,27 +130,52 @@ function OrderManagement() {
     userList2();
   }, [startDate1]);
 
-  const handleSearch = (e) => {
-    e.preventDefault();
-    userList();
-  };
-  const handleSearch1 = async (e) => {
-    e.preventDefault();
-    if (searchQuery) {
-      try {
-        const response = await axios.post(
-          "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/order/order/search",
-          {
-            orderStatus: searchQuery,
+  useEffect(() => {
+    handleSearch1();
+  }, [searchQuery]);
+
+  const handleSearch1 = async () => {
+    try {
+      const url1 = searchQuery !== "" ? url2 : url;
+      const response = await axios.post(url1, {
+        orderStatus: searchQuery,
+      });
+      const { error, results } = response.data;
+      if (error) {
+        setOrderList([]);
+        Swal.fire({
+          title: "Error!",
+          // text: error.response.data,
+          text: "Error searching for products. Data is not found",
+          icon: "error",
+          confirmButtonText: "OK",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            subOrderList();
           }
+        });
+        // throw new Error("Error searching for products. Data is not found.");
+      } else {
+        setOrderList(
+          searchQuery !== "" ? results?.orderData : results?.list?.reverse()
         );
-        const { error, results } = response.data;
-        if (error) {
-          throw new Error("Error searching for products.Data are Not Found");
-        } else {
-          setOrderList(results.orderDetails);
-        }
-      } catch (error) {
+      }
+    } catch (error) {
+      if (error.response) {
+        Swal.fire({
+          title: "Error!",
+          text: error.response.data,
+          icon: "error",
+          confirmButtonText: "OK",
+        });
+      } else if (error.request) {
+        Swal.fire({
+          title: "Error!",
+          text: "Network error. Please try again later.",
+          icon: "error",
+          confirmButtonText: "OK",
+        });
+      } else {
         Swal.fire({
           title: "Error!",
           text: error.message,
@@ -114,26 +183,9 @@ function OrderManagement() {
           confirmButtonText: "OK",
         });
       }
-    } else {
-      setOrderList([]);
     }
   };
 
-  // const deleteOrder = async (_id) => {
-  //   try {
-  //     await axios.delete(
-  //       `http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/order/order/delete-order/${_id}`
-  //     );
-  //     console.log("delete Order", _id);
-
-  //     const response = await axios.post(
-  //       "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/order/order/list"
-  //     );
-  //     setOrderList(response?.data?.results?.list?.reverse());
-  //   } catch (error) {
-  //     console.log("Error deleting order:", error);
-  //   }
-  // };
   const deleteOrder = async (_id) => {
     try {
       const result = await Swal.fire({
@@ -157,25 +209,25 @@ function OrderManagement() {
     }
   };
 
-  // const handleDownload = () => {
-  //   if (data) {
-  //     const blob = new Blob([data]);
-  //     const downloadUrl = URL.createObjectURL(blob);
-  //     const link = document.createElement('a');
-  //     link.href = downloadUrl;
-  //     link.download = 'file.txt';
-  //     link.click();
-  //   }
-  // };
   const handleDownload = () => {
-    if (data && data.results && data.results.file) {
-      const downloadUrl = data.results.file;
-      const link = document.createElement("a");
+    if (data) {
+      const blob = new Blob([data]);
+      const downloadUrl = URL.createObjectURL(blob);
+      const link = document.createElement('a');
       link.href = downloadUrl;
-      link.download = "file.xlsx";
+      link.download = 'file.xlsx';
       link.click();
     }
   };
+  // const handleDownload = () => {
+  //   if (data && data.results && data.results.file) {
+  //     const downloadUrl = data.results.file;
+  //     const link = document.createElement("a");
+  //     link.href = downloadUrl;
+  //     link.download = "file.xlsx";
+  //     link.click();
+  //   }
+  // };
 
   if (isLoading) {
     return <div>Loading...</div>;

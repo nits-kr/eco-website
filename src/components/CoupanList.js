@@ -20,93 +20,122 @@ function CoupanList() {
     coupanTitle: "",
     coupanCode: "",
   });
+  const [coupanTitleEn2, setCoupanTitleEn2] = useState([]);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
+  const [coupanStatus2, setCoupanStatus2] = useState([]);
+  const [coupanCode2, setCoupanCode2] = useState([]);
+  const [coupanDiscount2, setCoupanDiscount2] = useState([]);
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
-  const fetchStaffList = async () => {
+
+  const url =
+    "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/coupan/coupan/list";
+  const url2 =
+    "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/coupan/coupan/search-coupan";
+
+  const fetchCoupanList = async () => {
     try {
-      const response = await axios.post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/coupan/coupan/list"
-      );
+      const response = await axios.post(url);
       setCoupanList(response?.data?.results?.list?.reverse());
     } catch (error) {
       console.log(error.response.data);
     }
   };
-
   useEffect(() => {
-    fetchStaffList();
+    fetchCoupanList();
   }, []);
-  const userList = async () => {
-    const { data } = await axios.post(
-      "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/coupan/coupan/list",
-      {
-        from:startDate,
-        to:endDate,
-      }
-    );
-    // const filteredUsers = data.results.list.filter(
-    //   (user) =>
-    //     new Date(user.createdAt) >= new Date(startDate) &&
-    //     new Date(user.createdAt) <= new Date(endDate)
-    // );
-    setCoupanList(data?.results?.list?.reverse());
-    console.log(data);
-  };
+
   const handleSearch = (e) => {
     e.preventDefault();
-    userList();
+    axios
+      .post(url, {
+        from: startDate,
+        to: endDate,
+      })
+      .then((response) => {
+        const list = response?.data?.results?.list?.reverse();
+        if (list && list.length > 0) {
+          Swal.fire({
+            title: "List Found!",
+            text: "list is available for the selected date.",
+            icon: "success",
+            confirmButtonText: "OK",
+          }).then((result) => {
+            if (result.isConfirmed) {
+              setCoupanList(list);
+            }
+          });
+          // setCoupanList(list);
+        } else {
+          setCoupanList([]);
+          Swal.fire({
+            icon: "warning",
+            title: "No data found!",
+            text: "There is no list between the selected dates.",
+            confirmButtonText: "OK",
+          }).then((result) => {
+            if (result.isConfirmed) {
+              fetchCoupanList();
+            }
+          });
+        }
+      })
+      .catch((error) => {
+        console.log(error.response.data);
+      });
   };
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setCoupan({ ...coupan, [name]: value });
   };
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+
+  useEffect(() => {
+    handleSearch1();
+  }, [searchQuery]);
+
+  const handleSearch1 = async () => {
     try {
-      const response = await axios.post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/coupan/coupan/coupanUsage",
-        {
-          coupanCode: coupan.code,
-        }
-      );
-      console.log(response.data.results.coupanData);
-      if (!response.data.error) {
+      const url1 = searchQuery !== "" ? url2 : url;
+      const response = await axios.post(url1, {
+        coupanTitle_en: searchQuery,
+      });
+      const { error, results } = response.data;
+      if (error) {
+        setCoupanList([]);
         Swal.fire({
-          title: "Updated!",
-          text: "Your have been updated the list successfully.",
-          icon: "success",
-          confirmButtonColor: "#3085d6",
+          title: "Error!",
+          // text: error.response.data,
+          text: "Error searching for products. Data is not found",
+          icon: "error",
           confirmButtonText: "OK",
         }).then((result) => {
           if (result.isConfirmed) {
-            window.location.href = "/coupanList";
+            fetchCoupanList();
           }
         });
+        // throw new Error("Error searching for products. Data is not found.");
+      } else {
+        setCoupanList(
+          searchQuery !== "" ? results?.coupanData : results?.list?.reverse()
+        );
       }
     } catch (error) {
-      console.error(error.response.data);
-    }
-  };
-
-  const handleSearch1 = async (e) => {
-    e.preventDefault();
-    if (searchQuery) {
-      try {
-        const response = await axios.post(
-          "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/coupan/coupan/search-coupan",
-          {
-            coupanTitle_en: searchQuery,
-          }
-        );
-        const { error, results } = response.data;
-        if (error) {
-          throw new Error("Error searching for products.Data are Not Found");
-        } else {
-          setCoupanList(results.coupanData);
-        }
-      } catch (error) {
+      if (error.response) {
+        Swal.fire({
+          title: "Error!",
+          text: error.response.data,
+          icon: "error",
+          confirmButtonText: "OK",
+        });
+      } else if (error.request) {
+        Swal.fire({
+          title: "Error!",
+          text: "Network error. Please try again later.",
+          icon: "error",
+          confirmButtonText: "OK",
+        });
+      } else {
         Swal.fire({
           title: "Error!",
           text: error.message,
@@ -114,14 +143,9 @@ function CoupanList() {
           confirmButtonText: "OK",
         });
       }
-    } else {
-      setCoupanList([]);
     }
   };
-  const handleDelete = (_id) => {
-    alert(_id);
-    deleteConfirm(_id);
-  };
+
   const deleteConfirm = (_id) => {
     const data = axios.delete(
       `http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/coupan/coupan/delete/${_id}`
@@ -144,7 +168,7 @@ function CoupanList() {
       Swal.fire({
         icon: "success",
         title: "Changes Saved",
-        text: "The subcategory has been updated successfully.",
+        text: "The Coupan has been updated successfully.",
         confirmButtonColor: "#3085d6",
         confirmButtonText: "OK",
       }).then((result) => {
@@ -160,9 +184,16 @@ function CoupanList() {
       });
     }
   };
+  
+  const handleItem = (item) => {
+    setCoupanStatus2(item?.status || "");
+    setCoupanTitleEn2(item?.coupanTitle_en || "");
+    setCoupanCode2(item?.coupanCode || "");
+    setCoupanDiscount2(item?.DiscountType || "");
+  };
   return (
     <>
-      <Sidebar Dash={"coupanList"}/>
+      <Sidebar Dash={"coupanList"} />
       <div className="admin_main">
         <div className="admin_main_inner">
           <div className="admin_panel_data height_adjust">
@@ -193,7 +224,10 @@ function CoupanList() {
                           value={searchQuery}
                           onChange={(e) => setSearchQuery(e.target.value)}
                         />
-                        <i className="far fa-search" onClick={handleSearch1}></i>
+                        <i
+                          className="far fa-search"
+                          onClick={handleSearch1}
+                        ></i>
                       </div>
                     </form>
                   </div>
@@ -289,7 +323,10 @@ function CoupanList() {
                                   data-bs-toggle="modal"
                                   data-bs-target="#editt"
                                   to="#"
-                                  onClick={() => setItemId(item?._id)}
+                                  onClick={() => {
+                                    handleItem(item);
+                                    setItemId(item?._id);
+                                  }}
                                 >
                                   Edit
                                 </Link>
@@ -306,8 +343,7 @@ function CoupanList() {
                                       showCancelButton: true,
                                       confirmButtonColor: "#3085d6",
                                       cancelButtonColor: "#d33",
-                                      confirmButtonText:
-                                        "Yes, delete it!",
+                                      confirmButtonText: "Yes, delete it!",
                                     }).then((result) => {
                                       if (result.isConfirmed) {
                                         deleteCoupan(item?._id);
@@ -362,7 +398,7 @@ function CoupanList() {
                   <Link
                     className="comman_btn mx-2"
                     data-bs-dismiss="modal"
-                    to="javscript:;"
+                    to=""
                     onClick={deleteConfirm}
                   >
                     Yes
@@ -407,7 +443,7 @@ function CoupanList() {
               <form
                 className="form-design p-3 help-support-form row align-items-end justify-content-center"
                 action=""
-                onSubmit={handleSubmit}
+                onSubmit={handleSaveChanges1}
               >
                 <div className="form-group col-6">
                   <label htmlFor="">TITLE</label>
@@ -416,7 +452,7 @@ function CoupanList() {
                     className="form-control"
                     name="title"
                     id="title"
-                    value={title}
+                    defaultValue={coupanTitleEn2}
                     onChange={(e) => setTitle(e.target.value)}
                   />
                 </div>
@@ -427,7 +463,7 @@ function CoupanList() {
                     className="form-control"
                     name="code"
                     id="code"
-                    value={coupanCode}
+                    defaultValue={coupanCode2}
                     onChange={(e) => setCoupanCode(e.target.value)}
                   />
                 </div>
@@ -438,7 +474,7 @@ function CoupanList() {
                     className="form-control"
                     name="discount"
                     id="discount"
-                    value={discount}
+                    defaultValue={coupanDiscount2}
                     onChange={(e) => setDiscount(e.target.value)}
                   />
                 </div>
@@ -449,14 +485,12 @@ function CoupanList() {
                     className="form-control"
                     name="status"
                     id="status"
-                    value={coupanStatus}
+                    defaultValue={coupanStatus2}
                     onChange={(e) => setCoupanStatus(e.target.value)}
                   />
                 </div>
                 <div className="form-group mb-0 col-auto">
-                  <button className="comman_btn2" onClick={handleSaveChanges1}>
-                    Save
-                  </button>
+                  <button className="comman_btn2">Save</button>
                 </div>
               </form>
             </div>
