@@ -2230,3 +2230,14 @@ strong.box_tag_left {
   font-size: 12px;
   border-radius: 4px;
 }
+.form-check {
+  position: absolute;
+  content: "";
+  top: -12px;
+  right: 0;
+  width: 52px;
+  height: 18px;
+  /* background-color: #cacaca; */
+  border-radius: 10px;
+  transition: 0.5s all;
+}

@@ -11,7 +11,7 @@ import {
   faMoneyBill1Wave,
   faDownload,
   faFileExport,
-  faCameraRetro
+  faCameraRetro,
 } from "@fortawesome/free-solid-svg-icons";
 
 function HomeScreenBanner2() {
@@ -165,7 +165,7 @@ function HomeScreenBanner2() {
     speed: 500,
     slidesToShow: 3,
     slidesToScroll: 1,
-    autoplay:true
+    // autoplay: true,
   };
   return (
     <>
@@ -202,15 +202,20 @@ function HomeScreenBanner2() {
                           <div className="banner_sliders_box me-2">
                             <div className="row Onboarding_box mb-4 mx-0">
                               <span className="head_spann">Home Screen 1</span>
-                              <div className="check_toggle">
+                              <div className="form-check form-switch">
                                 <input
+                                  className="form-check-input"
+                                  data-bs-toggle="modal"
+                                  data-bs-target="#staticBackdrop2"
                                   type="checkbox"
+                                  role="switch"
+                                  id="flexSwitchCheckChecked"
                                   defaultChecked=""
-                                  name="check1"
-                                  id="check1"
-                                  className="d-none"
                                 />
-                                <label htmlFor="check1" />
+                                <label
+                                  className="form-check-label"
+                                  htmlFor="flexSwitchCheckChecked"
+                                ></label>
                               </div>
                               <div className="form-group mb-0 col-12">
                                 <div className="banner-profile position-relative">
@@ -286,7 +291,7 @@ function HomeScreenBanner2() {
                           <div className="banner_sliders_box me-2">
                             <div className="row Onboarding_box mb-4 mx-0">
                               <span className="head_spann">Home Screen 2</span>
-                              <div className="check_toggle">
+                              {/* <div className="check_toggle">
                                 <input
                                   type="checkbox"
                                   defaultChecked=""
@@ -295,6 +300,21 @@ function HomeScreenBanner2() {
                                   className="d-none"
                                 />
                                 <label htmlFor="check1" />
+                              </div> */}
+                              <div className="form-check form-switch">
+                                <input
+                                  className="form-check-input"
+                                  data-bs-toggle="modal"
+                                  data-bs-target="#staticBackdrop2"
+                                  type="checkbox"
+                                  role="switch"
+                                  id="flexSwitchCheckChecked"
+                                  defaultChecked=""
+                                />
+                                <label
+                                  className="form-check-label"
+                                  htmlFor="flexSwitchCheckChecked"
+                                ></label>
                               </div>
                               <div className="form-group mb-0 col-12">
                                 <div className="banner-profile position-relative">
@@ -369,7 +389,7 @@ function HomeScreenBanner2() {
                           <div className="banner_sliders_box me-2">
                             <div className="row Onboarding_box mb-4 mx-0">
                               <span className="head_spann">Home Screen 3</span>
-                              <div className="check_toggle">
+                              {/* <div className="check_toggle">
                                 <input
                                   type="checkbox"
                                   defaultChecked=""
@@ -378,6 +398,21 @@ function HomeScreenBanner2() {
                                   className="d-none"
                                 />
                                 <label htmlFor="check1" />
+                              </div> */}
+                              <div className="form-check form-switch">
+                                <input
+                                  className="form-check-input"
+                                  data-bs-toggle="modal"
+                                  data-bs-target="#staticBackdrop2"
+                                  type="checkbox"
+                                  role="switch"
+                                  id="flexSwitchCheckChecked"
+                                  defaultChecked=""
+                                />
+                                <label
+                                  className="form-check-label"
+                                  htmlFor="flexSwitchCheckChecked"
+                                ></label>
                               </div>
                               <div className="form-group mb-0 col-12">
                                 <div className="banner-profile position-relative">
@@ -452,7 +487,7 @@ function HomeScreenBanner2() {
                           <div className="banner_sliders_box me-2">
                             <div className="row Onboarding_box mb-4 mx-0">
                               <span className="head_spann">Home Screen 4</span>
-                              <div className="check_toggle">
+                              {/* <div className="check_toggle">
                                 <input
                                   type="checkbox"
                                   defaultChecked=""
@@ -461,6 +496,21 @@ function HomeScreenBanner2() {
                                   className="d-none"
                                 />
                                 <label htmlFor="check1" />
+                              </div> */}
+                              <div className="form-check form-switch">
+                                <input
+                                  className="form-check-input"
+                                  data-bs-toggle="modal"
+                                  data-bs-target="#staticBackdrop2"
+                                  type="checkbox"
+                                  role="switch"
+                                  id="flexSwitchCheckChecked"
+                                  defaultChecked=""
+                                />
+                                <label
+                                  className="form-check-label"
+                                  htmlFor="flexSwitchCheckChecked"
+                                ></label>
                               </div>
                               <div className="form-group mb-0 col-12">
                                 <div className="banner-profile position-relative">
@@ -535,7 +585,7 @@ function HomeScreenBanner2() {
                           <div className="banner_sliders_box me-2">
                             <div className="row Onboarding_box mb-4 mx-0">
                               <span className="head_spann">Home Screen 5</span>
-                              <div className="check_toggle">
+                              {/* <div className="check_toggle">
                                 <input
                                   type="checkbox"
                                   defaultChecked=""
@@ -544,6 +594,21 @@ function HomeScreenBanner2() {
                                   className="d-none"
                                 />
                                 <label htmlFor="check1" />
+                              </div> */}
+                              <div className="form-check form-switch">
+                                <input
+                                  className="form-check-input"
+                                  data-bs-toggle="modal"
+                                  data-bs-target="#staticBackdrop2"
+                                  type="checkbox"
+                                  role="switch"
+                                  id="flexSwitchCheckChecked"
+                                  defaultChecked=""
+                                />
+                                <label
+                                  className="form-check-label"
+                                  htmlFor="flexSwitchCheckChecked"
+                                ></label>
                               </div>
                               <div className="form-group mb-0 col-12">
                                 <div className="banner-profile position-relative">
@@ -617,6 +682,48 @@ function HomeScreenBanner2() {
                       </Slider>
                     </form>
                   </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        className="modal fade Update_modal"
+        id="staticBackdrop2"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+        tabIndex="-1"
+        aria-labelledby="staticBackdropLabel"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog modal-dialog-centered">
+          <div className="modal-content">
+            <div className="modal-body p-4">
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+              <div className="row">
+                <div className="col-12 Update_modal_content py-4">
+                  <h2>Update</h2>
+                  <p>Are you sure, Want to update this?</p>
+                  <Link
+                    className="comman_btn mx-2"
+                    data-bs-dismiss="modal"
+                    to="javscript:;"
+                  >
+                    Yes
+                  </Link>
+                  <Link
+                    className="comman_btn2 mx-2 bg-red"
+                    data-bs-dismiss="modal"
+                    to="javscript:;"
+                  >
+                    NO
+                  </Link>
                 </div>
               </div>
             </div>
