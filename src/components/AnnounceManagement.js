@@ -295,7 +295,7 @@ function AnnounceManagement() {
                         <textarea
                           className="form-control"
                           name="nameArText"
-                          id="nameArText"
+                          id="nameArTextAr"
                           style={{ height: "120px" }}
                           value={formData.nameArText}
                           onChange={handleInputChange}

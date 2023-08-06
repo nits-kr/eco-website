@@ -3,10 +3,16 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
 import Sidebar from "./Sidebar";
+import { useCreateInformationMutation } from "../services/Post";
 function Informations() {
   const [informationListItems, setInformationListItems] = useState([]);
+  const [createInformation, responseInfo] = useCreateInformationMutation();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [titleEn3, setTitleNameEn3] = useState("");
+  const [descriptionEn3, setDescriptionEn3] = useState("");
+  const [titleAr3, setTitleNameAr3] = useState("");
+  const [descriptionAr3, setDescriptionAr3] = useState("");
   const [titleEn, setTitleEn] = useState("");
   const [descriptionEn, setDescriptionEn] = useState("");
   const [titleAr, setTitleAr] = useState("");
@@ -36,7 +42,7 @@ function Informations() {
   console.log("dscription", description);
 
   const handleUpdate = async (e) => {
-    alert(itemId);
+    // alert(itemId);
     e.preventDefault();
     await axios
       .patch(
@@ -69,7 +75,7 @@ function Informations() {
       });
   };
   const handleUpdate1 = async (e) => {
-    alert(itemId);
+    // alert(itemId);
     e.preventDefault();
     await axios
       .patch(
@@ -107,6 +113,27 @@ function Informations() {
     setTitleAr2(item?.title_ar || "");
     setDescriptionAr2(item?.Description_ar || "");
   };
+  const handleSaveChanges = (e) => {
+    e.preventDefault();
+    const newContact = {
+      title_en: titleEn3,
+      title_ar: titleAr3,
+      Description_en: descriptionEn3,
+      Description_ar: descriptionAr3,
+    };
+    createInformation(newContact);
+    Swal.fire({
+      title: "Changes Saved",
+      text: "The offer has been created successfully.",
+      icon: "success",
+      confirmButtonText: "OK",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        window.location.reload();
+        // informationList();
+      }
+    });
+  };
   return (
     <>
       <Sidebar Dash={"informations"} />
@@ -114,49 +141,63 @@ function Informations() {
         <div className="admin_main_inner">
           <div className="admin_panel_data height_adjust">
             <div className="row content_management justify-content-center">
-              {informationListItems?.map((data, index) => (
-                <div className="col-12 mb-5" key={index}>
-                  <div className="row">
-                    <div className="col-md-6 d-flex align-items-stretch">
-                      <div className="row content_management_box me-0">
-                        <h2>{data?.title_en}</h2>
-                        <Link
-                          className="edit_content_btn comman_btn"
-                          data-bs-toggle="modal"
-                          data-bs-target="#staticBackdrop"
-                          to="#"
-                          onClick={() => {
-                            handleItem(data);
-                            setItemId(data?._id);
-                          }}
-                        >
-                          <i className="far fa-edit me-2"></i>Edit
-                        </Link>
-                        <p>{data?.Description_en}</p>
+              <div className="col-12 text-end mb-4">
+                <Link
+                  to="#"
+                  className="comman_btn"
+                  data-bs-toggle="modal"
+                  data-bs-target="#staticBackdrop5"
+                >
+                  Create Information
+                </Link>
+              </div>
+              <div className="col-12">
+                <div className="row mx-0">
+                  {informationListItems?.map((data, index) => (
+                    <div className="col-12 mb-5" key={index}>
+                      <div className="row">
+                        <div className="col-md-6 d-flex align-items-stretch">
+                          <div className="row content_management_box me-0">
+                            <h2>{data?.title_en}</h2>
+                            <Link
+                              className="edit_content_btn comman_btn"
+                              data-bs-toggle="modal"
+                              data-bs-target="#staticBackdrop"
+                              to="#"
+                              onClick={() => {
+                                handleItem(data);
+                                setItemId(data?._id);
+                              }}
+                            >
+                              <i className="far fa-edit me-2"></i>Edit
+                            </Link>
+                            <p>{data?.Description_en}</p>
+                          </div>
+                        </div>
+                        <div className="col-md-6 d-flex align-items-stretch">
+                          <div className="row content_management_box ms-0 text-end">
+                            <h2> {data?.title_ar} </h2>
+                            <Link
+                              className="edit_content_btn comman_btn"
+                              data-bs-toggle="modal"
+                              data-bs-target="#staticBackdrop1"
+                              to="#"
+                              onClick={() => {
+                                handleItem(data);
+                                setItemId(data?._id);
+                              }}
+                            >
+                              <i className="far fa-edit me-2"></i>
+                              Edit
+                            </Link>
+                            <p> {data?.Description_ar} </p>
+                          </div>
+                        </div>
                       </div>
                     </div>
-                    <div className="col-md-6 d-flex align-items-stretch">
-                      <div className="row content_management_box ms-0 text-end">
-                        <h2> {data?.title_ar} </h2>
-                        <Link
-                          className="edit_content_btn comman_btn"
-                          data-bs-toggle="modal"
-                          data-bs-target="#staticBackdrop1"
-                          to="#"
-                          onClick={() => {
-                            handleItem(data);
-                            setItemId(data?._id);
-                          }}
-                        >
-                          <i className="far fa-edit me-2"></i>
-                          Edit
-                        </Link>
-                        <p> {data?.Description_ar} </p>
-                      </div>
-                    </div>
-                  </div>
+                  ))}
                 </div>
-              ))}
+              </div>
             </div>
           </div>
         </div>
@@ -282,6 +323,109 @@ function Informations() {
                   >
                     Update
                   </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      {/* Edit Information */}
+      <div
+        className="modal fade Edit_help Edit_modal"
+        id="staticBackdrop5"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+        tabIndex="-1"
+        aria-labelledby="staticBackdropLabel"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog modal-dialog-centered">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title" id="staticBackdropLabel">
+                Create Information
+              </h5>
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div className="modal-body">
+              <form
+                className="form-design help-support-form py-4 px-3 row align-items-start justify-content-center"
+                action=""
+                onSubmit={handleSaveChanges}
+              >
+                <div className="form-group mb-0 col-6">
+                  <label htmlFor="">
+                    Enter Thought Heading (En)
+                    <span className="required-field text-danger">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    defaultValue=""
+                    name="titleEn3"
+                    id="titleEn3"
+                    value={titleEn3}
+                    onChange={(e) => setTitleNameEn3(e.target.value)}
+                    required
+                  />
+                </div>
+                <div className="form-group mb-0 col-6">
+                  <label htmlFor="">
+                    Enter Thought Heading (Ar)
+                    <span className="required-field text-danger">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    defaultValue=""
+                    name="titleAr3"
+                    id="titleAr3"
+                    value={titleAr3}
+                    onChange={(e) => setTitleNameAr3(e.target.value)}
+                    required
+                  />
+                </div>
+                <div className="form-group col-6">
+                  <label htmlFor="">
+                    Enter Text Here (En)
+                    <span className="required-field text-danger">*</span>
+                  </label>
+                  <textarea
+                    className="form-control"
+                    // name="nameEnText"
+                    // id="nameEnText"
+                    style={{ height: "120px" }}
+                    name="descriptionEn3"
+                    id="descriptionEn3"
+                    value={descriptionEn3}
+                    onChange={(e) => setDescriptionEn3(e.target.value)}
+                    required
+                  ></textarea>
+                </div>
+                <div className="form-group col-6">
+                  <label htmlFor="">
+                    Enter Text Here (Ar)
+                    <span className="required-field text-danger">*</span>
+                  </label>
+                  <textarea
+                    className="form-control"
+                    // name="nameArText"
+                    // id="nameArText"
+                    style={{ height: "120px" }}
+                    name="descriptionAr3"
+                    id="descriptionAr3"
+                    value={descriptionAr3}
+                    onChange={(e) => setDescriptionAr3(e.target.value)}
+                    required
+                  ></textarea>
+                </div>
+                <div className="form-group col-12 text-center">
+                  <button className="comman_btn2 mt-4">Create</button>
                 </div>
               </form>
             </div>

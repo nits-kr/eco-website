@@ -3,12 +3,84 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
 import Sidebar from "./Sidebar";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faEye,
+  faTrash,
+  faDollarSign,
+  faMoneyBill1Wave,
+  faDownload,
+  faFileExport,
+} from "@fortawesome/free-solid-svg-icons";
+import { useDeleteHelpThoughtListMutation } from "../services/Post";
 function ThoughtsManagement() {
+  const [deleteThought, response] = useDeleteHelpThoughtListMutation();
   const [thoughts, setThoughts] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [startDate1, setStartDate1] = useState("");
+  const [formData, setFormData] = useState({
+    nameEn: "",
+    nameAr: "",
+    nameEnText: "",
+    nameArText: "",
+    categoryPic: null,
+  });
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    setFormData({ ...formData, [name]: value });
+  };
+  const handleFileChange = (event) => {
+    setFormData({ ...formData, categoryPic: event.target.files[0] });
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    try {
+      const data = new FormData();
+      data.append("heading", formData.nameEn);
+      data.append("heading_ar", formData.nameAr);
+      data.append("pic", formData.categoryPic);
+      data.append("text", formData.nameEnText);
+      data.append("text_ar", formData.nameArText);
+      const response = await axios.post(
+        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/thougth/thougth/createThougth",
+        // data
+        {
+          title: "New Thought",
+          description: "Lorem ipsum,  officia porro ipsa? Quod,",
+          user_Id: "644b5da7a96eb544042252f5",
+          title_ar: "New Thought",
+          description_ar: "Lorem ipsum,  officia porro ipsa? Quod,",
+          user_Id_ar: "644b5da7a96eb544042252f5",
+        }
+      );
+
+      if (!response.data.error) {
+        Swal.fire({
+          icon: "success",
+          title: "Success",
+          text: "Thought Created!",
+          confirmButtonText: "OK",
+        });
+        // .then((result) => {
+        //   if (result.isConfirmed) {
+        //     window.location.reload();
+        //   }
+        // });
+        userList();
+      }
+    } catch (error) {
+      console.error(error);
+      // Show SweetAlert error message
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "An error occurred while saving the list.",
+      });
+    }
+  };
   const url =
     "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/thougth/thougth/list";
   const url2 =
@@ -133,6 +205,138 @@ function ThoughtsManagement() {
             <div className="row transaction-management justify-content-center">
               <div className="col-12">
                 <div className="row mx-0">
+                  <div className="col-12 design_outter_comman shadow mb-4">
+                    <div className="row comman_header justify-content-between">
+                      <div className="col-auto">
+                        <h2>Thought Management</h2>
+                      </div>
+                      {/* <div className="col-auto text-white fw-bold d-flex align-items-center">
+                        <strong className="me-2 d-inline">Edit :</strong>
+                        <button className="edit_buton" onClick="markUp('bold')">
+                          <strong>B</strong>
+                        </button>
+                        <button
+                          className="edit_buton"
+                          onClick="markUp('italic')"
+                        >
+                          <em>I</em>
+                        </button>
+                        <button
+                          className="edit_buton"
+                          onClick="markUp('italic')"
+                        >
+                          <em>A</em>
+                        </button>
+                        <button
+                          className="edit_buton"
+                          onClick="markUp('italic')"
+                        >
+                          <em>a</em>
+                        </button>
+                        <button className="edit_buton" id="underline">
+                          <u>U</u>
+                        </button>
+                      </div> */}
+                    </div>
+                    <form
+                      className="form-design help-support-form py-4 px-3 row align-items-start justify-content-center"
+                      action=""
+                      onSubmit={handleSubmit}
+                    >
+                      <div className="form-group col-4 choose_file position-relative announce_Upload">
+                        <span>Upload Image</span>
+                        <label htmlFor="upload_video">
+                          <i className="fal fa-camera me-1"></i>Choose File{" "}
+                        </label>
+                        <input
+                          type="file"
+                          className="form-control"
+                          defaultValue=""
+                          name="upload_video"
+                          id="upload_video"
+                          onChange={handleFileChange}
+                        />
+                      </div>
+                      <div className="form-group mb-0 col-4">
+                        <label htmlFor="">
+                          Enter Thought Heading (En)
+                          <span className="required-field text-danger">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          className="form-control"
+                          defaultValue=""
+                          name="nameEn"
+                          id="nameEn"
+                          value={formData.nameEn}
+                          onChange={handleInputChange}
+                          required
+                        />
+                      </div>
+                      <div className="form-group mb-0 col-4">
+                        <label htmlFor="">
+                          Enter Thought Heading (Ar)
+                          <span className="required-field text-danger">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          className="form-control"
+                          defaultValue=""
+                          name="nameAr"
+                          id="nameAr"
+                          value={formData.nameAr}
+                          onChange={handleInputChange}
+                          required
+                        />
+                      </div>
+                      <div className="form-group col-6">
+                        <label htmlFor="">
+                          Enter Text Here (En)
+                          <span className="required-field text-danger">*</span>
+                        </label>
+                        <textarea
+                          className="form-control"
+                          name="nameEnText"
+                          id="nameEnText"
+                          style={{ height: "120px" }}
+                          value={formData.nameEnText}
+                          onChange={handleInputChange}
+                          required
+                        ></textarea>
+                      </div>
+                      <div className="form-group col-6">
+                        <label htmlFor="">
+                          Enter Text Here (Ar)
+                          <span className="required-field text-danger">*</span>
+                        </label>
+                        <textarea
+                          className="form-control"
+                          name="nameArText"
+                          id="nameArText"
+                          style={{ height: "120px" }}
+                          value={formData.nameArText}
+                          onChange={handleInputChange}
+                          required
+                        ></textarea>
+                      </div>
+                      {/* <div className="form-group col-auto mt-2 text-center">
+                        <div className="check_radio">
+                          <input
+                            type="checkbox"
+                            name="table1"
+                            id="table1"
+                            className="d-none"
+                          />
+                          <label htmlFor="table1">
+                            Set as home screen banner
+                          </label>
+                        </div>
+                      </div> */}
+                      <div className="form-group col-12 text-center">
+                        <button className="comman_btn2 mt-4">Create</button>
+                      </div>
+                    </form>
+                  </div>
                   <div className="col-12 design_outter_comman shadow">
                     <div className="row comman_header justify-content-between">
                       <div className="col">
@@ -172,7 +376,7 @@ function ThoughtsManagement() {
                     <div className="row p-4">
                       <div className="col-12">
                         <div className="category_btns_main">
-                          {thoughts?.map((thought) => (
+                          {thoughts?.map((thought, index) => (
                             <div
                               className="row mx-0 notification-box shadow mb-4"
                               key={thought._id}
@@ -191,8 +395,35 @@ function ThoughtsManagement() {
                                 </div>
                               </div>
                               <div className="col">
-                                <div className="notification-box-content">
-                                  <h2>{thought.title}</h2>
+                                <div className="notification-box-content announcement-contnt position-relative">
+                                  <h2>{thought?.title}</h2>
+                                  <Link
+                                    className="check_toggle home_toggle d-flex align-items-center text-light table_viewbtn ms-2"
+                                    onClick={() => {
+                                      Swal.fire({
+                                        title: "Are you sure?",
+                                        text: "You won't be able to revert this!",
+                                        icon: "warning",
+                                        showCancelButton: true,
+                                        confirmButtonColor: "#3085d6",
+                                        cancelButtonColor: "#d33",
+                                        confirmButtonText: "Yes, delete it!",
+                                      }).then((result) => {
+                                        if (result.isConfirmed) {
+                                          deleteThought(thought?._id);
+                                          Swal.fire(
+                                            "Deleted!",
+                                            `${thought?.categoryName}  item has been deleted.`,
+                                            "success"
+                                          ).then(() => {
+                                            window.location.reload();
+                                          });
+                                        }
+                                      });
+                                    }}
+                                  >
+                                    <FontAwesomeIcon icon={faTrash} />
+                                  </Link>
                                   <span className="">
                                     {thought?.createdAt?.slice(0, 10)}
                                   </span>

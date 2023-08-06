@@ -4,14 +4,21 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import Sidebar from "./Sidebar";
 import { useDeleteContactMutation } from "../services/Post";
+import { useCreateContactMutation } from "../services/Post";
 function ContactUs() {
   const [deleteContact, response] = useDeleteContactMutation();
+  const [createContact, responseInfo] = useCreateContactMutation();
   const [contactList, setContactList] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [itemId, setItemId] = useState(null);
   const [startDate1, setStartDate1] = useState("");
   const [descriptionEn2, setDescriptionEn2] = useState("");
+  const [userName, setUserName] = useState([]);
+  const [email, setEmail] = useState([]);
+  const [subject, setSubject] = useState([]);
+  const [descriptionEn, setDescriptionEn] = useState([]);
+  const [descriptionAr, setDescriptionAr] = useState([]);
   console.log("item id", itemId);
   const [viewContact, setViewContact] = useState("");
   axios.defaults.headers.common["x-auth-token-user"] =
@@ -127,6 +134,27 @@ function ContactUs() {
   const handleItem = (item) => {
     setDescriptionEn2(item?.description || "");
   };
+  const handleSaveChanges = (e) => {
+    e.preventDefault();
+    const newContact = {
+      userName_en: userName,
+      Email: email,
+      subject: subject,
+      description: descriptionEn,
+    };
+    createContact(newContact);
+    Swal.fire({
+      title: "Changes Saved",
+      text: "The offer has been created successfully.",
+      icon: "success",
+      confirmButtonText: "OK",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // window.location.reload();
+        fetchInformationList();
+      }
+    });
+  };
   return (
     <>
       <Sidebar Dash={"contact-us"} />
@@ -136,6 +164,105 @@ function ContactUs() {
             <div className="row help&support-management justify-content-center">
               <div className="col-12">
                 <div className="row mx-0">
+                  <div className="col-12 design_outter_comman mb-4 shadow">
+                    <div className="row comman_header justify-content-between">
+                      <div className="col">
+                        <h2>Add New Contact</h2>
+                      </div>
+                    </div>
+                    <form
+                      className="form-design py-4 px-3 help-support-form row align-items-end justify-content-between"
+                      action=""
+                      onSubmit={handleSaveChanges}
+                    >
+                      <div className="form-group col-4">
+                        <label htmlFor="">
+                          User Name
+                          <span className="required-field text-danger">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          className="form-control"
+                          name="userName"
+                          id="userName"
+                          value={userName}
+                          onChange={(e) => setUserName(e.target.value)}
+                          required
+                          minLength="3"
+                        />
+                      </div>
+                      <div className="form-group col-4">
+                        <label htmlFor="">
+                          Email
+                          <span className="required-field text-danger">*</span>
+                        </label>
+                        <input
+                          type="email"
+                          className="form-control"
+                          name="email"
+                          id="email"
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          required
+                          minLength="3"
+                        />
+                      </div>
+                      <div className="form-group col-4">
+                        <label htmlFor="">
+                          Subject
+                          <span className="required-field text-danger">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          className="form-control"
+                          name="subject"
+                          id="subject"
+                          value={subject}
+                          onChange={(e) => setSubject(e.target.value)}
+                          required
+                          minLength="3"
+                        />
+                      </div>
+                      <div className="form-group col-6">
+                        <label htmlFor="">
+                          Description(En)
+                          <span className="required-field text-danger">*</span>
+                        </label>
+                        <textarea
+                          className="form-control"
+                          name="descriptionEn"
+                          id="descriptionEn"
+                          style={{ height: "120px" }}
+                          value={descriptionEn}
+                          onChange={(e) => setDescriptionEn(e.target.value)}
+                          required
+                        ></textarea>
+                      </div>
+                      <div className="form-group  col-6">
+                        <label htmlFor="">
+                          Description(Ar)
+                          <span className="required-field text-danger">*</span>
+                        </label>
+                        <textarea
+                          className="form-control"
+                          name="descriptionAr"
+                          id="descriptionAr"
+                          style={{ height: "120px" }}
+                          value={descriptionAr}
+                          onChange={(e) => setDescriptionAr(e.target.value)}
+                          required
+                        ></textarea>
+                      </div>
+                      <div className="form-group mb-0 col-auto">
+                        <button
+                          className="comman_btn2"
+                          style={{ marginLeft: "72vh" }}
+                        >
+                          Add
+                        </button>
+                      </div>
+                    </form>
+                  </div>
                   <div className="col-12 design_outter_comman shadow">
                     <div className="row comman_header justify-content-between">
                       <div className="col">

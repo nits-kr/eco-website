@@ -28,6 +28,27 @@ export const PostApi = createApi({
         body,
       }),
     }),
+    createContact: builder.mutation({
+      query: (body) => ({
+        url: `/admin/contact/contact/createContact`,
+        method: "POST",
+        body,
+      }),
+    }),
+    createInformation: builder.mutation({
+      query: (body) => ({
+        url: `/admin/information/info/create`,
+        method: "POST",
+        body,
+      }),
+    }),
+    createContent: builder.mutation({
+      query: (body) => ({
+        url: `/admin/content/content/createContent`,
+        method: "POST",
+        body,
+      }),
+    }),
     getOfferList: builder.query({
       query: (name) => ({
         url: `admin/offer/offer-list`,
@@ -282,9 +303,20 @@ export const PostApi = createApi({
         method: "DELETE",
       }),
     }),
+    deleteHelpManagementList: builder.mutation({
+      query: (id) => ({
+        url: `/admin/agent/agent/delete-user/${id}`,
+        method: "DELETE",
+      }),
+    }),
+    deleteHelpThoughtList: builder.mutation({
+      query: (id) => ({
+        url: `/admin/agent/agent/delete-user/${id}`,
+        method: "DELETE",
+      }),
+    }),
   }),
 });
-
 
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
@@ -321,5 +353,10 @@ export const {
   useDeleteCoupanListMutation,
   useDeleteHelpListMutation,
   useDeleteAgentListMutation,
+  useCreateContactMutation,
+  useDeleteHelpManagementListMutation,
+  useDeleteHelpThoughtListMutation,
+  useCreateInformationMutation,
+  useCreateContentMutation,
   // useSearchOfferQuery,
 } = PostApi;

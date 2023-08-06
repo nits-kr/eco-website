@@ -3,8 +3,10 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
 import Sidebar from "./Sidebar";
+import { useDeleteHelpManagementListMutation } from "../services/Post";
 
 function Help() {
+  const [deleteHelp, response] = useDeleteHelpManagementListMutation();
   const [searchQuery, setSearchQuery] = useState("");
   const [startDate1, setStartDate1] = useState("");
   const [helpList, setHelpList] = useState([]);
@@ -396,10 +398,38 @@ function Help() {
                                   <td>{value.subCategoryName_ar}</td>
                                   <td>
                                     <Link
-                                      className="comman_btn table_viewbtn"
+                                      className="comman_btn table_viewbtn me-2"
                                       to="/help-view"
                                     >
                                       View
+                                    </Link>
+                                    <Link
+                                      className="comman_btn2 table_viewbtn"
+                                      to="#"
+                                      onClick={() => {
+                                        Swal.fire({
+                                          title: "Are you sure?",
+                                          text: "You won't be able to revert this!",
+                                          icon: "warning",
+                                          showCancelButton: true,
+                                          confirmButtonColor: "#3085d6",
+                                          cancelButtonColor: "#d33",
+                                          confirmButtonText: "Yes, delete it!",
+                                        }).then((result) => {
+                                          if (result.isConfirmed) {
+                                            deleteHelp(value?._id);
+                                            Swal.fire(
+                                              "Deleted!",
+                                              `${value?.categoryName}  item has been deleted.`,
+                                              "success"
+                                            ).then(() => {
+                                              window.location.reload();
+                                            });
+                                          }
+                                        });
+                                      }}
+                                    >
+                                      Delete
                                     </Link>
                                   </td>
                                 </tr>
