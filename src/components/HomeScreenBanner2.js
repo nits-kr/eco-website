@@ -182,7 +182,7 @@ function HomeScreenBanner2() {
                       <div className="col-auto">
                         <h2>Home Screen Banners</h2>
                       </div>
-                      <div className="col-auto">
+                      {/* <div className="col-auto">
                         <button
                           className="comman_btn2 mx-2"
                           data-bs-toggle="modal"
@@ -191,7 +191,7 @@ function HomeScreenBanner2() {
                           Preview
                         </button>
                         <button className="comman_btn2">Save</button>
-                      </div>
+                      </div> */}
                     </div>
                     <form
                       className="form-design banner_sliders py-5 px-5 row mx-0 align-items-end justify-content-between"
