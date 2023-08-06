@@ -23,7 +23,7 @@ function ProductManagementEdit(props) {
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
   const navigate = useNavigate();
-  const {id} = useParams();
+  const { id } = useParams();
   console.log("props", props);
   console.log("id", id);
   const handleInputChange1 = (event) => {
@@ -124,10 +124,7 @@ function ProductManagementEdit(props) {
     axios
       .patch(
         `http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/product/updateProduct/${id}`,
-        // data
-        {
-          productName_en: formData.productNameEn
-        }
+        data
       )
       .then((response) => {
         setFormData(response.data.results.updateData);
@@ -150,7 +147,7 @@ function ProductManagementEdit(props) {
   };
   return (
     <>
-      <Sidebar Dash={"product-management"}/>
+      <Sidebar Dash={"product-management"} />
       <div className="admin_main">
         <div className="admin_main_inner">
           <div className="admin_panel_data height_adjust">
@@ -185,7 +182,7 @@ function ProductManagementEdit(props) {
                             <input
                               type="text"
                               className="form-control"
-                            //   defaultValue={product?.productName_en}
+                              //   defaultValue={product?.productName_en}
                               name="productNameEn"
                               id="productNameEn"
                               value={formData.productNameEn}

@@ -101,7 +101,19 @@ function SubSubCategory() {
       });
       const { error, results } = response.data;
       if (error) {
-        throw new Error("Error searching for products. Data is not found.");
+        setSubSubCategoryList([]);
+        Swal.fire({
+          title: "Error!",
+          // text: error.response.data,
+          text: "Error searching for products. Data is not found",
+          icon: "error",
+          confirmButtonText: "OK",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            subSubCategoryManagementList();
+          }
+        });
+        // throw new Error("Error searching for products. Data is not found.");
       } else {
         setSubSubCategoryList(
           searchQuery !== "" ? results?.categoryData : results?.list?.reverse()

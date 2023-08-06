@@ -103,7 +103,19 @@ function Value() {
       });
       const { error, results } = response.data;
       if (error) {
-        throw new Error("Error searching for products. Data is not found.");
+        setValueList([]);
+        Swal.fire({
+          title: "Error!",
+          // text: error.response.data,
+          text: "Error searching for products. Data is not found",
+          icon: "error",
+          confirmButtonText: "OK",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            subValueManagementList();
+          }
+        });
+        // throw new Error("Error searching for products. Data is not found.");
       } else {
         setValueList(
           searchQuery !== "" ? results?.valuesData : results?.list?.reverse()

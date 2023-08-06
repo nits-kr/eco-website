@@ -2,17 +2,6 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
 function Sidebar({ Dash }) {
-  const [sidebarVisible, setSidebarVisible] = useState(true);
-  const handleClick = () => {
-    setSidebarVisible(false);
-    // Perform desired action when the icon is clicked
-    console.log("Icon clicked!");
-    // You can add your own logic here
-  };
-  const [activeItem, setActiveItem] = useState(null);
-  const handleItemClick = (item) => {
-    setActiveItem(item);
-  };
   return (
     <>
       <div className="admin_main">
@@ -55,14 +44,14 @@ function Sidebar({ Dash }) {
                   }
                 >
                   <div className="d-flex">
-                    <Link
-                      to="/categories"
-                    >
+                    <Link to="/categories">
                       <i className="fas fa-list-ol"></i>
                       Category Management
                     </Link>
                     <Link
-                      className={Dash === "products" ? "nav-link active" : "nav-link"}
+                      className={
+                        Dash === "products" ? "nav-link active" : "nav-link"
+                      }
                       to="#"
                       onClick={(e) => {
                         e.preventDefault();
@@ -257,7 +246,7 @@ function Sidebar({ Dash }) {
           <div className="admin_header shadow">
             <div className="row align-items-center mx-0 justify-content-between w-100">
               <div className="col">
-                <Link className="sidebar_btn" to="#" onClick={handleClick}>
+                <Link className="sidebar_btn" to="#">
                   <i className="far fa-bars"></i>
                 </Link>
               </div>

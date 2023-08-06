@@ -5,6 +5,7 @@ import Swal from "sweetalert2";
 import Sidebar from "./Sidebar";
 import { useGetFileQuery } from "../services/Post";
 import Spinner from "./Spinner";
+import GoogleMap from "./GoogleMap";
 function UsersManagement(props) {
   const { data, isLoading, isError } = useGetFileQuery("file-id");
   const [loading, setLoading] = useState(false);
@@ -16,6 +17,8 @@ function UsersManagement(props) {
   const [searchQuery, setSearchQuery] = useState("");
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
+  const latitude = 37.7749;
+  const longitude = -122.4194;
 
   let gmarkers1 = [];
   let markers1 = [];
@@ -304,6 +307,7 @@ function UsersManagement(props) {
               <div className="col-12">
                 <div className="row mx-0">
                   <div id="map-canvas" className="mb-5 shadow rounded"></div>
+                  {/* <GoogleMap latitude={latitude} longitude={longitude} /> */}
                   <div className="col-12 design_outter_comman shadow">
                     <div className="row comman_header justify-content-between">
                       <div className="col">

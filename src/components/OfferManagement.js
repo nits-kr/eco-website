@@ -46,15 +46,20 @@ function OfferManagement() {
   const [deleteOffer, response] = useDeleteOfferMutation();
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
+  // useEffect(() => {
+  //   setOfferList(offerListItems?.data?.results?.list ?? []);
+  // }, [offerListItems]);
   useEffect(() => {
-    setOfferList(offerListItems?.data?.results?.list ?? []);
+    const reversedList =
+      offerListItems?.data?.results?.list?.slice().reverse() ?? [];
+    setOfferList(reversedList);
   }, [offerListItems]);
 
-  useEffect(() => {
-    if (responseInfo.isSuccess) {
-      offerListItems.refetch();
-    }
-  }, [responseInfo.isSuccess]);
+  // useEffect(() => {
+  //   if (responseInfo.isSuccess) {
+  //     offerListItems.refetch();
+  //   }
+  // }, [responseInfo.isSuccess]);
 
   const handleSaveChanges = (e) => {
     e.preventDefault();
@@ -354,21 +359,18 @@ function OfferManagement() {
                               </tr>
                             </thead>
                             <tbody>
-                              {offerList
-                                ?.slice()
-                                .reverse()
-                                ?.map((item, index) => {
-                                  return (
-                                    <tr key={index}>
-                                      <td> {index + 1} </td>
-                                      <td>
-                                        {" "}
-                                        {item?.product_Id?.productName_en}{" "}
-                                      </td>
-                                      <td> {item?.title} </td>
-                                      <td> {item?.code} </td>
-                                      <td> {item?.Discount} </td>
-                                      {/* <td>
+                              {offerList?.map((item, index) => {
+                                return (
+                                  <tr key={index}>
+                                    <td> {index + 1} </td>
+                                    <td>
+                                      {" "}
+                                      {item?.product_Id?.productName_en}{" "}
+                                    </td>
+                                    <td> {item?.title} </td>
+                                    <td> {item?.code} </td>
+                                    <td> {item?.Discount} </td>
+                                    {/* <td>
                                         <form className="table_btns d-flex align-items-center">
                                           <div className="check_toggle">
                                             <input
@@ -384,52 +386,52 @@ function OfferManagement() {
                                           </div>
                                         </form>
                                       </td> */}
-                                      <td>
-                                        <Link
-                                          className="comman_btn table_viewbtn"
-                                          data-bs-toggle="modal"
-                                          data-bs-target="#edittoffer"
-                                          to="#"
-                                          onClick={() => {
-                                            handleItem(item);
-                                            setItemId(item?._id);
-                                          }}
-                                        >
-                                          Edit
-                                        </Link>
-                                        <Link
-                                          className="comman_btn2 table_viewbtn ms-2"
-                                          to="#"
-                                          onClick={() => {
-                                            Swal.fire({
-                                              title: "Are you sure?",
-                                              text: "You won't be able to revert this!",
-                                              icon: "warning",
-                                              showCancelButton: true,
-                                              confirmButtonColor: "#3085d6",
-                                              cancelButtonColor: "#d33",
-                                              confirmButtonText:
-                                                "Yes, delete it!",
-                                            }).then((result) => {
-                                              if (result.isConfirmed) {
-                                                deleteOffer(item?._id);
-                                                Swal.fire(
-                                                  "Deleted!",
-                                                  `${item?.title}  item has been deleted.`,
-                                                  "success"
-                                                ).then(() => {
-                                                  window.location.reload();
-                                                });
-                                              }
-                                            });
-                                          }}
-                                        >
-                                          Delete
-                                        </Link>
-                                      </td>
-                                    </tr>
-                                  );
-                                })}
+                                    <td>
+                                      <Link
+                                        className="comman_btn table_viewbtn"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#edittoffer"
+                                        to="#"
+                                        onClick={() => {
+                                          handleItem(item);
+                                          setItemId(item?._id);
+                                        }}
+                                      >
+                                        Edit
+                                      </Link>
+                                      <Link
+                                        className="comman_btn2 table_viewbtn ms-2"
+                                        to="#"
+                                        onClick={() => {
+                                          Swal.fire({
+                                            title: "Are you sure?",
+                                            text: "You won't be able to revert this!",
+                                            icon: "warning",
+                                            showCancelButton: true,
+                                            confirmButtonColor: "#3085d6",
+                                            cancelButtonColor: "#d33",
+                                            confirmButtonText:
+                                              "Yes, delete it!",
+                                          }).then((result) => {
+                                            if (result.isConfirmed) {
+                                              deleteOffer(item?._id);
+                                              Swal.fire(
+                                                "Deleted!",
+                                                `${item?.title}  item has been deleted.`,
+                                                "success"
+                                              ).then(() => {
+                                                window.location.reload();
+                                              });
+                                            }
+                                          });
+                                        }}
+                                      >
+                                        Delete
+                                      </Link>
+                                    </td>
+                                  </tr>
+                                );
+                              })}
                             </tbody>
                           </table>
                         </div>

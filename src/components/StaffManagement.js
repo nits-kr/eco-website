@@ -167,7 +167,7 @@ function StaffManagement() {
           confirmButtonText: "OK",
         }).then((result) => {
           if (result.isConfirmed) {
-            setStaffList();
+            subStaffList();
           }
         });
         // throw new Error("Error searching for products. Data is not found.");

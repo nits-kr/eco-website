@@ -46,6 +46,7 @@ import ProductManagement2 from "./components/ProductManagement2";
 import ProductList2 from "./components/ProductList2";
 import ProductManagementEdit from "./components/ProductManagementEdit";
 import HomeScreenBanner2 from "./components/HomeScreenBanner2";
+import GoogleMap from "./components/GoogleMap";
 
 function App() {
   const [progress, setProgress] = useState(0);
@@ -75,6 +76,12 @@ function App() {
             className="active"
             path="/users"
             element={<UsersManagement setProgress={setProgress} />}
+          />
+          <Route
+            exact
+            className="active"
+            path="/map"
+            element={<GoogleMap/>}
           />
           <Route
             exact

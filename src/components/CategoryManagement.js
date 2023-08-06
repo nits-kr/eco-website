@@ -107,7 +107,20 @@ function CategoryManagement(props) {
       });
       const { error, results } = response.data;
       if (error) {
-        throw new Error("Error searching for products. Data is not found.");
+        setCategoryList([]);
+        Swal.fire({
+          title: "Error!",
+          // text: error.response.data,
+          text: "Error searching for products. Data is not found",
+          icon: "error",
+          confirmButtonText: "OK",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            categoryManagementList();
+          }
+        });
+        // setCategoryList([]);
+        // throw new Error("Error searching for products. Data is not found.");
       } else {
         setCategoryList(
           searchQuery !== "" ? results?.categoryData : results?.list?.reverse()
