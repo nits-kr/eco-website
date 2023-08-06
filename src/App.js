@@ -193,7 +193,7 @@ function App() {
             exact
             className="active"
             path="/informations"
-            element={<Informations />}
+            element={<Informations setProgress={setProgress}/>}
           />
           <Route
             exact

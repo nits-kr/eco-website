@@ -4,7 +4,9 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import Sidebar from "./Sidebar";
 import { useCreateInformationMutation } from "../services/Post";
-function Informations() {
+import Spinner from "./Spinner";
+function Informations(props) {
+  const [loading, setLoading] = useState(false);
   const [informationListItems, setInformationListItems] = useState([]);
   const [createInformation, responseInfo] = useCreateInformationMutation();
   const [title, setTitle] = useState("");
@@ -30,6 +32,8 @@ function Informations() {
     informationList();
   }, []);
   const informationList = async () => {
+    props.setProgress(10);
+    setLoading(true);
     const { data } = await axios.post(
       "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/information/info/list"
     );
@@ -37,6 +41,8 @@ function Informations() {
     setTitle(data?.results?.list[0]?.title);
     setDescription(data?.results?.list[0]?.Description);
     console.log("Information List", data);
+    props.setProgress(100);
+    setLoading(false);
   };
   console.log("Title", title);
   console.log("dscription", description);
@@ -136,6 +142,7 @@ function Informations() {
   };
   return (
     <>
+      {loading}
       <Sidebar Dash={"informations"} />
       <div className="admin_main">
         <div className="admin_main_inner">
@@ -151,53 +158,57 @@ function Informations() {
                   Create Information
                 </Link>
               </div>
-              <div className="col-12">
-                <div className="row mx-0">
-                  {informationListItems?.map((data, index) => (
-                    <div className="col-12 mb-5" key={index}>
-                      <div className="row">
-                        <div className="col-md-6 d-flex align-items-stretch">
-                          <div className="row content_management_box me-0">
-                            <h2>{data?.title_en}</h2>
-                            <Link
-                              className="edit_content_btn comman_btn"
-                              data-bs-toggle="modal"
-                              data-bs-target="#staticBackdrop"
-                              to="#"
-                              onClick={() => {
-                                handleItem(data);
-                                setItemId(data?._id);
-                              }}
-                            >
-                              <i className="far fa-edit me-2"></i>Edit
-                            </Link>
-                            <p>{data?.Description_en}</p>
+              {loading ? (
+                <Spinner />
+              ) : (
+                <div className="col-12">
+                  <div className="row mx-0">
+                    {informationListItems?.map((data, index) => (
+                      <div className="col-12 mb-5" key={index}>
+                        <div className="row">
+                          <div className="col-md-6 d-flex align-items-stretch">
+                            <div className="row content_management_box me-0">
+                              <h2>{data?.title_en}</h2>
+                              <Link
+                                className="edit_content_btn comman_btn"
+                                data-bs-toggle="modal"
+                                data-bs-target="#staticBackdrop"
+                                to="#"
+                                onClick={() => {
+                                  handleItem(data);
+                                  setItemId(data?._id);
+                                }}
+                              >
+                                <i className="far fa-edit me-2"></i>Edit
+                              </Link>
+                              <p>{data?.Description_en}</p>
+                            </div>
                           </div>
-                        </div>
-                        <div className="col-md-6 d-flex align-items-stretch">
-                          <div className="row content_management_box ms-0 text-end">
-                            <h2> {data?.title_ar} </h2>
-                            <Link
-                              className="edit_content_btn comman_btn"
-                              data-bs-toggle="modal"
-                              data-bs-target="#staticBackdrop1"
-                              to="#"
-                              onClick={() => {
-                                handleItem(data);
-                                setItemId(data?._id);
-                              }}
-                            >
-                              <i className="far fa-edit me-2"></i>
-                              Edit
-                            </Link>
-                            <p> {data?.Description_ar} </p>
+                          <div className="col-md-6 d-flex align-items-stretch">
+                            <div className="row content_management_box ms-0 text-end">
+                              <h2> {data?.title_ar} </h2>
+                              <Link
+                                className="edit_content_btn comman_btn"
+                                data-bs-toggle="modal"
+                                data-bs-target="#staticBackdrop1"
+                                to="#"
+                                onClick={() => {
+                                  handleItem(data);
+                                  setItemId(data?._id);
+                                }}
+                              >
+                                <i className="far fa-edit me-2"></i>
+                                Edit
+                              </Link>
+                              <p> {data?.Description_ar} </p>
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           </div>
         </div>
