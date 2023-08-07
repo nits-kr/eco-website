@@ -13,38 +13,68 @@ export default function HelpEditModel(props) {
     const { name, value } = event.target;
     setFormData({ ...formData, [name]: value });
   };
-  const handleFormSubmit = (event) => {
+  // const handleFormSubmit = (event) => {
+  //   event.preventDefault();
+  //   axios
+  //     .patch(
+  //       `http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/help/help/updateQuestion/${selectedQuestionId}`,
+  //       {
+  //         Question_ar: formData.questions,
+  //         Answer_ar: formData.answers,
+  //       }
+  //     )
+  //     .then((response) => {
+  //       console.log(response.data.results);
+  //       const updatedData = response.data.results.updateData;
+  //       if (updatedData && updatedData.questions_ar && updatedData.answer_ar) {
+  //         setFormData(updatedData);
+  //         refreshList();
+  //         Swal.fire({
+  //           title: "Question Updated!",
+  //           text: "Your question has been updated successfully.",
+  //           icon: "success",
+  //           confirmButtonColor: "#3085d6",
+  //           confirmButtonText: "OK",
+  //         }).then((result) => {
+  //           if (result.isConfirmed) {
+  //             window.location.reload(true);
+  //           }
+  //         });
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       console.error(error);
+  //     });
+  // };
+  const handleFormSubmit = async (event) => {
     event.preventDefault();
-    axios
-      .patch(
+    try {
+      const response = await axios.patch(
         `http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/help/help/updateQuestion/${selectedQuestionId}`,
         {
           Question_ar: formData.questions,
           Answer_ar: formData.answers,
         }
-      )
-      .then((response) => {
-        console.log(response.data.results);
-        const updatedData = response.data.results.updateData;
-        if (updatedData && updatedData.questions_ar && updatedData.answer_ar) {
-          setFormData(updatedData);
-          refreshList();
-          Swal.fire({
-            title: "Question Updated!",
-            text: "Your question has been updated successfully.",
-            icon: "success",
-            confirmButtonColor: "#3085d6",
-            confirmButtonText: "OK",
-          }).then((result) => {
-            if (result.isConfirmed) {
-              window.location.reload(true);
-            }
-          });
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+      );
+      const updatedData = response.data.results.updateData;
+      setFormData(updatedData);
+      refreshList();
+      {
+        setFormData(updatedData);
+        refreshList();
+        await Swal.fire({
+          title: "Question Updated!",
+          text: "Your question has been updated successfully.",
+          icon: "success",
+          confirmButtonColor: "#3085d6",
+          confirmButtonText: "OK",
+        });
+
+        window.location.reload(true);
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (

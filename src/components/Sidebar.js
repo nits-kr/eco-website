@@ -1,5 +1,14 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faList,
+  faTrash,
+  faDollarSign,
+  faMoneyBill1Wave,
+  faDownload,
+  faFileExport,
+} from "@fortawesome/free-solid-svg-icons";
 
 function Sidebar({ Dash }) {
   return (
@@ -37,6 +46,40 @@ function Sidebar({ Dash }) {
                     <i className="fal fa-users"></i>Agent Management
                   </Link>
                 </li>
+                {/* <li
+                  className={
+                    Dash === "categories" ? "nav-link active" : "nav-link"
+                  }
+                >
+                  <div className="dropdown">
+                    <Link
+                      className="btn btn-primary dropdown-toggle"
+                      to="/categories"
+                      role="button"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false"
+                    >
+                      <FontAwesomeIcon icon={faList} />Category Management
+                    </Link>
+                    <ul className="dropdown-menu">
+                      <li>
+                        <Link className="dropdown-item" href="/products">
+                          Product List
+                        </Link>
+                      </li>
+                      <li>
+                        <a className="dropdown-item" href="#">
+                          Another action
+                        </a>
+                      </li>
+                      <li>
+                        <a className="dropdown-item" href="#">
+                          Something else here
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                </li> */}
 
                 <li
                   className={
