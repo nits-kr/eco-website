@@ -11,7 +11,7 @@ function AgentDetails() {
     localStorage.getItem("token");
   // const [formData, setFormData] = useState([]);
   const [formData, setFormData] = useState({
-    fullName: "karan",
+    fullName: "",
     email: "",
     accountNumber: "",
     bankName: "",
