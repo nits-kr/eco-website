@@ -95,7 +95,7 @@ function AgentDetails() {
         data
       );
       console.log(response.data.results.saveUser);
-  
+
       if (!response.data.error) {
         Swal.fire({
           title: "List saved!",
@@ -265,8 +265,24 @@ function AgentDetails() {
                               <label htmlFor="commision">
                                 Commission Types:
                               </label>
+                              <span className="form-check1 form-switch ms-4">
+                                <input
+                                  className="form-check-input fs-4"
+                                  type="checkbox"
+                                  role="switch"
+                                  id="flexSwitchCheckDefault"
+                                  checked={formData.global}
+                                  onChange={handleInputChange1}
+                                />
+                                <label
+                                  className="form-check-label text-danger fs-4"
+                                  htmlFor="flexSwitchCheckDefault"
+                                >
+                                  <strong>Global</strong>
+                                </label>
+                              </span>
                             </div>
-                            <div className="form-check form-switch ms-4">
+                            {/* <div className="form-check1 form-switch ms-4">
                               <input
                                 className="form-check-input fs-4"
                                 type="checkbox"
@@ -281,7 +297,7 @@ function AgentDetails() {
                               >
                                 <strong>Global</strong>
                               </label>
-                            </div>
+                            </div> */}
                           </div>
                         </div>
                       </div>
