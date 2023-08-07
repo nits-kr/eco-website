@@ -133,11 +133,11 @@ function ContentManagement() {
               <div className="col-12 text-end mb-4">
                 <Link
                   to="#"
-                  className="comman_btn"
+                  className="comman_btn mb-3"
                   data-bs-toggle="modal"
                   data-bs-target="#staticBackdrop5"
                 >
-                  Create Content
+                 + {" "} Create Content
                 </Link>
               </div>
               {contentList?.map((data, index) => (

@@ -151,11 +151,11 @@ function Informations(props) {
               <div className="col-12 text-end mb-4">
                 <Link
                   to="#"
-                  className="comman_btn"
+                  className="comman_btn mb-3"
                   data-bs-toggle="modal"
                   data-bs-target="#staticBackdrop5"
                 >
-                  Create Information
+                 + {" "} Create Information
                 </Link>
               </div>
               {loading ? (
