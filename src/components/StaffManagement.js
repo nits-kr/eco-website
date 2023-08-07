@@ -571,7 +571,7 @@ function StaffManagement() {
                   />
                 </div>
                 <div className="form-group col-12">
-                  <label htmlFor="">Select Module</label>
+                  <label htmlFor="">Module</label>
                   <input
                     type="text"
                     className="form-control"
