@@ -313,7 +313,7 @@ function UserDetails2() {
                             </div>
                           </div>
                         </div>
-                        <div
+                        {/* <div
                           className="form-group col-12"
                           style={{
                             width: "97%",
@@ -343,7 +343,7 @@ function UserDetails2() {
                               />
                             </div>
                           </div>
-                        </div>
+                        </div> */}
                       </form>
                     </div>
                   </div>
@@ -563,7 +563,7 @@ function UserDetails2() {
                               >
                                 <tr>
                                   <th>Order Id</th>
-                                  <th>Vendor</th>
+                                  {/* <th>Vendor</th> */}
                                   <th>Cost</th>
                                   <th>Status</th>
                                   <th>Created At</th>
@@ -590,20 +590,22 @@ function UserDetails2() {
                                   return (
                                     <tr key={index}>
                                       <td>{order._id}</td>
-                                      <td>
-                                        {order.products.map((product, i) => (
-                                          <div key={i}>
-                                            {/* <p>
-                                              Product ID: {product.product_Id}
-                                            </p> */}
-                                            {product.quantity}
-                                            {/* <p>Quantity: {product.quantity}</p> */}
-                                          </div>
-                                        ))}
-                                      </td>
                                       <td>{order.cartsTotal}</td>
                                       <td>{order.orderStatus}</td>
                                       <td>{order?.createdAt?.slice(0, 10)}</td>
+                                      {/* <td>
+                                        {order.products.map((product, i) => (
+                                          <div key={i}>
+                                            <p>
+                                              Product ID: {product.product_Id}
+                                            </p>
+                                            {product.quantity}
+                                            <p>Quantity: {product.quantity}</p>
+                                          </div>
+                                        ))}
+                                      </td> */}
+                                      
+                                      
                                       {/* <td>{order.deliverdBy}</td> */}
                                       <td>
                                         <div
