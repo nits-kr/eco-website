@@ -1,23 +1,25 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import HelpQuestion from './HelpQuestion';
-import HelpEditModel from './HelpEditModel';
-import HelpEditModelEn from './HelpEditModelEn';
+import HelpQuestion from "./HelpQuestion";
+import HelpEditModel from "./HelpEditModel";
+import HelpEditModelEn from "./HelpEditModelEn";
 import axios from "axios";
 import Swal from "sweetalert2";
-import Sidebar from './Sidebar';
-
+import Sidebar from "./Sidebar";
 
 function HelpView() {
-  const [helpViewList, setHelpViewList] = useState('');
+  const [helpViewList, setHelpViewList] = useState("");
   const [selectedQuestionId, setSelectedQuestionId] = useState(null); // Add selectedQuestionId state
-
+  axios.defaults.headers.common["x-auth-token-user"] =
+    localStorage.getItem("token");
   useEffect(() => {
     userList();
   }, []);
 
   const userList = async () => {
-    const { data } = await axios.post("http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/help/help/questionList");
+    const { data } = await axios.post(
+      "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/help/help/questionList"
+    );
     setHelpViewList(data.results.listData.reverse());
     console.log(data);
   };
@@ -27,26 +29,26 @@ function HelpView() {
   };
 
   const handleEdit = (_id) => {
-    const selectedQuestion = helpViewList.find(data => data._id === _id);
+    const selectedQuestion = helpViewList.find((data) => data._id === _id);
     setSelectedQuestionId(selectedQuestion?._id); // Update selectedQuestionId state
     setFormData({
-      questions: selectedQuestion?.Question || '',
-      answers: selectedQuestion?.Answer || ''
+      questions: selectedQuestion?.Question || "",
+      answers: selectedQuestion?.Answer || "",
+      questions_ar: selectedQuestion?.Question_ar || "",
+      answers_ar: selectedQuestion?.Answer_ar || "",
     });
   };
 
   const [formData, setFormData] = useState({
-    questions: '',
-    answers: ''
+    questions: "",
+    answers: "",
+    questions_ar: "",
+    answers_ar: "",
   });
-
-  axios.defaults.headers.common["x-auth-token-user"] = localStorage.getItem("token");
-
-
 
   return (
     <>
-    <Sidebar/>
+      <Sidebar />
       <div className="admin_main">
         <div className="admin_main_inner">
           <div className="admin_panel_data height_adjust">
@@ -57,7 +59,13 @@ function HelpView() {
                     <h2>Help Category Listing</h2>
                   </div>
                   <div className="col-auto">
-                    <button data-bs-toggle="modal" data-bs-target="#staticBackdrop1" className="comman_btn2"><i className="fas fa-plus me-1"></i> Add Question</button>
+                    <button
+                      data-bs-toggle="modal"
+                      data-bs-target="#staticBackdrop1"
+                      className="comman_btn2"
+                    >
+                      <i className="fas fa-plus me-1"></i> Add Question
+                    </button>
                   </div>
                 </div>
                 <div className="row mx-0 py-4">
@@ -69,17 +77,23 @@ function HelpView() {
                             <div className="col">
                               <div className="qa_box_head">
                                 <span className="border"> {index + 1} </span>
-                                <h2 className="ms-2">{data.Question}</h2>
+                                <h2 className="ms-2">{data?.Question}</h2>
                               </div>
                             </div>
-                            <div className="col-auto" >
-                              <Link className="comman_btn2" data-bs-toggle="modal" data-bs-target="#staticBackdrop" to="#" onClick={() => handleEdit(data?._id)}>
+                            <div className="col-auto">
+                              <Link
+                                className="comman_btn2"
+                                data-bs-toggle="modal"
+                                data-bs-target="#staticBackdrop"
+                                to="#"
+                                onClick={() => handleEdit(data?._id)}
+                              >
                                 <i className="far fa-edit me-1"></i> Edit
                               </Link>
                             </div>
                             <div className="col-12">
                               <div className="qa_box_content border">
-                                <p> {data.Answer} </p>
+                                <p> {data?.Answer} </p>
                               </div>
                             </div>
                           </div>
@@ -87,19 +101,25 @@ function HelpView() {
                         <div className="col-6 d-flex align-items-stretch">
                           <div className="qa_box row position-relative border align-items-start">
                             <div className="col-auto">
-                              <Link className="comman_btn2" data-bs-toggle="modal" data-bs-target="#staticBackdrop2" to="javscript:;">
+                              <Link
+                                className="comman_btn2"
+                                data-bs-toggle="modal"
+                                data-bs-target="#staticBackdrop2"
+                                to="javscript:;"
+                                onClick={() => handleEdit(data?._id)}
+                              >
                                 <i className="far fa-edit me-1"></i> Edit
                               </Link>
                             </div>
                             <div className="col">
                               <div className="qa_box_head align-items-center text-end">
-                                <h2 className="me-2">أوضح لك أن كل هذه الأفكار المغلوطة حول استنكار النشوة وتمجيد</h2>
+                                <h2 className="me-2">{data?.Question_ar}</h2>
                                 <span className="border">{index + 1}</span>
                               </div>
                             </div>
                             <div className="col-12">
                               <div className="qa_box_content border">
-                                <p>كن لا بد أن أوضح لك أن كل هذه الأفكار المغلوطة حول استنكار النشوة وتمجيد الألم نشأت بالفعل، وسأعرض لك التفاصيل لتكتشف حقيقة وأساس تلك السعادة البشرية، فلا أحد يرفض أو يكره أو يتجنب الشعور بالسعادة، ولكن بفضل هؤلاء الأشخاص الذين لا يدركون بأن السعادة لا بد أن نستشعرها بصورة أكثر عقلانية ومنطقية فيعرضهم هذا لمواجهة الظروف الأليمة، وأكرر بأنه لا يوجد من يرغب في الحب ونيل المنال ويتلذذ بالآلام، الألم هو الألم ولكن نتيجة لظروف ما قد </p>
+                                <p>{data?.Answer_ar}</p>
                               </div>
                             </div>
                           </div>
@@ -122,11 +142,16 @@ function HelpView() {
         selectedQuestionId={selectedQuestionId}
       />
 
-      <HelpEditModel />
+      <HelpEditModel
+        refreshList={refreshList}
+        handleEdit={handleEdit}
+        formData={formData}
+        setFormData={setFormData}
+        selectedQuestionId={selectedQuestionId}
+      />
       <HelpQuestion />
     </>
-  )
+  );
 }
 
 export default HelpView;
-

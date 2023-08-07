@@ -256,7 +256,7 @@ function SubSubCategory() {
                 <label htmlFor="">Select Category</label>
                 <select
                   className="select form-control"
-                  size={100}
+                  multiple=""
                   name="categoryId"
                   id="selectCategory"
                   value={subSubCategory.categoryId}
@@ -274,7 +274,7 @@ function SubSubCategory() {
                 <label htmlFor="">Select Sub Category</label>
                 <select
                   className="select form-control"
-                  size={100}
+                  multiple=""
                   name="categoryId1"
                   id="selectSubCategory"
                   value={subSubCategory.categoryId1}
@@ -301,7 +301,7 @@ function SubSubCategory() {
                   value={subSubCategory.nameEn}
                   onChange={handleInputChange}
                   required
-                  minLength="3"
+                  // minLength="3"
                 />
               </div>
               <div className="form-group col">
@@ -317,7 +317,7 @@ function SubSubCategory() {
                   value={subSubCategory.nameAr}
                   onChange={handleInputChange}
                   required
-                  minLength="3"
+                  // minLength="3"
                 />
               </div>
               {/* <div className="form-group col-auto">

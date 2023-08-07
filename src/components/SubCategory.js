@@ -303,7 +303,7 @@ function SubCategory(props) {
                 <label htmlFor="">Select Category</label>
                 <select
                   className="select form-control"
-                  size={15}
+                  multiple=""
                   name="categoryId"
                   id="selectCategory"
                   value={subCategory.categoryId}

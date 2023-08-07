@@ -257,7 +257,7 @@ function Attribute() {
                 <label htmlFor="">Select Category</label>
                 <select
                   className="select form-control"
-                  size={15}
+                  multiple=""
                   name="categoryId"
                   id="selectCategory"
                   value={attributes.categoryId}
@@ -275,7 +275,7 @@ function Attribute() {
                 <label htmlFor="">Select Sub Category</label>
                 <select
                   className="select form-control"
-                  size={15}
+                  multiple=""
                   name="categoryId1"
                   id="selectSubCategory"
                   value={attributes.categoryId1}
@@ -293,7 +293,7 @@ function Attribute() {
                 <label htmlFor="">Select Sub Sub Category</label>
                 <select
                   className="select form-control"
-                  size={15}
+                  multiple=""
                   name="categoryId2"
                   id="categoryId2"
                   value={attributes.categoryId2}
@@ -323,7 +323,7 @@ function Attribute() {
                   value={attributes.nameEn}
                   onChange={handleInputChange}
                   required
-                  minLength="3"
+                  // minLength="3"
                 />
               </div>
               <div className="form-group col">
@@ -339,7 +339,7 @@ function Attribute() {
                   value={attributes.nameAr}
                   onChange={handleInputChange}
                   required
-                  minLength="3"
+                  // minLength="3"
                 />
               </div>
               {/* <div className="form-group col-auto">

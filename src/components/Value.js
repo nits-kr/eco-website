@@ -303,7 +303,7 @@ function Value() {
                 <label htmlFor="selectCategory">Select Category</label>
                 <select
                   className="select form-control"
-                  size={15}
+                  multiple=""
                   name="categoryId"
                   id="selectCategory"
                   value={values.categoryId}
@@ -321,7 +321,7 @@ function Value() {
                 <label htmlFor="">Select Sub Category</label>
                 <select
                   className="select form-control"
-                  size={15}
+                  multiple=""
                   name="categoryId1"
                   id="selectSubCategory"
                   value={values.categoryId1}
@@ -340,7 +340,7 @@ function Value() {
                 <label htmlFor="">Select Sub Sub Category</label>
                 <select
                   className="select form-control"
-                  size={15}
+                  multiple=""
                   name="categoryId2"
                   id="selectSubSubCategory"
                   value={values.categoryId2}
@@ -361,7 +361,7 @@ function Value() {
                 <label htmlFor="">Select Attribute</label>
                 <select
                   className="select form-control"
-                  size={15}
+                  multiple=""
                   name="categoryId3"
                   id="selectAttribute"
                   value={values.categoryId3}

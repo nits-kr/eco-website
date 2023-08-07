@@ -4,12 +4,12 @@ import Swal from "sweetalert2";
 import Sidebar from "./Sidebar";
 
 export default function HelpQuestion() {
- // const [questions, setQuestions] = useState([]);
+  // const [questions, setQuestions] = useState([]);
   const [questions, setQuestions] = useState({
     question: "",
     question1: "",
     message: "",
-    message1: ""
+    message1: "",
   });
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -23,6 +23,8 @@ export default function HelpQuestion() {
         {
           Question: questions.question,
           Answer: questions.message,
+          Question_ar: questions.question1,
+          Answer_ar: questions.message1,
         }
       )
       .then((response) => {
@@ -36,7 +38,7 @@ export default function HelpQuestion() {
           confirmButtonText: "OK",
         }).then((result) => {
           if (result.isConfirmed) {
-            window.location.reload(); // refresh the page after success message is closed
+            window.location.reload();
           }
         });
       })
@@ -47,7 +49,7 @@ export default function HelpQuestion() {
 
   return (
     <>
-    <Sidebar/>
+      <Sidebar />
       <div
         className="modal fade Edit_help Edit_modal"
         id="staticBackdrop1"
@@ -116,7 +118,7 @@ export default function HelpQuestion() {
                     name="message"
                     id="message"
                     style={{ height: "150px" }}
-                    value={questions.message}
+                    // value={questions.message}
                     onChange={handleInputChange}
                     defaultValue="Please Enter Your Answer"
                   />
@@ -131,7 +133,7 @@ export default function HelpQuestion() {
                     name="message1"
                     id="message1"
                     style={{ height: "150px" }}
-                    value={questions.message1}
+                    // value={questions.message1}
                     onChange={handleInputChange}
                     defaultValue="من فضلك أدخل إجابتك"
                   />
