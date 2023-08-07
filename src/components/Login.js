@@ -12,6 +12,7 @@ function Login() {
   const navigate = useNavigate();
   useEffect(() => {
     if (res.isSuccess) {
+      localStorage.setItem("loginId", res.data?.results?.login?._id);
       Swal.fire({
         title: "Login Successful!",
         icon: "success",
@@ -21,8 +22,15 @@ function Login() {
           navigate("/dashboard");
         }
       });
+    } else if (res.isError && res.error?.data?.error) {
+      Swal.fire({
+        title: "Incorrect Password!",
+        icon: "error",
+        text: res.error?.data?.message || "Unknown error occurred.",
+      });
     }
   }, [res, navigate]);
+
   const handleSaveChanges = async (e) => {
     e.preventDefault();
     setUserNameError("");
@@ -44,23 +52,6 @@ function Login() {
         password: password,
       });
       console.log("response login", response);
-      if (response?.data?.error) {
-        Swal.fire({
-          title: "Incorrect Password!",
-          icon: "error",
-          text: response?.data?.message || "Unknown error occurred.",
-        });
-      } else {
-        Swal.fire({
-          title: "Login Successful!",
-          icon: "success",
-          text: "You have successfully logged in.",
-        }).then((result) => {
-          if (result.isConfirmed) {
-            navigate("/dashboard");
-          }
-        });
-      }
     } catch (error) {
       console.error("Login error:", error);
       // Show a generic error message if something goes wrong
@@ -71,6 +62,7 @@ function Login() {
       });
     }
   };
+
   return (
     <>
       <section className="login_page">

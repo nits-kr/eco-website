@@ -25,8 +25,14 @@ function ThoughtsManagement() {
     nameArText: "",
     categoryPic: null,
   });
+  const [loginId, setLoginId] = useState("");
+
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
+  useEffect(() => {
+    const storedLoginId = localStorage.getItem("loginId");
+    setLoginId(storedLoginId);
+  }, []);
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setFormData({ ...formData, [name]: value });
@@ -44,7 +50,7 @@ function ThoughtsManagement() {
       data.append("thougth_Pic", formData.categoryPic);
       data.append("description", formData.nameEnText);
       data.append("description_ar", formData.nameArText);
-      data.append("user_Id", "64d0864da6f1623b5152cafb");
+      data.append("user_Id", loginId);
       const response = await axios.post(
         "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/thougth/thougth/createThougth",
         data
@@ -371,10 +377,7 @@ function ThoughtsManagement() {
                               <div className="col-2">
                                 <div className="notification_icon notification-imgg">
                                   <div>
-                                    <img
-                                      src={thought?.thougth_Pic}
-                                      alt=""
-                                    />
+                                    <img src={thought?.thougth_Pic} alt="" />
                                     <strong>
                                       <Link to="/userDetails">Ajay Sharma</Link>
                                     </strong>
