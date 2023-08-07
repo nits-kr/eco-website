@@ -31,6 +31,6 @@ export const userSlice = createSlice({
     },
   },
 });
-console.log("Slice",userSlice?.actions);
+console.log("Slice", userSlice?.actions);
 export const { increment, decrement, incrementByAmount } = userSlice.actions;
 export default userSlice.reducer;
