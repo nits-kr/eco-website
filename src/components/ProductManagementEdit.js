@@ -31,18 +31,6 @@ function ProductManagementEdit(props) {
   console.log("props", props);
   console.log("id", id);
 
-  // useEffect(() => {
-  //   axios
-  //     .post(
-  //       "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/product/productList"
-  //     )
-  //     .then((response) => {
-  //       setProductList(response?.data?.results?.list.reverse());
-  //       if(id === productList.map((item, index) => item?._id)){
-  //         setProductListItems(response?.data?.results?.list)
-  //       }
-  //     });
-  // }, []);
   useEffect(() => {
     axios
       .post(
@@ -51,21 +39,16 @@ function ProductManagementEdit(props) {
       .then((response) => {
         const products = response?.data?.results?.list.reverse();
         setProductList(products);
+  
+        const productWithId = products.find((item) => item._id === id);
+        if (productWithId) {
+          setProductListItems([productWithId]);
+        } else {
+          setProductListItems([]);
+        }
       });
-  }, []);
-
-  useEffect(() => {
-    const productWithId = productList.find((item) => item._id === id);
-    if (productWithId) {
-      setProductListItems([productWithId]);
-    } else {
-      setProductListItems([]);
-    }
-  }, [productList, id]);
-
-  // if(id === productList.map((item, index) => item?._id)){
-  //   setProductListItems(response?.data?.results?.list)
-  // }
+  }, [id]);
+  
 
   const handleInputChange1 = (event) => {
     const { name, value } = event.target;
@@ -502,7 +485,7 @@ function ProductManagementEdit(props) {
                               // value={formData.dollar}
                               onChange={handleInputChange}
                               required
-                              minLength="3"
+                              // minLength="3"
                             />
                           </div>
                           {/* <div className="form-group col-6">
