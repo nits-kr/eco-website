@@ -15,7 +15,7 @@ export const PostApi = createApi({
       query: (body) => {
         console.log("update login data", body);
         return {
-          url: `/admin/user/login`,
+          url: "/admin/user/login",
           method: "post",
           body,
         };
@@ -305,14 +305,14 @@ export const PostApi = createApi({
     }),
     deleteHelpManagementList: builder.mutation({
       query: (id) => ({
-        url: `/admin/agent/agent/delete-user/${id}`,
-        method: "DELETE",
+        url: `/admin/help/help/delete-help/${id}`,
+        method: "post",
       }),
     }),
     deleteHelpThoughtList: builder.mutation({
       query: (id) => ({
-        url: `/admin/agent/agent/delete-user/${id}`,
-        method: "DELETE",
+        url: `/admin/thougth/thougth/delete-thougth/${id}`,
+        method: "post",
       }),
     }),
   }),

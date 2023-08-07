@@ -14,8 +14,12 @@ function ContentManagement() {
   const [update, res] = useUpdateContentMutation();
   const [titleEn, setTitleEn] = useState("");
   const [descriptionEn, setDescriptionEn] = useState("");
+  const [titleAr, setTitleAr] = useState("");
+  const [descriptionAr, setDescriptionAr] = useState("");
   const [titleEn2, setTitleEn2] = useState("");
   const [descriptionEn2, setDescriptionEn2] = useState("");
+  const [titleAr2, setTitleAr2] = useState("");
+  const [descriptionAr2, setDescriptionAr2] = useState("");
   const [itemId, setItemId] = useState([]);
   const [titleEn3, setTitleNameEn3] = useState("");
   const [descriptionEn3, setDescriptionEn3] = useState("");
@@ -43,6 +47,35 @@ function ContentManagement() {
       id: itemId,
       title: titleEn,
       Description: descriptionEn,
+    };
+    try {
+      await update(editAddress);
+      Swal.fire({
+        icon: "success",
+        title: "Changes Saved",
+        text: "The subcategory has been updated successfully.",
+        confirmButtonColor: "#3085d6",
+        confirmButtonText: "OK",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          window.location.reload();
+        }
+      });
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "An error occurred while updating the subcategory.",
+      });
+    }
+  };
+  const handleSaveChanges2 = async (e) => {
+    e.preventDefault();
+    console.log("handleSaveChanges1", itemId);
+    const editAddress = {
+      id: itemId,
+      title_ar: titleAr,
+      Description_ar: descriptionAr,
     };
     try {
       await update(editAddress);
@@ -130,7 +163,7 @@ function ContentManagement() {
                     </div>
                     <div className="col-md-6 d-flex align-items-stretch">
                       <div className="row content_management_box ms-0 text-end">
-                        <h2>معلومات عنا</h2>
+                        <h2> {data?.title_ar} </h2>
                         <Link
                           className="edit_content_btn comman_btn"
                           data-bs-toggle="modal"
@@ -145,20 +178,7 @@ function ContentManagement() {
                           Edit
                         </Link>
                         <p>
-                          لكن لا بد أن أوضح لك أن كل هذه الأفكار المغلوطة حول
-                          استنكار النشوة وتمجيد الألم نشأت بالفعل، وسأعرض لك
-                          التفاصيل لتكتشف حقيقة وأساس تلك السعادة البشرية، فلا
-                          أحد يرفض أو يكره أو يتجنب الشعور بالسعادة، ولكن بفضل
-                          هؤلاء الأشخاص الذين لا يدركون بأن السعادة لا بد أن
-                          نستشعرها بصورة أكثر عقلانية ومنطقية فيعرضهم هذا
-                          لمواجهة الظروف الأليمة، وأكرر بأنه لا يوجد من يرغب في
-                          الحب ونيل المنال ويتلذذ بالآلام، الألم هو الألم ولكن
-                          نتيجة لظروف ما قد تكمن السعاده فيما نتحمله من كد وأسي.
-                          و سأعرض مثال حي لهذا، من منا لم يتحمل جهد بدني شاق إلا
-                          من أجل الحصول على ميزة أو فائدة؟ ولكن من لديه الحق أن
-                          ينتقد شخص ما أراد أن يشعر بالسعادة التي لا تشوبها
-                          عواقب أليمة أو آخر أراد أن يتجنب الألم الذي ربما تنجم
-                          عنه بعض المتعة
+                          {data?.Description_ar}
                         </p>
                       </div>
                     </div>
@@ -264,7 +284,8 @@ function ContentManagement() {
                     type="text"
                     id="quesstioon"
                     name="quesstioon"
-                    defaultValue="سلامتك تهمنا"
+                    defaultValue={titleAr2}
+                    onChange={(e) => setTitleAr(e.target.value)}
                   />
                 </div>
                 <div className="form-group col-12 text-end">
@@ -277,11 +298,16 @@ function ContentManagement() {
                     name="message"
                     id="message"
                     style={{ height: "150px" }}
-                    defaultValue="لكن لا بد أن أوضح لك أن كل هذه الأفكار المغلوطة حول استنكار النشوة وتمجيد الألم نشأت بالفعل، وسأعرض لك التفاصيل لتكتشف حقيقة وأساس تلك السعادة البشرية، فلا أحد يرفض أو يكره أو يتجنب الشعور بالسعادة، ولكن بفضل هؤلاء الأشخاصأن أوضح لك أن كل هذه الأفكار المغلوطة حول استنكار النشوة وتمجيد الألم نشأت بالفعل، وسأعرض لك التفاصيل لتكتشف حقيقة وأساس تلك السعادة البشرية، فلا أحد يرفض أو يكره أو يتجنب الشعور بالسعادة، ولكن بفضل هؤلاء الأشخاص الذين لا يدركون بأن السعادة لا بد أن"
+                    defaultValue={descriptionAr2}
+                    onChange={(e) => setDescriptionAr(e.target.value)}
                   />
                 </div>
                 <div className="form-group col-12 text-center mb-0">
-                  <button type="submit" className="comman_btn2">
+                  <button
+                    type="submit"
+                    className="comman_btn2"
+                    onClick={handleSaveChanges2}
+                  >
                     Update
                   </button>
                 </div>
@@ -290,7 +316,7 @@ function ContentManagement() {
           </div>
         </div>
       </div>
-      {/* Edit Information */}
+      {/* Create Information */}
       <div
         className="modal fade Edit_help Edit_modal"
         id="staticBackdrop5"

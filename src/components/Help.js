@@ -392,10 +392,10 @@ function Help() {
                               {helpList.map((value, index) => (
                                 <tr key={index}>
                                   <td>{index + 1}</td>
-                                  <td>{value.categoryName}</td>
-                                  <td>{value.categoryName_ar}</td>
-                                  <td>{value.subCategoryName}</td>
-                                  <td>{value.subCategoryName_ar}</td>
+                                  <td>{value?.categoryName}</td>
+                                  <td>{value?.categoryName_ar}</td>
+                                  <td>{value?.subCategoryName}</td>
+                                  <td>{value?.subCategoryName_ar}</td>
                                   <td>
                                     <Link
                                       className="comman_btn table_viewbtn me-2"

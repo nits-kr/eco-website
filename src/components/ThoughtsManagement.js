@@ -39,22 +39,15 @@ function ThoughtsManagement() {
     event.preventDefault();
     try {
       const data = new FormData();
-      data.append("heading", formData.nameEn);
-      data.append("heading_ar", formData.nameAr);
-      data.append("pic", formData.categoryPic);
-      data.append("text", formData.nameEnText);
-      data.append("text_ar", formData.nameArText);
+      data.append("title", formData.nameEn);
+      data.append("title_ar", formData.nameAr);
+      data.append("thougth_Pic", formData.categoryPic);
+      data.append("description", formData.nameEnText);
+      data.append("description_ar", formData.nameArText);
+      data.append("user_Id", "64d0864da6f1623b5152cafb");
       const response = await axios.post(
         "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/thougth/thougth/createThougth",
-        // data
-        {
-          title: "New Thought",
-          description: "Lorem ipsum,  officia porro ipsa? Quod,",
-          user_Id: "644b5da7a96eb544042252f5",
-          title_ar: "New Thought",
-          description_ar: "Lorem ipsum,  officia porro ipsa? Quod,",
-          user_Id_ar: "644b5da7a96eb544042252f5",
-        }
+        data
       );
 
       if (!response.data.error) {
@@ -64,16 +57,10 @@ function ThoughtsManagement() {
           text: "Thought Created!",
           confirmButtonText: "OK",
         });
-        // .then((result) => {
-        //   if (result.isConfirmed) {
-        //     window.location.reload();
-        //   }
-        // });
         userList();
       }
     } catch (error) {
       console.error(error);
-      // Show SweetAlert error message
       Swal.fire({
         icon: "error",
         title: "Error",
@@ -91,7 +78,7 @@ function ThoughtsManagement() {
   }, []);
   const userList = async () => {
     const { data } = await axios.post(url);
-    setThoughts(data?.results?.list);
+    setThoughts(data?.results?.list?.reverse());
     console.log(data);
   };
 
@@ -385,7 +372,7 @@ function ThoughtsManagement() {
                                 <div className="notification_icon notification-imgg">
                                   <div>
                                     <img
-                                      src="assets/img/profile_img1.jpg"
+                                      src={thought?.thougth_Pic}
                                       alt=""
                                     />
                                     <strong>
@@ -413,7 +400,7 @@ function ThoughtsManagement() {
                                           deleteThought(thought?._id);
                                           Swal.fire(
                                             "Deleted!",
-                                            `${thought?.categoryName}  item has been deleted.`,
+                                            `${thought?.title}  item has been deleted.`,
                                             "success"
                                           ).then(() => {
                                             window.location.reload();
