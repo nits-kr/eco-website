@@ -158,7 +158,7 @@ function EditProfile() {
                             ) : storedPic ? (
                               <img src={storedPic} alt="" />
                             ) : (
-                              <img src="../assets/img/saudi_flag1.png" alt="" />
+                              <img src="../assets/img/profile_img1.jpg" alt="" />
                             )}
                           </div>
                           <div className="p-image">
