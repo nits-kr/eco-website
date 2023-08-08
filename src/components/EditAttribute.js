@@ -140,7 +140,7 @@ function EditAttribute(props) {
                   <label htmlFor="">Select Category</label>
                   <select
                     className="select form-control"
-                    size={15}
+                    multiple=""
                     name="categoryId"
                     id="selectCategory"
                     value={editAttributes.categoryId}
@@ -158,7 +158,7 @@ function EditAttribute(props) {
                   <label htmlFor="">Select Sub Category</label>
                   <select
                     className="select form-control"
-                    size={15}
+                    multiple=""
                     name="categoryId1"
                     id="selectSubCategory"
                     value={editAttributes.categoryId1}
@@ -176,7 +176,7 @@ function EditAttribute(props) {
                   <label htmlFor="">Select Sub Sub Category</label>
                   <select
                     className="select form-control"
-                    size={15}
+                    multiple=""
                     name="categoryId2"
                     id="selectSubSubCategory"
                     value={editAttributes.categoryId2}

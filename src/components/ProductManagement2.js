@@ -144,7 +144,7 @@ function ProductManagement2() {
   };
   return (
     <>
-      <Sidebar Dash={"product-management"}/>
+      <Sidebar Dash={"product-management"} />
       <div className="admin_main">
         <div className="admin_main_inner">
           <div className="admin_panel_data height_adjust">
@@ -794,7 +794,7 @@ function ProductManagement2() {
                           action=""
                         >
                           <div className="form-group col-12">
-                            <label htmlFor="">Category</label>
+                            <label htmlFor=""> Select Category</label>
                             <select
                               className="select form-control"
                               multiple=""
@@ -827,7 +827,7 @@ function ProductManagement2() {
                           action=""
                         >
                           <div className="form-group col-12">
-                            <label htmlFor="">Sub Category</label>
+                            <label htmlFor="">Select Sub-Category</label>
                             <select
                               className="select form-control"
                               multiple=""
@@ -860,7 +860,7 @@ function ProductManagement2() {
                           action=""
                         >
                           <div className="form-group col-12">
-                            <label htmlFor="">Brand</label>
+                            <label htmlFor="">Select Brand</label>
                             <select
                               className="select form-control"
                               multiple=""

@@ -212,10 +212,10 @@ function OfferManagement() {
                         />
                       </div> */}
                       <div className="form-group col-6">
-                        <label htmlFor="">Select Product</label>
+                        <label htmlFor="">Select Product<span className="required-field text-danger">*</span></label>
                         <select
                           className="select form-control"
-                          size={15}
+                          multiple=""
                           name="categoryId"
                           id="selectCategory"
                           value={subCategory.categoryId}
