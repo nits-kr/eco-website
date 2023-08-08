@@ -13,10 +13,12 @@ import EditAttribute from "./EditAttribute";
 import Swal from "sweetalert2";
 import Sidebar from "./Sidebar";
 import Spinner from "./Spinner";
+import { useCatogaryStatusMutation } from "../services/Post";
 
 function CategoryManagement(props) {
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
+  const [updateStatus] = useCatogaryStatusMutation();
   const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [startDate1, setStartDate1] = useState("");
@@ -27,6 +29,7 @@ function CategoryManagement(props) {
     categoryPic: null,
   });
   const [newCategory, setNewCategory] = useState([]);
+
   const url =
     "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/category/list";
   const url2 =
@@ -222,6 +225,41 @@ function CategoryManagement(props) {
       categoryPic: item?.categoryPic,
       id: item?._id,
     });
+  };
+
+  const handleCheckboxChange = async (e, categoryId) => {
+    e.preventDefault();
+    console.log("handleSaveChanges1", categoryId);
+    const newStatus = e.target.checked;
+
+    const confirmationResult = await Swal.fire({
+      title: "Confirm Status Change",
+      text: "Do you want to change the status?",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "Yes",
+      cancelButtonText: "No",
+    });
+
+    if (confirmationResult.isConfirmed) {
+      const editStatus = {
+        id: categoryId,
+        status: newStatus,
+      };
+      try {
+        await updateStatus(editStatus);
+        Swal.fire({
+          title: "Changes Saved",
+          text: "The Status has been updated successfully.",
+          icon: "success",
+          confirmButtonText: "OK",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            window.location.reload();
+          }
+        });
+      } catch (error) {}
+    }
   };
 
   return (
@@ -499,14 +537,20 @@ function CategoryManagement(props) {
                                                       <div className="check_toggle">
                                                         <input
                                                           className="d-none"
-                                                          data-bs-toggle="modal"
-                                                          data-bs-target="#staticBackdrop3"
+                                                          // data-bs-toggle="modal"
+                                                          // data-bs-target="#staticBackdrop3"
                                                           defaultChecked={
                                                             category.status
                                                           }
                                                           type="checkbox"
                                                           name={`status_${category._id}`}
                                                           id={`status_${category._id}`}
+                                                          onChange={(e) =>
+                                                            handleCheckboxChange(
+                                                              e,
+                                                              category._id
+                                                            )
+                                                          }
                                                         />
                                                         <label
                                                           htmlFor={`status_${category._id}`}

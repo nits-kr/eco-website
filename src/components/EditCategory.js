@@ -2,12 +2,17 @@ import React, { useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 function EditCategory(props) {
-  console.log("props?.newCategory?.categoryPic", props?.newCategory?.categoryPic);
+  axios.defaults.headers.common["x-auth-token-user"] =
+    localStorage.getItem("token");
+  console.log(
+    "props?.newCategory?.categoryPic",
+    props?.newCategory?.categoryPic
+  );
   const [category, setCategory] = useState({
     nameEn: "",
     nameAr: "",
     categoryId: "",
-    uploadImage: null
+    uploadImage: null,
   });
   const [categoryData, setCategoryData] = useState(props?.newCategory);
   const handleInputChange = (event) => {
@@ -20,20 +25,19 @@ function EditCategory(props) {
   };
   const handleUpdate = (itemId, event) => {
     event.preventDefault();
-    axios.defaults.headers.common["x-auth-token-user"] =
-      localStorage.getItem("token");
-    // const formData = new FormData();
-    // formData.append("categoryName_en", category.nameEn);
-    // formData.append("uploadImage", category.uploadImage);
+    const formData = new FormData();
+    formData.append("categoryName_en", category.nameEn);
+    formData.append("categoryName_ar", category.nameAr);
+    formData.append("categoryPic", category.uploadImage);
     axios
       .patch(
         `http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/category/update/${props.newCategory.id}`,
-        //   formData
-        {
-          categoryName_en: category.nameEn,
-          categoryName_ar: category.nameAr
-        
-        }
+        formData
+        // {
+        //   categoryName_en: category.nameEn,
+        //   categoryName_ar: category.nameAr
+
+        // }
       )
       .then((response) => {
         console.log(response);
@@ -115,7 +119,7 @@ function EditCategory(props) {
                   <input
                     type="file"
                     className="form-control"
-                    defaultValue={props?.newCategory?.categoryPic}
+                    // defaultValue={props?.newCategory?.categoryPic}
                     name="upload_video"
                     id="upload_video"
                     onChange={(e) => handleFileChange(e, "uploadImage")}

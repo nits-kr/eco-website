@@ -221,13 +221,14 @@ function SubSubCategory() {
     handleSave();
   }, []);
 
-  const handleUpdate = (id, id2, nameEn, nameAr) => {
-    console.log(nameEn, nameAr, id);
+  const handleUpdate = (item) => {
+    console.log(item);
     setNewCategory({
-      nameEn: nameEn,
-      nameAr: nameAr,
-      id,
-      id2,
+      nameEn: item?.subSubCategoryName_en,
+      nameAr: item?.subSubCategoryName_ar,
+      id: item?._id,
+      id1: item?.category_Id,
+      id2: item?.subCategory_Id,
     });
   };
 
@@ -408,13 +409,14 @@ function SubSubCategory() {
                             <form className="table_btns d-flex align-items-center">
                               <div className="check_toggle">
                                 <input
-                                  defaultChecked={value.status}
+                                  defaultChecked={value?.status}
                                   type="checkbox"
                                   name={`status_${value._id}`}
                                   id={`status_${value._id}`}
                                   className="d-none"
-                                  data-bs-toggle="modal"
-                                  data-bs-target="#staticBackdrop3"
+                                  // data-bs-toggle="modal"
+                                  // data-bs-target="#staticBackdrop3"
+                                  disabled
                                 />
                                 <label htmlFor={`status_${value._id}`}></label>
                               </div>
@@ -428,10 +430,11 @@ function SubSubCategory() {
                               to=""
                               onClick={() =>
                                 handleUpdate(
-                                  value.category_Id,
-                                  value.subCategory_Id,
-                                  value.subSubCategoryName_en,
-                                  value.subSubCategoryName_ar
+                                  // value.category_Id,
+                                  // value.subCategory_Id,
+                                  // value.subSubCategoryName_en,
+                                  // value.subSubCategoryName_ar
+                                  value
                                 )
                               }
                             >

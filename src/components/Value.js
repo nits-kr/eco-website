@@ -15,6 +15,8 @@ function Value() {
   const [attributes, setAttributes] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [startDate1, setStartDate1] = useState("");
+  const [valueNameEn2, setValueNameEn2] = useState("");
+  const [valueNameAr2, setValueNameAr2] = useState("");
   const [values, setValues] = useState({
     nameEn: "",
     nameAr: "",
@@ -256,6 +258,10 @@ function Value() {
       id: itemId,
       valuesName_en: editValueEn,
       valuesName_ar: editValueAr,
+      category_Id: values.categoryId,
+      subCategory_Id: values.categoryId1,
+      subSubCategory_Id: values.categoryId2,
+      attribute_Id: values.categoryId3,
       // categoryName: subCategory.subCategoryId,
     };
     try {
@@ -278,6 +284,11 @@ function Value() {
         text: "An error occurred while updating the subcategory.",
       });
     }
+  };
+  const handleItem = (item) => {
+    setValueNameEn2(item?.valuesName_en || "");
+    setValueNameAr2(item?.valuesName_ar || "");
+    // setImage2(item?.categoryPic || "");
   };
   return (
     <>
@@ -388,7 +399,7 @@ function Value() {
                   value={values.nameEn}
                   onChange={handleInputChange}
                   required
-                  minLength="3"
+                  // minLength="3"
                 />
               </div>
               <div className="form-group col">
@@ -404,7 +415,7 @@ function Value() {
                   value={values.nameAr}
                   onChange={handleInputChange}
                   required
-                  minLength="3"
+                  // minLength="3"
                 />
               </div>
               {/* <div className="form-group col-auto">
@@ -503,8 +514,9 @@ function Value() {
                                   name={`status_${value._id}`}
                                   id={`status_${value._id}`}
                                   className="d-none"
-                                  data-bs-toggle="modal"
-                                  data-bs-target="#staticBackdrop3"
+                                  // data-bs-toggle="modal"
+                                  // data-bs-target="#staticBackdrop3"
+                                  disabled
                                 />
                                 <label htmlFor={`status_${value._id}`}></label>
                               </div>
@@ -516,7 +528,10 @@ function Value() {
                               data-bs-target="#staticBackdrop4"
                               className="comman_btn2 table_viewbtn"
                               to=""
-                              onClick={() => setItemId(value?._id)}
+                              onClick={() => {
+                                handleItem(value);
+                                setItemId(value?._id);
+                              }}
                             >
                               Edit
                             </Link>
@@ -563,7 +578,7 @@ function Value() {
                   <label htmlFor="">Select Category</label>
                   <select
                     className="select form-control"
-                    size={15}
+                    multiple=""
                     name="categoryId"
                     id="selectCategory"
                     value={values.categoryId}
@@ -572,7 +587,7 @@ function Value() {
                     {Array.isArray(categories) &&
                       categories.map((category) => (
                         <option key={category._id} value={category._id}>
-                          {category.categoryName}
+                          {category.categoryName_en}
                         </option>
                       ))}
                   </select>
@@ -581,7 +596,7 @@ function Value() {
                   <label htmlFor="">Select Sub Category</label>
                   <select
                     className="select form-control"
-                    size={15}
+                    multiple=""
                     name="categoryId1"
                     id="categoryId1"
                     value={values.categoryId1}
@@ -590,7 +605,7 @@ function Value() {
                     {Array.isArray(subCategories) &&
                       subCategories.map((subCategory) => (
                         <option key={subCategory._id} value={subCategory._id}>
-                          {subCategory.subCategoryName}
+                          {subCategory.subCategoryName_en}
                         </option>
                       ))}
                   </select>
@@ -599,7 +614,7 @@ function Value() {
                   <label htmlFor="">Select Sub Sub Category</label>
                   <select
                     className="select form-control"
-                    size={15}
+                    multiple=""
                     name="categoryId2"
                     id="selectSubSubCategory"
                     value={values.categoryId2}
@@ -611,7 +626,7 @@ function Value() {
                           key={subSubCategory._id}
                           value={subSubCategory._id}
                         >
-                          {subSubCategory.subSubCategoryName}
+                          {subSubCategory.subSubCategoryName_en}
                         </option>
                       ))}
                   </select>
@@ -620,7 +635,7 @@ function Value() {
                   <label htmlFor="">Select Attribute</label>
                   <select
                     className="select form-control"
-                    size={15}
+                    multiple=""
                     name="categoryId3"
                     id="categoryId3"
                     value={values.categoryId3}
@@ -629,7 +644,7 @@ function Value() {
                     {Array.isArray(attributes) &&
                       attributes.map((attribute) => (
                         <option key={attribute._id} value={attribute._id}>
-                          {attribute.attributeName}
+                          {attribute.attributeName_en}
                         </option>
                       ))}
                   </select>
@@ -641,7 +656,7 @@ function Value() {
                     className="form-control"
                     name="nameEn"
                     id="nameEn"
-                    defaultValue=""
+                    defaultValue={valueNameEn2}
                     // onChange={handleInputChange}
                     onChange={(e) => setEditValueEn(e.target.value)}
                   />
@@ -653,7 +668,7 @@ function Value() {
                     className="form-control"
                     name="nameAr"
                     id="nameAr"
-                    defaultValue=""
+                    defaultValue={valueNameAr2}
                     // onChange={handleInputChange}
                     onChange={(e) => setEditValueAr(e.target.value)}
                   />

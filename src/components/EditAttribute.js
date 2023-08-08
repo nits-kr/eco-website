@@ -28,35 +28,35 @@ function EditAttribute(props) {
   //     [name]: value,
   //   }));
   // };
-  
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     await axios
       .patch(
-        `http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/attribute/attributeUpdate/${props.itemId}`,
+        `http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/attribute/attributeUpdate/${props.newCategory.id}`,
         {
           attributeName_en: editAttributes.nameEn,
           attributeName_ar: editAttributes.nameAr,
-          categoryName: editAttributes.categoryId,
-          subCategoryName: editAttributes.categoryId1,
-          subSubCategoryName: editAttributes.categoryId2,
+          category_Id: editAttributes.categoryId,
+          subCategory_Id: editAttributes.categoryId1,
+          subSubCategory_Id: editAttributes.categoryId2,
         }
       )
       .then((response) => {
         console.log(response.data);
         if (!response.data.error) {
           Swal.fire({
-              title: "Updated!",
-              text: "Your have been updated the list successfully.",
-              icon: "success",
-              confirmButtonColor: "#3085d6",
-              confirmButtonText: "OK",
+            title: "Updated!",
+            text: "Your have been updated the list successfully.",
+            icon: "success",
+            confirmButtonColor: "#3085d6",
+            confirmButtonText: "OK",
           }).then((result) => {
-              if (result.isConfirmed) {
-                  window.location.reload();
-              }
+            if (result.isConfirmed) {
+              window.location.reload();
+            }
           });
-      }
+        }
       })
       .catch((error) => {
         console.error(error);
@@ -149,7 +149,7 @@ function EditAttribute(props) {
                     {Array.isArray(categories) &&
                       categories.map((category) => (
                         <option key={category._id} value={category._id}>
-                          {category.categoryName}
+                          {category.categoryName_en}
                         </option>
                       ))}
                   </select>
@@ -167,7 +167,7 @@ function EditAttribute(props) {
                     {Array.isArray(subCategories) &&
                       subCategories.map((subCategory) => (
                         <option key={subCategory._id} value={subCategory._id}>
-                          {subCategory.subCategoryName}
+                          {subCategory.subCategoryName_en}
                         </option>
                       ))}
                   </select>
@@ -188,7 +188,7 @@ function EditAttribute(props) {
                           key={subSubCategory._id}
                           value={subSubCategory._id}
                         >
-                          {subSubCategory.subSubCategoryName}
+                          {subSubCategory.subSubCategoryName_en}
                         </option>
                       ))}
                   </select>
@@ -200,7 +200,7 @@ function EditAttribute(props) {
                     className="form-control"
                     name="nameEn"
                     id="nameEn"
-                    value={editAttributes.nameEn}
+                    defaultValue={props?.newCategory?.nameEn}
                     onChange={handleInputChange}
                   />
                 </div>
@@ -211,7 +211,7 @@ function EditAttribute(props) {
                     className="form-control"
                     name="nameAr"
                     id="nameAr"
-                    value={editAttributes.nameAr}
+                    defaultValue={props?.newCategory?.nameAr}
                     onChange={handleInputChange}
                   />
                 </div>
@@ -223,109 +223,6 @@ function EditAttribute(props) {
           </div>
         </div>
       </div>
-      {/* <div
-        className="modal fade Edit_modal"
-        id="staticBackdrop3"
-        data-bs-backdrop="static"
-        data-bs-keyboard="false"
-        tabIndex="-1"
-        aria-labelledby="staticBackdropLabel"
-        aria-hidden="true"
-      >
-        <div className="modal-dialog modal-dialog-centered">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title" id="staticBackdropLabel">
-                Edit Attribute
-              </h5>
-              <button
-                type="button"
-                className="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
-            <div className="modal-body">
-              <form
-                className="form-design p-3 help-support-form row align-items-end justify-content-center"
-                action=""
-              >
-                <div className="form-group col-6">
-                  <label htmlFor="">Select Category</label>
-                  <select
-                    className="select form-control"
-                    multiple
-                    name=""
-                    id=""
-                  >
-                    <option defaultValue="1">Lorem</option>
-                    <option defaultValue="2">ipsum</option>
-                    <option defaultValue="3">Lorem</option>
-                    <option defaultValue="1">Lorem</option>
-                    <option defaultValue="2">ipsum</option>
-                    <option defaultValue="3">Lorem</option>
-                  </select>
-                </div>
-                <div className="form-group col-6">
-                  <label htmlFor="">Select Sub Category</label>
-                  <select
-                    className="select form-control"
-                    multiple
-                    name=""
-                    id=""
-                  >
-                    <option defaultValue="1">Lorem</option>
-                    <option defaultValue="2">ipsum</option>
-                    <option defaultValue="3">Lorem</option>
-                    <option defaultValue="1">Lorem</option>
-                    <option defaultValue="2">ipsum</option>
-                    <option defaultValue="3">Lorem</option>
-                  </select>
-                </div>
-                <div className="form-group col-12">
-                  <label htmlFor="">Select Sub Sub Category</label>
-                  <select
-                    className="select form-control"
-                    multiple
-                    name=""
-                    id=""
-                  >
-                    <option defaultValue="1">Lorem</option>
-                    <option defaultValue="2">ipsum</option>
-                    <option defaultValue="3">Lorem</option>
-                    <option defaultValue="1">Lorem</option>
-                    <option defaultValue="2">ipsum</option>
-                    <option defaultValue="3">Lorem</option>
-                  </select>
-                </div>
-                <div className="form-group col-6">
-                  <label htmlFor="">Attribute Name (En)</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    defaultValue="Lorem"
-                    name="name"
-                    id="name"
-                  />
-                </div>
-                <div className="form-group col-6">
-                  <label htmlFor="">Attribute Name (Ar)</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    defaultValue="لوريم"
-                    name="name"
-                    id="name"
-                  />
-                </div>
-                <div className="form-group mb-0 col-auto">
-                  <button className="comman_btn2">Save</button>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
-      </div> */}
     </>
   );
 }

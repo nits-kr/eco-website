@@ -26,6 +26,12 @@ function SubCategory(props) {
     subCategoryId: "",
     subCategoryPic: null,
   });
+  const [category, setCategory] = useState({
+    nameEn: "",
+    nameAr: "",
+    categoryId: "",
+    uploadImage: null,
+  });
   const [searchQuery, setSearchQuery] = useState("");
   const [startDate1, setStartDate1] = useState("");
   const [newCategory, setNewCategory] = useState([]);
@@ -38,6 +44,14 @@ function SubCategory(props) {
   const handleFileChange = (event) => {
     setSubCategory({ ...subCategory, subCategoryPic: event.target.files[0] });
     console.log("picture", event.target.files[0]);
+  };
+  const handleInputChange1 = (event) => {
+    const { name, value } = event.target;
+    setCategory({ ...category, [name]: value });
+    console.log("edit category value:  ", value);
+  };
+  const handleFileChange1 = (e, key) => {
+    setCategory({ ...category, uploadImage: e.target.files[0] });
   };
   const url =
     "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/subCategory/SubCategoryList";
@@ -209,25 +223,6 @@ function SubCategory(props) {
     }
   };
 
-  // const handleSave = async () => {
-  //   // props.setProgress(10);
-  //   // setLoading(true);
-  //   try {
-  //     const response = await axios.post(
-  //       "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/subCategory/SubCategoryList"
-  //     );
-  //     setSubCategoryList(response?.data?.results?.list?.reverse());
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  //   // props.setProgress(100);
-  //   // setLoading(false);
-  // };
-
-  // useEffect(() => {
-  //   handleSave();
-  // }, []);
-
   const handleUpdate = (id, nameEn, nameAr) => {
     console.log(nameEn, nameAr, id);
     setNewCategory({
@@ -239,45 +234,77 @@ function SubCategory(props) {
 
   console.log("subcategory", subCategory);
 
-  const handleSaveChanges1 = async (e) => {
-    e.preventDefault();
-    console.log("handleSaveChanges1", itemId);
-    const editAddress = {
-      id: itemId,
-      subCategoryName_en: editSubCategoryNameEn,
-      subCategoryName_ar: editSubCategoryNameAr,
-      category_Id: subCategory.categoryId,
-    };
-    // const editAddress = new FormData();
-    // editAddress.append("id", itemId);
-    // editAddress.append("subCategoryName_en", editSubCategoryNameEn);
-    // editAddress.append("subCategoryName_en", editSubCategoryNameAr);
-    // editAddress.append("subCategoryPic", subCategory.subCategoryPic);
-    try {
-      await update(editAddress);
-      Swal.fire({
-        icon: "success",
-        title: "Changes Saved",
-        text: "The subcategory has been updated successfully.",
-        confirmButtonColor: "#3085d6",
-        confirmButtonText: "OK",
-      }).then((result) => {
-        if (result.isConfirmed) {
-          window.location.reload();
+  // const handleSaveChanges1 = async (e) => {
+  //   e.preventDefault();
+  //   console.log("handleSaveChanges1", itemId);
+  //   const editAddress = {
+  //     id: itemId,
+  //     subCategoryName_en: editSubCategoryNameEn,
+  //     subCategoryName_ar: editSubCategoryNameAr,
+  //     category_Id: subCategory.categoryId,
+  //   };
+  //   // const editAddress = new FormData();
+  //   // editAddress.append("id", itemId);
+  //   // editAddress.append("subCategoryName_en", editSubCategoryNameEn);
+  //   // editAddress.append("subCategoryName_en", editSubCategoryNameAr);
+  //   // editAddress.append("subCategoryPic", subCategory.subCategoryPic);
+  //   try {
+  //     await update(editAddress);
+  //     Swal.fire({
+  //       icon: "success",
+  //       title: "Changes Saved",
+  //       text: "The subcategory has been updated successfully.",
+  //       confirmButtonColor: "#3085d6",
+  //       confirmButtonText: "OK",
+  //     }).then((result) => {
+  //       if (result.isConfirmed) {
+  //         window.location.reload();
+  //       }
+  //     });
+  //   } catch (error) {
+  //     Swal.fire({
+  //       icon: "error",
+  //       title: "Error",
+  //       text: "An error occurred while updating the subcategory.",
+  //     });
+  //   }
+  // };
+  const handleSaveChanges1 = (event) => {
+    event.preventDefault();
+    const formData = new FormData();
+    formData.append("subCategoryName_en", category.nameEn);
+    formData.append("subCategoryName_ar", category.nameAr);
+    formData.append("subCategoryPic", category.uploadImage);
+    formData.append("category_Id", subCategory.categoryId);
+    axios
+      .patch(
+        `http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/subCategory/subCategoryUpdate/${itemId}`,
+        formData
+      )
+      .then((response) => {
+        console.log(response);
+        if (!response.data.error) {
+          Swal.fire({
+            title: "Updated!",
+            text: "Your have been updated the list successfully.",
+            icon: "success",
+            confirmButtonColor: "#3085d6",
+            confirmButtonText: "OK",
+          }).then((result) => {
+            if (result.isConfirmed) {
+              window.location.reload();
+            }
+          });
         }
+      })
+      .catch((error) => {
+        console.log(error);
       });
-    } catch (error) {
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: "An error occurred while updating the subcategory.",
-      });
-    }
   };
   const handleItem = (item) => {
     setSubCategoryNameEn2(item?.subCategoryName_en || "");
     setSubCategoryNameAr2(item?.subCategoryName_ar || "");
-    setImage2(item?.categoryPic || "");
+    setImage2(item?.category_Id?.categoryPic || "");
   };
   return (
     <>
@@ -463,13 +490,14 @@ function SubCategory(props) {
                             <form className="table_btns d-flex align-items-center">
                               <div className="check_toggle">
                                 <input
-                                  defaultChecked
+                                  defaultChecked={value.status}
                                   type="checkbox"
                                   name={`r${index}`}
                                   id={`r${index}`}
                                   className="d-none"
-                                  data-bs-toggle="modal"
-                                  data-bs-target="#staticBackdrop3"
+                                  // data-bs-toggle="modal"
+                                  // data-bs-target="#staticBackdrop3"
+                                  disabled
                                 />
                                 <label htmlFor={`r${index}`}></label>
                               </div>
@@ -530,11 +558,11 @@ function SubCategory(props) {
                   <label htmlFor="">Select Category</label>
                   <select
                     className="select form-control"
-                    size={15}
+                    multiple=""
                     name="categoryId"
                     id="categoryId"
-                    value={subCategory.categoryId}
-                    onChange={handleInputChange}
+                    // value={subCategory.categoryId}
+                    onChange={handleInputChange1}
                     // onChange={(e) => setCategoryNew(e.target.value)}
                   >
                     {categories.map((category) => (
@@ -552,8 +580,8 @@ function SubCategory(props) {
                     name="nameEn"
                     id="nameEn"
                     defaultValue={subCategoryNameEn2}
-                    onChange={(e) => setEditSubCategoryNameEn(e.target.value)}
-                    // onChange={handleInputChange}
+                    // defaultValue={props.newCategory.nameEn}
+                    onChange={handleInputChange1}
                   />
                 </div>
                 <div className="form-group col-6">
@@ -564,9 +592,8 @@ function SubCategory(props) {
                     name="nameAr"
                     id="nameAr"
                     defaultValue={subCategoryNameAr2}
-                    onChange={(e) => setEditSubCategoryNameAr(e.target.value)}
-                    // onChange={(e) => setEditSubCategoryName(e.target.value)}
-                    // onChange={handleInputChange}
+                    // defaultValue={props.newCategory.nameEn}
+                    onChange={handleInputChange1}
                   />
                 </div>
 
@@ -578,12 +605,13 @@ function SubCategory(props) {
                   <input
                     type="file"
                     className="form-control"
-                    defaultValue={image2}
+                    // defaultValue={image2}
                     name="uploadImage"
                     id="uploadImage"
-                    onChange={(e) => handleFileChange(e, "uploadImage")}
+                    onChange={(e) => handleFileChange1(e, "uploadImage")}
                     // onChange={handleFileChange}
                   />
+                  {image2}
                 </div>
                 <div className="form-group mb-0 col-auto">
                   <button className="comman_btn2" onClick={handleSaveChanges1}>

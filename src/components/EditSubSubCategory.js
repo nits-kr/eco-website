@@ -12,6 +12,7 @@ function EditSubSubCategory(props) {
     nameEn: "",
     nameAr: "",
     categoryId: "",
+    categoryId1: "",
   });
   const [categoryData, setCategoryData] = useState(props?.newCategory);
   const handleInputChange = (event) => {
@@ -101,7 +102,10 @@ function EditSubSubCategory(props) {
       .patch(
         `http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/subSubCategory/subSubCategoryUpdate/${props.newCategory.id}`,
         {
-          subSubCategoryName: category.nameEn,
+          subSubCategoryName_en: category.nameEn,
+          subSubCategoryName_ar: category.nameAr,
+          category_Id: category.categoryId,
+          subCategory_Id: category.categoryId1
         }
       )
       .then((response) => {
@@ -160,7 +164,7 @@ function EditSubSubCategory(props) {
                   <label htmlFor="">Select Category</label>
                   <select
                     className="select form-control"
-                    size={15}
+                    multiple=""
                     name="categoryId"
                     id="selectCategory"
                     value={category.categoryId}
@@ -169,7 +173,7 @@ function EditSubSubCategory(props) {
                     {Array.isArray(categories) &&
                       categories.map((category) => (
                         <option key={category._id} value={category._id}>
-                          {category.categoryName}
+                          {category.categoryName_en}
                         </option>
                       ))}
                   </select>
@@ -178,7 +182,7 @@ function EditSubSubCategory(props) {
                   <label htmlFor="">Select Sub Category</label>
                   <select
                     className="select form-control"
-                    size={15}
+                    multiple=""
                     name="categoryId1"
                     id="selectSubCategory"
                     value={category.categoryId1}
@@ -187,12 +191,12 @@ function EditSubSubCategory(props) {
                     {Array.isArray(subCategories) &&
                       subCategories.map((subCategory) => (
                         <option key={subCategory._id} value={subCategory._id}>
-                          {subCategory.subCategoryName}
+                          {subCategory.subCategoryName_en}
                         </option>
                       ))}
                   </select>
                 </div>
-                <div className="form-group col-6">
+                {/* <div className="form-group col-6">
                   <label htmlFor="">Select Sub Sub Category</label>
                   <select
                     className="select form-control"
@@ -230,7 +234,7 @@ function EditSubSubCategory(props) {
                         </option>
                       ))}
                   </select>
-                </div>
+                </div> */}
                 <div className="form-group col-6">
                   <label htmlFor="">Value Name (En)</label>
                   <input

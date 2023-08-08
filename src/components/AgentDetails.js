@@ -1,4 +1,4 @@
-import React, {  useState } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 import axios from "axios";
@@ -443,17 +443,39 @@ function AgentDetails() {
                               />
                             </div>
                           </div>
-                          <div className="form-group col-12">
-                            <div className="col-4">
+                          <div
+                            className="form-group col-12"
+                            style={{
+                              display: "flex",
+                              justifyContent: "space-between",
+                            }}
+                          >
+                            {/* <div className="col-4">
                               <label htmlFor="status">Status</label>
+                            </div> */}
+                            <div className="col-6" style={{
+                              display: "flex",
+                              justifyContent: "left",
+                              marginTop:"8px"
+                            }}>
+                              <label htmlFor="status" style={{marginRight:"10px", marginTop:"8px"}}>Status: {" "}</label>
+                              <span>
+                                <button
+                                  type="button"
+                                  className="btn btn-danger"
+                                  // onClick={handleSubmit}
+                                >
+                                  Approved
+                                </button>
+                              </span>
                             </div>
-                            <div className="col-12">
+                            <div className="col-6">
                               <button
                                 type="button"
-                                className="btn btn-danger"
+                                className="btn btn-danger my-2"
                                 onClick={handleSubmit}
                               >
-                                Approved
+                                Save Agent
                               </button>
                             </div>
                           </div>

@@ -279,6 +279,66 @@ export const PostApi = createApi({
         };
       },
     }),
+    catogaryStatus: builder.mutation({
+      query: (body) => {
+        console.log("update category", body);
+        const { id, ...data } = body;
+        console.log("update offer body data", data);
+        return {
+          url: `/admin/category/category/checkstatus/${id}`,
+          method: "post",
+          body: data,
+        };
+      },
+    }),
+    subCatogaryStatus: builder.mutation({
+      query: (body) => {
+        console.log("update category", body);
+        const { id, ...data } = body;
+        console.log("update offer body data", data);
+        return {
+          url: `/admin/category/subCategory/checkstatus/${id}`,
+          method: "patch",
+          body: data,
+        };
+      },
+    }),
+    subSubCatogaryStatus: builder.mutation({
+      query: (body) => {
+        console.log("update category", body);
+        const { id, ...data } = body;
+        console.log("update offer body data", data);
+        return {
+          url: `/admin/category/subSubCategory/checkstatus/${id}`,
+          method: "patch",
+          body: data,
+        };
+      },
+    }),
+    attributesStatus: builder.mutation({
+      query: (body) => {
+        console.log("update category", body);
+        const { id, ...data } = body;
+        console.log("update offer body data", data);
+        return {
+          url: `/admin/category/attribute/checkStatus/${id}`,
+          method: "patch",
+          body: data,
+        };
+      },
+    }),
+    valueStatus: builder.mutation({
+      query: (body) => {
+        console.log("update category", body);
+        const { id, ...data } = body;
+        console.log("update offer body data", data);
+        return {
+          url: `/admin/category/values/checkStatus/${id}`,
+          method: "patch",
+          body: data,
+        };
+      },
+    }),
     deleteProductList: builder.mutation({
       query: (id) => ({
         url: `/admin/product/delete-product/${id}`,
@@ -358,5 +418,10 @@ export const {
   useDeleteHelpThoughtListMutation,
   useCreateInformationMutation,
   useCreateContentMutation,
+  useCatogaryStatusMutation,
+  useSubCatogaryStatusMutation,
+  useSubSubCatogaryStatusMutation,
+  useAttributesStatusMutation,
+  useValueStatusMutation,
   // useSearchOfferQuery,
 } = PostApi;

@@ -14,6 +14,7 @@ function Attribute() {
   const [subCategories, setSubCategories] = useState([]);
   const [subSubCategories, setSubSubCategories] = useState([]);
   const [itemId, setItemId] = useState([]);
+  const [newCategory, setNewCategory] = useState([]);
   const [attributes, setAttributes] = useState({
     nameEn: "",
     nameAr: "",
@@ -232,6 +233,17 @@ function Attribute() {
   useEffect(() => {
     handleSave();
   }, []);
+  const handleUpdate = (item) => {
+    console.log(item);
+    setNewCategory({
+      nameEn: item?.attributeName_en,
+      nameAr: item?.attributeName_ar,
+      id: item?._id,
+      id1: item?.category_Id,
+      id2: item?.subCategory_Id,
+      id2: item?.subSubCategory_Id,
+    });
+  };
   return (
     <>
       {/* <Sidebar/> */}
@@ -435,8 +447,9 @@ function Attribute() {
                                   name={`status_${value._id}`}
                                   id={`status_${value._id}`}
                                   className="d-none"
-                                  data-bs-toggle="modal"
-                                  data-bs-target="#staticBackdrop3"
+                                  // data-bs-toggle="modal"
+                                  // data-bs-target="#staticBackdrop3"
+                                  disabled
                                 />
                                 <label htmlFor={`status_${value._id}`}></label>
                               </div>
@@ -448,7 +461,15 @@ function Attribute() {
                               data-bs-target="#staticBackdrop7"
                               className="comman_btn2 table_viewbtn"
                               to=""
-                              onClick={() => setItemId(value?._id)}
+                              onClick={() =>
+                                handleUpdate(
+                                  // value.category_Id,
+                                  // value.subCategory_Id,
+                                  // value.subSubCategoryName_en,
+                                  // value.subSubCategoryName_ar
+                                  value
+                                )
+                              }
                             >
                               Edit
                             </Link>
@@ -547,7 +568,7 @@ function Attribute() {
           </div>
         </div>
       </div>
-      <EditAttribute itemId={itemId} />
+      <EditAttribute newCategory={newCategory} />
     </>
   );
 }
