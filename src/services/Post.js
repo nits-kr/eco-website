@@ -375,6 +375,12 @@ export const PostApi = createApi({
         method: "post",
       }),
     }),
+    deleteOrderList: builder.mutation({
+      query: (id) => ({
+        url: `/admin/order/order/delete-order/${id}`,
+        method: "DELETE",
+      }),
+    }),
   }),
 });
 
@@ -423,5 +429,6 @@ export const {
   useSubSubCatogaryStatusMutation,
   useAttributesStatusMutation,
   useValueStatusMutation,
+  useDeleteOrderListMutation,
   // useSearchOfferQuery,
 } = PostApi;

@@ -13,6 +13,7 @@ function Login() {
   useEffect(() => {
     if (res.isSuccess) {
       localStorage.setItem("loginId", res.data?.results?.login?._id);
+      localStorage.setItem("userLoginEmail", res.data?.results?.login?.userEmail);
       Swal.fire({
         title: "Login Successful!",
         icon: "success",

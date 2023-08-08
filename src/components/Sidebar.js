@@ -11,6 +11,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 function Sidebar({ Dash }) {
+  const storedPic = localStorage.getItem("profilePic");
   return (
     <>
       <div className="admin_main">
@@ -307,7 +308,12 @@ function Sidebar({ Dash }) {
                     data-bs-toggle="dropdown"
                     aria-expanded="false"
                   >
-                    <img src="../assets/img/profile_img1.jpg" alt="" />
+                    {/* <img src="../assets/img/profile_img1.jpg" alt="" /> */}
+                    {storedPic ? (
+                      <img src={storedPic} alt="" />
+                    ) : (
+                      <img src="../assets/img/saudi_flag1.png" alt="" />
+                    )}
                   </button>
                   <ul
                     className="dropdown-menu"
@@ -319,12 +325,12 @@ function Sidebar({ Dash }) {
                       </Link>
                     </li>
                     <li>
-                      <Link className="dropdown-item" to="/changePassword">
+                      <Link className="dropdown-item" to="/reset">
                         Change Password
                       </Link>
                     </li>
                     <li>
-                      <Link className="dropdown-item" to="/login">
+                      <Link className="dropdown-item" to="/">
                         Logout
                       </Link>
                     </li>

@@ -7,7 +7,9 @@ import { faEye, faPencil, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import Sidebar from "./Sidebar";
 import { useGetFileQuery } from "../services/Post";
 import { useEditOrderListMutation } from "../services/Post";
+import { useDeleteOrderListMutation } from "../services/Post";
 function OrderManagement() {
+  const [deleteOrder, response] = useDeleteOrderListMutation();
   const { data, isLoading, isError } = useGetFileQuery("file-id");
   const [updateOrder] = useEditOrderListMutation();
   console.log("down load data", data);
@@ -183,29 +185,6 @@ function OrderManagement() {
           confirmButtonText: "OK",
         });
       }
-    }
-  };
-
-  const deleteOrder = async (_id) => {
-    try {
-      const result = await Swal.fire({
-        title: "Confirm Deletion",
-        text: "Are you sure you want to delete this order?",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "OK",
-      });
-      if (result.isConfirmed) {
-        await axios.delete(
-          `http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/order/order/delete-order/${_id}`
-        );
-        console.log("delete Order", _id);
-        window.location.reload();
-      }
-    } catch (error) {
-      console.log("Error deleting order:", error);
     }
   };
 
@@ -411,7 +390,7 @@ function OrderManagement() {
                                             deleteOrder(data?._id);
                                             Swal.fire(
                                               "Deleted!",
-                                              `${data?.title}  item has been deleted.`,
+                                              `${data?.status}  item has been deleted.`,
                                               "success"
                                             ).then(() => {
                                               window.location.reload();
