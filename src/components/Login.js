@@ -13,7 +13,11 @@ function Login() {
   useEffect(() => {
     if (res.isSuccess) {
       localStorage.setItem("loginId", res.data?.results?.login?._id);
-      localStorage.setItem("userLoginEmail", res.data?.results?.login?.userEmail);
+      localStorage.setItem("token", res.data?.results?.token);
+      localStorage.setItem(
+        "userLoginEmail",
+        res.data?.results?.login?.userEmail
+      );
       Swal.fire({
         title: "Login Successful!",
         icon: "success",
@@ -21,6 +25,7 @@ function Login() {
       }).then((result) => {
         if (result.isConfirmed) {
           navigate("/dashboard");
+
         }
       });
     } else if (res.isError && res.error?.data?.error) {
