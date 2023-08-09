@@ -4,8 +4,10 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import Sidebar from "./Sidebar";
 import EditAttribute from "./EditAttribute";
+import { useDeleteAttributeListMutation } from "../services/Post";
 
 function Attribute() {
+  const [deleteAttribute, res] = useDeleteAttributeListMutation();
   const [attributesList, setAttributesList] = useState([]);
   const [subAttributesList, setSubAttributesList] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -404,7 +406,7 @@ function Attribute() {
                         <th>Sub Sub Category Name</th>
                         <th>Attribute Name (En)</th>
                         <th>Attribute Name (Ar)</th>
-                        <th>SHIPMENT SERVICE</th>
+                        {/* <th>SHIPMENT SERVICE</th> */}
                         <th>Status</th>
                         <th>Action</th>
                       </tr>
@@ -420,7 +422,7 @@ function Attribute() {
                           </td>
                           <td>{value?.attributeName_en}</td>
                           <td>{value?.attributeName_ar}</td>
-                          <td>
+                          {/* <td>
                             <form className="table_btns d-flex align-items-center">
                               <div className="check_toggle">
                                 <input
@@ -437,7 +439,7 @@ function Attribute() {
                                 ></label>
                               </div>
                             </form>
-                          </td>
+                          </td> */}
                           <td>
                             <form className="table_btns d-flex align-items-center">
                               <div className="check_toggle">
@@ -472,6 +474,36 @@ function Attribute() {
                               }
                             >
                               Edit
+                            </Link>
+                            <Link
+                              className="comman_btn2 table_viewbtn ms-2"
+                              // data-bs-toggle="modal"
+                              // data-bs-target="#delete"
+                              to="#"
+                              onClick={() => {
+                                Swal.fire({
+                                  title: "Are you sure?",
+                                  text: "You won't be able to revert this!",
+                                  icon: "warning",
+                                  showCancelButton: true,
+                                  confirmButtonColor: "#3085d6",
+                                  cancelButtonColor: "#d33",
+                                  confirmButtonText: "Yes, delete it!",
+                                }).then((result) => {
+                                  if (result.isConfirmed) {
+                                    deleteAttribute(value?._id);
+                                    Swal.fire(
+                                      "Deleted!",
+                                      `${value?.attributeName_en}  item has been deleted.`,
+                                      "success"
+                                    ).then(() => {
+                                      window.location.reload();
+                                    });
+                                  }
+                                });
+                              }}
+                            >
+                              Delete
                             </Link>
                           </td>
                         </tr>

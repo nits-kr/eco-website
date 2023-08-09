@@ -3,8 +3,10 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { useUpdateValueMutation } from "../services/Post";
+import { useDeleteValueListMutation } from "../services/Post";
 function Value() {
   const [update, res] = useUpdateValueMutation();
+  const [deleteValueList, re] = useDeleteValueListMutation();
   const [editValueEn, setEditValueEn] = useState("");
   const [editValueAr, setEditValueAr] = useState("");
   const [valueList, setValueList] = useState([]);
@@ -470,7 +472,7 @@ function Value() {
                         <th>Attribute Name</th>
                         <th>Values (En)</th>
                         <th>Values (Ar)</th>
-                        <th>SHIPMENT SERVICE</th>
+                        {/* <th>SHIPMENT SERVICE</th> */}
                         <th>Status</th>
                         <th>Action</th>
                       </tr>
@@ -487,7 +489,7 @@ function Value() {
                           <td>{value?.attribute_Id?.attributeName_en}</td>
                           <td>{value?.valuesName_en}</td>
                           <td>{value?.valuesName_ar}</td>
-                          <td>
+                          {/* <td>
                             <form className="table_btns d-flex align-items-center">
                               <div className="check_toggle">
                                 <input
@@ -504,12 +506,12 @@ function Value() {
                                 ></label>
                               </div>
                             </form>
-                          </td>
+                          </td> */}
                           <td>
                             <form className="table_btns d-flex align-items-center">
                               <div className="check_toggle">
                                 <input
-                                  defaultChecked={value.status}
+                                  defaultChecked={value?.status}
                                   type="checkbox"
                                   name={`status_${value._id}`}
                                   id={`status_${value._id}`}
@@ -534,6 +536,36 @@ function Value() {
                               }}
                             >
                               Edit
+                            </Link>
+                            <Link
+                              className="comman_btn2 table_viewbtn ms-2"
+                              // data-bs-toggle="modal"
+                              // data-bs-target="#delete"
+                              to="#"
+                              onClick={() => {
+                                Swal.fire({
+                                  title: "Are you sure?",
+                                  text: "You won't be able to revert this!",
+                                  icon: "warning",
+                                  showCancelButton: true,
+                                  confirmButtonColor: "#3085d6",
+                                  cancelButtonColor: "#d33",
+                                  confirmButtonText: "Yes, delete it!",
+                                }).then((result) => {
+                                  if (result.isConfirmed) {
+                                    deleteValueList(value?._id);
+                                    Swal.fire(
+                                      "Deleted!",
+                                      `${value?.valuesName_en}  item has been deleted.`,
+                                      "success"
+                                    ).then(() => {
+                                      window.location.reload();
+                                    });
+                                  }
+                                });
+                              }}
+                            >
+                              Delete
                             </Link>
                           </td>
                         </tr>

@@ -4,11 +4,13 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import EditValues from "./EditValues";
 import { useUpdateSubCategoryMutation } from "../services/Post";
+import { useDeleteSubCategoryListMutation } from "../services/Post";
 import Spinner from "./Spinner";
 
 function SubCategory(props) {
   const [loading, setLoading] = useState(false);
   const [update, res] = useUpdateSubCategoryMutation();
+  const [deleteSubCategory, response] = useDeleteSubCategoryListMutation();
   const [itemId, setItemId] = useState("");
   const [editSubCategoryNameEn, setEditSubCategoryNameEn] = useState("");
   const [editSubCategoryNameAr, setEditSubCategoryNameAr] = useState("");
@@ -451,7 +453,7 @@ function SubCategory(props) {
                         <th>Sub Category Name (EN)</th>
                         <th>Sub Category Name (AR)</th>
                         <th>Media</th>
-                        <th>SHIPMENT SERVICE</th>
+                        {/* <th>SHIPMENT SERVICE</th> */}
                         <th>Status</th>
                         <th>Action</th>
                       </tr>
@@ -470,7 +472,7 @@ function SubCategory(props) {
                               alt=""
                             />
                           </td>
-                          <td>
+                          {/* <td>
                             <form className="table_btns d-flex align-items-center">
                               <div className="check_toggle">
                                 <input
@@ -485,12 +487,12 @@ function SubCategory(props) {
                                 <label htmlFor={`s${index}`}></label>
                               </div>
                             </form>
-                          </td>
+                          </td> */}
                           <td>
                             <form className="table_btns d-flex align-items-center">
                               <div className="check_toggle">
                                 <input
-                                  defaultChecked={value.status}
+                                  defaultChecked={value?.status}
                                   type="checkbox"
                                   name={`r${index}`}
                                   id={`r${index}`}
@@ -515,6 +517,36 @@ function SubCategory(props) {
                               }}
                             >
                               Edit
+                            </Link>
+                            <Link
+                              className="comman_btn2 table_viewbtn ms-2"
+                              // data-bs-toggle="modal"
+                              // data-bs-target="#delete"
+                              to="#"
+                              onClick={() => {
+                                Swal.fire({
+                                  title: "Are you sure?",
+                                  text: "You won't be able to revert this!",
+                                  icon: "warning",
+                                  showCancelButton: true,
+                                  confirmButtonColor: "#3085d6",
+                                  cancelButtonColor: "#d33",
+                                  confirmButtonText: "Yes, delete it!",
+                                }).then((result) => {
+                                  if (result.isConfirmed) {
+                                    deleteSubCategory(value?._id);
+                                    Swal.fire(
+                                      "Deleted!",
+                                      `${value?.subCategoryName_en}  item has been deleted.`,
+                                      "success"
+                                    ).then(() => {
+                                      window.location.reload();
+                                    });
+                                  }
+                                });
+                              }}
+                            >
+                              Delete
                             </Link>
                           </td>
                         </tr>

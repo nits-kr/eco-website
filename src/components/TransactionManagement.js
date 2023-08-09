@@ -14,10 +14,19 @@ function TransactionManagement() {
   const transactionList = useGetTransactionListQuery();
   const [transactionListItems, setTransactionListItems] = useState([]);
   const [getTransactionDetails] = useGetTransactionListDetailsMutation();
+  const [startDate, setStartDate] = useState("");
+  const [startDate1, setStartDate1] = useState("");
+  const [endDate, setEndDate] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
+  const [categoryListData, setCategoryListData] = useState([]);
   console.log("getTransactionDetails", getTransactionDetails);
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
+  useEffect(() => {
+    const reversedList =
+      transactionList?.data?.results?.statusData?.slice().reverse() ?? [];
+    setCategoryListData(reversedList);
+  }, [transactionList]);
   const url =
     "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/transacation/list";
   const url2 =
@@ -58,9 +67,9 @@ function TransactionManagement() {
     if (data) {
       const blob = new Blob([data]);
       const downloadUrl = URL.createObjectURL(blob);
-      const link = document.createElement('a');
+      const link = document.createElement("a");
       link.href = downloadUrl;
-      link.download = 'file.xlsx';
+      link.download = "file.xlsx";
       link.click();
     }
   };
@@ -118,6 +127,46 @@ function TransactionManagement() {
         });
       }
     }
+  };
+  const handleSearch = (e) => {
+    e.preventDefault();
+    axios
+      .post(url, {
+        from: startDate,
+        to: endDate,
+      })
+      .then((response) => {
+        const list = response?.data?.results?.statusData?.reverse();
+        if (list && list.length > 0) {
+          Swal.fire({
+            title: "List Found!",
+            text: "list is available for the selected date.",
+            icon: "success",
+            confirmButtonText: "OK",
+          }).then((result) => {
+            if (result.isConfirmed) {
+              setCategoryListData(list);
+            }
+          });
+          // setRecentOrderList(list);
+        } else {
+          setCategoryListData([]);
+          Swal.fire({
+            icon: "warning",
+            title: "No data found!",
+            text: "There is no list between the selected dates.",
+            confirmButtonText: "OK",
+          }).then((result) => {
+            if (result.isConfirmed) {
+              // dashBoardList();
+              window?.location?.reload();
+            }
+          });
+        }
+      })
+      .catch((error) => {
+        console.log(error.response.data);
+      });
   };
   return (
     <>
@@ -184,7 +233,7 @@ function TransactionManagement() {
                           {" "}
                           Orders{" "}
                         </button>
-                        <button
+                        {/* <button
                           className="nav-link"
                           id="nav-profile-tab"
                           data-bs-toggle="tab"
@@ -196,7 +245,7 @@ function TransactionManagement() {
                         >
                           {" "}
                           Donations{" "}
-                        </button>
+                        </button> */}
                       </div>
                     </nav>
                     <div className="tab-content" id="nav-tabContent">
@@ -211,15 +260,44 @@ function TransactionManagement() {
                             <form
                               className="form-design py-4 px-3 help-support-form row align-items-end justify-content-between"
                               action=""
+                              onSubmit={handleSearch}
                             >
-                              <div className="form-group mb-0 col position-relative percent_mark">
+                              {/* <div className="form-group mb-0 col position-relative percent_mark">
                                 <label htmlFor="">Commission</label>
                                 <input type="text" className="form-control" />
                                 <span>%</span>
+                              </div> */}
+                              <div className="form-group mb-0 col-5">
+                                <label htmlFor="">From</label>
+                                <input
+                                  type="date"
+                                  className="form-control"
+                                  id="startDate"
+                                  value={startDate}
+                                  onChange={(e) => setStartDate(e.target.value)}
+                                />
+                              </div>
+                              <div className="form-group mb-0 col-5">
+                                <label htmlFor="">To</label>
+                                <input
+                                  type="date"
+                                  className="form-control"
+                                  id="endDate"
+                                  value={endDate}
+                                  onChange={(e) => setEndDate(e.target.value)}
+                                />
                               </div>
                               <div className="form-group mb-0 col-auto">
-                                <button className="comman_btn2">Save</button>
+                                <button
+                                  className="comman_btn2"
+                                  disabled={startDate > endDate}
+                                >
+                                  Search
+                                </button>
                               </div>
+                              {/* <div className="form-group mb-0 col-auto">
+                                <button className="comman_btn2">Save</button>
+                              </div> */}
                             </form>
                             <div className="row">
                               <div className="col-12 comman_table_design px-0">
@@ -238,40 +316,35 @@ function TransactionManagement() {
                                       </tr>
                                     </thead>
                                     <tbody>
-                                      {transactionList?.data?.results?.statusData?.map(
-                                        (item, index) => {
-                                          return (
-                                            <tr key={index}>
-                                              <td>1</td>
-                                              <td>
-                                                {item.createdAt.slice(0, 10)}
-                                              </td>
+                                      {categoryListData?.map((item, index) => {
+                                        return (
+                                          <tr key={index}>
+                                            <td>1</td>
+                                            <td>
+                                              {item.createdAt.slice(0, 10)}
+                                            </td>
 
-                                              <td> {item?._id} </td>
-                                              <td>
-                                                {" "}
-                                                {item?.user_Id?.userName}{" "}
-                                              </td>
-                                              <td> {item?.cartsTotal} </td>
-                                              <td> {item?.paymentIntent} </td>
-                                              <td> {item?.orderStatus} </td>
-                                              <td>
-                                                <Link
-                                                  className="comman_btn2 table_viewbtn"
-                                                  to="/transactionDetails"
-                                                  onClick={() =>
-                                                    getTransactionDetails(
-                                                      item?._id
-                                                    )
-                                                  }
-                                                >
-                                                  View
-                                                </Link>
-                                              </td>
-                                            </tr>
-                                          );
-                                        }
-                                      )}
+                                            <td> {item?._id} </td>
+                                            <td> {item?.user_Id?.userName} </td>
+                                            <td> {item?.cartsTotal} </td>
+                                            <td> {item?.paymentIntent} </td>
+                                            <td> {item?.orderStatus} </td>
+                                            <td>
+                                              <Link
+                                                className="comman_btn2 table_viewbtn"
+                                                to="/transactionDetails"
+                                                onClick={() =>
+                                                  getTransactionDetails(
+                                                    item?._id
+                                                  )
+                                                }
+                                              >
+                                                View
+                                              </Link>
+                                            </td>
+                                          </tr>
+                                        );
+                                      })}
                                     </tbody>
                                   </table>
                                 </div>
@@ -290,7 +363,7 @@ function TransactionManagement() {
                           </div>
                         </div>
                       </div>
-                      <div
+                      {/* <div
                         className="tab-pane fade"
                         id="nav-profile"
                         role="tabpanel"
@@ -399,7 +472,7 @@ function TransactionManagement() {
                             </div>
                           </div>
                         </div>
-                      </div>
+                      </div> */}
                     </div>
                   </div>
                 </div>

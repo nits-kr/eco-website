@@ -381,6 +381,36 @@ export const PostApi = createApi({
         method: "DELETE",
       }),
     }),
+    deleteCategoryList: builder.mutation({
+      query: (id) => ({
+        url: `/admin/category/category/delete-category/${id}`,
+        method: "post",
+      }),
+    }),
+    deleteSubCategoryList: builder.mutation({
+      query: (id) => ({
+        url: `/admin/category/Subcategory/delete-SubCategory/${id}`,
+        method: "post",
+      }),
+    }),
+    deleteSubSubCategoryList: builder.mutation({
+      query: (id) => ({
+        url: `/admin/category/subSubcategory/delete-subSubCategory/${id}`,
+        method: "post",
+      }),
+    }),
+    deleteAttributeList: builder.mutation({
+      query: (id) => ({
+        url: `/admin/category/attribute/delete-attribute/${id}`,
+        method: "post",
+      }),
+    }),
+    deleteValueList: builder.mutation({
+      query: (id) => ({
+        url: `/admin/category/values/delete-values/${id}`,
+        method: "post",
+      }),
+    }),
   }),
 });
 
@@ -430,5 +460,10 @@ export const {
   useAttributesStatusMutation,
   useValueStatusMutation,
   useDeleteOrderListMutation,
+  useDeleteCategoryListMutation,
+  useDeleteSubCategoryListMutation,
+  useDeleteSubSubCategoryListMutation,
+  useDeleteAttributeListMutation,
+  useDeleteValueListMutation,
   // useSearchOfferQuery,
 } = PostApi;

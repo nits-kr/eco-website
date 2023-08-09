@@ -14,11 +14,13 @@ import Swal from "sweetalert2";
 import Sidebar from "./Sidebar";
 import Spinner from "./Spinner";
 import { useCatogaryStatusMutation } from "../services/Post";
+import { useDeleteCategoryListMutation } from "../services/Post";
 
 function CategoryManagement(props) {
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
   const [updateStatus] = useCatogaryStatusMutation();
+  const [deleteCategory, response] = useDeleteCategoryListMutation();
   const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [startDate1, setStartDate1] = useState("");
@@ -489,7 +491,7 @@ function CategoryManagement(props) {
                                               <th>Category Name (En)</th>
                                               <th>Category Name (Ar)</th>
                                               <th>Media</th>
-                                              <th>SHIPMENT SERVICE</th>
+                                              {/* <th>SHIPMENT SERVICE</th> */}
                                               <th>Status</th>
                                               <th>Action</th>
                                             </tr>
@@ -512,7 +514,7 @@ function CategoryManagement(props) {
                                                       alt=""
                                                     />
                                                   </td>
-                                                  <td>
+                                                  {/* <td>
                                                     <form className="table_btns d-flex align-items-center">
                                                       <div className="check_toggle">
                                                         <input
@@ -531,7 +533,7 @@ function CategoryManagement(props) {
                                                         ></label>
                                                       </div>
                                                     </form>
-                                                  </td>
+                                                  </td> */}
                                                   <td>
                                                     <form className="table_btns d-flex align-items-center">
                                                       <div className="check_toggle">
@@ -562,7 +564,7 @@ function CategoryManagement(props) {
                                                     <Link
                                                       data-bs-toggle="modal"
                                                       data-bs-target="#staticBackdrop"
-                                                      className="comman_btn2 table_viewbtn"
+                                                      className="comman_btn2 table_viewbtn me-2"
                                                       to=""
                                                       onClick={() =>
                                                         handleUpdate(
@@ -575,6 +577,44 @@ function CategoryManagement(props) {
                                                       }
                                                     >
                                                       Edit
+                                                    </Link>
+                                                    <Link
+                                                      className="comman_btn2 table_viewbtn"
+                                                      // data-bs-toggle="modal"
+                                                      // data-bs-target="#delete"
+                                                      to="#"
+                                                      onClick={() => {
+                                                        Swal.fire({
+                                                          title:
+                                                            "Are you sure?",
+                                                          text: "You won't be able to revert this!",
+                                                          icon: "warning",
+                                                          showCancelButton: true,
+                                                          confirmButtonColor:
+                                                            "#3085d6",
+                                                          cancelButtonColor:
+                                                            "#d33",
+                                                          confirmButtonText:
+                                                            "Yes, delete it!",
+                                                        }).then((result) => {
+                                                          if (
+                                                            result.isConfirmed
+                                                          ) {
+                                                            deleteCategory(
+                                                              category?._id
+                                                            );
+                                                            Swal.fire(
+                                                              "Deleted!",
+                                                              `${category?.categoryName_en}  item has been deleted.`,
+                                                              "success"
+                                                            ).then(() => {
+                                                              window.location.reload();
+                                                            });
+                                                          }
+                                                        });
+                                                      }}
+                                                    >
+                                                      Delete
                                                     </Link>
                                                   </td>
                                                 </tr>

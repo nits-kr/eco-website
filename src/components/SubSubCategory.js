@@ -4,8 +4,10 @@ import axios from "axios";
 import Swal from "sweetalert2";
 //import EditValues from "./EditValues";
 import EditSubSubCategory from "./EditSubSubCategory";
+import { useDeleteSubSubCategoryListMutation } from "../services/Post";
 
 function SubSubCategory() {
+  const [deleteSubSubCategory, res] = useDeleteSubSubCategoryListMutation();
   const [startDate, setStartDate] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [startDate1, setStartDate1] = useState("");
@@ -374,7 +376,7 @@ function SubSubCategory() {
                         <th>Sub Category Name</th>
                         <th>Sub Sub Category Name (EN)</th>
                         <th>Sub Sub Category Name (AR)</th>
-                        <th>SHIPMENT SERVICE</th>
+                        {/* <th>SHIPMENT SERVICE</th> */}
                         <th>Status</th>
                         <th>Action</th>
                       </tr>
@@ -387,7 +389,7 @@ function SubSubCategory() {
                           <td>{value?.subCategory_Id?.subCategoryName_en}</td>
                           <td>{value?.subSubCategoryName_en}</td>
                           <td>{value?.subSubCategoryName_ar}</td>
-                          <td>
+                          {/* <td>
                             <form className="table_btns d-flex align-items-center">
                               <div className="check_toggle">
                                 <input
@@ -404,7 +406,7 @@ function SubSubCategory() {
                                 ></label>
                               </div>
                             </form>
-                          </td>
+                          </td> */}
                           <td>
                             <form className="table_btns d-flex align-items-center">
                               <div className="check_toggle">
@@ -439,6 +441,36 @@ function SubSubCategory() {
                               }
                             >
                               Edit
+                            </Link>
+                            <Link
+                              className="comman_btn2 table_viewbtn ms-2"
+                              // data-bs-toggle="modal"
+                              // data-bs-target="#delete"
+                              to="#"
+                              onClick={() => {
+                                Swal.fire({
+                                  title: "Are you sure?",
+                                  text: "You won't be able to revert this!",
+                                  icon: "warning",
+                                  showCancelButton: true,
+                                  confirmButtonColor: "#3085d6",
+                                  cancelButtonColor: "#d33",
+                                  confirmButtonText: "Yes, delete it!",
+                                }).then((result) => {
+                                  if (result.isConfirmed) {
+                                    deleteSubSubCategory(value?._id);
+                                    Swal.fire(
+                                      "Deleted!",
+                                      `${value?.subSubCategoryName_en}  item has been deleted.`,
+                                      "success"
+                                    ).then(() => {
+                                      window.location.reload();
+                                    });
+                                  }
+                                });
+                              }}
+                            >
+                              Delete
                             </Link>
                           </td>
                         </tr>
