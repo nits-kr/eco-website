@@ -229,6 +229,7 @@ function TransactionManagement() {
                           role="tab"
                           aria-controls="nav-home"
                           aria-selected="true"
+                          style={{width:"100%"}}
                         >
                           {" "}
                           Orders{" "}
