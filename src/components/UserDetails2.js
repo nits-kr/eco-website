@@ -20,7 +20,7 @@ function UserDetails2() {
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
   const { id } = useParams();
-  const [userListDetails, setUserListDetails] = useState({});
+  const [userListDetails, setUserListDetails] = useState([]);
   const [orderList, setOrderList] = useState([]);
   const [status, setStatus] = useState(false);
   const [isBlocked, setIsBlocked] = useState(false);
@@ -434,17 +434,41 @@ function UserDetails2() {
                         className="form-design row position-relative"
                       >
                         <div className="form-group  ">
-                          <div className="d-flex align-items-center justify-content-between mt-2">
-                            <label htmlFor="">Addresses:</label>
-                            <div>{userDetails?.list?.address} </div>
-                            {/* <Link
-                              data-bs-toggle="modal"
-                              data-bs-target="#staticBackdrop"
-                              className="comman_btn2 table_viewbtn danger ms-2"
-                              to=""
-                            >
-                              Add
-                            </Link> */}
+                          <label htmlFor="" className="mt-3">
+                            {" "}
+                            <strong> Addresses:</strong>
+                          </label>
+                          <div className="form-group col-4 d-flex align-items-start justify-content-between w-100">
+                            <label htmlFor=""></label>
+                            <div className="col-12">
+                              <div
+                                style={{
+                                  display: "flex",
+                                  flexDirection: "column",
+                                }}
+                              >
+                                <div className="col-8 mt-2">
+                                  <strong>Title: </strong>{" "}
+                                  {userListDetails?.list?.address_Id?.title}
+                                </div>
+                                <div className="col-8 mt-2">
+                                  <strong>Address: </strong>
+                                  {userListDetails?.list?.address_Id?.address}
+                                </div>
+                                <div className="col-8 mt-2">
+                                  <strong>Locality: </strong>
+                                  {userListDetails?.list?.address_Id?.locality}
+                                </div>
+                                <div className="col-8 mt-2">
+                                  <strong>City: </strong>
+                                  {userListDetails?.list?.address_Id?.city}
+                                </div>
+                                <div className="col-8 mt-2">
+                                  <strong>Country: </strong>
+                                  {userListDetails?.list?.address_Id?.country}
+                                </div>
+                              </div>
+                            </div>
                           </div>
                         </div>
                         {/* <div className="form-group ">
@@ -470,14 +494,6 @@ function UserDetails2() {
                             </div>
                           </div>
                         </div> */}
-                        <div className="form-group col-4 d-flex align-items-start justify-content-between w-100">
-                          <label htmlFor=""></label>
-                          <div className="col-8">
-                            <div className="col-8 mt-2">
-                              {userListDetails?.list?.address_Id}
-                            </div>
-                          </div>
-                        </div>
                       </form>
                     </div>
                   </div>
