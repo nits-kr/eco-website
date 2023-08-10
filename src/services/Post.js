@@ -357,7 +357,7 @@ export const PostApi = createApi({
         console.log("update category", body);
         const { id, ...data } = body;
         console.log("update offer body data", data);
-        const dataValue = data ? 'true' : 'false';
+        const dataValue = data ? 'false' : 'true';
         return {
           url: `/admin/user/block-user/${id}/${dataValue}`,
           method: "post",

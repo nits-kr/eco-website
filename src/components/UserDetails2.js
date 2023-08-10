@@ -25,9 +25,10 @@ function UserDetails2() {
   const [status, setStatus] = useState(false);
   const [isBlocked, setIsBlocked] = useState(false);
   const [blockUser, res] = useBlockUserMutation();
-  console.log(res);
+  console.log(isBlocked);
+  console.log(res?.data?.results?.statusupdate?.status);
   useEffect(() => {
-    if (res.isSuccess === true) {
+    if (res?.data?.results?.statusupdate?.status === false) {
       setIsBlocked(true);
     }
   }, [res.isSuccess]);
@@ -192,6 +193,29 @@ function UserDetails2() {
                       </div>
                     </div>
                     <div className="form-group my-2 ">
+                      {userListDetails?.list?.status === false ? (
+                        <Link
+                          className="comman_btn2 table_viewbtn bg-light text-secondary border border-none"
+                          to="#"
+                          style={{ cursor: "not-allowed" }}
+                          disabled
+                        >
+                          Blocked
+                        </Link>
+                      ) : (
+                        <Link
+                          className="comman_btn2 table_viewbtn danger"
+                          to=""
+                          onClick={(e) => {
+                            setStatus(e.target.value);
+                            setTimeout(() => {
+                              handleCheckboxChange();
+                            }, 1000);
+                          }}
+                        >
+                          Block
+                        </Link>
+                      )}
                       {/* <Link
                         className="comman_btn2 table_viewbtn danger"
                         to=""
@@ -220,7 +244,7 @@ function UserDetails2() {
                       >
                         Block
                       </Link> */}
-                      <Link
+                      {/* <Link
                         className={`comman_btn2 table_viewbtn danger ${
                           isBlocked || res.isLoading ? "disabled" : ""
                         }`}
@@ -235,8 +259,11 @@ function UserDetails2() {
                         }}
                       >
                         Block
-                      </Link>
-                      <div className="d-flex align-items-start ">
+                      </Link> */}
+                      <div
+                        className="d-flex align-items-start "
+                        style={{ justifyContent: "end", marginTop: "-31px" }}
+                      >
                         <label htmlFor="">
                           {" "}
                           <Link>
@@ -248,8 +275,8 @@ function UserDetails2() {
                           className="me-1 mt-1 ms-2"
                         />
                         <Link
-                          data-bs-toggle="modal"
-                          data-bs-target="#staticBackdrop"
+                          // data-bs-toggle="modal"
+                          // data-bs-target="#staticBackdrop"
                           className="comman_btn2 table_viewbtn  ms-2"
                           to=""
                         >
@@ -453,7 +480,13 @@ function UserDetails2() {
                               </label>
                             </div>
                             <div className="col-8 mt-2">
-                              {userListDetails?.list?.address_Id?.title ? userListDetails?.list?.address_Id?.title : <span className="text-danger">No Title Available</span>}
+                              {userListDetails?.list?.address_Id?.title ? (
+                                userListDetails?.list?.address_Id?.title
+                              ) : (
+                                <span className="text-danger">
+                                  No Title Available
+                                </span>
+                              )}
                             </div>
                           </div>
                         </div>
@@ -479,7 +512,13 @@ function UserDetails2() {
                             <div className="col-8">
                               <div className="col-8 mt-2">
                                 {/* {userListDetails?.list?.address_Id?.address} */}
-                                {userListDetails?.list?.address_Id?.address ? userListDetails?.list?.address_Id?.address : <span className="text-danger">No Address Available</span>}
+                                {userListDetails?.list?.address_Id?.address ? (
+                                  userListDetails?.list?.address_Id?.address
+                                ) : (
+                                  <span className="text-danger">
+                                    No Address Available
+                                  </span>
+                                )}
                               </div>
                             </div>
                           </div>
@@ -506,8 +545,13 @@ function UserDetails2() {
                             <div className="col-8">
                               <div className="col-8 mt-2">
                                 {/* {userListDetails?.list?.address_Id?.locality} */}
-                                {userListDetails?.list?.address_Id?.locality ? userListDetails?.list?.address_Id?.locality : <span className="text-danger">No Locality Available</span>}
-                                
+                                {userListDetails?.list?.address_Id?.locality ? (
+                                  userListDetails?.list?.address_Id?.locality
+                                ) : (
+                                  <span className="text-danger">
+                                    No Locality Available
+                                  </span>
+                                )}
                               </div>
                             </div>
                           </div>
@@ -534,7 +578,13 @@ function UserDetails2() {
                             <div className="col-8">
                               <div className="col-8 mt-2">
                                 {/* {userListDetails?.list?.address_Id?.city} */}
-                                {userListDetails?.list?.address_Id?.city ? userListDetails?.list?.address_Id?.city : <span className="text-danger">No City Available</span>}
+                                {userListDetails?.list?.address_Id?.city ? (
+                                  userListDetails?.list?.address_Id?.city
+                                ) : (
+                                  <span className="text-danger">
+                                    No City Available
+                                  </span>
+                                )}
                               </div>
                             </div>
                           </div>
@@ -561,7 +611,13 @@ function UserDetails2() {
                             <div className="col-8">
                               <div className="col-8 mt-2">
                                 {/* {userListDetails?.list?.address_Id?.country} */}
-                                {userListDetails?.list?.address_Id?.country ? userListDetails?.list?.address_Id?.country : <span className="text-danger">No Country Available</span>}
+                                {userListDetails?.list?.address_Id?.country ? (
+                                  userListDetails?.list?.address_Id?.country
+                                ) : (
+                                  <span className="text-danger">
+                                    No Country Available
+                                  </span>
+                                )}
                               </div>
                             </div>
                           </div>
