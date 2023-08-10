@@ -270,17 +270,6 @@ function UserDetails2() {
                         <div className="col-auto">
                           <h5>Personal Information</h5>
                         </div>
-                        <div className="col-auto mx-3">
-                          <Link
-                            style={{
-                              color: "red",
-                              display: "flex",
-                              alignItems: "left",
-                            }}
-                          >
-                            <FontAwesomeIcon icon={faEdit} />
-                          </Link>
-                        </div>
                       </div>
                       <form
                         action="#"
@@ -427,73 +416,156 @@ function UserDetails2() {
                       </form>
                     </div>
                   </div>
-                  <div className="col-12 design_outter_comman shadow mb-4 mt-5 w-100">
-                    <div className="users_right pe-2">
+                  <div
+                    className="col-12 pe-5 mt-5 shadow"
+                    style={{ backgroundColor: "#fff" }}
+                  >
+                    <div
+                      className="users_right pe-2 mt-3"
+                      style={{ width: "115%" }}
+                    >
+                      <div className="row justify-content-between">
+                        <div className="col-auto">
+                          <h5>Address</h5>
+                        </div>
+                      </div>
                       <form
                         action="#"
                         className="form-design row position-relative"
                       >
-                        <div className="form-group  ">
-                          <label htmlFor="" className="mt-3">
-                            {" "}
-                            <strong> Addresses:</strong>
-                          </label>
-                          <div className="form-group col-4 d-flex align-items-start justify-content-between w-100">
-                            <label htmlFor=""></label>
-                            <div className="col-12">
-                              <div
-                                style={{
-                                  display: "flex",
-                                  flexDirection: "column",
-                                }}
-                              >
-                                <div className="col-8 mt-2">
-                                  <strong>Title: </strong>{" "}
-                                  {userListDetails?.list?.address_Id?.title}
-                                </div>
-                                <div className="col-8 mt-2">
-                                  <strong>Address: </strong>
-                                  {userListDetails?.list?.address_Id?.address}
-                                </div>
-                                <div className="col-8 mt-2">
-                                  <strong>Locality: </strong>
-                                  {userListDetails?.list?.address_Id?.locality}
-                                </div>
-                                <div className="col-8 mt-2">
-                                  <strong>City: </strong>
-                                  {userListDetails?.list?.address_Id?.city}
-                                </div>
-                                <div className="col-8 mt-2">
-                                  <strong>Country: </strong>
-                                  {userListDetails?.list?.address_Id?.country}
-                                </div>
+                        <div
+                          className="form-group col-12"
+                          style={{
+                            width: "97%",
+                          }}
+                        >
+                          <div
+                            className="row"
+                            style={{
+                              border: "1px solid #e3e3e1",
+                              borderLeft: "none",
+                              borderRight: "none",
+                            }}
+                          >
+                            <div className="col-4">
+                              <label htmlFor="" style={{ marginTop: "15px" }}>
+                                Title:
+                              </label>
+                            </div>
+                            <div className="col-8 mt-2">
+                              {userListDetails?.list?.address_Id?.title ? userListDetails?.list?.address_Id?.title : <span className="text-danger">No Title Available</span>}
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          className="form-group col-12"
+                          style={{
+                            width: "97%",
+                          }}
+                        >
+                          <div
+                            className="row"
+                            style={{
+                              border: "1px solid #e3e3e1",
+                              borderLeft: "none",
+                              borderRight: "none",
+                            }}
+                          >
+                            <div className="col-4">
+                              <label htmlFor="" style={{ marginTop: "15px" }}>
+                                Address:
+                              </label>
+                            </div>
+                            <div className="col-8">
+                              <div className="col-8 mt-2">
+                                {/* {userListDetails?.list?.address_Id?.address} */}
+                                {userListDetails?.list?.address_Id?.address ? userListDetails?.list?.address_Id?.address : <span className="text-danger">No Address Available</span>}
                               </div>
                             </div>
                           </div>
                         </div>
-                        {/* <div className="form-group ">
-                          <div className="d-flex align-items-center justify-content-between">
-                            <label htmlFor="">Home</label>
-                            <div className="d-flex">
-                              <Link
-                                data-bs-toggle="modal"
-                                data-bs-target="#staticBackdrop"
-                                className="comman_btn2 table_viewbtn mx-2"
-                                to=""
-                              >
-                                <FontAwesomeIcon icon={faEdit} />
-                              </Link>
-                              <Link
-                                data-bs-toggle="modal"
-                                data-bs-target="#staticBackdrop"
-                                className="comman_btn2 table_viewbtn"
-                                to=""
-                              >
-                                <FontAwesomeIcon icon={faTrash} />
-                              </Link>
+                        <div
+                          className="form-group col-12"
+                          style={{
+                            width: "97%",
+                          }}
+                        >
+                          <div
+                            className="row"
+                            style={{
+                              border: "1px solid #e3e3e1",
+                              borderLeft: "none",
+                              borderRight: "none",
+                            }}
+                          >
+                            <div className="col-4">
+                              <label htmlFor="" style={{ marginTop: "15px" }}>
+                                Locality:
+                              </label>
+                            </div>
+                            <div className="col-8">
+                              <div className="col-8 mt-2">
+                                {/* {userListDetails?.list?.address_Id?.locality} */}
+                                {userListDetails?.list?.address_Id?.locality ? userListDetails?.list?.address_Id?.locality : <span className="text-danger">No Locality Available</span>}
+                                
+                              </div>
                             </div>
                           </div>
-                        </div> */}
+                        </div>
+                        <div
+                          className="form-group col-12"
+                          style={{
+                            width: "97%",
+                          }}
+                        >
+                          <div
+                            className="row"
+                            style={{
+                              border: "1px solid #e3e3e1",
+                              borderLeft: "none",
+                              borderRight: "none",
+                            }}
+                          >
+                            <div className="col-4">
+                              <label htmlFor="" style={{ marginTop: "15px" }}>
+                                City:
+                              </label>
+                            </div>
+                            <div className="col-8">
+                              <div className="col-8 mt-2">
+                                {/* {userListDetails?.list?.address_Id?.city} */}
+                                {userListDetails?.list?.address_Id?.city ? userListDetails?.list?.address_Id?.city : <span className="text-danger">No City Available</span>}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          className="form-group col-12"
+                          style={{
+                            width: "97%",
+                          }}
+                        >
+                          <div
+                            className="row"
+                            style={{
+                              border: "1px solid #e3e3e1",
+                              borderLeft: "none",
+                              borderRight: "none",
+                            }}
+                          >
+                            <div className="col-4">
+                              <label htmlFor="" style={{ marginTop: "15px" }}>
+                                Country:
+                              </label>
+                            </div>
+                            <div className="col-8">
+                              <div className="col-8 mt-2">
+                                {/* {userListDetails?.list?.address_Id?.country} */}
+                                {userListDetails?.list?.address_Id?.country ? userListDetails?.list?.address_Id?.country : <span className="text-danger">No Country Available</span>}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
                       </form>
                     </div>
                   </div>
