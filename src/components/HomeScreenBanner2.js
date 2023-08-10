@@ -235,10 +235,12 @@ function HomeScreenBanner2() {
                                     )}
                                   </div>
                                   <div className="p-image">
-                                    <i className="upload-button fas fa-camera" />
+                                    <label htmlFor="file1">
+                                      <i className="upload-button fas fa-camera" />
+                                    </label>
                                     {/* <FontAwesomeIcon icon={faCameraRetro} /> */}
                                     <input
-                                      className="form-control"
+                                      className="form-control d-none"
                                       type="file"
                                       accept="image/*"
                                       name="file1"
@@ -334,9 +336,11 @@ function HomeScreenBanner2() {
                                     )}
                                   </div>
                                   <div className="p-image">
-                                    <i className="upload-button fas fa-camera" />
+                                    <label htmlFor="file2">
+                                      <i className="upload-button fas fa-camera" />
+                                    </label>
                                     <input
-                                      className="form-control"
+                                      className="form-control d-none"
                                       type="file"
                                       accept="image/*"
                                       name="file2"
@@ -432,9 +436,11 @@ function HomeScreenBanner2() {
                                     )}
                                   </div>
                                   <div className="p-image">
-                                    <i className="upload-button fas fa-camera" />
+                                    <label htmlFor="file3">
+                                      <i className="upload-button fas fa-camera" />
+                                    </label>
                                     <input
-                                      className="form-control"
+                                      className="form-control d-none"
                                       type="file"
                                       accept="image/*"
                                       name="file3"
@@ -530,9 +536,11 @@ function HomeScreenBanner2() {
                                     )}
                                   </div>
                                   <div className="p-image">
-                                    <i className="upload-button fas fa-camera" />
+                                    <label htmlFor="file4">
+                                      <i className="upload-button fas fa-camera" />
+                                    </label>
                                     <input
-                                      className="form-control"
+                                      className="form-control d-none"
                                       type="file"
                                       accept="image/*"
                                       name="file4"
@@ -628,9 +636,11 @@ function HomeScreenBanner2() {
                                     )}
                                   </div>
                                   <div className="p-image">
-                                    <i className="upload-button fas fa-camera" />
+                                    <label htmlFor="file5">
+                                      <i className="upload-button fas fa-camera" />
+                                    </label>
                                     <input
-                                      className="form-control"
+                                      className="form-control d-none"
                                       type="file"
                                       accept="image/*"
                                       name="file5"
