@@ -6,7 +6,11 @@ import Sidebar from "./Sidebar";
 import { useGetFileQuery } from "../services/Post";
 import Spinner from "./Spinner";
 import GoogleMap from "./GoogleMap";
+import ReactGoogleMap from "./ReactGoogleMap";
+import { useCreateMapMutation } from "../services/Post";
+import { useGetLatLongitudeQuery } from "../services/Post";
 function UsersManagement(props) {
+  const [createMap, res] = useCreateMapMutation();
   const { data, isLoading, isError } = useGetFileQuery("file-id");
   const [loading, setLoading] = useState(false);
   console.log("down load data of user management", data);
@@ -17,66 +21,84 @@ function UsersManagement(props) {
   const [searchQuery, setSearchQuery] = useState("");
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
-  const latitude = 37.7749;
-  const longitude = -122.4194;
+  // const userLocation = useGetLatLongitudeQuery();
+  // const [location, setLocation] = useState([]);
+  // console.log(userLocation);
+  // console.log(location);
+  // useEffect(() => {
+  //   const reversedList =
+  //     userLocation?.data?.results?.allData?.slice().reverse() ?? [];
+  //   setLocation(reversedList);
+  // }, [userLocation]);
+  // const latitude = location?.map((item, index) => item?.latitude);
+  // const longitude = location?.map((item, index) => item?.longitude);
 
-  let gmarkers1 = [];
-  let markers1 = [];
-  let infowindow = new window.google.maps.InfoWindow({
-    content: "",
-  });
+  // let gmarkers1 = [];
+  // let markers1 = [];
+  // let infowindow = new window.google.maps.InfoWindow({
+  //   content: "",
+  // });
 
-  useEffect(() => {
-    initialize();
-  }, []);
-  const initialize = () => {
-    const center = new window.google.maps.LatLng(34.593839, -98.409974);
-    const mapOptions = {
-      zoom: 10,
-      center: center,
-      mapTypeID: window.google.maps.MapTypeId.ROADMAP,
-    };
-    const map = new window.google.maps.Map(
-      document.getElementById("map-canvas"),
-      mapOptions
-    );
-    for (let i = 0; i < markers1.length; i++) {
-      addMarker(markers1[i], map);
-    }
-  };
-  const addMarker = (marker, map) => {
-    const category = marker[4];
-    const title = marker[1];
-    const pos = new window.google.maps.LatLng(marker[2], marker[3]);
-    const content = marker[1];
-    const marker1 = new window.google.maps.Marker({
-      title: title,
-      position: pos,
-      category: category,
-      map: map,
-    });
-    gmarkers1.push(marker1);
-    window.google.maps.event.addListener(
-      marker1,
-      "click",
-      (function (marker1, content) {
-        return function () {
-          console.log("Gmarker 1 gets pushed");
-          infowindow.setContent(content);
-          infowindow.open(map, marker1);
-          map.panTo(this.getPosition());
-          map.setZoom(13);
-        };
-      })(marker1, content)
-    );
-  };
-  markers1 = [
-    ["0", "Total User 7", 34.593839, -98.409974, "Total User 7"],
-    ["1", "Total User 10", 34.613839, -98.409974, "Total User 10"],
-    ["2", "Total User 20", 34.607799, -98.396419, "Total User 20"],
-    ["3", "Total User 2", 34.623425, -98.468883, "Total User 2"],
-    ["4", "Total User 9", 34.593839, -98.409974, "Total User 9"],
-  ];
+  // useEffect(() => {
+  //   initialize();
+  // }, []);
+  // const initialize = () => {
+  //   if (latitude && longitude && latitude.length > 0 && longitude.length > 0) {
+  //     const center = new window.google.maps.LatLng(latitude[0], longitude[0]);
+  //     // const center = new window.google.maps.LatLng(latitude, longitude);
+  //     console.log(latitude);
+  //     console.log(longitude);
+  //     const mapOptions = {
+  //       zoom: 10,
+  //       center: center,
+  //       mapTypeID: window.google.maps.MapTypeId.ROADMAP,
+  //     };
+  //     const map = new window.google.maps.Map(
+  //       document.getElementById("map-canvas"),
+  //       mapOptions
+  //     );
+  //     for (let i = 0; i < markers1.length; i++) {
+  //       addMarker(markers1[i], map);
+  //     }
+  //   }
+  // };
+  // useEffect(() => {
+  //   initialize();
+  // }, [latitude, longitude]);
+
+  // const addMarker = (marker, map) => {
+  //   const category = marker[4];
+  //   const title = marker[1];
+  //   const pos = new window.google.maps.LatLng(marker[2], marker[3]);
+  //   const content = marker[1];
+  //   const marker1 = new window.google.maps.Marker({
+  //     title: title,
+  //     position: pos,
+  //     category: category,
+  //     map: map,
+  //   });
+  //   gmarkers1.push(marker1);
+  //   window.google.maps.event.addListener(
+  //     marker1,
+  //     "click",
+  //     (function (marker1, content) {
+  //       return function () {
+  //         console.log("Gmarker 1 gets pushed");
+  //         infowindow.setContent(content);
+  //         infowindow.open(map, marker1);
+  //         map.panTo(this.getPosition());
+  //         map.setZoom(13);
+  //       };
+  //     })(marker1, content)
+  //   );
+  // };
+  // markers1 = [
+  //   ["0", "Total User 7", 34.593839, -98.409974, "Total User 7"],
+  //   ["1", "Total User 10", 34.613839, -98.409974, "Total User 10"],
+  //   ["2", "Total User 20", 34.607799, -98.396419, "Total User 20"],
+  //   ["3", "Total User 2", 34.623425, -98.468883, "Total User 2"],
+  //   ["4", "Total User 9", 34.593839, -98.409974, "Total User 9"],
+  // ];
   const handleId = (id) => {
     // alert(id);
   };
@@ -295,6 +317,17 @@ function UsersManagement(props) {
   //     link.click();
   //   }
   // };
+  // const handleSaveMap = (latitude, longitude) => {
+  //   const newAddress = {
+  //     longitude: latitude,
+  //     latitude: longitude,
+  //   };
+  //   createMap(newAddress);
+  // };
+  // usersList.forEach(user => {
+  //   const { latitude, longitude } = user;
+  //   handleSaveMap(latitude, longitude);
+  // });
 
   return (
     <>
@@ -306,8 +339,9 @@ function UsersManagement(props) {
             <div className="row dashboard_part justify-content-center">
               <div className="col-12">
                 <div className="row mx-0">
-                  <div id="map-canvas" className="mb-5 shadow rounded"></div>
+                  {/* <div id="map-canvas" className="mb-5 shadow rounded"></div> */}
                   {/* <GoogleMap latitude={latitude} longitude={longitude} /> */}
+                  <ReactGoogleMap />
                   <div className="col-12 design_outter_comman shadow">
                     <div className="row comman_header justify-content-between">
                       <div className="col">

@@ -112,6 +112,9 @@ export default function UserReports(props) {
         console.log(error.response.data);
       });
   };
+  const handleId = (id) => {
+    // alert(id);
+  };
   return (
     <>
       {/* <Sidebar/> */}
@@ -182,7 +185,8 @@ export default function UserReports(props) {
                           <td>
                             <Link
                               className="comman_btn2 table_viewbtn"
-                              to="/userDetails"
+                              to={`/userDetails/${data._id}`}
+                              onClick={() => handleId(data?._id)}
                             >
                               View
                             </Link>

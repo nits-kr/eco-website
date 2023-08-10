@@ -55,6 +55,12 @@ export const PostApi = createApi({
         method: "post",
       }),
     }),
+    getLatLongitude: builder.query({
+      query: (name) => ({
+        url: "/admin/user/location",
+        method: "post",
+      }),
+    }),
     getStaffList: builder.query({
       query: (name) => ({
         url: `admin/staff/staff/list`,
@@ -108,6 +114,13 @@ export const PostApi = createApi({
     addToCart: builder.mutation({
       query: (body) => ({
         url: `user/carts/carts/add-cart`,
+        method: "post",
+        body,
+      }),
+    }),
+    createMap: builder.mutation({
+      query: (body) => ({
+        url: "/admin/user/create-map",
         method: "post",
         body,
       }),
@@ -339,6 +352,19 @@ export const PostApi = createApi({
         };
       },
     }),
+    blockUser: builder.mutation({
+      query: (body) => {
+        console.log("update category", body);
+        const { id, ...data } = body;
+        console.log("update offer body data", data);
+        const dataValue = data ? 'true' : 'false';
+        return {
+          url: `/admin/user/block-user/${id}/${dataValue}`,
+          method: "post",
+          // body: data,
+        };
+      },
+    }),
     deleteProductList: builder.mutation({
       query: (id) => ({
         url: `/admin/product/delete-product/${id}`,
@@ -411,6 +437,18 @@ export const PostApi = createApi({
         method: "post",
       }),
     }),
+    deleteNotificationList: builder.mutation({
+      query: (id) => ({
+        url: `/admin/notification/notification/delete-notification/${id}`,
+        method: "post",
+      }),
+    }),
+    deleteAnnouncementList: builder.mutation({
+      query: (id) => ({
+        url: `/admin/announcement/announcement/delete-announcement/${id}`,
+        method: "post",
+      }),
+    }),
   }),
 });
 
@@ -465,5 +503,10 @@ export const {
   useDeleteSubSubCategoryListMutation,
   useDeleteAttributeListMutation,
   useDeleteValueListMutation,
+  useDeleteNotificationListMutation,
+  useDeleteAnnouncementListMutation,
+  useCreateMapMutation,
+  useGetLatLongitudeQuery,
+  useBlockUserMutation,
   // useSearchOfferQuery,
 } = PostApi;

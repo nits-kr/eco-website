@@ -36,6 +36,7 @@ function OfferManagement() {
   const [itemId, setItemId] = useState("");
   console.log("offer id", itemId);
   const [categories, setCategories] = useState([]);
+  const [newOfferList, setNewOfferList] = useState([]);
   const [subCategory, setSubCategory] = useState({
     nameEn: "",
     nameAr: "",
@@ -47,19 +48,17 @@ function OfferManagement() {
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
   // useEffect(() => {
-  //   setOfferList(offerListItems?.data?.results?.list ?? []);
+  //   const reversedList =
+  //     offerListItems?.data?.results?.list?.slice().reverse() ?? [];
+  //   setOfferList(reversedList);
   // }, [offerListItems]);
+  const getReversedList = (list) => {
+    return list?.data?.results?.list?.slice().reverse() ?? [];
+  };
   useEffect(() => {
-    const reversedList =
-      offerListItems?.data?.results?.list?.slice().reverse() ?? [];
-    setOfferList(reversedList);
+    const reversedList = getReversedList(offerListItems);
+    setNewOfferList(reversedList);
   }, [offerListItems]);
-
-  // useEffect(() => {
-  //   if (responseInfo.isSuccess) {
-  //     offerListItems.refetch();
-  //   }
-  // }, [responseInfo.isSuccess]);
 
   const handleSaveChanges = (e) => {
     e.preventDefault();
@@ -67,7 +66,7 @@ function OfferManagement() {
       title: title,
       code: code,
       Discount: discount,
-      product_Id: "6482bea984e5342a120adbde",
+      product_Id: subCategory.categoryId,
       // productName: productName,
     };
     createOffer(newOffer);
@@ -76,6 +75,10 @@ function OfferManagement() {
       text: "The offer has been created successfully.",
       icon: "success",
       confirmButtonText: "OK",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        window.location.reload();
+      }
     });
   };
   useEffect(() => {
@@ -92,10 +95,6 @@ function OfferManagement() {
       console.log("response", response);
       if (response?.data?.results?.offerData) {
         setOfferList(response?.data?.results?.offerData);
-        console.log(
-          "response?.data?.results?.offerData",
-          response?.data?.results?.offerData
-        );
       } else {
         setOfferList([]);
         Swal.fire({
@@ -106,7 +105,7 @@ function OfferManagement() {
         }).then((result) => {
           if (result.isConfirmed) {
             window.location.reload();
-            window.location.reload();
+            // window.location.reload();
           }
         });
       }
@@ -158,20 +157,59 @@ function OfferManagement() {
         console.log(response.data);
       });
   }, []);
-  const userList = async () => {
-    const { data } = await axios.post(
-      "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/offer/offer-list",
-      {
-        from: startDate,
-        to: endDate,
-      }
-    );
-    setOfferList(data?.results?.list);
-    console.log(data);
-  };
+  // const userList = async () => {
+  //   const { data } = await axios.post(
+  //     "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/offer/offer-list",
+  //     {
+  //       from: startDate,
+  //       to: endDate,
+  //     }
+  //   );
+  //   setOfferList(data?.results?.list);
+  //   console.log(data);
+  // };
+  // const handleSearch = (e) => {
+  //   e.preventDefault();
+  //   userList();
+  // };
   const handleSearch = (e) => {
     e.preventDefault();
-    userList();
+    axios
+      .post("http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/offer/offer-list", {
+        from: startDate,
+        to: endDate,
+      })
+      .then((response) => {
+        const list = response?.data?.results?.list?.reverse();
+        if (list && list.length > 0) {
+          Swal.fire({
+            title: "List Found!",
+            text: "list is available for the selected date.",
+            icon: "success",
+            confirmButtonText: "OK",
+          }).then((result) => {
+            if (result.isConfirmed) {
+              setNewOfferList(list);
+            }
+          });
+          // setRecentOrderList(list);
+        } else {
+          setNewOfferList([]);
+          Swal.fire({
+            icon: "warning",
+            title: "No data found!",
+            text: "There is no list between the selected dates.",
+            confirmButtonText: "OK",
+          }).then((result) => {
+            if (result.isConfirmed) {
+              getReversedList();
+            }
+          });
+        }
+      })
+      .catch((error) => {
+        console.log(error.response.data);
+      });
   };
 
   return (
@@ -212,7 +250,10 @@ function OfferManagement() {
                         />
                       </div> */}
                       <div className="form-group col-6">
-                        <label htmlFor="">Select Product<span className="required-field text-danger">*</span></label>
+                        <label htmlFor="">
+                          Select Product
+                          <span className="required-field text-danger">*</span>
+                        </label>
                         <select
                           className="select form-control"
                           multiple=""
@@ -359,14 +400,11 @@ function OfferManagement() {
                               </tr>
                             </thead>
                             <tbody>
-                              {offerList?.map((item, index) => {
+                              {newOfferList?.map((item, index) => {
                                 return (
                                   <tr key={index}>
                                     <td> {index + 1} </td>
-                                    <td>
-                                      {" "}
-                                      {item?.product_Id?.productName_en}{" "}
-                                    </td>
+                                    <td> {item?.product_Id?.productName_en} </td>
                                     <td> {item?.title} </td>
                                     <td> {item?.code} </td>
                                     <td> {item?.Discount} </td>

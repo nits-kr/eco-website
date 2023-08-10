@@ -3,8 +3,19 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
 import Sidebar from "./Sidebar";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faEye,
+  faTrash,
+  faDollarSign,
+  faMoneyBill1Wave,
+  faDownload,
+  faFileExport,
+} from "@fortawesome/free-solid-svg-icons";
+import { useDeleteNotificationListMutation } from "../services/Post";
 
 function NotificationManagement() {
+  const [deleteNotification, response] = useDeleteNotificationListMutation();
   const [startDate1, setStartDate1] = useState("");
   const [notificationList, setNotificationList] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -469,8 +480,35 @@ function NotificationManagement() {
                                 </div>
                               </div>
                               <div className="col">
-                                <div className="notification-box-content">
+                                <div className="notification-box-content announcement-contnt position-relative">
                                   <h2>{data._id}</h2>
+                                  <Link
+                                    className="check_toggle home_toggle d-flex align-items-center text-light table_viewbtn ms-2"
+                                    onClick={() => {
+                                      Swal.fire({
+                                        title: "Are you sure?",
+                                        text: "You won't be able to revert this!",
+                                        icon: "warning",
+                                        showCancelButton: true,
+                                        confirmButtonColor: "#3085d6",
+                                        cancelButtonColor: "#d33",
+                                        confirmButtonText: "Yes, delete it!",
+                                      }).then((result) => {
+                                        if (result.isConfirmed) {
+                                          deleteNotification(data?._id);
+                                          Swal.fire(
+                                            "Deleted!",
+                                            `${data?._id}  item has been deleted.`,
+                                            "success"
+                                          ).then(() => {
+                                            window.location.reload();
+                                          });
+                                        }
+                                      });
+                                    }}
+                                  >
+                                    <FontAwesomeIcon icon={faTrash} />
+                                  </Link>
                                   <span className="">
                                     {data?.createdAt?.slice(0, 10)}
                                   </span>

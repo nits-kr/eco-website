@@ -125,7 +125,7 @@ function Login() {
                           Forgot Password?
                         </Link>
                       </div>
-                      <Link to="/dashboard">
+                      <Link to="#">
                         <div className="form-group col-12">
                           <button
                             type="submit"

@@ -3,8 +3,19 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import { Link } from "react-router-dom";
 import Sidebar from "./Sidebar";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faEye,
+  faTrash,
+  faDollarSign,
+  faMoneyBill1Wave,
+  faDownload,
+  faFileExport,
+} from "@fortawesome/free-solid-svg-icons";
+import { useDeleteAnnouncementListMutation } from "../services/Post";
 
 function AnnounceManagement() {
+  const [deleteAnnounce, response] = useDeleteAnnouncementListMutation();
   const [announcementList, setAnnouncementList] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [startDate1, setStartDate1] = useState("");
@@ -379,7 +390,7 @@ function AnnounceManagement() {
                                     <i className="far fa-bullhorn fs-5"></i>{" "}
                                     {data?.heading}
                                   </h2>
-                                  <div className="check_toggle home_toggle d-flex align-items-center'">
+                                  {/* <div className="check_toggle home_toggle d-flex align-items-center'">
                                     <div className="text_home">
                                       Home Screen Banner
                                     </div>
@@ -393,7 +404,34 @@ function AnnounceManagement() {
                                       className="d-none"
                                     />
                                     <label htmlFor={`check${index}`}></label>
-                                  </div>
+                                  </div> */}
+                                  <Link
+                                    className="check_toggle home_toggle d-flex align-items-center text-light table_viewbtn ms-2"
+                                    onClick={() => {
+                                      Swal.fire({
+                                        title: "Are you sure?",
+                                        text: "You won't be able to revert this!",
+                                        icon: "warning",
+                                        showCancelButton: true,
+                                        confirmButtonColor: "#3085d6",
+                                        cancelButtonColor: "#d33",
+                                        confirmButtonText: "Yes, delete it!",
+                                      }).then((result) => {
+                                        if (result.isConfirmed) {
+                                          deleteAnnounce(data?._id);
+                                          Swal.fire(
+                                            "Deleted!",
+                                            `${data?.heading}  item has been deleted.`,
+                                            "success"
+                                          ).then(() => {
+                                            window.location.reload();
+                                          });
+                                        }
+                                      });
+                                    }}
+                                  >
+                                    <FontAwesomeIcon icon={faTrash} />
+                                  </Link>
                                   <h2>{data._id}</h2>
                                   <span className="">
                                     {data?.createdAt?.slice(0, 10)}

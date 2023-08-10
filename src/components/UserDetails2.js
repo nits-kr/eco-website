@@ -14,6 +14,7 @@ import {
   faStar,
 } from "@fortawesome/free-solid-svg-icons";
 import Sidebar from "./Sidebar";
+import { useBlockUserMutation } from "../services/Post";
 
 function UserDetails2() {
   axios.defaults.headers.common["x-auth-token-user"] =
@@ -21,6 +22,15 @@ function UserDetails2() {
   const { id } = useParams();
   const [userListDetails, setUserListDetails] = useState({});
   const [orderList, setOrderList] = useState([]);
+  const [status, setStatus] = useState(false);
+  const [isBlocked, setIsBlocked] = useState(false);
+  const [blockUser, res] = useBlockUserMutation();
+  console.log(res);
+  useEffect(() => {
+    if (res.isSuccess === true) {
+      setIsBlocked(true);
+    }
+  }, [res.isSuccess]);
   useEffect(() => {
     userDetails();
   }, []);
@@ -56,6 +66,40 @@ function UserDetails2() {
       console.log("Error deleting order:", error);
     }
   };
+  const handleCheckboxChange = async (e) => {
+    // e.preventDefault();
+    console.log("handleSaveChanges1", id);
+    const newStatus = status;
+
+    const confirmationResult = await Swal.fire({
+      title: "Confirm Status Change",
+      text: "Do you want to Block the User?",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "Yes",
+      cancelButtonText: "No",
+    });
+
+    if (confirmationResult.isConfirmed) {
+      const editStatus = {
+        id: id,
+        status: newStatus,
+      };
+      try {
+        await blockUser(editStatus);
+        Swal.fire({
+          title: "Changes Saved",
+          text: "The user has been blocked successfully.",
+          icon: "success",
+          confirmButtonText: "OK",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            window.location.reload();
+          }
+        });
+      } catch (error) {}
+    }
+  };
 
   return (
     <>
@@ -81,7 +125,7 @@ function UserDetails2() {
                                   backgroundImage:
                                     "url('../assets/img/profile_img2.jpeg')",
                                   height: "100px",
-                                  width: "124%",
+                                  width: "128%",
                                   backgroundSize: "cover",
                                   backgroundPosition: "center",
                                   backgroundRepeat: "no-repeat",
@@ -148,11 +192,47 @@ function UserDetails2() {
                       </div>
                     </div>
                     <div className="form-group my-2 ">
-                      <Link
-                        data-bs-toggle="modal"
-                        data-bs-target="#staticBackdrop"
+                      {/* <Link
                         className="comman_btn2 table_viewbtn danger"
                         to=""
+                        onClick={(e) => {
+                          setStatus(e.target.value); // Toggle the status
+                          setTimeout(() => {
+                            handleCheckboxChange();
+                          }, 1000);
+                        }}
+                      >
+                        Block
+                      </Link> */}
+                      {/* <Link
+                        className={`comman_btn2 table_viewbtn danger ${
+                          isBlocked ? "disabled" : ""
+                        }`}
+                        to=""
+                        onClick={(e) => {
+                          if (!isBlocked) {
+                            setStatus(e.target.value); // Toggle the status
+                            setTimeout(() => {
+                              handleCheckboxChange();
+                            }, 1000);
+                          }
+                        }}
+                      >
+                        Block
+                      </Link> */}
+                      <Link
+                        className={`comman_btn2 table_viewbtn danger ${
+                          isBlocked || res.isLoading ? "disabled" : ""
+                        }`}
+                        to=""
+                        onClick={(e) => {
+                          if (!isBlocked && !res.isLoading) {
+                            setStatus(e.target.value); // Toggle the status
+                            setTimeout(() => {
+                              handleCheckboxChange();
+                            }, 1000);
+                          }
+                        }}
                       >
                         Block
                       </Link>
@@ -355,18 +435,19 @@ function UserDetails2() {
                       >
                         <div className="form-group  ">
                           <div className="d-flex align-items-center justify-content-between mt-2">
-                            <label htmlFor="">Addresses</label>
-                            <Link
+                            <label htmlFor="">Addresses:</label>
+                            <div>{userDetails?.list?.address} </div>
+                            {/* <Link
                               data-bs-toggle="modal"
                               data-bs-target="#staticBackdrop"
                               className="comman_btn2 table_viewbtn danger ms-2"
                               to=""
                             >
                               Add
-                            </Link>
+                            </Link> */}
                           </div>
                         </div>
-                        <div className="form-group ">
+                        {/* <div className="form-group ">
                           <div className="d-flex align-items-center justify-content-between">
                             <label htmlFor="">Home</label>
                             <div className="d-flex">
@@ -388,7 +469,7 @@ function UserDetails2() {
                               </Link>
                             </div>
                           </div>
-                        </div>
+                        </div> */}
                         <div className="form-group col-4 d-flex align-items-start justify-content-between w-100">
                           <label htmlFor=""></label>
                           <div className="col-8">
@@ -604,8 +685,7 @@ function UserDetails2() {
                                           </div>
                                         ))}
                                       </td> */}
-                                      
-                                      
+
                                       {/* <td>{order.deliverdBy}</td> */}
                                       <td>
                                         <div

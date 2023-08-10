@@ -25,5 +25,5 @@ function GoogleMap({ google, latitude, longitude }) {
 
 // export default GoogleMap;
 export default GoogleApiWrapper({
-  apiKey: "YOUR_GOOGLE_MAPS_API_KEY",
+  apiKey: "AIzaSyDcanuAHLnXyDw1QtBH2aMdAPb_cRGweWA",
 })(GoogleMap);
