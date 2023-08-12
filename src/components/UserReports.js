@@ -9,6 +9,8 @@ export default function UserReports(props) {
   const [reporterList, setReporterList] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
+  const [descriptionEn2, setDescriptionEn2] = useState("");
+  const [itemId, setItemId] = useState(null);
 
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
@@ -115,6 +117,9 @@ export default function UserReports(props) {
   const handleId = (id) => {
     // alert(id);
   };
+  const handleItem = (item) => {
+    setDescriptionEn2(item?.description || "");
+  };
   return (
     <>
       {/* <Sidebar/> */}
@@ -169,9 +174,10 @@ export default function UserReports(props) {
                     <thead>
                       <tr>
                         <th>S.No.</th>
-                        <th>Reporter</th>
+                        <th>Product Name</th>
                         <th>Reported Against</th>
                         <th>Reason</th>
+                        <th>Description</th>
                         <th>Action</th>
                       </tr>
                     </thead>
@@ -179,14 +185,20 @@ export default function UserReports(props) {
                       {(reporterList || []).map((data, index) => (
                         <tr key={index}>
                           <td>{index + 1}</td>
-                          <td>{data.reporter}</td>
+                          <td>{data?.product_Id?.productName_en}</td>
                           <td>{data.reporterAgainst}</td>
                           <td>{data.reason}</td>
+                          <td>{data?.description?.slice(0, 20)}...</td>
                           <td>
                             <Link
-                              className="comman_btn2 table_viewbtn"
-                              to={`/userDetails/${data._id}`}
-                              onClick={() => handleId(data?._id)}
+                              data-bs-toggle="modal"
+                              data-bs-target="#staticBackdrop"
+                              className="comman_btn table_viewbtn me-2"
+                              to="#"
+                              onClick={() => {
+                                handleItem(data);
+                                setItemId(data?._id);
+                              }}
                             >
                               View
                             </Link>
@@ -202,6 +214,36 @@ export default function UserReports(props) {
                     </tbody>
                   </table>
                 </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        className="modal fade reply_modal"
+        id="staticBackdrop"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+        tabIndex="-1"
+        aria-labelledby="staticBackdropLabel"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog modal-dialog-centered">
+          <div className="modal-content border-0">
+            <div className="modal-header">
+              <h5 className="modal-title" id="staticBackdropLabel">
+                DESCRIPTION
+              </h5>
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div className="modal-body py-4">
+              <div className="chatpart_main">
+                <p>{descriptionEn2}</p>
               </div>
             </div>
           </div>

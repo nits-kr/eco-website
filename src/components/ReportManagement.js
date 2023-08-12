@@ -86,7 +86,7 @@ function ReportManagement() {
                         id="nav-tab"
                         role="tablist"
                       >
-                        <button
+                        {/* <button
                           className="nav-link active"
                           id="nav-home-tab"
                           data-bs-toggle="tab"
@@ -98,9 +98,9 @@ function ReportManagement() {
                         >
                           {" "}
                           User{" "}
-                        </button>
+                        </button> */}
                         <button
-                          className="nav-link"
+                          className="nav-link active"
                           id="nav-profile-tab"
                           data-bs-toggle="tab"
                           data-bs-target="#nav-profile"
@@ -108,6 +108,7 @@ function ReportManagement() {
                           role="tab"
                           aria-controls="nav-profile"
                           aria-selected="false"
+                          style={{width:"100%"}}
                         >
                           {" "}
                           Products{" "}
@@ -115,7 +116,7 @@ function ReportManagement() {
                       </div>
                     </nav>
                     <div className="tab-content" id="nav-tabContent">
-                      <UserReports searchQuery={searchQuery}/>
+                      <UserReports searchQuery={searchQuery} />
                       <ProductReports />
                     </div>
                   </div>

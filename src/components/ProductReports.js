@@ -112,8 +112,14 @@ export default function ProductReports() {
                           <td>{data.reason}</td>
                           <td>
                             <Link
-                              className="comman_btn2 table_viewbtn"
-                              to="/offerDetails"
+                              data-bs-toggle="modal"
+                              data-bs-target="#staticBackdrop"
+                              className="comman_btn table_viewbtn me-2"
+                              to="#"
+                              // onClick={() => {
+                              //   handleItem(data);
+                              //   setItemId(data?._id);
+                              // }}
                             >
                               View
                             </Link>
@@ -129,6 +135,36 @@ export default function ProductReports() {
                     </tbody>
                   </table>
                 </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        className="modal fade reply_modal"
+        id="staticBackdrop"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+        tabIndex="-1"
+        aria-labelledby="staticBackdropLabel"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog modal-dialog-centered">
+          <div className="modal-content border-0">
+            <div className="modal-header">
+              <h5 className="modal-title" id="staticBackdropLabel">
+                DESCRIPTION
+              </h5>
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div className="modal-body py-4">
+              <div className="chatpart_main">
+                {/* <p>{viewContact?.description}</p> */}
               </div>
             </div>
           </div>
