@@ -47,6 +47,7 @@ import ProductList2 from "./components/ProductList2";
 import ProductManagementEdit from "./components/ProductManagementEdit";
 import HomeScreenBanner2 from "./components/HomeScreenBanner2";
 import GoogleMap from "./components/GoogleMap";
+import BrandManagement from "./components/brand/BrandManagement";
 
 function App() {
   const [progress, setProgress] = useState(0);
@@ -120,6 +121,13 @@ function App() {
             path="/product-management"
             element={<ProductManagement2 />}
           />
+          <Route
+            exact
+            className="active"
+            path="/brand-management"
+            element={<BrandManagement/>}
+          />
+          
           <Route
             exact
             className="active"

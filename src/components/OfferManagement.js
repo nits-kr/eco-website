@@ -352,7 +352,7 @@ function OfferManagement() {
                           value={discount}
                           onChange={(e) => setDiscount(e.target.value)}
                           required
-                          minLength="3"
+                          // minLength="3"
                         />
                       </div>
                       <div className="form-group mb-0 col-auto">

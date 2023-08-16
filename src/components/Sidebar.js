@@ -153,6 +153,18 @@ function Sidebar({ Dash }) {
                   </Link>
                 </li>
                 <li
+                  className={
+                    Dash === "brand-management"
+                      ? "nav-link active"
+                      : "nav-link"
+                  }
+                >
+                  <Link className="ms-link " to="/brand-management">
+                    <i className="fas fa-cogs"></i>
+                    <span>Brand Management</span>
+                  </Link>
+                </li>
+                <li
                   className={Dash === "offers" ? "nav-link active" : "nav-link"}
                 >
                   <Link className="" to="/offers">

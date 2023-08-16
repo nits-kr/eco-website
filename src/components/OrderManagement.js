@@ -21,6 +21,7 @@ function OrderManagement() {
   const [status, setStatus] = useState("");
   const [status2, setStatus2] = useState("");
   const [itemId, setItemId] = useState("");
+  const [orderStatus, setOrderStatus] = useState([])
 
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
@@ -227,7 +228,7 @@ function OrderManagement() {
     console.log("handleSaveChanges1", itemId);
     const editOffer = {
       id: itemId,
-      orderStatus: status,
+      orderStatus: orderStatus,
     };
     try {
       await updateOrder(editOffer);
@@ -429,7 +430,7 @@ function OrderManagement() {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="staticBackdropLabel">
-                Edit Offer
+                Edit Order
               </h5>
               <button
                 type="button"
@@ -445,7 +446,7 @@ function OrderManagement() {
                 onSubmit={handleSaveChanges1}
               >
                 <div className="form-group col-6">
-                  <label htmlFor=""> DELIVERY STATUS</label>
+                  {/* <label htmlFor=""> Order Status</label>
                   <input
                     type="text"
                     className="form-control"
@@ -454,7 +455,31 @@ function OrderManagement() {
                     onChange={(e) => setStatus(e.target.value)}
                     name="name"
                     id="name"
-                  />
+                  /> */}
+                   <form>
+                    <div className="form-floating ">
+                      <select
+                        className="form-select"
+                        id="floatingSelect12"
+                        aria-label="  select example"
+                        defaultValue=" "
+                        style={{
+                          padding: "5px",
+                        }}
+                        onChange={(e) => setOrderStatus(e.target.value)}
+                      >
+                        <option value="">Order Status</option>
+                        <option value="Approved">Approved</option>
+                        <option value="Packed">Packed</option>
+                        <option value="Shipped">Shipped</option>
+                        <option value="Delivered">Delivered</option>
+                        <option value="Cancelled">Cancelled</option>
+                        <option value="Pending">Pending</option>
+                        <option value="Inprogress">Inprogress</option>
+                      </select>
+                      {/* <label htmlFor="floatingSelect12">Quantity</label> */}
+                    </div>
+                  </form>
                 </div>
                 {/* <div className="form-group col-6">
                   <label htmlFor="">Title</label>
