@@ -368,7 +368,7 @@ function Dashboard(props) {
                                     <tr key={index}>
                                       <td>
                                         {" "}
-                                        {order?.products[0]?.product_Id}{" "}
+                                        {order?._id}{" "}
                                       </td>
                                       <td> {order?.user_Id?.userName} </td>
                                       {/* <td> {order?.createdAt.slice(0,10)} </td> */}

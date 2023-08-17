@@ -199,15 +199,6 @@ function OrderManagement() {
       link.click();
     }
   };
-  // const handleDownload = () => {
-  //   if (data && data.results && data.results.file) {
-  //     const downloadUrl = data.results.file;
-  //     const link = document.createElement("a");
-  //     link.href = downloadUrl;
-  //     link.download = "file.xlsx";
-  //     link.click();
-  //   }
-  // };
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -219,9 +210,6 @@ function OrderManagement() {
 
   const handleItem = (item) => {
     setStatus2(item?.orderStatus || "");
-    // setTitle2(item?.title || "");
-    // setCode2(item?.code || "");
-    // setDiscount2(item?.Discount || "");
   };
   const handleSaveChanges1 = async (e) => {
     e.preventDefault();
@@ -238,13 +226,11 @@ function OrderManagement() {
         icon: "success",
         confirmButtonText: "OK",
       }).then((result) => {
-        // Check if the user clicked "OK" (result.isConfirmed) and then reload the page
         if (result.isConfirmed) {
           window.location.reload();
         }
       });
     } catch (error) {
-      // Handle error if necessary
     }
   };
 

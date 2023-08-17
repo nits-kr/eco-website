@@ -15,6 +15,7 @@ import Sidebar from "../Sidebar";
 import Spinner from "../Spinner";
 import { useCatogaryStatusMutation } from "../../services/Post";
 import { useDeleteCategoryListMutation } from "../../services/Post";
+import { useDeleteBrabdListMutation } from "../../services/Post";
 
 function BrandManagement(props) {
   axios.defaults.headers.common["x-auth-token-user"] =
@@ -25,17 +26,66 @@ function BrandManagement(props) {
   const [searchQuery, setSearchQuery] = useState("");
   const [startDate1, setStartDate1] = useState("");
   const [categoryList, setCategoryList] = useState([]);
+  const [deleteBrand, res] = useDeleteBrabdListMutation();
+  const [nameEn1, setNameEn1] = useState([]);
+  const [nameAr1, setNameAr1] = useState([]);
+  const [pic1, setPic1] = useState([]);
+  const [id1, setId1] = useState("");
+  console.log(id1);
   const [formData, setFormData] = useState({
     nameEn: "",
     nameAr: "",
     categoryPic: null,
   });
-  const [newCategory, setNewCategory] = useState([]);
+  const [category, setCategory] = useState({
+    nameEn1: "",
+    nameAr1: "",
+    uploadImage1: null,
+  });
+  const handleInputChange1 = (event) => {
+    const { name, value } = event.target;
+    setCategory({ ...category, [name]: value });
+    console.log("edit category value:  ", value);
+  };
+  const handleFileChange1 = (e, key) => {
+    setCategory({ ...category, uploadImage1: e.target.files[0] });
+  };
+  console.log(category?.uploadImage1);
+  const handleUpdate1 = async (itemId, event) => {
+    event.preventDefault();
+  
+    try {
+      const formData = new FormData();
+      formData.append("brandName_en", category?.nameEn1);
+      formData.append("brandName_ar", category?.nameAr1);
+      formData.append("brandPic", category?.uploadImage1);
+  
+      const response = await axios.post(
+        `http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/product/edit-brand/${id1}`,
+        formData
+      );
+  
+      if (!response.data.error) {
+        await Swal.fire({
+          title: "Updated!",
+          text: "You have successfully updated the list.",
+          icon: "success",
+          confirmButtonColor: "#3085d6",
+          confirmButtonText: "OK",
+        });
+  
+        window.location.reload();
+      }
+    } catch (error) {
+      console.error("An error occurred:", error);
+    }
+  };
+  
 
   const url =
     "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/product/brand-list";
   const url2 =
-    "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/category/search-category";
+    "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/product/search-brand";
   useEffect(() => {
     categoryManagementList();
   }, []);
@@ -128,7 +178,7 @@ function BrandManagement(props) {
         // throw new Error("Error searching for products. Data is not found.");
       } else {
         setCategoryList(
-          searchQuery !== "" ? results?.categoryData : results?.list?.reverse()
+          searchQuery !== "" ? results?.brandName_en : results?.list?.reverse()
         );
       }
     } catch (error) {
@@ -165,7 +215,6 @@ function BrandManagement(props) {
   const handleFileChange = (event) => {
     setFormData({ ...formData, categoryPic: event.target.files[0] });
   };
-  console.log("set form data pic", formData.categoryPic);
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
@@ -194,8 +243,6 @@ function BrandManagement(props) {
   };
 
   const handleSave = async () => {
-    props.setProgress(10);
-    setLoading(true);
     try {
       const response = await axios.post(
         "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/product/brand-list",
@@ -211,8 +258,6 @@ function BrandManagement(props) {
     } catch (error) {
       console.error(error);
     }
-    props.setProgress(100);
-    setLoading(false);
   };
 
   useEffect(() => {
@@ -220,13 +265,10 @@ function BrandManagement(props) {
   }, []);
 
   const handleUpdate = (item) => {
-    // console.log("category update data", nameEn, nameAr, categoryPic, id);
-    setNewCategory({
-      nameEn: item?.categoryName_en,
-      nameAr: item?.categoryName_ar,
-      categoryPic: item?.categoryPic,
-      id: item?._id,
-    });
+    setNameEn1(item?.brandName_en);
+    setNameAr1(item?.brandName_ar);
+    setPic1(item?.brandPic);
+    // setId1(item?._id);
   };
 
   const handleCheckboxChange = async (e, categoryId) => {
@@ -478,15 +520,13 @@ function BrandManagement(props) {
                                                       data-bs-target="#staticBackdrop"
                                                       className="comman_btn2 table_viewbtn me-2"
                                                       to=""
-                                                      onClick={() =>
-                                                        handleUpdate(
-                                                          // category?.categoryName_en,
-                                                          // category?.categoryName_ar,
-                                                          // category?.categoryPic,
-                                                          // category?._id
-                                                          category
-                                                        )
-                                                      }
+                                                      // onClick={() =>
+                                                      //   handleUpdate(category)
+                                                      // }
+                                                      onClick={() => {
+                                                        handleUpdate(category);
+                                                        setId1(category?._id);
+                                                      }}
                                                     >
                                                       Edit
                                                     </Link>
@@ -512,7 +552,7 @@ function BrandManagement(props) {
                                                           if (
                                                             result.isConfirmed
                                                           ) {
-                                                            deleteCategory(
+                                                            deleteBrand(
                                                               category?._id
                                                             );
                                                             Swal.fire(
@@ -547,6 +587,83 @@ function BrandManagement(props) {
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        className="modal fade Edit_modal"
+        id="staticBackdrop"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+        tabIndex="-1"
+        aria-labelledby="staticBackdropLabel"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog modal-dialog-centered">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title" id="staticBackdropLabel">
+                Edit Brand
+              </h5>
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div className="modal-body">
+              <form
+                className="form-design p-3 help-support-form row align-items-end justify-content-center"
+                action=""
+              >
+                <div className="form-group col-6">
+                  <label htmlFor="">Enter Brand Name (En)</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    name="nameEn1"
+                    id="nameEn1"
+                    defaultValue={nameEn1}
+                    onChange={handleInputChange1}
+                  />
+                </div>
+                <div className="form-group col-6">
+                  <label htmlFor="">Enter Brand Name (Ar)</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    name="nameAr1"
+                    id="nameAr1"
+                    defaultValue={nameAr1}
+                    onChange={handleInputChange1}
+                  />
+                </div>
+                <div className="form-group col-12 choose_file position-relative">
+                  <span>Upload Image</span>
+                  <label htmlFor="upload_video">
+                    <i className="fal fa-camera me-1"></i>Choose File{" "}
+                  </label>
+                  <input
+                    type="file"
+                    className="form-control"
+                    // defaultValue={props?.newCategory?.categoryPic}
+                    name="uploadImage"
+                    id="uploadImage"
+                    onChange={(e) => handleFileChange1(e, "uploadImage")}
+                  />
+                  {pic1}
+                </div>
+                <div className="form-group mb-0 col-auto">
+                  <button
+                    className="comman_btn2"
+                    onClick={handleUpdate1}
+                  >
+                    Save
+                  </button>
+                </div>
+              </form>
             </div>
           </div>
         </div>

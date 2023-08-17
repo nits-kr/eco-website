@@ -383,6 +383,12 @@ export const PostApi = createApi({
         method: "DELETE",
       }),
     }),
+    deleteBrabdList: builder.mutation({
+      query: (id) => ({
+        url: `/admin/product/delete-brand/${id}`,
+        method: "post",
+      }),
+    }),
     deleteAgentList: builder.mutation({
       query: (id) => ({
         url: `/admin/agent/agent/delete-user/${id}`,
@@ -508,5 +514,6 @@ export const {
   useCreateMapMutation,
   useGetLatLongitudeQuery,
   useBlockUserMutation,
+  useDeleteBrabdListMutation,
   // useSearchOfferQuery,
 } = PostApi;

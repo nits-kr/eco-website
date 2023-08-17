@@ -236,41 +236,6 @@ function SubCategory(props) {
 
   console.log("subcategory", subCategory);
 
-  // const handleSaveChanges1 = async (e) => {
-  //   e.preventDefault();
-  //   console.log("handleSaveChanges1", itemId);
-  //   const editAddress = {
-  //     id: itemId,
-  //     subCategoryName_en: editSubCategoryNameEn,
-  //     subCategoryName_ar: editSubCategoryNameAr,
-  //     category_Id: subCategory.categoryId,
-  //   };
-  //   // const editAddress = new FormData();
-  //   // editAddress.append("id", itemId);
-  //   // editAddress.append("subCategoryName_en", editSubCategoryNameEn);
-  //   // editAddress.append("subCategoryName_en", editSubCategoryNameAr);
-  //   // editAddress.append("subCategoryPic", subCategory.subCategoryPic);
-  //   try {
-  //     await update(editAddress);
-  //     Swal.fire({
-  //       icon: "success",
-  //       title: "Changes Saved",
-  //       text: "The subcategory has been updated successfully.",
-  //       confirmButtonColor: "#3085d6",
-  //       confirmButtonText: "OK",
-  //     }).then((result) => {
-  //       if (result.isConfirmed) {
-  //         window.location.reload();
-  //       }
-  //     });
-  //   } catch (error) {
-  //     Swal.fire({
-  //       icon: "error",
-  //       title: "Error",
-  //       text: "An error occurred while updating the subcategory.",
-  //     });
-  //   }
-  // };
   const handleSaveChanges1 = (event) => {
     event.preventDefault();
     const formData = new FormData();
