@@ -158,7 +158,7 @@ function BrandManagement(props) {
     try {
       const url1 = searchQuery !== "" ? url2 : url;
       const response = await axios.post(url1, {
-        categoryName_en: searchQuery,
+        brandName_en: searchQuery,
       });
       const { error, results } = response.data;
       if (error) {
@@ -178,7 +178,7 @@ function BrandManagement(props) {
         // throw new Error("Error searching for products. Data is not found.");
       } else {
         setCategoryList(
-          searchQuery !== "" ? results?.brandName_en : results?.list?.reverse()
+          searchQuery !== "" ? results?.brandData : results?.list?.reverse()
         );
       }
     } catch (error) {
