@@ -1,9 +1,15 @@
 // Need to use the React-specific entry point to import createApi
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-// Define a service using a base URL and expected endpoints
 export const PostApi = createApi({
   reducerPath: "PostApi",
+  // headers: {
+  //   "x-auth-token-user": getAuthToken(),
+  // },
+  // prepareHeaders: (headers) => {
+  //   headers.set("Authorization", `Bearer ${getAuthToken()}`);
+  //   return headers;
+  // },
   baseQuery: fetchBaseQuery({
     baseUrl: "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/",
     headers: {
@@ -357,7 +363,7 @@ export const PostApi = createApi({
         console.log("update category", body);
         const { id, ...data } = body;
         console.log("update offer body data", data);
-        const dataValue = data ? 'false' : 'true';
+        const dataValue = data ? "false" : "true";
         return {
           url: `/admin/user/block-user/${id}/${dataValue}`,
           method: "post",

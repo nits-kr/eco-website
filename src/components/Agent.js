@@ -144,7 +144,6 @@ function Agent(props) {
       <div className="admin_main">
         <div className="admin_main_inner">
           <div className="admin_panel_data height_adjust">
-            <div className="admin_panel_data height_adjust">
               <div className="row dashboard_part justify-content-center">
                 <div className="col-12">
                   <div className="col-9 mb-4">
@@ -426,7 +425,6 @@ function Agent(props) {
                   </div>
                 </div>
               </div>
-            </div>
           </div>
         </div>
       </div>
