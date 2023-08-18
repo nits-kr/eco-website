@@ -21,7 +21,8 @@ function OrderManagement() {
   const [status, setStatus] = useState("");
   const [status2, setStatus2] = useState("");
   const [itemId, setItemId] = useState("");
-  const [orderStatus, setOrderStatus] = useState([])
+  const [orderStatus, setOrderStatus] = useState([]);
+  const [orderStatusAr, setOrderStatusAr] = useState([]);
 
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
@@ -193,9 +194,9 @@ function OrderManagement() {
     if (data) {
       const blob = new Blob([data]);
       const downloadUrl = URL.createObjectURL(blob);
-      const link = document.createElement('a');
+      const link = document.createElement("a");
       link.href = downloadUrl;
-      link.download = 'file.xlsx';
+      link.download = "file.xlsx";
       link.click();
     }
   };
@@ -217,6 +218,7 @@ function OrderManagement() {
     const editOffer = {
       id: itemId,
       orderStatus: orderStatus,
+      orderStatus_ar:orderStatusAr
     };
     try {
       await updateOrder(editOffer);
@@ -230,8 +232,7 @@ function OrderManagement() {
           window.location.reload();
         }
       });
-    } catch (error) {
-    }
+    } catch (error) {}
   };
 
   return (
@@ -432,17 +433,7 @@ function OrderManagement() {
                 onSubmit={handleSaveChanges1}
               >
                 <div className="form-group col-6">
-                  {/* <label htmlFor=""> Order Status</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    // value={productName}
-                    defaultValue={status2}
-                    onChange={(e) => setStatus(e.target.value)}
-                    name="name"
-                    id="name"
-                  /> */}
-                   <form>
+                  <form>
                     <div className="form-floating ">
                       <select
                         className="form-select"
@@ -463,23 +454,35 @@ function OrderManagement() {
                         <option value="Pending">Pending</option>
                         <option value="Inprogress">Inprogress</option>
                       </select>
-                      {/* <label htmlFor="floatingSelect12">Quantity</label> */}
                     </div>
                   </form>
                 </div>
-                {/* <div className="form-group col-6">
-                  <label htmlFor="">Title</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    // value={title}
-                    defaultValue={title2}
-                    onChange={(e) => setTitle(e.target.value)}
-                    name="title"
-                    id="title"
-                  />
+                <div className="form-group col-6">
+                  <form>
+                    <div className="form-floating ">
+                      <select
+                        className="form-select"
+                        id="floatingSelect12"
+                        aria-label="  select example"
+                        defaultValue=" "
+                        style={{
+                          padding: "5px",
+                        }}
+                        onChange={(e) => setOrderStatusAr(e.target.value)}
+                      >
+                        <option value="">حالة الطلب</option>
+                        <option value="موافقة">موافقة</option>
+                        <option value="معباه">معباه</option>
+                        <option value="شحنها">شحنها</option>
+                        <option value="تم التوصيل">تم التوصيل</option>
+                        <option value="ألغيت">ألغيت</option>
+                        <option value="قيد الانتظار">قيد الانتظار</option>
+                        <option value="في تَقَدم">في تَقَدم</option>
+                      </select>
+                    </div>
+                  </form>
                 </div>
-                <div className="form-group mb-0 col">
+                {/* <div className="form-group mb-0 col">
                   <label htmlFor="">Code</label>
                   <input
                     type="text"
