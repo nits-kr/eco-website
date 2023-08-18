@@ -5,7 +5,7 @@ import Sidebar from "./Sidebar";
 function UserOfferPostedDetails() {
   return (
     <>
-    <Sidebar />
+      <Sidebar />
 
       <div className="admin_main">
         {/* <div className="siderbar_section">
@@ -115,7 +115,7 @@ function UserOfferPostedDetails() {
             </div>
           </div>
         </div> */}
-        
+
         <div className="admin_main_inner">
           <div className="admin_panel_data height_adjust">
             <div className="row offerdetails-management justify-content-center">
