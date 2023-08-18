@@ -48,6 +48,8 @@ import ProductManagementEdit from "./components/ProductManagementEdit";
 import HomeScreenBanner2 from "./components/HomeScreenBanner2";
 import GoogleMap from "./components/GoogleMap";
 import BrandManagement from "./components/brand/BrandManagement";
+import UserOfferPOsted from "./components/UserOfferPOsted";
+import UserOfferPostedDetails from "./components/UserOfferPostedDetails";
 
 function App() {
   const [progress, setProgress] = useState(0);
@@ -77,6 +79,18 @@ function App() {
             className="active"
             path="/users"
             element={<UsersManagement setProgress={setProgress} />}
+          />
+          <Route
+            exact
+            className="active"
+            path="/users-offer"
+            element={<UserOfferPOsted setProgress={setProgress} />}
+          />
+          <Route
+            exact
+            className="active"
+            path="/users-offer-details"
+            element={<UserOfferPostedDetails setProgress={setProgress} />}
           />
           <Route
             exact

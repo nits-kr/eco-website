@@ -759,13 +759,14 @@ function UserDetails2() {
                         </div>
                         <div className="col-auto mx-3">
                           <Link
+                            to="/users-offer"
                             style={{
                               color: "red",
                               display: "flex",
                               alignItems: "center",
                             }}
                           >
-                            <strong> View All</strong>
+                            <strong> View</strong>
                             <FontAwesomeIcon icon={faArrowRight} />
                           </Link>
                         </div>

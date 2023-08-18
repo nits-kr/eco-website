@@ -21,7 +21,7 @@ function ReactGoogleMap() {
 
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
-    googleMapsApiKey: "AIzaSyDcanuAHLnXyDw1QtBH2aMdAPb_cRGweWA", // Replace with your API key
+    googleMapsApiKey: "AIzaSyDcanuAHLnXyDw1QtBH2aMdAPb_cRGweWA",
   });
 
   const center = {
@@ -49,7 +49,6 @@ function ReactGoogleMap() {
   };
 
   const onUnmount = () => {
-    // Handle any cleanup if needed
   };
 
   return isLoaded ? (
