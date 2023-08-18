@@ -114,7 +114,7 @@ function AgentDetails() {
   };
   return (
     <>
-      <Sidebar />
+      <Sidebar Dash={"agents"}/>
       <div className="admin_main">
         <div className="admin_main_inner">
           <div className="admin_panel_data height_adjust">
