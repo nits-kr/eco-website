@@ -380,7 +380,7 @@ function Dashboard(props) {
                                           .reverse()
                                           .join("-")}{" "}
                                       </td>
-                                      <td> {order?.cartsTotal} </td>
+                                      <td> {order?.cartsTotal[0][0]?.totalAfterDiscount?.toFixed(2)} </td>
                                       <td> {order?.orderStatus} </td>
                                       <td> {order?.paymentIntent} </td>
                                     </tr>

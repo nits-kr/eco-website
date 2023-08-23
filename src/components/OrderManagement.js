@@ -218,7 +218,7 @@ function OrderManagement() {
     const editOffer = {
       id: itemId,
       orderStatus: orderStatus,
-      orderStatus_ar:orderStatusAr
+      orderStatus_ar: orderStatusAr,
     };
     try {
       await updateOrder(editOffer);
@@ -347,7 +347,12 @@ function OrderManagement() {
                                   <td> {data?.createdAt?.slice(0, 10)} </td>
                                   <td> {data.paymentIntent} </td>
                                   <td> {data.orderStatus} </td>
-                                  <td> {data.cartsTotal} </td>
+                                  <td>
+                                    {" "}
+                                    {data?.cartsTotal[0][0]?.totalAfterDiscount?.toFixed(
+                                      2
+                                    )}{" "}
+                                  </td>
                                   <td>
                                     <Link
                                       className="comman_btn table_viewbtn"
