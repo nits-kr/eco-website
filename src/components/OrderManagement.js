@@ -349,9 +349,7 @@ function OrderManagement() {
                                   <td> {data.orderStatus} </td>
                                   <td>
                                     {" "}
-                                    {data?.cartsTotal[0][0]?.totalAfterDiscount?.toFixed(
-                                      2
-                                    )}{" "}
+                                    {data?.cartsTotal[0][0]?.totalAfterDiscount}{" "}
                                   </td>
                                   <td>
                                     <Link
