@@ -23,9 +23,31 @@ function OrderManagement() {
   const [itemId, setItemId] = useState("");
   const [orderStatus, setOrderStatus] = useState([]);
   const [orderStatusAr, setOrderStatusAr] = useState([]);
+  const [brands, setBrands] = useState([]);
+  const [subSubCategory, setSubSubCategory] = useState({
+    brandId1: "",
+  });
 
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
+  const handleInputChange1 = (event) => {
+    const { name, value } = event.target;
+    setSubSubCategory({ ...subSubCategory, [name]: value });
+  };
+  useEffect(() => {
+    const fetchData2 = async () => {
+      try {
+        const response = await axios.post(
+          "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/product/brand-list"
+        );
+        setBrands(response.data.results.list);
+        console.log(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchData2();
+  }, []);
   const url =
     "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/order/order/list";
   const url2 =
@@ -335,6 +357,7 @@ function OrderManagement() {
                                 <th>Delivery Status</th>
                                 <th>Amount</th>
                                 <th>Action</th>
+                                <th>Assign Delivery Boy</th>
                               </tr>
                             </thead>
                             <tbody>
@@ -391,6 +414,35 @@ function OrderManagement() {
                                     >
                                       Delete
                                     </Link>
+                                  </td>
+                                  <td>
+                                    {/* <div className="col-12 design_outter_comman mb-4 shadow"> */}
+                                    {/* <div
+                                        className="form-design py-3 px-2 help-support-form row align-items-end justify-content-between"
+                                        action=""
+                                      > */}
+                                    <div className="form-group col-12">
+                                      <select
+                                        className="select form-control"
+                                        multiple=""
+                                        name="brandId1"
+                                        id="brandId1"
+                                        value={subSubCategory.brandId1}
+                                        onChange={handleInputChange1}
+                                      >
+                                        {Array.isArray(brands) &&
+                                          brands.map((subCategory) => (
+                                            <option
+                                              key={subCategory._id}
+                                              value={subCategory._id}
+                                            >
+                                              {subCategory.brandName_en}
+                                            </option>
+                                          ))}
+                                      </select>
+                                    </div>
+                                    {/* </div> */}
+                                    {/* </div> */}
                                   </td>
                                 </tr>
                               ))}

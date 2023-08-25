@@ -21,7 +21,9 @@ function UserDetails2() {
     localStorage.getItem("token");
   const { id } = useParams();
   const [userListDetails, setUserListDetails] = useState([]);
+  console.log("userListDetails", userListDetails);
   const [orderList, setOrderList] = useState([]);
+  const [reviewList, setReviewList] = useState([]);
   const [status, setStatus] = useState(false);
   const [isBlocked, setIsBlocked] = useState(false);
   const [blockUser, res] = useBlockUserMutation();
@@ -41,8 +43,9 @@ function UserDetails2() {
     );
     setUserListDetails(data?.results);
     setOrderList(data?.results?.order);
+    setReviewList(data?.results?.review);
     console.log("order list", data?.results?.order);
-    console.log("User List Details", data.results.list);
+    console.log("User List Details", data.results);
     console.log("id", id);
   };
   const deleteOrder = async (_id) => {
@@ -104,7 +107,7 @@ function UserDetails2() {
 
   return (
     <>
-      <Sidebar />
+      <Sidebar Dash={"users"}/>
       <div className="admin_main">
         <div className="admin_main_inner">
           <div className="admin_panel_data height_adjust">
@@ -480,11 +483,15 @@ function UserDetails2() {
                               </label>
                             </div>
                             <div className="col-8 mt-2">
-                              {userListDetails?.list?.address_Id?.title ? (
-                                userListDetails?.list?.address_Id?.title
+                              {userListDetails?.list?.address_Id !== 0 ? (
+                                userListDetails?.list?.address_Id?.title || (
+                                  <span className="text-danger">
+                                    No Title Available
+                                  </span>
+                                )
                               ) : (
                                 <span className="text-danger">
-                                  No Title Available
+                                  No Address Available
                                 </span>
                               )}
                             </div>
@@ -511,9 +518,13 @@ function UserDetails2() {
                             </div>
                             <div className="col-8">
                               <div className="col-8 mt-2">
-                                {/* {userListDetails?.list?.address_Id?.address} */}
-                                {userListDetails?.list?.address_Id?.address ? (
-                                  userListDetails?.list?.address_Id?.address
+                                {userListDetails?.list?.address_Id ? (
+                                  userListDetails?.list?.address_Id
+                                    ?.address || (
+                                    <span className="text-danger">
+                                      No Address Available
+                                    </span>
+                                  )
                                 ) : (
                                   <span className="text-danger">
                                     No Address Available
@@ -544,9 +555,13 @@ function UserDetails2() {
                             </div>
                             <div className="col-8">
                               <div className="col-8 mt-2">
-                                {/* {userListDetails?.list?.address_Id?.locality} */}
-                                {userListDetails?.list?.address_Id?.locality ? (
-                                  userListDetails?.list?.address_Id?.locality
+                                {userListDetails?.list?.address_Id ? (
+                                  userListDetails?.list?.address_Id
+                                    ?.locality || (
+                                    <span className="text-danger">
+                                      No Locality Available
+                                    </span>
+                                  )
                                 ) : (
                                   <span className="text-danger">
                                     No Locality Available
@@ -577,9 +592,12 @@ function UserDetails2() {
                             </div>
                             <div className="col-8">
                               <div className="col-8 mt-2">
-                                {/* {userListDetails?.list?.address_Id?.city} */}
-                                {userListDetails?.list?.address_Id?.city ? (
-                                  userListDetails?.list?.address_Id?.city
+                                {userListDetails?.list?.address_Id ? (
+                                  userListDetails?.list?.address_Id?.city || (
+                                    <span className="text-danger">
+                                      No City Available
+                                    </span>
+                                  )
                                 ) : (
                                   <span className="text-danger">
                                     No City Available
@@ -610,9 +628,13 @@ function UserDetails2() {
                             </div>
                             <div className="col-8">
                               <div className="col-8 mt-2">
-                                {/* {userListDetails?.list?.address_Id?.country} */}
-                                {userListDetails?.list?.address_Id?.country ? (
-                                  userListDetails?.list?.address_Id?.country
+                                {userListDetails?.list?.address_Id ? (
+                                  userListDetails?.list?.address_Id
+                                    ?.country || (
+                                    <span className="text-danger">
+                                      No Country Available
+                                    </span>
+                                  )
                                 ) : (
                                   <span className="text-danger">
                                     No Country Available
@@ -815,23 +837,16 @@ function UserDetails2() {
                                 {orderList?.map((order, index) => {
                                   return (
                                     <tr key={index}>
-                                      <td>{order._id}</td>
-                                      <td>{order.cartsTotal}</td>
-                                      <td>{order.orderStatus}</td>
+                                      <td>{order?._id}</td>
+                                      <td>
+                                        {
+                                          order?.cartsTotal[0][0]
+                                            ?.totalAfterDiscount[0]
+                                        }
+                                      </td>
+                                      <td>{order?.orderStatus}</td>
                                       <td>{order?.createdAt?.slice(0, 10)}</td>
-                                      {/* <td>
-                                        {order.products.map((product, i) => (
-                                          <div key={i}>
-                                            <p>
-                                              Product ID: {product.product_Id}
-                                            </p>
-                                            {product.quantity}
-                                            <p>Quantity: {product.quantity}</p>
-                                          </div>
-                                        ))}
-                                      </td> */}
 
-                                      {/* <td>{order.deliverdBy}</td> */}
                                       <td>
                                         <div
                                           style={{
@@ -839,11 +854,6 @@ function UserDetails2() {
                                             justifyContent: "center",
                                           }}
                                         >
-                                          {/* <Link to={`/edit/${order._id}`}>
-                                            <button className="comman_btn2 table_viewbtn">
-                                              <FontAwesomeIcon icon={faEdit} />
-                                            </button>
-                                          </Link> */}
                                           <button
                                             className="comman_btn2 table_viewbtn"
                                             onClick={() =>
@@ -902,7 +912,7 @@ function UserDetails2() {
                                 }}
                               >
                                 <tr>
-                                  <th>Order Id</th>
+                                  <th>Product Id</th>
                                   <th>Review By</th>
                                   <th>Rating</th>
                                   <th>Review</th>
@@ -910,13 +920,17 @@ function UserDetails2() {
                                 </tr>
                               </thead>
                               <tbody>
-                                <tr>
-                                  <td></td>
-                                  <td></td>
-                                  <td></td>
-                                  <td></td>
-                                  <td></td>
-                                </tr>
+                                {reviewList?.map((item, index) => {
+                                  return (
+                                    <tr key={index}>
+                                      <td> {item?.product_Id} </td>
+                                      <td> {item?.yourName} </td>
+                                      <td> {item?.rating} </td>
+                                      <td> {item?.reviewTitle?.slice(0,20)} </td>
+                                      <td> {item?.createdAt?.slice(0, 10)} </td>
+                                    </tr>
+                                  );
+                                })}
                               </tbody>
                             </table>
                           </div>

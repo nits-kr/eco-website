@@ -21,8 +21,7 @@ function UsersManagement(props) {
   const [searchQuery, setSearchQuery] = useState("");
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
-  const handleId = (id) => {
-  };
+  const handleId = (id) => {};
   const url =
     "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/user/userList";
   const url2 =
@@ -397,7 +396,6 @@ function UsersManagement(props) {
                                         className="comman_btn2 table_viewbtn"
                                         // to={`/userDetails`}
                                         to={`/userDetails/${user._id}`}
-                                        onClick={() => handleId(user?._id)}
                                       >
                                         View
                                       </Link>

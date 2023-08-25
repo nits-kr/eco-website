@@ -229,7 +229,7 @@ function TransactionManagement() {
                           role="tab"
                           aria-controls="nav-home"
                           aria-selected="true"
-                          style={{width:"100%"}}
+                          style={{ width: "100%" }}
                         >
                           {" "}
                           Orders{" "}
@@ -322,12 +322,18 @@ function TransactionManagement() {
                                           <tr key={index}>
                                             <td>1</td>
                                             <td>
-                                              {item.createdAt.slice(0, 10)}
+                                              {item?.createdAt?.slice(0, 10)}
                                             </td>
 
                                             <td> {item?._id} </td>
                                             <td> {item?.user_Id?.userName} </td>
-                                            <td> {item?.cartsTotal} </td>
+                                            <td>
+                                              {" "}
+                                              {
+                                                item?.user_Id
+                                                  ?.totalAfterDiscount[0]
+                                              }{" "}
+                                            </td>
                                             <td> {item?.paymentIntent} </td>
                                             <td> {item?.orderStatus} </td>
                                             <td>
