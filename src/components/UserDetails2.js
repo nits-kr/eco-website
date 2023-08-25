@@ -107,7 +107,7 @@ function UserDetails2() {
 
   return (
     <>
-      <Sidebar Dash={"users"}/>
+      <Sidebar Dash={"users"} />
       <div className="admin_main">
         <div className="admin_main_inner">
           <div className="admin_panel_data height_adjust">
@@ -811,28 +811,14 @@ function UserDetails2() {
                               >
                                 <tr>
                                   <th>Order Id</th>
-                                  {/* <th>Vendor</th> */}
+
                                   <th>Cost</th>
                                   <th>Status</th>
                                   <th>Created At</th>
                                   <th>Action</th>
                                 </tr>
                               </thead>
-                              {/* <tbody>
-                                {userListDetails?.order?.map((i, n) => {
-                                  return (
-                                    <tr key={n}>
-                                      <td></td>
-                                      <td></td>
-                                      <td></td>
-                                      <td></td>
-                                      <td></td>
-                                      <td></td>
-                                      <td></td>
-                                    </tr>
-                                  );
-                                })}
-                              </tbody> */}
+
                               <tbody>
                                 {orderList?.map((order, index) => {
                                   return (
@@ -926,7 +912,10 @@ function UserDetails2() {
                                       <td> {item?.product_Id} </td>
                                       <td> {item?.yourName} </td>
                                       <td> {item?.rating} </td>
-                                      <td> {item?.reviewTitle?.slice(0,20)} </td>
+                                      <td>
+                                        {" "}
+                                        {item?.reviewTitle?.slice(0, 20)}{" "}
+                                      </td>
                                       <td> {item?.createdAt?.slice(0, 10)} </td>
                                     </tr>
                                   );
