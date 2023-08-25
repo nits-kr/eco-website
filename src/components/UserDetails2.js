@@ -129,7 +129,7 @@ function UserDetails2() {
                                   backgroundImage:
                                     "url('../assets/img/profile_img2.jpeg')",
                                   height: "100px",
-                                  width: "128%",
+                                  width: "130%",
                                   backgroundSize: "cover",
                                   backgroundPosition: "center",
                                   backgroundRepeat: "no-repeat",
