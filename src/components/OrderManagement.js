@@ -364,8 +364,8 @@ function OrderManagement() {
                                 <th>Order ID</th>
                                 <th>Date</th>
                                 <th>Payment Method</th>
-                                <th>Delivery Status</th>
                                 <th>Amount</th>
+                                <th>Delivery Status</th>
                                 <th>Action</th>
                                 <th>Assign Delivery Boy</th>
                               </tr>
@@ -376,13 +376,13 @@ function OrderManagement() {
                                   <td> {data?._id} </td>
                                   <td> {data?.createdAt?.slice(0, 10)} </td>
                                   <td> {data.paymentIntent} </td>
-                                  <td> {data.orderStatus} </td>
                                   <td>
                                     {" "}
                                     {
                                       data?.cartsTotal[0][0]?.totalAfterDiscount
                                     }{" "}
                                   </td>
+                                  <td> {data.orderStatus} </td>
                                   <td>
                                     <Link
                                       className="comman_btn table_viewbtn"
