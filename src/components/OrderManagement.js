@@ -247,7 +247,7 @@ function OrderManagement() {
                   <div className="col-12 design_outter_comman shadow">
                     <div className="row comman_header justify-content-between">
                       <div className="col">
-                        <h2>Order Management</h2>
+                        <h2>Order Management ({orderList?.length}) </h2>
                       </div>
                       <div className="col-3">
                         <form
@@ -349,7 +349,9 @@ function OrderManagement() {
                                   <td> {data.orderStatus} </td>
                                   <td>
                                     {" "}
-                                    {data?.cartsTotal[0][0]?.totalAfterDiscount}{" "}
+                                    {
+                                      data?.cartsTotal[0][0]?.totalAfterDiscount
+                                    }{" "}
                                   </td>
                                   <td>
                                     <Link
