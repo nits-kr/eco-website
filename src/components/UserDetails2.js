@@ -115,9 +115,9 @@ function UserDetails2() {
               <Link>Customers</Link>/Profile
             </h5>
             <div className="row dashboard_part justify-content-center">
-              <div className="col-12 d-flex">
-                <div className="col-4 row mx-0">
-                  <div className="col-12 design_outter_comman shadow mb-4">
+              {/* <div className="col-12 d-flex"> */}
+                <div className="col-4">
+                  <div className="row mx-0"><div className="col-12 design_outter_comman shadow mb-4">
                     <div className="row users-information position-relative align-items-center justify-content-center">
                       <div className="col-12">
                         <div className="users_left">
@@ -646,10 +646,11 @@ function UserDetails2() {
                         </div>
                       </form>
                     </div>
-                  </div>
+                  </div></div>
+                  
                 </div>
-                <div className="col-8 mx-5">
-                  <div className="row">
+                <div className="col-8">
+                  <div className="row mx-0">
                     <div
                       className="col-3 design_outter_comman shadow mb-4"
                       style={{ width: "32%" }}
@@ -928,7 +929,7 @@ function UserDetails2() {
                     </div>
                   </div>
                 </div>
-              </div>
+              {/* </div> */}
             </div>
           </div>
         </div>
