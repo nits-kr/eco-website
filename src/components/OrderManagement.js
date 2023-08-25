@@ -329,15 +329,12 @@ function OrderManagement() {
                           <table className="table mb-0">
                             <thead>
                               <tr>
-                                {/* <th>Order Image</th> */}
                                 <th>Order ID</th>
                                 <th>Date</th>
                                 <th>Payment Method</th>
                                 <th>Delivery Status</th>
                                 <th>Amount</th>
                                 <th>Action</th>
-                                {/* <th></th> */}
-                                {/* <th></th> */}
                               </tr>
                             </thead>
                             <tbody>
