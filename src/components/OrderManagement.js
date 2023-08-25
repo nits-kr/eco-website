@@ -24,23 +24,32 @@ function OrderManagement() {
   const [orderStatus, setOrderStatus] = useState([]);
   const [orderStatusAr, setOrderStatusAr] = useState([]);
   const [brands, setBrands] = useState([]);
+  const [selectedBrandIds, setSelectedBrandIds] = useState([]); // Array to store selected values for each row
   const [subSubCategory, setSubSubCategory] = useState({
     brandId1: "",
   });
 
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
-  const handleInputChange1 = (event) => {
-    const { name, value } = event.target;
-    setSubSubCategory({ ...subSubCategory, [name]: value });
+  // const handleInputChange1 = (event) => {
+  //   const { name, value } = event.target;
+  //   setSubSubCategory({ ...subSubCategory, [name]: value });
+  // };
+  const handleInputChange1 = (event, index) => {
+    const { value } = event.target;
+    setSelectedBrandIds((prevSelectedBrandIds) => {
+      const updatedSelectedBrandIds = [...prevSelectedBrandIds];
+      updatedSelectedBrandIds[index] = value;
+      return updatedSelectedBrandIds;
+    });
   };
   useEffect(() => {
     const fetchData2 = async () => {
       try {
         const response = await axios.post(
-          "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/product/brand-list"
+          "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/agent/agent/user-List"
         );
-        setBrands(response.data.results.list);
+        setBrands(response?.data?.results?.list);
         console.log(response.data);
       } catch (error) {
         console.error(error);
@@ -48,6 +57,7 @@ function OrderManagement() {
     };
     fetchData2();
   }, []);
+
   const url =
     "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/order/order/list";
   const url2 =
@@ -416,19 +426,16 @@ function OrderManagement() {
                                     </Link>
                                   </td>
                                   <td>
-                                    {/* <div className="col-12 design_outter_comman mb-4 shadow"> */}
-                                    {/* <div
-                                        className="form-design py-3 px-2 help-support-form row align-items-end justify-content-between"
-                                        action=""
-                                      > */}
                                     <div className="form-group col-12">
                                       <select
                                         className="select form-control"
                                         multiple=""
-                                        name="brandId1"
-                                        id="brandId1"
-                                        value={subSubCategory.brandId1}
-                                        onChange={handleInputChange1}
+                                        name={`brandId1_${index}`}
+                                        id={`brandId1_${index}`}
+                                        value={selectedBrandIds[index] || ""}
+                                        onChange={(e) =>
+                                          handleInputChange1(e, index)
+                                        }
                                       >
                                         {Array.isArray(brands) &&
                                           brands.map((subCategory) => (
@@ -436,13 +443,11 @@ function OrderManagement() {
                                               key={subCategory._id}
                                               value={subCategory._id}
                                             >
-                                              {subCategory.brandName_en}
+                                              {subCategory.name}
                                             </option>
                                           ))}
                                       </select>
                                     </div>
-                                    {/* </div> */}
-                                    {/* </div> */}
                                   </td>
                                 </tr>
                               ))}
