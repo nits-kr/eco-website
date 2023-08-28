@@ -21,6 +21,7 @@ function OrderManagement() {
   const [status, setStatus] = useState("");
   const [status2, setStatus2] = useState("");
   const [itemId, setItemId] = useState("");
+  const [itemId2, setItemId2] = useState("");
   const [orderStatus, setOrderStatus] = useState([]);
   const [orderStatusAr, setOrderStatusAr] = useState([]);
   const [brands, setBrands] = useState([]);
@@ -397,6 +398,16 @@ function OrderManagement() {
                                       Edit
                                     </Link>
                                     <Link
+                                      className="comman_btn table_viewbtn ms-2"
+                                      to={`/order-details/${data?._id}`}
+                                      onClick={() => {
+                                        // handleItem(data);
+                                        setItemId2(data?._id);
+                                      }}
+                                    >
+                                      View
+                                    </Link>
+                                    <Link
                                       className="comman_btn2 table_viewbtn ms-2"
                                       to="#"
                                       onClick={() => {
@@ -437,11 +448,18 @@ function OrderManagement() {
                                           handleInputChange1(e, index)
                                         }
                                       >
+                                        <option
+                                          value=""
+                                          style={{ textAlign: "center" }}
+                                        >
+                                          Assign
+                                        </option>
                                         {Array.isArray(brands) &&
                                           brands.map((subCategory) => (
                                             <option
                                               key={subCategory._id}
                                               value={subCategory._id}
+                                              style={{ textAlign: "center" }}
                                             >
                                               {subCategory.name}
                                             </option>

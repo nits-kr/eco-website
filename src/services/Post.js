@@ -492,6 +492,17 @@ export const PostApi = createApi({
         };
       },
     }),
+    orderDetailsAll: builder.mutation({
+      query: (body) => {
+        console.log("update category", body);
+        const { id } = body;
+        console.log("user details body data", id);
+        return {
+          url: `/admin/order/order/order-Details/${id}`,
+          method: "post",
+        };
+      },
+    }),
   }),
 });
 
@@ -553,5 +564,6 @@ export const {
   useUserDetailsAllMutation,
   useDeleteOrderMutation,
   useUpdateBrandMutation,
+  useOrderDetailsAllMutation,
   // useSearchOfferQuery,
 } = PostApi;

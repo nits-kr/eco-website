@@ -206,7 +206,7 @@ function UserDetailsAll() {
                                   </strong>
                                 </div>
                               </div>
-                              <div className="col-3 ms-4">
+                              {/* <div className="col-3 ms-4">
                                 <FontAwesomeIcon
                                   icon={faStar}
                                   style={{ color: "#f5c724" }}
@@ -217,7 +217,7 @@ function UserDetailsAll() {
                                     Rating
                                   </strong>
                                 </div>
-                              </div>
+                              </div> */}
                             </div>
                             <div className="col-12 my-3 d-flex">
                               <div className="col-6">
@@ -524,34 +524,39 @@ function UserDetailsAll() {
                                     </tr>
                                   </thead>
                                   <tbody>
-                                    {order?.map((item, ind) => {
-                                      return (
-                                        <tr key={ind}>
-                                          <td> {item?._id} </td>
-                                          <td>
-                                            {
-                                              item?.cartsTotal[0][0]
-                                                ?.totalAfterDiscount[0]
-                                            }
-                                          </td>
-                                          <td> {item?.orderStatus} </td>
-                                          <td>
-                                            {item?.createdAt?.slice(0, 10)}{" "}
-                                          </td>
-                                          <td>Free</td>
-                                          <td>
-                                            <button
-                                              className="comman_btn2 table_viewbtn"
-                                              onClick={() =>
-                                                deleteOrderList(item._id)
+                                    {order
+                                      ?.slice()
+                                      ?.reverse()
+                                      ?.map((item, ind) => {
+                                        return (
+                                          <tr key={ind}>
+                                            <td> {item?._id} </td>
+                                            <td>
+                                              {
+                                                item?.cartsTotal[0][0]
+                                                  ?.totalAfterDiscount[0]
                                               }
-                                            >
-                                              <FontAwesomeIcon icon={faTrash} />
-                                            </button>
-                                          </td>
-                                        </tr>
-                                      );
-                                    })}
+                                            </td>
+                                            <td> {item?.orderStatus} </td>
+                                            <td>
+                                              {item?.createdAt?.slice(0, 10)}{" "}
+                                            </td>
+                                            <td>Free</td>
+                                            <td>
+                                              <button
+                                                className="comman_btn2 table_viewbtn"
+                                                onClick={() =>
+                                                  deleteOrderList(item._id)
+                                                }
+                                              >
+                                                <FontAwesomeIcon
+                                                  icon={faTrash}
+                                                />
+                                              </button>
+                                            </td>
+                                          </tr>
+                                        );
+                                      })}
                                   </tbody>
                                 </table>
                               </div>
