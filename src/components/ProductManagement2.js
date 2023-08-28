@@ -155,7 +155,7 @@ function ProductManagement2() {
               <div className="col-12">
                 <form className="row" onSubmit={handleOnSave}>
                   <div className="col-9 mb-4">
-                    <div className="main_head">Edit Products</div>
+                    <div className="main_head">Add Product </div>
                   </div>
                   <div className="col-3 text-end mb-4">
                     <button className="comman_btn2">Save</button>
@@ -291,7 +291,7 @@ function ProductManagement2() {
                               minLength="3"
                             />
                           </div>
-                          <div className="form-group col-12">
+                          {/* <div className="form-group col-12">
                             <label htmlFor="">
                               <Editor
                                 initialdefaultValue="<p>This is the initial content of the editor</p>"
@@ -309,7 +309,7 @@ function ProductManagement2() {
                                 }}
                               />
                             </label>
-                          </div>
+                          </div> */}
                           <div className="form-group col-6">
                             <label htmlFor="shortDescriptionEn">
                               Care Instructions(En)

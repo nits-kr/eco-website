@@ -185,7 +185,11 @@ function CategoryManagement(props) {
       );
       console.log(response.data.results.saveCategory);
       if (!response.data.error) {
-        alert("List saved!");
+        Swal.fire({
+          icon: "success",
+          title: "Category Created",
+          text: "The category has been created successfully.",
+        });
         handleSave();
       }
     } catch (error) {

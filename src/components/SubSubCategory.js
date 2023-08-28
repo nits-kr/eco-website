@@ -166,7 +166,11 @@ function SubSubCategory() {
       .then((response) => {
         console.log(response?.data?.results?.saveSubSubCategory);
         if (!response.data.error) {
-          alert("List  saved!");
+          Swal.fire({
+            icon: "success",
+            title: "Sub Sub Category Created",
+            text: "The Sub Sub Category has been created successfully.",
+          });
           handleSave();
         } else {
           alert("Errors in response!");

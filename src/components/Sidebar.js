@@ -40,13 +40,7 @@ function Sidebar({ Dash }) {
                     <i className="fal fa-user"></i>Users Management
                   </Link>
                 </li>
-                <li
-                  className={Dash === "agents" ? "nav-link active" : "nav-link"}
-                >
-                  <Link className="" to="/agents">
-                    <i className="fal fa-users"></i>Agent Management
-                  </Link>
-                </li>
+                
                 {/* <li
                   className={
                     Dash === "categories" ? "nav-link active" : "nav-link"
@@ -149,7 +143,7 @@ function Sidebar({ Dash }) {
                 >
                   <Link className="ms-link " to="/product-management">
                     <i className="fas fa-cogs"></i>
-                    <span>Product Management</span>
+                    <span>Add New Product</span>
                   </Link>
                 </li>
                 <li
@@ -176,6 +170,13 @@ function Sidebar({ Dash }) {
                 >
                   <Link className="" to="/orders">
                     <i className="fal fa-box-full"></i>Order Management
+                  </Link>
+                </li>
+                <li
+                  className={Dash === "agents" ? "nav-link active" : "nav-link"}
+                >
+                  <Link className="" to="/agents">
+                    <i className="fal fa-users"></i>Agent Management
                   </Link>
                 </li>
                 <li

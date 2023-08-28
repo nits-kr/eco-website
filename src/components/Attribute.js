@@ -168,7 +168,11 @@ function Attribute() {
       .then((response) => {
         console.log(response.data);
         if (!response.data.error) {
-          alert("List saved!");
+          Swal.fire({
+            icon: "success",
+            title: "Attribute Created",
+            text: "The Attribute has been created successfully.",
+          });
           handleSave();
         }
       })

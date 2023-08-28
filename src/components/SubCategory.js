@@ -188,7 +188,11 @@ function SubCategory(props) {
       );
 
       if (!response.data.error) {
-        alert("Subcategory created!");
+        Swal.fire({
+          icon: "success",
+          title: "Sub Category Created",
+          text: "The Sub category has been created successfully.",
+        });
         setSubCategory({
           nameEn: "",
           nameAr: "",

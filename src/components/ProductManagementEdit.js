@@ -39,7 +39,7 @@ function ProductManagementEdit(props) {
       .then((response) => {
         const products = response?.data?.results?.list.reverse();
         setProductList(products);
-  
+
         const productWithId = products.find((item) => item._id === id);
         if (productWithId) {
           setProductListItems([productWithId]);
@@ -48,7 +48,6 @@ function ProductManagementEdit(props) {
         }
       });
   }, [id]);
-  
 
   const handleInputChange1 = (event) => {
     const { name, value } = event.target;
@@ -141,7 +140,10 @@ function ProductManagementEdit(props) {
     data.append("Tags_ar", formData.TagsAr);
     data.append("category_Id", subSubCategory.categoryId);
     data.append("Subcategory_Id", subSubCategory.categoryId1);
-    data.append("brand_Id", subSubCategory.brandId1);
+    // data.append("brand_Id", subSubCategory.brandId1);
+    if (subSubCategory.brandId1) {
+      data.append("brand_Id", subSubCategory.brandId1);
+    }
     selectedImage.map((item, index) => {
       data.append(`product_Pic`, item);
     });
@@ -208,11 +210,15 @@ function ProductManagementEdit(props) {
                               className="form-control"
                               name="productNameEn"
                               id="productNameEn"
-                              defaultValue={productListItems.length > 0 ? productListItems[0].productName_en : ''}
+                              defaultValue={
+                                productListItems.length > 0
+                                  ? productListItems[0].productName_en
+                                  : ""
+                              }
                               // value={formData.productNameEn}
                               onChange={handleInputChange}
                               required
-                              minLength="3"
+                              //minLength="3"
                             />
                           </div>
                           <div className="form-group col-6">
@@ -228,11 +234,15 @@ function ProductManagementEdit(props) {
                               // defaultValue=""
                               name="productNameAr"
                               id="productNameAr"
-                              defaultValue={productListItems.length > 0 ? productListItems[0].productName_ar : ''}
+                              defaultValue={
+                                productListItems.length > 0
+                                  ? productListItems[0].productName_ar
+                                  : ""
+                              }
                               // value={formData.productNameAr}
                               onChange={handleInputChange}
                               required
-                              minLength="3"
+                              //minLength="3"
                             />
                           </div>
                           <div className="form-group col-12">
@@ -248,10 +258,14 @@ function ProductManagementEdit(props) {
                               name="productType"
                               id="productType"
                               // value={formData.productType}
-                              defaultValue={productListItems.length > 0 ? productListItems[0].productName_en : ''}
+                              defaultValue={
+                                productListItems.length > 0
+                                  ? productListItems[0].productName_en
+                                  : ""
+                              }
                               onChange={handleInputChange}
                               required
-                              minLength="3"
+                              //minLength="3"
                             />
                           </div>
                           <div className="form-group col-12">
@@ -268,11 +282,15 @@ function ProductManagementEdit(props) {
                               name="slug"
                               id="slug"
                               // value={formData.slug}
-                              defaultValue={productListItems.length > 0 ? productListItems[0].slug : ''}
+                              defaultValue={
+                                productListItems.length > 0
+                                  ? productListItems[0].slug
+                                  : ""
+                              }
                               placeholder="brandix-screwdriver150"
                               onChange={handleInputChange}
                               required
-                              minLength="3"
+                              //minLength="3"
                             />
                             <div className="Slug_text">
                               Unique Human-readable product identifier. No
@@ -291,11 +309,15 @@ function ProductManagementEdit(props) {
                               className="form-control"
                               id="DescriptionEn"
                               style={{ height: 120 }}
-                              defaultValue={productListItems.length > 0 ? productListItems[0].Description : ''}
+                              defaultValue={
+                                productListItems.length > 0
+                                  ? productListItems[0].Description
+                                  : ""
+                              }
                               // value={formData.DescriptionEn}
                               onChange={handleInputChange}
                               required
-                              minLength="3"
+                              //minLength="3"
                             />
                           </div>
                           <div className="form-group col-6">
@@ -310,14 +332,18 @@ function ProductManagementEdit(props) {
                               className="form-control"
                               id="DescriptionAr"
                               style={{ height: 120 }}
-                              defaultValue={productListItems.length > 0 ? productListItems[0].Description_ar : ''}
+                              defaultValue={
+                                productListItems.length > 0
+                                  ? productListItems[0].Description_ar
+                                  : ""
+                              }
                               // value={formData.DescriptionAr}
                               onChange={handleInputChange}
                               required
-                              minLength="3"
+                              //minLength="3"
                             />
                           </div>
-                          <div className="form-group col-12">
+                          {/* <div className="form-group col-12">
                             <label htmlFor="">
                               <Editor
                                 initialdefaultValue="<p>This is the initial content of the editor</p>"
@@ -335,7 +361,7 @@ function ProductManagementEdit(props) {
                                 }}
                               />
                             </label>
-                          </div>
+                          </div> */}
                           <div className="form-group col-6">
                             <label htmlFor="shortDescriptionEn">
                               Care Instructions(En)
@@ -348,12 +374,16 @@ function ProductManagementEdit(props) {
                               className="form-control"
                               id="shortDescriptionEn"
                               style={{ height: 120 }}
-                              defaultValue={productListItems.length > 0 ? productListItems[0].careInstuctions : ''}
+                              defaultValue={
+                                productListItems.length > 0
+                                  ? productListItems[0].careInstuctions
+                                  : ""
+                              }
                               // value={formData.shortDescriptionEn}
                               placeholder="Enter care Insructions..."
                               onChange={handleInputChange}
                               required
-                              minLength="3"
+                              //minLength="3"
                             />
                           </div>
                           <div className="form-group col-6">
@@ -368,12 +398,16 @@ function ProductManagementEdit(props) {
                               className="form-control"
                               id="shortDescriptionAr"
                               style={{ height: 120 }}
-                              defaultValue={productListItems.length > 0 ? productListItems[0].careInstuctions_ar : ''}
+                              defaultValue={
+                                productListItems.length > 0
+                                  ? productListItems[0].careInstuctions_ar
+                                  : ""
+                              }
                               // defaultValue={formData.shortDescriptionAr}
                               placeholder="أدخل وصفًا موجزًا"
                               onChange={handleInputChange}
                               required
-                              minLength="3"
+                              //minLength="3"
                             />
                           </div>
                           <div className="form-group col-6">
@@ -389,12 +423,16 @@ function ProductManagementEdit(props) {
                               // defaultValue=""
                               name="weight"
                               id="weight"
-                              defaultValue={productListItems.length > 0 ? productListItems[0].weight : ''}
+                              defaultValue={
+                                productListItems.length > 0
+                                  ? productListItems[0].weight
+                                  : ""
+                              }
                               // value={formData.weight}
                               placeholder="1 kg"
                               onChange={handleInputChange}
                               required
-                              minLength="3"
+                              //minLength="3"
                             />
                           </div>
                           <div className="form-group col-6">
@@ -411,11 +449,15 @@ function ProductManagementEdit(props) {
                               name="weightAr"
                               id="weightAr"
                               // value={formData.weightAr}
-                              defaultValue={productListItems.length > 0 ? productListItems[0].weight_ar : ''}
+                              defaultValue={
+                                productListItems.length > 0
+                                  ? productListItems[0].weight_ar
+                                  : ""
+                              }
                               placeholder="1 كجم"
                               onChange={handleInputChange}
                               required
-                              minLength="3"
+                              //minLength="3"
                             />
                           </div>
                         </div>
@@ -442,12 +484,16 @@ function ProductManagementEdit(props) {
                               className="form-control"
                               name="Price"
                               id="Price"
-                              defaultValue={productListItems.length > 0 ? productListItems[0].Price : ''}
+                              defaultValue={
+                                productListItems.length > 0
+                                  ? productListItems[0].Price
+                                  : ""
+                              }
                               // value={formData.Price}
                               placeholder="1499"
                               onChange={handleInputChange}
                               required
-                              minLength="3"
+                              // //minLength="3"
                             />
                           </div>
                           <div className="form-group col-4">
@@ -462,11 +508,15 @@ function ProductManagementEdit(props) {
                               className="form-control"
                               name="oldPrice"
                               id="oldPrice"
-                              defaultValue={productListItems.length > 0 ? productListItems[0].oldPrice : ''}
+                              defaultValue={
+                                productListItems.length > 0
+                                  ? productListItems[0].oldPrice
+                                  : ""
+                              }
                               // value={formData.oldPrice}
                               onChange={handleInputChange}
                               required
-                              minLength="3"
+                              //minLength="3"
                             />
                           </div>
                           <div className="form-group col-4">
@@ -481,11 +531,15 @@ function ProductManagementEdit(props) {
                               className="form-control"
                               name="dollar"
                               id="dollar"
-                              defaultValue={productListItems.length > 0 ? productListItems[0].dollarPrice : ''}
+                              defaultValue={
+                                productListItems.length > 0
+                                  ? productListItems[0].dollarPrice
+                                  : ""
+                              }
                               // value={formData.dollar}
                               onChange={handleInputChange}
                               required
-                              // minLength="3"
+                              // //minLength="3"
                             />
                           </div>
                           {/* <div className="form-group col-6">
@@ -522,11 +576,15 @@ function ProductManagementEdit(props) {
                               className="form-control"
                               name="SKUEn"
                               id="SKUEn"
-                              defaultValue={productListItems.length > 0 ? productListItems[0].SKU : ''}
+                              defaultValue={
+                                productListItems.length > 0
+                                  ? productListItems[0].SKU
+                                  : ""
+                              }
                               // value={formData.SKUEn}
                               onChange={handleInputChange}
                               required
-                              // minLength="3"
+                              // //minLength="3"
                             />
                           </div>
                           <div className="form-group col-6">
@@ -541,14 +599,18 @@ function ProductManagementEdit(props) {
                               className="form-control"
                               name="SKUAr"
                               id="SKUAr"
-                              defaultValue={productListItems.length > 0 ? productListItems[0].SKU_ar : ''}
+                              defaultValue={
+                                productListItems.length > 0
+                                  ? productListItems[0].SKU_ar
+                                  : ""
+                              }
                               // value={formData.SKUAr}
                               onChange={handleInputChange}
                               required
-                              // minLength="3"
+                              // //minLength="3"
                             />
                           </div>
-                          <div className="form-group col-12 new_radio_design">
+                          {/* <div className="form-group col-12 new_radio_design">
                             <input
                               className="d-none"
                               type="radio"
@@ -558,7 +620,7 @@ function ProductManagementEdit(props) {
                             <label htmlFor="Enable">
                               Enable Stock Management{" "}
                             </label>
-                          </div>
+                          </div> */}
                           <div className="form-group col-12">
                             <label htmlFor="">
                               Stock Quantity
@@ -571,12 +633,16 @@ function ProductManagementEdit(props) {
                               className="form-control"
                               name="stockQuantity"
                               id="stockQuantity"
-                              defaultValue={productListItems.length > 0 ? productListItems[0].stockQuantity : ''}
+                              defaultValue={
+                                productListItems.length > 0
+                                  ? productListItems[0].stockQuantity
+                                  : ""
+                              }
                               // value={formData.stockQuantity}
                               placeholder="40"
                               onChange={handleInputChange}
                               required
-                              // minLength="3"
+                              // //minLength="3"
                             />
                           </div>
                         </div>
@@ -639,11 +705,15 @@ function ProductManagementEdit(props) {
                               className="form-control"
                               name="pageTitleEn"
                               id="pageTitleEn"
-                              defaultValue={productListItems.length > 0 ? productListItems[0].pageTitle : ''}
+                              defaultValue={
+                                productListItems.length > 0
+                                  ? productListItems[0].pageTitle
+                                  : ""
+                              }
                               // value={formData.pageTitleEn}
                               onChange={handleInputChange}
                               required
-                              minLength="3"
+                              //minLength="3"
                             />
                           </div>
                           <div className="form-group col-6">
@@ -658,11 +728,15 @@ function ProductManagementEdit(props) {
                               className="form-control"
                               name="pageTitleAr"
                               id="pageTitleAr"
-                              defaultValue={productListItems.length > 0 ? productListItems[0].pageTitle_ar : ''}
+                              defaultValue={
+                                productListItems.length > 0
+                                  ? productListItems[0].pageTitle_ar
+                                  : ""
+                              }
                               // value={formData.pageTitleAr}
                               onChange={handleInputChange}
                               required
-                              minLength="3"
+                              //minLength="3"
                             />
                           </div>
                           <div className="form-group col-6">
@@ -677,11 +751,15 @@ function ProductManagementEdit(props) {
                               className="form-control"
                               id="metaDescriptionEn"
                               style={{ height: 120 }}
-                              defaultValue={productListItems.length > 0 ? productListItems[0].metaDescription : ''}
+                              defaultValue={
+                                productListItems.length > 0
+                                  ? productListItems[0].metaDescription
+                                  : ""
+                              }
                               // value={formData.metaDescriptionEn}
                               onChange={handleInputChange}
                               required
-                              minLength="3"
+                              //minLength="3"
                             />
                           </div>
                           <div className="form-group col-6">
@@ -696,11 +774,15 @@ function ProductManagementEdit(props) {
                               className="form-control"
                               id="metaDescriptionAr"
                               style={{ height: 120 }}
-                              defaultValue={productListItems.length > 0 ? productListItems[0].metaDescription_ar : ''}
+                              defaultValue={
+                                productListItems.length > 0
+                                  ? productListItems[0].metaDescription_ar
+                                  : ""
+                              }
                               // value={formData.metaDescriptionAr}
                               onChange={handleInputChange}
                               required
-                              minLength="3"
+                              //minLength="3"
                             />
                           </div>
                         </div>
@@ -937,7 +1019,11 @@ function ProductManagementEdit(props) {
                               className="form-control"
                               id="Tags"
                               name="Tags"
-                              defaultValue={productListItems.length > 0 ? productListItems[0].Tags : ''}
+                              defaultValue={
+                                productListItems.length > 0
+                                  ? productListItems[0].Tags
+                                  : ""
+                              }
                               // value={formData.Tags}
                               placeholder="Enter tags"
                               onChange={handleInputChange}
@@ -967,7 +1053,11 @@ function ProductManagementEdit(props) {
                               className="form-control"
                               id="TagsAr"
                               name="TagsAr"
-                              defaultValue={productListItems.length > 0 ? productListItems[0].Tags_ar : ''}
+                              defaultValue={
+                                productListItems.length > 0
+                                  ? productListItems[0].Tags_ar
+                                  : ""
+                              }
                               // value={formData.TagsAr}
                               placeholder="أدخل العلامات"
                               onChange={handleInputChange}
@@ -997,7 +1087,11 @@ function ProductManagementEdit(props) {
                               className="form-control"
                               id="color"
                               name="color"
-                              defaultValue={productListItems.length > 0 ? productListItems[0].productColor : ''}
+                              defaultValue={
+                                productListItems.length > 0
+                                  ? productListItems[0].productColor
+                                  : ""
+                              }
                               // value={formData.color}
                               onChange={handleInputChange}
                               placeholder="Enter Color"
@@ -1027,7 +1121,11 @@ function ProductManagementEdit(props) {
                               id="colorAr"
                               name="colorAr"
                               className="form-control"
-                              defaultValue={productListItems.length > 0 ? productListItems[0].productColor_ar : ''}
+                              defaultValue={
+                                productListItems.length > 0
+                                  ? productListItems[0].productColor_ar
+                                  : ""
+                              }
                               // value={formData.colorAr}
                               onChange={handleInputChange}
                               placeholder="أدخل اللون"

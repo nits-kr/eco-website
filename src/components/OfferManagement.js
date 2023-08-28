@@ -341,7 +341,7 @@ function OfferManagement() {
                       </div>
                       <div className="form-group mb-0 col">
                         <label htmlFor="">
-                          Discount
+                          Discount (%)
                           <span className="required-field text-danger">*</span>
                         </label>
                         <input
@@ -431,7 +431,7 @@ function OfferManagement() {
                                 <th>Product Name</th>
                                 <th>Title</th>
                                 <th>Code</th>
-                                <th>Discount</th>
+                                <th>Discount(%) </th>
                                 {/* <th>Status</th> */}
                                 <th>Action</th>
                               </tr>

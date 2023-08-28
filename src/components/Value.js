@@ -173,7 +173,11 @@ function Value() {
       );
       console.log(response.data.results.createValues);
       if (!response.data.error) {
-        alert("Saved!");
+        Swal.fire({
+          icon: "success",
+          title: "Value Created",
+          text: "The Value has been created successfully.",
+        });
         handleSave();
       }
     } catch (error) {
