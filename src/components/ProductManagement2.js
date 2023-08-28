@@ -114,7 +114,10 @@ function ProductManagement2() {
     data.append("Tags_ar", formData.TagsAr);
     data.append("category_Id", subSubCategory.categoryId);
     data.append("Subcategory_Id", subSubCategory.categoryId1);
-    data.append("brand_Id", subSubCategory.brandId1);
+    // data.append("brand_Id", subSubCategory.brandId1);
+    if (subSubCategory.brandId1) {
+      data.append("brand_Id", subSubCategory.brandId1);
+    }
     selectedImage.map((item, index) => {
       data.append(`product_Pic`, item);
     });
@@ -415,7 +418,7 @@ function ProductManagement2() {
                               placeholder="1499"
                               onChange={handleInputChange}
                               required
-                              minLength="3"
+                              // minLength="3"
                             />
                           </div>
                           <div className="form-group col-4">
@@ -434,7 +437,7 @@ function ProductManagement2() {
                               value={formData.oldPrice}
                               onChange={handleInputChange}
                               required
-                              minLength="3"
+                              // minLength="3"
                             />
                           </div>
                           <div className="form-group col-4">
@@ -453,7 +456,7 @@ function ProductManagement2() {
                               value={formData.dollar}
                               onChange={handleInputChange}
                               required
-                              minLength="3"
+                              // minLength="3"
                             />
                           </div>
                           {/* <div className="form-group col-6">
@@ -516,7 +519,7 @@ function ProductManagement2() {
                               minLength="3"
                             />
                           </div>
-                          <div className="form-group col-12 new_radio_design">
+                          {/* <div className="form-group col-12 new_radio_design">
                             <input
                               className="d-none"
                               type="radio"
@@ -526,7 +529,7 @@ function ProductManagement2() {
                             <label htmlFor="Enable">
                               Enable Stock Management{" "}
                             </label>
-                          </div>
+                          </div> */}
                           <div className="form-group col-12">
                             <label htmlFor="">
                               Stock Quantity

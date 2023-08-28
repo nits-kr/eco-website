@@ -127,7 +127,7 @@ function UserDetailsAll() {
       "Dec",
     ];
     const [year, month, day] = dateString.split("-");
-    const formattedDate = ` ${day}/ ${months[parseInt(month) - 1]}/ ${year}`;
+    const formattedDate = ` ${day}/${months[parseInt(month) - 1]}/${year}`;
     return formattedDate;
   }
 
