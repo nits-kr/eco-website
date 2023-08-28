@@ -8,35 +8,29 @@ import { useDeleteSubCategoryListMutation } from "../services/Post";
 import Spinner from "./Spinner";
 
 function SubCategory(props) {
-  const [loading, setLoading] = useState(false);
-  const [update, res] = useUpdateSubCategoryMutation();
+  // const [update, res] = useUpdateSubCategoryMutation();
   const [deleteSubCategory, response] = useDeleteSubCategoryListMutation();
   const [itemId, setItemId] = useState("");
-  const [editSubCategoryNameEn, setEditSubCategoryNameEn] = useState("");
-  const [editSubCategoryNameAr, setEditSubCategoryNameAr] = useState("");
   const [subCategoryNameEn2, setSubCategoryNameEn2] = useState("");
   const [subCategoryNameAr2, setSubCategoryNameAr2] = useState("");
   const [image2, setImage2] = useState("");
-  console.log("update sub category", update);
   const [subCategoryList, setSubCategoryList] = useState([]);
   const [categories, setCategories] = useState([]);
-  const [categoryNew, setCategoryNew] = useState([]);
   const [subCategory, setSubCategory] = useState({
     nameEn: "",
     nameAr: "",
-    categoryId: "",
+    categoryId1: "",
     subCategoryId: "",
     subCategoryPic: null,
   });
   const [category, setCategory] = useState({
     nameEn: "",
     nameAr: "",
-    categoryId: "",
+    categoryId1: "",
     uploadImage: null,
   });
   const [searchQuery, setSearchQuery] = useState("");
   const [startDate1, setStartDate1] = useState("");
-  const [newCategory, setNewCategory] = useState([]);
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -201,8 +195,6 @@ function SubCategory(props) {
           categoryId: "",
           subCategoryPic: null,
         });
-        // setSubCategoryList((prevList) => [...prevList, response.data.results]);
-        // fetchData(); // Fetch updated subcategory list after creating a new subcategory
         subCategoryManagementList();
       }
     } catch (error) {
@@ -219,22 +211,12 @@ function SubCategory(props) {
       const response = await axios.post(
         "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/subCategory/selectCategory"
       );
-      setCategories(response.data.results.categoryData);
+      setCategories(response?.data?.results?.categoryData);
+      console.log(response?.data?.results?.categoryData);
     } catch (error) {
       console.error(error);
     }
   };
-
-  const handleUpdate = (id, nameEn, nameAr) => {
-    console.log(nameEn, nameAr, id);
-    setNewCategory({
-      id,
-      nameEn: nameEn,
-      nameAr: nameAr,
-    });
-  };
-
-  console.log("subcategory", subCategory);
 
   const handleSaveChanges1 = (event) => {
     event.preventDefault();
@@ -242,7 +224,7 @@ function SubCategory(props) {
     formData.append("subCategoryName_en", category.nameEn);
     formData.append("subCategoryName_ar", category.nameAr);
     formData.append("subCategoryPic", category.uploadImage);
-    formData.append("category_Id", subCategory.categoryId);
+    formData.append("category_Id", category.categoryId1);
     axios
       .patch(
         `http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/subCategory/subCategoryUpdate/${itemId}`,
@@ -556,15 +538,15 @@ function SubCategory(props) {
                   <select
                     className="select form-control"
                     multiple=""
-                    name="categoryId"
-                    id="categoryId"
+                    name="categoryId1"
+                    id="categoryId1"
                     // value={subCategory.categoryId}
                     onChange={handleInputChange1}
                     // onChange={(e) => setCategoryNew(e.target.value)}
                   >
                     {categories.map((category) => (
-                      <option key={category._id} value={category._id}>
-                        {category.categoryName_en}
+                      <option key={category._id} value={category?._id}>
+                        {category?.categoryName_en}
                       </option>
                     ))}
                   </select>

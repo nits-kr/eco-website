@@ -115,9 +115,9 @@ function UserDetails2() {
               <Link>Customers</Link>/Profile
             </h5>
             <div className="row dashboard_part justify-content-center">
-              {/* <div className="col-12 d-flex"> */}
-                <div className="col-4">
-                  <div className="row mx-0"><div className="col-12 design_outter_comman shadow mb-4">
+              <div className="col-4">
+                <div className="row mx-0">
+                  <div className="col-12 design_outter_comman shadow mb-4">
                     <div className="row users-information position-relative align-items-center justify-content-center">
                       <div className="col-12">
                         <div className="users_left">
@@ -219,50 +219,6 @@ function UserDetails2() {
                           Block
                         </Link>
                       )}
-                      {/* <Link
-                        className="comman_btn2 table_viewbtn danger"
-                        to=""
-                        onClick={(e) => {
-                          setStatus(e.target.value); // Toggle the status
-                          setTimeout(() => {
-                            handleCheckboxChange();
-                          }, 1000);
-                        }}
-                      >
-                        Block
-                      </Link> */}
-                      {/* <Link
-                        className={`comman_btn2 table_viewbtn danger ${
-                          isBlocked ? "disabled" : ""
-                        }`}
-                        to=""
-                        onClick={(e) => {
-                          if (!isBlocked) {
-                            setStatus(e.target.value); // Toggle the status
-                            setTimeout(() => {
-                              handleCheckboxChange();
-                            }, 1000);
-                          }
-                        }}
-                      >
-                        Block
-                      </Link> */}
-                      {/* <Link
-                        className={`comman_btn2 table_viewbtn danger ${
-                          isBlocked || res.isLoading ? "disabled" : ""
-                        }`}
-                        to=""
-                        onClick={(e) => {
-                          if (!isBlocked && !res.isLoading) {
-                            setStatus(e.target.value); // Toggle the status
-                            setTimeout(() => {
-                              handleCheckboxChange();
-                            }, 1000);
-                          }
-                        }}
-                      >
-                        Block
-                      </Link> */}
                       <div
                         className="d-flex align-items-start "
                         style={{ justifyContent: "end", marginTop: "-31px" }}
@@ -412,37 +368,6 @@ function UserDetails2() {
                             </div>
                           </div>
                         </div>
-                        {/* <div
-                          className="form-group col-12"
-                          style={{
-                            width: "97%",
-                          }}
-                        >
-                          <div
-                            className="row"
-                            style={{
-                              border: "1px solid #e3e3e1",
-                              borderLeft: "none",
-                              borderRight: "none",
-                            }}
-                          >
-                            <div className="col-4">
-                              <label htmlFor="" style={{ marginTop: "15px" }}>
-                                Loyalty Points:
-                              </label>
-                            </div>
-                            <div className="col-8">
-                              <input
-                                type="text"
-                                className="form-control"
-                                defaultValue="0 = $0"
-                                name="name"
-                                id="name"
-                                style={{ border: "none" }}
-                              />
-                            </div>
-                          </div>
-                        </div> */}
                       </form>
                     </div>
                   </div>
@@ -646,290 +571,284 @@ function UserDetails2() {
                         </div>
                       </form>
                     </div>
-                  </div></div>
-                  
+                  </div>
                 </div>
-                <div className="col-8">
-                  <div className="row mx-0">
-                    <div
-                      className="col-3 design_outter_comman shadow mb-4"
-                      style={{ width: "32%" }}
-                    >
-                      <div className=" w-100 my-5">
-                        <h5>
-                          {" "}
-                          <Link>Completed Orders</Link>{" "}
-                        </h5>
-                        <div className="row mt-2">
-                          <div className="col-12">
-                            <div className="row content_offer_inner">
-                              <div className="col-6 text-start">
-                                <strong
-                                  className="box_tag_left ms-5"
-                                  style={{ fontSize: "30px" }}
-                                >
-                                  {userListDetails?.compltedOrder}
-                                </strong>
-                              </div>
-                              <div className="col-6">
-                                <span className="box_tag_left">
-                                  <Link
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#staticBackdrop"
-                                    className="comman_btn2 table_viewbtn"
-                                    to=""
-                                  >
-                                    <FontAwesomeIcon
-                                      icon={faCheck}
-                                      className="complete-order-icon"
-                                      style={{ fontSize: "30px" }}
-                                    />
-                                  </Link>
-                                </span>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div
-                      className="col-4 design_outter_comman shadow mb-4 "
-                      style={{ marginLeft: "10px", width: "32%" }}
-                    >
-                      <div className="w-100 my-5">
-                        <Link>
-                          <h5>Total Spent</h5>
-                        </Link>
-                        <div className="row mt-2">
-                          <div className="col-12">
-                            <div className="row content_offer_inner">
-                              <div className="col-6 text-end">
-                                <strong
-                                  className="box_tag_left"
-                                  style={{ fontSize: "30px" }}
-                                >
-                                  ${userListDetails?.totalSpent}
-                                </strong>
-                              </div>
-                              <div className="col-6">
-                                <span className="box_tag_left">
-                                  <Link
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#staticBackdrop"
-                                    className="comman_btn2 table_viewbtn"
-                                    to=""
-                                  >
-                                    <FontAwesomeIcon
-                                      icon={faDollarSign}
-                                      className="total-spent-icon"
-                                      style={{ fontSize: "30px" }}
-                                    />
-                                  </Link>
-                                </span>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div
-                      className="col-4 design_outter_comman shadow mb-4"
-                      style={{ marginLeft: "10px", width: "32%" }}
-                    >
-                      <div className="w-100 my-5">
-                        <Link>
-                          <h5>Average Order Value</h5>
-                        </Link>
-                        <div className="row mt-2">
-                          <div className="col-12">
-                            <div className="row content_offer_inner">
-                              <div className="col-6 text-end">
-                                <strong
-                                  className="box_tag_left"
-                                  style={{ fontSize: "30px" }}
-                                >
-                                  {userListDetails?.orderValue}
-                                </strong>
-                              </div>
-                              <div className="col-6">
-                                <span className="box_tag_left">
-                                  <Link
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#staticBackdrop"
-                                    className="comman_btn2 table_viewbtn"
-                                    to=""
-                                  >
-                                    <FontAwesomeIcon
-                                      icon={faChartLine}
-                                      className="average-order-icon"
-                                      style={{ fontSize: "30px" }}
-                                    />
-                                  </Link>
-                                </span>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="col-12 design_outter_comman shadow mb-4">
-                      <div className="row  justify-content-between mt-3">
-                        <div className="col-auto">
-                          <h4>
-                            {" "}
-                            <strong>My Orders</strong>{" "}
-                          </h4>
-                        </div>
-                        <div className="col-auto mx-3">
-                          <Link
-                            to="/users-offer"
-                            style={{
-                              color: "red",
-                              display: "flex",
-                              alignItems: "center",
-                            }}
-                          >
-                            <strong> View</strong>
-                            <FontAwesomeIcon icon={faArrowRight} />
-                          </Link>
-                        </div>
-                      </div>
-                      <div className="row">
-                        <div className="col-12 comman_table_design px-0">
-                          <div className="table-responsive">
-                            <table
-                              className="table  ms-4 my-5"
-                              style={{
-                                backgroundColor: "#f2efe4",
-                                width: "95%",
-                              }}
-                            >
-                              <thead
-                                style={{
-                                  backgroundColor: "#f71010",
-                                  color: "white !important",
-                                }}
+              </div>
+              <div className="col-8">
+                <div className="row mx-0">
+                  <div
+                    className="col-3 design_outter_comman shadow mb-4"
+                    style={{ width: "32%" }}
+                  >
+                    <div className=" w-100 my-5">
+                      <h5>
+                        {" "}
+                        <Link>Completed Orders</Link>{" "}
+                      </h5>
+                      <div className="row mt-2">
+                        <div className="col-12">
+                          <div className="row content_offer_inner">
+                            <div className="col-6 text-start">
+                              <strong
+                                className="box_tag_left ms-5"
+                                style={{ fontSize: "30px" }}
                               >
-                                <tr>
-                                  <th>Order Id</th>
-
-                                  <th>Cost</th>
-                                  <th>Status</th>
-                                  <th>Created At</th>
-                                  <th>Action</th>
-                                </tr>
-                              </thead>
-
-                              <tbody>
-                                {orderList?.map((order, index) => {
-                                  return (
-                                    <tr key={index}>
-                                      <td>{order?._id}</td>
-                                      <td>
-                                        {
-                                          order?.cartsTotal[0][0]
-                                            ?.totalAfterDiscount[0]
-                                        }
-                                      </td>
-                                      <td>{order?.orderStatus}</td>
-                                      <td>{order?.createdAt?.slice(0, 10)}</td>
-
-                                      <td>
-                                        <div
-                                          style={{
-                                            display: "flex",
-                                            justifyContent: "center",
-                                          }}
-                                        >
-                                          <button
-                                            className="comman_btn2 table_viewbtn"
-                                            onClick={() =>
-                                              deleteOrder(order._id)
-                                            }
-                                          >
-                                            <FontAwesomeIcon icon={faTrash} />
-                                          </button>
-                                        </div>
-                                      </td>
-                                    </tr>
-                                  );
-                                })}
-                              </tbody>
-                            </table>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="col-12 design_outter_comman shadow mb-4">
-                      <div className="row  justify-content-between mt-3">
-                        <div className="col-auto">
-                          <h4>
-                            {" "}
-                            <strong>Reviews</strong>{" "}
-                          </h4>
-                        </div>
-                        <div className="col-auto mx-3">
-                          <Link
-                            style={{
-                              color: "red",
-                              display: "flex",
-                              alignItems: "center",
-                            }}
-                          >
-                            {" "}
-                            <strong> View All</strong>
-                            <FontAwesomeIcon icon={faArrowRight} />
-                          </Link>
-                        </div>
-                      </div>
-                      <div className="row">
-                        <div className="col-12 comman_table_design px-0">
-                          <div className="table-responsive">
-                            <table
-                              className="table my-5 ms-4"
-                              style={{
-                                backgroundColor: "#f2efe4",
-                                width: "95%",
-                              }}
-                            >
-                              <thead
-                                style={{
-                                  backgroundColor: "#f71010",
-                                  color: "white !important",
-                                }}
-                              >
-                                <tr>
-                                  <th>Product Id</th>
-                                  <th>Review By</th>
-                                  <th>Rating</th>
-                                  <th>Review</th>
-                                  <th>Created At</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                {reviewList?.map((item, index) => {
-                                  return (
-                                    <tr key={index}>
-                                      <td> {item?.product_Id} </td>
-                                      <td> {item?.yourName} </td>
-                                      <td> {item?.rating} </td>
-                                      <td>
-                                        {" "}
-                                        {item?.reviewTitle?.slice(0, 20)}{" "}
-                                      </td>
-                                      <td> {item?.createdAt?.slice(0, 10)} </td>
-                                    </tr>
-                                  );
-                                })}
-                              </tbody>
-                            </table>
+                                {userListDetails?.compltedOrder}
+                              </strong>
+                            </div>
+                            <div className="col-6">
+                              <span className="box_tag_left">
+                                <Link
+                                  data-bs-toggle="modal"
+                                  data-bs-target="#staticBackdrop"
+                                  className="comman_btn2 table_viewbtn"
+                                  to=""
+                                >
+                                  <FontAwesomeIcon
+                                    icon={faCheck}
+                                    className="complete-order-icon"
+                                    style={{ fontSize: "30px" }}
+                                  />
+                                </Link>
+                              </span>
+                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
+                  <div
+                    className="col-4 design_outter_comman shadow mb-4 "
+                    style={{ marginLeft: "10px", width: "32%" }}
+                  >
+                    <div className="w-100 my-5">
+                      <Link>
+                        <h5>Total Spent</h5>
+                      </Link>
+                      <div className="row mt-2">
+                        <div className="col-12">
+                          <div className="row content_offer_inner">
+                            <div className="col-6 text-end">
+                              <strong
+                                className="box_tag_left"
+                                style={{ fontSize: "30px" }}
+                              >
+                                ${userListDetails?.totalSpent}
+                              </strong>
+                            </div>
+                            <div className="col-6">
+                              <span className="box_tag_left">
+                                <Link
+                                  data-bs-toggle="modal"
+                                  data-bs-target="#staticBackdrop"
+                                  className="comman_btn2 table_viewbtn"
+                                  to=""
+                                >
+                                  <FontAwesomeIcon
+                                    icon={faDollarSign}
+                                    className="total-spent-icon"
+                                    style={{ fontSize: "30px" }}
+                                  />
+                                </Link>
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    className="col-4 design_outter_comman shadow mb-4"
+                    style={{ marginLeft: "10px", width: "32%" }}
+                  >
+                    <div className="w-100 my-5">
+                      <Link>
+                        <h5>Average Order Value</h5>
+                      </Link>
+                      <div className="row mt-2">
+                        <div className="col-12">
+                          <div className="row content_offer_inner">
+                            <div className="col-6 text-end">
+                              <strong
+                                className="box_tag_left"
+                                style={{ fontSize: "30px" }}
+                              >
+                                {userListDetails?.orderValue}
+                              </strong>
+                            </div>
+                            <div className="col-6">
+                              <span className="box_tag_left">
+                                <Link
+                                  data-bs-toggle="modal"
+                                  data-bs-target="#staticBackdrop"
+                                  className="comman_btn2 table_viewbtn"
+                                  to=""
+                                >
+                                  <FontAwesomeIcon
+                                    icon={faChartLine}
+                                    className="average-order-icon"
+                                    style={{ fontSize: "30px" }}
+                                  />
+                                </Link>
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="col-12 design_outter_comman shadow mb-4">
+                    <div className="row  justify-content-between mt-3">
+                      <div className="col-auto">
+                        <h4>
+                          {" "}
+                          <strong>My Orders</strong>{" "}
+                        </h4>
+                      </div>
+                      <div className="col-auto mx-3">
+                        <Link
+                          to="/users-offer"
+                          style={{
+                            color: "red",
+                            display: "flex",
+                            alignItems: "center",
+                          }}
+                        >
+                          <strong> View</strong>
+                          <FontAwesomeIcon icon={faArrowRight} />
+                        </Link>
+                      </div>
+                    </div>
+                    <div className="row">
+                      <div className="col-12 comman_table_design px-0">
+                        <div className="table-responsive">
+                          <table
+                            className="table  ms-4 my-5"
+                            style={{
+                              backgroundColor: "#f2efe4",
+                              width: "95%",
+                            }}
+                          >
+                            <thead
+                              style={{
+                                backgroundColor: "#f71010",
+                                color: "white !important",
+                              }}
+                            >
+                              <tr>
+                                <th>Order Id</th>
+
+                                <th>Cost</th>
+                                <th>Status</th>
+                                <th>Created At</th>
+                                <th>Action</th>
+                              </tr>
+                            </thead>
+
+                            <tbody>
+                              {orderList?.map((order, index) => {
+                                return (
+                                  <tr key={index}>
+                                    <td>{order?._id}</td>
+                                    <td>
+                                      {
+                                        order?.cartsTotal[0][0]
+                                          ?.totalAfterDiscount[0]
+                                      }
+                                    </td>
+                                    <td>{order?.orderStatus}</td>
+                                    <td>{order?.createdAt?.slice(0, 10)}</td>
+
+                                    <td>
+                                      <div
+                                        style={{
+                                          display: "flex",
+                                          justifyContent: "center",
+                                        }}
+                                      >
+                                        <button
+                                          className="comman_btn2 table_viewbtn"
+                                          onClick={() => deleteOrder(order._id)}
+                                        >
+                                          <FontAwesomeIcon icon={faTrash} />
+                                        </button>
+                                      </div>
+                                    </td>
+                                  </tr>
+                                );
+                              })}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="col-12 design_outter_comman shadow mb-4">
+                    <div className="row  justify-content-between mt-3">
+                      <div className="col-auto">
+                        <h4>
+                          {" "}
+                          <strong>Reviews</strong>{" "}
+                        </h4>
+                      </div>
+                      <div className="col-auto mx-3">
+                        <Link
+                          style={{
+                            color: "red",
+                            display: "flex",
+                            alignItems: "center",
+                          }}
+                        >
+                          {" "}
+                          <strong> View All</strong>
+                          <FontAwesomeIcon icon={faArrowRight} />
+                        </Link>
+                      </div>
+                    </div>
+                    <div className="row">
+                      <div className="col-12 comman_table_design px-0">
+                        <div className="table-responsive">
+                          <table
+                            className="table my-5 ms-4"
+                            style={{
+                              backgroundColor: "#f2efe4",
+                              width: "95%",
+                            }}
+                          >
+                            <thead
+                              style={{
+                                backgroundColor: "#f71010",
+                                color: "white !important",
+                              }}
+                            >
+                              <tr>
+                                <th>Product Id</th>
+                                <th>Review By</th>
+                                <th>Rating</th>
+                                <th>Review</th>
+                                <th>Created At</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {reviewList?.map((item, index) => {
+                                return (
+                                  <tr key={index}>
+                                    <td> {item?.product_Id} </td>
+                                    <td> {item?.yourName} </td>
+                                    <td> {item?.rating} </td>
+                                    <td> {item?.reviewTitle?.slice(0, 20)} </td>
+                                    <td> {item?.createdAt?.slice(0, 10)} </td>
+                                  </tr>
+                                );
+                              })}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              {/* </div> */}
+              </div>
             </div>
           </div>
         </div>

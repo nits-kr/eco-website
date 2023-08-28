@@ -1,5 +1,6 @@
 // Need to use the React-specific entry point to import createApi
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+const brandId = localStorage?.getItem("brandId");
 
 export const PostApi = createApi({
   reducerPath: "PostApi",
@@ -206,6 +207,19 @@ export const PostApi = createApi({
           url: `admin/category/category/update/${id}`,
           method: "PATCH",
           body: data,
+        };
+      },
+    }),
+    updateBrand: builder.mutation({
+      query: ({id1, formData}) => {
+        return {
+          url: `/admin/product/edit-brand/${id1}`,
+          method: "post",
+          body: formData,
+          headers: {
+            "Content-Type": "multipart/form-data",
+            "x-auth-token-user": localStorage.getItem("token"),
+          },
         };
       },
     }),
@@ -461,11 +475,26 @@ export const PostApi = createApi({
         method: "post",
       }),
     }),
+    deleteOrder: builder.mutation({
+      query: (id) => ({
+        url: `/admin/order/order/delete-order/${id}`,
+        method: "DELETE",
+      }),
+    }),
+    userDetailsAll: builder.mutation({
+      query: (body) => {
+        console.log("update category", body);
+        const { id } = body;
+        console.log("user details body data", id);
+        return {
+          url: `/admin/user/details/${id}`,
+          method: "post",
+        };
+      },
+    }),
   }),
 });
 
-// Export hooks for usage in functional components, which are
-// auto-generated based on the defined endpoints
 export const {
   useDeleteAddressMutation,
   useUpdateAddressMutation,
@@ -521,5 +550,8 @@ export const {
   useGetLatLongitudeQuery,
   useBlockUserMutation,
   useDeleteBrabdListMutation,
+  useUserDetailsAllMutation,
+  useDeleteOrderMutation,
+  useUpdateBrandMutation,
   // useSearchOfferQuery,
 } = PostApi;

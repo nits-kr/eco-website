@@ -50,6 +50,7 @@ import GoogleMap from "./components/GoogleMap";
 import BrandManagement from "./components/brand/BrandManagement";
 import UserOfferPOsted from "./components/UserOfferPOsted";
 import UserOfferPostedDetails from "./components/UserOfferPostedDetails";
+import UserDetailsAll from "./components/UserDetailsAll";
 
 function App() {
   const [progress, setProgress] = useState(0);
@@ -298,12 +299,19 @@ function App() {
             path="/varification"
             element={<Varification />}
           />
-          <Route
+          {/* <Route
             exact
             className="active"
             path="/userDetails/:id"
             element={<UserDetails2 />}
+          /> */}
+          <Route
+            exact
+            className="active"
+            path="/userDetails/:id"
+            element={<UserDetailsAll/>}
           />
+          
           <Route
             exact
             className="active"

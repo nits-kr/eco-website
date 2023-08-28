@@ -16,12 +16,14 @@ import Spinner from "../Spinner";
 import { useCatogaryStatusMutation } from "../../services/Post";
 import { useDeleteCategoryListMutation } from "../../services/Post";
 import { useDeleteBrabdListMutation } from "../../services/Post";
+import { useUpdateBrandMutation } from "../../services/Post";
 
 function BrandManagement(props) {
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
   const [updateStatus] = useCatogaryStatusMutation();
   const [deleteCategory, response] = useDeleteCategoryListMutation();
+  const [editBrand] = useUpdateBrandMutation();
   const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [startDate1, setStartDate1] = useState("");
@@ -30,7 +32,8 @@ function BrandManagement(props) {
   const [nameEn1, setNameEn1] = useState([]);
   const [nameAr1, setNameAr1] = useState([]);
   const [pic1, setPic1] = useState([]);
-  const [id1, setId1] = useState("");
+  const [id1, setId1] = useState([]);
+  localStorage?.setItem("brandId", id1);
   console.log(id1);
   const [formData, setFormData] = useState({
     nameEn: "",
@@ -51,36 +54,52 @@ function BrandManagement(props) {
     setCategory({ ...category, uploadImage1: e.target.files[0] });
   };
   console.log(category?.uploadImage1);
-  const handleUpdate1 = async (itemId, event) => {
+  const handleUpdate1 = (event) => {
     event.preventDefault();
-  
-    try {
-      const formData = new FormData();
-      formData.append("brandName_en", category?.nameEn1);
-      formData.append("brandName_ar", category?.nameAr1);
-      formData.append("brandPic", category?.uploadImage1);
-  
-      const response = await axios.post(
+    const formData = new FormData();
+    formData.append("brandName_en", category?.nameEn1);
+    formData.append("brandName_ar", category?.nameAr1);
+    formData.append("brandPic", category?.uploadImage1);
+    axios
+      .post(
         `http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/product/edit-brand/${id1}`,
         formData
-      );
-  
-      if (!response.data.error) {
-        await Swal.fire({
-          title: "Updated!",
-          text: "You have successfully updated the list.",
-          icon: "success",
-          confirmButtonColor: "#3085d6",
-          confirmButtonText: "OK",
-        });
-  
-        window.location.reload();
-      }
-    } catch (error) {
-      console.error("An error occurred:", error);
-    }
+      )
+      .then((response) => {
+        console.log(response);
+        if (!response.data.error) {
+          Swal.fire({
+            title: "Updated!",
+            text: "Your have been updated the list successfully.",
+            icon: "success",
+            confirmButtonColor: "#3085d6",
+            confirmButtonText: "OK",
+          }).then((result) => {
+            if (result.isConfirmed) {
+              window.location.reload();
+            }
+          });
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
-  
+
+  // const handleUpdate1 = async (e) => {
+  //   e.preventDefault();
+  //   const formData = new FormData();
+  //   formData.append('brandName_en', category?.nameEn1);
+  //   formData.append('brandName_ar', category?.nameAr1);
+  //   formData.append('brandPic', category?.uploadImage1);
+
+  //   try {
+  //     const response = await editBrand(id1, formData);
+  //     console.log(response);
+  //   } catch (error) {
+  //     console.error('An error occurred:', error);
+  //   }
+  // };
 
   const url =
     "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/product/brand-list";
@@ -520,9 +539,6 @@ function BrandManagement(props) {
                                                       data-bs-target="#staticBackdrop"
                                                       className="comman_btn2 table_viewbtn me-2"
                                                       to=""
-                                                      // onClick={() =>
-                                                      //   handleUpdate(category)
-                                                      // }
                                                       onClick={() => {
                                                         handleUpdate(category);
                                                         setId1(category?._id);
@@ -617,6 +633,7 @@ function BrandManagement(props) {
               <form
                 className="form-design p-3 help-support-form row align-items-end justify-content-center"
                 action=""
+                onSubmit={handleUpdate1}
               >
                 <div className="form-group col-6">
                   <label htmlFor="">Enter Brand Name (En)</label>
@@ -656,10 +673,7 @@ function BrandManagement(props) {
                   {pic1}
                 </div>
                 <div className="form-group mb-0 col-auto">
-                  <button
-                    className="comman_btn2"
-                    onClick={handleUpdate1}
-                  >
+                  <button type="submit" className="comman_btn2">
                     Save
                   </button>
                 </div>
