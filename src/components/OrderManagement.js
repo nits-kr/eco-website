@@ -84,7 +84,7 @@ function OrderManagement() {
       await assignOrder(editOffer);
       Swal.fire({
         title: "Changes Saved",
-        text: "The offer has been updated successfully.",
+        text: "The Order has been updated successfully.",
         icon: "success",
         confirmButtonText: "OK",
       }).then((result) => {
@@ -308,7 +308,7 @@ function OrderManagement() {
       await updateOrder(editOffer);
       Swal.fire({
         title: "Changes Saved",
-        text: "The offer has been updated successfully.",
+        text: "The Order Status has been updated successfully.",
         icon: "success",
         confirmButtonText: "OK",
       }).then((result) => {
