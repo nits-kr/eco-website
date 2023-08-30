@@ -612,7 +612,7 @@ function CategoryManagement(props) {
                                                               `${category?.categoryName_en}  item has been deleted.`,
                                                               "success"
                                                             ).then(() => {
-                                                              window.location.reload();
+                                                              categoryManagementList();
                                                             });
                                                           }
                                                         });

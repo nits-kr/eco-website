@@ -423,7 +423,7 @@ function Help() {
                                               `${value?.categoryName}  item has been deleted.`,
                                               "success"
                                             ).then(() => {
-                                              window.location.reload();
+                                              fetchHelpList();
                                             });
                                           }
                                         });

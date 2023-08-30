@@ -8,10 +8,12 @@ import Sidebar from "./Sidebar";
 import { useGetFileQuery } from "../services/Post";
 import { useEditOrderListMutation } from "../services/Post";
 import { useDeleteOrderListMutation } from "../services/Post";
+import { useOrderAssignMutation } from "../services/Post";
 function OrderManagement() {
   const [deleteOrder, response] = useDeleteOrderListMutation();
   const { data, isLoading, isError } = useGetFileQuery("file-id");
   const [updateOrder] = useEditOrderListMutation();
+  const [assignOrder] = useOrderAssignMutation();
   console.log("down load data", data);
   const [orderList, setOrderList] = useState([]);
   const [startDate, setStartDate] = useState("");
@@ -21,21 +23,20 @@ function OrderManagement() {
   const [status, setStatus] = useState("");
   const [status2, setStatus2] = useState("");
   const [itemId, setItemId] = useState("");
+  const [itemId3, setItemId3] = useState("");
+  console.log("item id 3", itemId3);
   const [itemId2, setItemId2] = useState("");
   const [orderStatus, setOrderStatus] = useState([]);
   const [orderStatusAr, setOrderStatusAr] = useState([]);
   const [brands, setBrands] = useState([]);
-  const [selectedBrandIds, setSelectedBrandIds] = useState([]); // Array to store selected values for each row
+  const [selectedBrandIds, setSelectedBrandIds] = useState([]);
+  console.log("selectedBrandIds", selectedBrandIds);
   const [subSubCategory, setSubSubCategory] = useState({
     brandId1: "",
   });
 
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
-  // const handleInputChange1 = (event) => {
-  //   const { name, value } = event.target;
-  //   setSubSubCategory({ ...subSubCategory, [name]: value });
-  // };
   const handleInputChange1 = (event, index) => {
     const { value } = event.target;
     setSelectedBrandIds((prevSelectedBrandIds) => {
@@ -44,6 +45,58 @@ function OrderManagement() {
       return updatedSelectedBrandIds;
     });
   };
+
+  // const handleOrderAssign = async (e, itemId, brandIds) => {
+  //   e.preventDefault();
+  //   console.log("handleSaveChanges1", itemId);
+  //   const editOffer = {
+  //     id: itemId,
+  //     deliverdBy: brandIds,
+  //   };
+  //   try {
+  //     await assignOrder(editOffer);
+  //     Swal.fire({
+  //       title: "Changes Saved",
+  //       text: "The offer has been updated successfully.",
+  //       icon: "success",
+  //       confirmButtonText: "OK",
+  //     }).then((result) => {
+  //       if (result.isConfirmed) {
+  //         window.location.reload();
+  //       }
+  //     });
+  //   } catch (error) {
+  //     // Handle error here
+  //   }
+  // };
+  const handleSelectChange = async (e, itemId, index) => {
+    e.preventDefault();
+    handleInputChange1(e, index);
+    setItemId3(data?._id);
+    const updatedSelectedBrandIds = [...selectedBrandIds];
+    updatedSelectedBrandIds[index] = e.target.value;
+
+    const editOffer = {
+      id: itemId,
+      deliverdBy: updatedSelectedBrandIds.filter(Boolean),
+    };
+    try {
+      await assignOrder(editOffer);
+      Swal.fire({
+        title: "Changes Saved",
+        text: "The offer has been updated successfully.",
+        icon: "success",
+        confirmButtonText: "OK",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          window.location.reload();
+        }
+      });
+    } catch (error) {
+      // Handle error here
+    }
+  };
+
   useEffect(() => {
     const fetchData2 = async () => {
       try {
@@ -70,7 +123,7 @@ function OrderManagement() {
     await axios
       .post(url)
       .then((response) => {
-        setOrderList(response?.data?.results?.list?.reverse());
+        setOrderList(response?.data?.results?.list);
       })
       .catch((error) => {
         console.log(error.response.data);
@@ -90,7 +143,7 @@ function OrderManagement() {
         to: endDate,
       })
       .then((response) => {
-        const list = response?.data?.results?.list?.reverse();
+        const list = response?.data?.results?.list;
         if (list && list.length > 0) {
           Swal.fire({
             title: "List Found!",
@@ -193,9 +246,7 @@ function OrderManagement() {
         });
         // throw new Error("Error searching for products. Data is not found.");
       } else {
-        setOrderList(
-          searchQuery !== "" ? results?.orderData : results?.list?.reverse()
-        );
+        setOrderList(searchQuery !== "" ? results?.orderData : results?.list);
       }
     } catch (error) {
       if (error.response) {
@@ -427,7 +478,7 @@ function OrderManagement() {
                                               `${data?.status}  item has been deleted.`,
                                               "success"
                                             ).then(() => {
-                                              window.location.reload();
+                                              subOrderList();
                                             });
                                           }
                                         });
@@ -437,7 +488,46 @@ function OrderManagement() {
                                     </Link>
                                   </td>
                                   <td>
-                                    <div className="form-group col-12">
+                                    {data?.assignStatus === "Assign" ? (
+                                      <span style={{ cursor: "not-allowed" }}>
+                                        {data?.deliverdBy?.name}
+                                      </span>
+                                    ) : (
+                                      <div className="form-group col-12">
+                                        <select
+                                          className="select form-control"
+                                          multiple=""
+                                          name={`brandId1_${index}`}
+                                          id={`brandId1_${index}`}
+                                          value={selectedBrandIds[index] || ""}
+                                          onChange={(e) =>
+                                            handleSelectChange(
+                                              e,
+                                              data?._id,
+                                              index
+                                            )
+                                          }
+                                        >
+                                          <option
+                                            value=""
+                                            style={{ textAlign: "center" }}
+                                          >
+                                            Assign
+                                          </option>
+                                          {Array.isArray(brands) &&
+                                            brands.map((subCategory) => (
+                                              <option
+                                                key={subCategory._id}
+                                                value={subCategory._id}
+                                                style={{ textAlign: "center" }}
+                                              >
+                                                {subCategory.name}
+                                              </option>
+                                            ))}
+                                        </select>
+                                      </div>
+                                    )}
+                                    {/* <div className="form-group col-12">
                                       <select
                                         className="select form-control"
                                         multiple=""
@@ -445,7 +535,11 @@ function OrderManagement() {
                                         id={`brandId1_${index}`}
                                         value={selectedBrandIds[index] || ""}
                                         onChange={(e) =>
-                                          handleInputChange1(e, index)
+                                          handleSelectChange(
+                                            e,
+                                            data?._id,
+                                            index
+                                          )
                                         }
                                       >
                                         <option
@@ -465,7 +559,7 @@ function OrderManagement() {
                                             </option>
                                           ))}
                                       </select>
-                                    </div>
+                                    </div> */}
                                   </td>
                                 </tr>
                               ))}

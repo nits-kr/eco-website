@@ -2263,3 +2263,15 @@ strong.box_tag_left {
   text-decoration: none;
   transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out;
 }
+
+.download_invoice5 {
+  position: absolute;
+  right: 17px;
+  bottom: -60px;
+  background-color: #da3c3b;
+  padding: 6px 16px;
+  border-radius: 50px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff !important;
+}

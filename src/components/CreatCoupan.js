@@ -438,6 +438,7 @@ export default function CreatCoupan() {
                                 value={subCategory.categoryId}
                                 onChange={handleInputChange3}
                               >
+                                <option value="">Select Product</option>
                                 {Array.isArray(categories) &&
                                   categories.map((category) => (
                                     <option
@@ -472,6 +473,7 @@ export default function CreatCoupan() {
                                 value={subSubCategory.categoryId1}
                                 onChange={handleInputChange4}
                               >
+                                <option value="">Select Category</option>
                                 {Array.isArray(categories2) &&
                                   categories2.map((category) => (
                                     <option

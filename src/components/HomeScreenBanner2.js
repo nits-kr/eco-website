@@ -170,7 +170,6 @@ function HomeScreenBanner2() {
   return (
     <>
       <Sidebar Dash={"Home-Screen-banners"} />
-      <h2> Single Item</h2>
       <div className="admin_main">
         <div className="admin_main_inner">
           <div className="admin_panel_data height_adjust">

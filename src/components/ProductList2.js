@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 import axios from "axios";
 import Swal from "sweetalert2";
 import Sidebar from "./Sidebar";
 import Spinner from "./Spinner";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEye, faPencil, faTrashCan } from "@fortawesome/free-solid-svg-icons";
+import { faEye, faPencil, faCopy } from "@fortawesome/free-solid-svg-icons";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -28,6 +29,7 @@ function ProductList2(props) {
   const [productList, setProductList] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
   const [itemId, setItemId] = useState("");
+  const [copiedSlug, setCopiedSlug] = useState(null);
   const handleSelectAll = () => {
     setSelectAll(!selectAll);
   };
@@ -139,7 +141,6 @@ function ProductList2(props) {
           icon: "warning",
           confirmButtonText: "OK",
         });
-        // window.location.reload();
       }
       setRecentOrderList(filteredUsers);
       console.log(data);
@@ -173,6 +174,36 @@ function ProductList2(props) {
       .catch((error) => {
         console.log(error.response.data);
       });
+  };
+
+  const copyToClipboard = async (text) => {
+    if (navigator.clipboard) {
+      try {
+        await navigator.clipboard.writeText(text);
+        setCopiedSlug(text);
+        if (text) {
+          toast.info(
+            <>
+              Copied To Clipboard:
+              <strong>{text}</strong>
+            </>,
+            {
+              position: "bottom-left",
+            }
+          );
+        }
+        return true;
+      } catch (error) {
+        console.error("Error copying to clipboard:", error);
+        return false;
+      }
+    } else {
+      console.error("Clipboard API is not supported.");
+      return false;
+    }
+  };
+  const displaySlug = (slug) => {
+    return slug.length > 10 ? `${slug.slice(0, 10)}...` : slug;
   };
 
   return (
@@ -215,7 +246,7 @@ function ProductList2(props) {
                   <div className="col-12 design_outter_comman shadow">
                     <div className="row comman_header justify-content-between">
                       <div className="col">
-                        <h2>Product List</h2>
+                        <h2>Product List ({productList?.length}) </h2>
                       </div>
                       <div className="col-3">
                         <form
@@ -295,8 +326,10 @@ function ProductList2(props) {
                                   <th>Product Image</th>
                                   <th>Product name</th>
                                   <th>Sub Category</th>
+
                                   <th>Stock</th>
                                   <th>Price</th>
+                                  <th>Slug</th>
                                   <th>Action</th>
                                   {/* <th>Action</th> */}
                                 </tr>
@@ -347,6 +380,7 @@ function ProductList2(props) {
                                               ?.subCategoryName_en}
                                       </strong>
                                     </td>
+
                                     <td>
                                       {" "}
                                       <span
@@ -361,6 +395,7 @@ function ProductList2(props) {
                                         {product.stockQuantity}
                                       </span>{" "}
                                     </td>
+
                                     <td>
                                       {" "}
                                       ₹{product.Price}{" "}
@@ -368,6 +403,22 @@ function ProductList2(props) {
                                         {" "}
                                         ₹{product?.oldPrice}{" "}
                                       </del>{" "}
+                                    </td>
+                                    <td
+                                      style={{
+                                        cursor: "pointer",
+                                        color: "blue",
+                                      }}
+                                      title="Copy Slug"
+                                      onClick={() =>
+                                        copyToClipboard(product.slug)
+                                      }
+                                    >
+                                      {/* {product?.slug?.slice(0, 10)}...<FontAwesomeIcon icon={faCopy} /> */}
+                                      {displaySlug(product.slug)}{" "}
+                                      <span className="text-secondary">
+                                        <FontAwesomeIcon icon={faCopy} />
+                                      </span>
                                     </td>
                                     <td>
                                       <Link

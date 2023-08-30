@@ -28,23 +28,32 @@ function Attribute() {
     "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/attribute/attributeList";
   const url2 =
     "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/attribute/attributeSearch";
+
   useEffect(() => {
     subAttributeManagementList();
   }, []);
-  const subAttributeManagementList = () => {
-    axios
-      .post(url)
-      .then((response) => {
-        setAttributesList(response?.data?.results?.list?.reverse());
-      })
-      .catch((error) => {
-        console.log(error.response.data);
-        Swal.fire({
-          icon: "error",
-          title: "Network Error",
-          text: "Failed to fetch recent order list data. Please try again later.",
-        });
+
+  const subAttributeManagementList = async () => {
+    try {
+      const response = await fetchData(url);
+      setAttributesList(response?.data?.results?.list?.reverse());
+    } catch (error) {
+      console.log(error.response.data);
+      Swal.fire({
+        icon: "error",
+        title: "Network Error",
+        text: "Failed to fetch recent order list data. Please try again later.",
       });
+    }
+  };
+
+  const fetchData = async (url) => {
+    try {
+      const response = await axios.post(url);
+      return response;
+    } catch (error) {
+      throw error;
+    }
   };
 
   const userList2 = async () => {
@@ -152,33 +161,47 @@ function Attribute() {
     const { name, value } = event.target;
     setAttributes({ ...attributes, [name]: value });
   };
+
+  const createAttribute = async (attributes) => {
+    try {
+      const postData = {
+        attributeName_en: attributes.nameEn,
+        attributeName_ar: attributes.nameAr,
+        category_Id: attributes.categoryId,
+        subCategory_Id: attributes.categoryId1,
+      };
+      if (attributes.categoryId2) {
+        postData.subSubCategory_Id = attributes.categoryId2;
+      }
+
+      const response = await axios.post(
+        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/attribute/createAttribute",
+        postData
+      );
+
+      return response.data;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
-    await axios
-      .post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/attribute/createAttribute",
-        {
-          attributeName_en: attributes.nameEn,
-          attributeName_ar: attributes.nameAr,
-          category_Id: attributes.categoryId,
-          subCategory_Id: attributes.categoryId1,
-          subSubCategory_Id: attributes.categoryId2,
-        }
-      )
-      .then((response) => {
-        console.log(response.data);
-        if (!response.data.error) {
-          Swal.fire({
-            icon: "success",
-            title: "Attribute Created",
-            text: "The Attribute has been created successfully.",
-          });
-          handleSave();
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+    try {
+      const response = await createAttribute(attributes);
+      console.log(response);
+      if (!response.error) {
+        Swal.fire({
+          icon: "success",
+          title: "Attribute Created",
+          text: "The Attribute has been created successfully.",
+        });
+        handleSave();
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
   useEffect(() => {
     const fetchData = async () => {
@@ -281,6 +304,7 @@ function Attribute() {
                   value={attributes.categoryId}
                   onChange={handleInputChange}
                 >
+                  <option value="">Select Category</option>
                   {Array.isArray(categories) &&
                     categories.map((category) => (
                       <option key={category._id} value={category._id}>
@@ -299,6 +323,7 @@ function Attribute() {
                   value={attributes.categoryId1}
                   onChange={handleInputChange}
                 >
+                  <option value="">Select Sub Category</option>
                   {Array.isArray(subCategories) &&
                     subCategories.map((subCategory) => (
                       <option key={subCategory._id} value={subCategory._id}>
@@ -317,6 +342,7 @@ function Attribute() {
                   value={attributes.categoryId2}
                   onChange={handleInputChange}
                 >
+                  <option value="">Select Sub Sub Category</option>
                   {Array.isArray(subSubCategories) &&
                     subSubCategories.map((subSubCategory) => (
                       <option
@@ -444,7 +470,7 @@ function Attribute() {
                               </div>
                             </form>
                           </td> */}
-                          <td>
+                          <td style={{ cursor: "not-allowed" }}>
                             <form className="table_btns d-flex align-items-center">
                               <div className="check_toggle">
                                 <input
@@ -501,7 +527,7 @@ function Attribute() {
                                       `${value?.attributeName_en}  item has been deleted.`,
                                       "success"
                                     ).then(() => {
-                                      window.location.reload();
+                                      subAttributeManagementList();
                                     });
                                   }
                                 });

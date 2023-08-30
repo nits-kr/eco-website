@@ -88,7 +88,7 @@ function ProductManagement2() {
     const data = new FormData();
     data.append("productName_en", formData.productNameEn);
     data.append("productName_ar", formData.productNameAr);
-    data.append("slug", formData.slug);
+    // data.append("slug", formData.slug);
     data.append("Description", formData.DescriptionEn);
     data.append("Description_ar", formData.DescriptionAr);
     data.append("weight", formData.weight);
@@ -229,7 +229,7 @@ function ProductManagement2() {
                               minLength="3"
                             />
                           </div>
-                          <div className="form-group col-12">
+                          {/* <div className="form-group col-12">
                             <label htmlFor="slug">
                               Slug
                               <span className="required-field text-danger">
@@ -252,7 +252,7 @@ function ProductManagement2() {
                               Unique Human-readable product identifier. No
                               Longer than 255 characters.
                             </div>
-                          </div>
+                          </div> */}
                           <div className="form-group col-6">
                             <label htmlFor="DescriptionEn">
                               Description(En)

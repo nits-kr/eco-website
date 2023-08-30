@@ -573,10 +573,18 @@ function BrandManagement(props) {
                                                             );
                                                             Swal.fire(
                                                               "Deleted!",
-                                                              `${category?.categoryName_en}  item has been deleted.`,
+                                                              `${category?.brandName_en}  item has been deleted.`,
                                                               "success"
                                                             ).then(() => {
-                                                              window.location.reload();
+                                                              const updatedOfferList =
+                                                                categoryList.filter(
+                                                                  (offer) =>
+                                                                    offer._id !==
+                                                                    category?._id
+                                                                );
+                                                              setCategoryList(
+                                                                updatedOfferList
+                                                              );
                                                             });
                                                           }
                                                         });

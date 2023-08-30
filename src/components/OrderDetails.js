@@ -1,23 +1,28 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Link, useParams } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faEdit,
+  faTrash,
+  faCheck,
+  faDollarSign,
+  faChartLine,
+  faArrowRight,
+  faCreditCard,
+  faStar,
+} from "@fortawesome/free-solid-svg-icons";
 import Sidebar from "./Sidebar";
-import { useOrderDetailsAllMutation } from "../services/Post";
+import { useGetFileQuery, useOrderDetailsAllMutation } from "../services/Post";
 function OrderDetails() {
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
   const { id: routeId } = useParams();
-  const [
-    orderDetails,
-    isError,
-    isLoading,
-    isSuccess,
-    isUninitialized,
-    originalArgs,
-    error,
-  ] = useOrderDetailsAllMutation(routeId);
+  const { data } = useGetFileQuery("file-id");
+  const [orderDetails] = useOrderDetailsAllMutation(routeId);
   const [details, setDetails] = useState([]);
-  const [cartTotal, setCartTotal] = useState([]);
+  const [address, setAddress] = useState([]);
+  const [productId, setProductId] = useState([]);
 
   useEffect(() => {
     userDetail();
@@ -29,10 +34,25 @@ function OrderDetails() {
     };
     const response = await orderDetails(userdetailId);
     setDetails(response?.data?.results?.orderDetails);
+    setAddress(response?.data?.results?.orderDetails?.address_Id);
+    setProductId(
+      response?.data?.results?.orderDetails?.products[0]?.product_Id
+    );
+  };
+
+  const handleDownload = () => {
+    if (data) {
+      const blob = new Blob([data]);
+      const downloadUrl = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = downloadUrl;
+      link.download = "file.xlsx";
+      link.click();
+    }
   };
   return (
     <>
-      <Sidebar Dash={"orders"}/>
+      <Sidebar Dash={"orders"} />
       <div className="admin_main">
         <div className="admin_main_inner">
           <div className="admin_panel_data height_adjust">
@@ -56,97 +76,45 @@ function OrderDetails() {
                               data-bs-ride="carousel"
                             >
                               <div className="carousel-inner">
-                                <div className="carousel-item active">
-                                  <img
-                                    src="../assets/img/product1.png"
-                                    className="d-block w-100"
-                                    alt="..."
-                                  />
-                                  <span className="label_s">Free</span>
-                                </div>
-                                <div className="carousel-item">
-                                  <img
-                                    src="../assets/img/product2.png"
-                                    className="d-block w-100"
-                                    alt="..."
-                                  />
-                                  <span className="label_s">Fixed</span>
-                                </div>
-                                <div className="carousel-item">
-                                  <img
-                                    src="../assets/img/product3.png"
-                                    className="d-block w-100"
-                                    alt="..."
-                                  />
-                                  <span className="label_s">Auctions</span>
-                                </div>
-                                <div className="carousel-item">
-                                  <img
-                                    src="../assets/img/product1.png"
-                                    className="d-block w-100"
-                                    alt="..."
-                                  />
-                                  <span className="label_s">Free</span>
-                                </div>
+                                {productId?.product_Pic?.map((item, index) => (
+                                  <div
+                                    className={`carousel-item ${
+                                      index === 0 ? "active" : ""
+                                    }`}
+                                    key={index}
+                                  >
+                                    <img
+                                      src={item}
+                                      className="d-block w-100"
+                                      alt={`Slide ${index + 1}`}
+                                    />
+                                    <span className="label_s">
+                                      {item.label}
+                                    </span>
+                                  </div>
+                                ))}
                               </div>
                               <div className="carousel-indicators">
-                                <button
-                                  type="button"
-                                  data-bs-target="#carouselExampleIndicators"
-                                  data-bs-slide-to="0"
-                                  className="active"
-                                  aria-current="true"
-                                  aria-label="Slide 1"
-                                >
-                                  <img
-                                    src="../assets/img/product1.png"
-                                    className="thumnail_img"
-                                    alt="..."
-                                  />
-                                </button>
-                                <button
-                                  type="button"
-                                  data-bs-target="#carouselExampleIndicators"
-                                  data-bs-slide-to="1"
-                                  aria-label="Slide 2"
-                                >
-                                  <img
-                                    src="../assets/img/product2.png"
-                                    className="thumnail_img"
-                                    alt="..."
-                                  />
-                                </button>
-                                <button
-                                  type="button"
-                                  data-bs-target="#carouselExampleIndicators"
-                                  data-bs-slide-to="2"
-                                  aria-label="Slide 3"
-                                >
-                                  <img
-                                    src="../assets/img/product3.png"
-                                    className="thumnail_img"
-                                    alt="..."
-                                  />
-                                </button>
-                                <button
-                                  type="button"
-                                  data-bs-target="#carouselExampleIndicators"
-                                  data-bs-slide-to="3"
-                                  aria-label="Slide 4"
-                                >
-                                  <img
-                                    src="../assets/img/product1.png"
-                                    className="thumnail_img"
-                                    alt="..."
-                                  />
-                                </button>
+                                {productId?.product_Pic?.map((item, index) => (
+                                  <button
+                                    type="button"
+                                    data-bs-target="#carouselExampleIndicators"
+                                    data-bs-slide-to={index}
+                                    key={index}
+                                    aria-label={`Slide ${index + 1}`}
+                                    className={index === 0 ? "active" : ""}
+                                  >
+                                    <img
+                                      src={item}
+                                      className="thumnail_img"
+                                      alt={`Slide ${index + 1}`}
+                                    />
+                                  </button>
+                                ))}
                               </div>
                             </div>
-                            {/* <!-- <div className="check_toggle">
-                                                                <input type="checkbox" defaultChecked="" name="check1" id="check1" className="d-none">
-                                                                    <label htmlFor="check1"></label>
-                                                            </div> --> */}
                           </div>
+
                           <div className="col-6">
                             <div className="offerdetails_info">
                               <div className="row mx-0">
@@ -187,7 +155,7 @@ function OrderDetails() {
                                     </div>
                                   </div>
                                 </div> */}
-                                <div className="col-md-6">
+                                <div className="col-md-12">
                                   <div className="col-12 text-center mb-3">
                                     <div className="pro_name">- Buyer -</div>
                                   </div>
@@ -236,8 +204,10 @@ function OrderDetails() {
                                 </div>
                                 <div className="col-12 offerdetails_inner border">
                                   <Link
-                                    className="download_invoice border"
+                                    className="download_invoice5 border"
                                     to="#"
+                                    style={{ width: "100px" }}
+                                    onClick={handleDownload}
                                   >
                                     <i className="fal fa-download me-1"></i>{" "}
                                     Invoice
@@ -249,7 +219,7 @@ function OrderDetails() {
                                     <div className="col-md-6">
                                       <span>
                                         <i className="fas fa-list-ol me-2"></i>{" "}
-                                        Category Name
+                                        {productId?.productName_en}
                                       </span>
                                       <span>
                                         <i className="fal fa-calendar-alt me-2"></i>{" "}
@@ -280,7 +250,335 @@ function OrderDetails() {
                       </div>
                     </div>
                   </div>
-                  <div className="col-12 design_outter_comman shadow">
+                  <div className="col-12 ">
+                    <div className="row">
+                      <div className="col-12 design_outter_comman mb-4 shadow">
+                        <div className="row comman_header justify-content-between">
+                          <div className="col">
+                            <h2>Contact Details</h2>
+                          </div>
+                        </div>
+                        <form
+                          className="form-design py-4 px-3 help-support-form row align-items-end justify-content-between"
+                          action=""
+                        >
+                          <div className="form-group col-4">
+                            <label htmlFor="">Full Name</label>
+                            <input
+                              type="text"
+                              className="form-control"
+                              name="productName"
+                              id="productName"
+                              defaultValue={
+                                details?.cartsTotal?.[0]?.[0]?.userName
+                              }
+                              readOnly
+                            />
+                          </div>
+                          <div className="form-group col-4">
+                            <label htmlFor="">Email Id</label>
+                            <input
+                              type="text"
+                              className="form-control"
+                              name="title"
+                              id="title"
+                              defaultValue={
+                                details?.cartsTotal?.[0]?.[0]?.userEmail
+                              }
+                              readOnly
+                            />
+                          </div>
+                          <div className="form-group col-4">
+                            <label htmlFor="">Mobile Number</label>
+                            <input
+                              type="text"
+                              className="form-control"
+                              name="code"
+                              id="code"
+                              defaultValue={
+                                details?.cartsTotal?.[0]?.[0]?.mobileNumber
+                              }
+                              readOnly
+                            />
+                          </div>
+                        </form>
+                      </div>
+                      <div className="col-12 design_outter_comman mb-4 shadow">
+                        <div className="row comman_header justify-content-between">
+                          <div className="col">
+                            <h2>Delivery Address</h2>
+                          </div>
+                        </div>
+                        <form
+                          className="form-design py-4 px-3 help-support-form row align-items-end justify-content-between"
+                          action=""
+                        >
+                          <div className="form-group col-4">
+                            <label htmlFor="">Title </label>
+                            <input
+                              type="text"
+                              className="form-control"
+                              name="productName"
+                              id="productName"
+                              defaultValue={address?.title}
+                              readOnly
+                            />
+                          </div>
+                          <div className="form-group col-4">
+                            <label htmlFor="">Address</label>
+                            <input
+                              type="text"
+                              className="form-control"
+                              name="title"
+                              id="title"
+                              defaultValue={address?.address}
+                              readOnly
+                            />
+                          </div>
+                          <div className="form-group col-4">
+                            <label htmlFor="">Locality</label>
+                            <input
+                              type="text"
+                              className="form-control"
+                              name="code"
+                              id="code"
+                              defaultValue={address?.locality}
+                              readOnly
+                            />
+                          </div>
+                          <div className="form-group col-4">
+                            <label htmlFor="">City</label>
+                            <input
+                              type="text"
+                              className="form-control"
+                              name="code"
+                              id="code"
+                              defaultValue={address?.city}
+                              readOnly
+                            />
+                          </div>
+                          <div className="form-group col-4">
+                            <label htmlFor="">Country</label>
+                            <input
+                              type="text"
+                              className="form-control"
+                              name="discount"
+                              id="discount"
+                              defaultValue={address?.country}
+                              readOnly
+                            />
+                          </div>
+                          <div className="form-group col-4">
+                            <label htmlFor="">Pin Code</label>
+                            <input
+                              type="text"
+                              className="form-control"
+                              name="discount"
+                              id="discount"
+                              defaultValue={address?.pinCode}
+                              readOnly
+                            />
+                          </div>
+                        </form>
+                      </div>
+                      <div className="col-12 design_outter_comman mb-4 shadow">
+                        <div className="row comman_header justify-content-between">
+                          <div className="col">
+                            <h2>Product Location</h2>
+                          </div>
+                        </div>
+                        <form
+                          className="form-design py-4 px-3 help-support-form row align-items-end justify-content-between"
+                          action=""
+                          // onSubmit={handleSaveChanges}
+                        >
+                          <div className="row mx-0  product_location">
+                            <div className="col-12">
+                              <iframe
+                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d429154.75849258946!2d-117.38917548361756!3d32.8248175128601!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x80d9530fad921e4b%3A0xd3a21fdfd15df79!2sSan%20Diego%2C%20CA%2C%20USA!5e0!3m2!1sen!2sin!4v1669709877583!5m2!1sen!2sin"
+                                width="100%"
+                                height="350"
+                                style={{ border: "0" }}
+                                allowFullScreen=""
+                                loading="lazy"
+                                title="Google Maps - San Diego, California"
+                                referrerPolicy="no-referrer-when-downgrade"
+                              ></iframe>
+                            </div>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                    <div className="row">
+                      <div className="col-4">
+                        <div className="row me-0">
+                          <div className="col-12 design_outter_comman mb-4 shadow">
+                            <div className="row comman_header justify-content-between">
+                              <div className="col">
+                                <h2> Contact Details</h2>
+                              </div>
+                            </div>
+                            <div className="row">
+                              <div className="col-12 comman_table_design px-0">
+                                <div className="table-responsive">
+                                  <table className="table mb-0">
+                                    <tbody style={{ textAlign: "left" }}>
+                                      <tr>
+                                        <td style={{ textAlign: "left" }}>
+                                          Full Name:
+                                        </td>
+                                        <td style={{ textAlign: "left" }}>
+                                          {
+                                            details?.cartsTotal?.[0]?.[0]
+                                              ?.userName
+                                          }
+                                        </td>
+                                      </tr>
+                                      <tr>
+                                        <td style={{ textAlign: "left" }}>
+                                          Email Id:
+                                        </td>
+                                        <td style={{ textAlign: "left" }}>
+                                          {
+                                            details?.cartsTotal?.[0]?.[0]
+                                              ?.userEmail
+                                          }
+                                        </td>
+                                      </tr>
+                                      <tr>
+                                        <td style={{ textAlign: "left" }}>
+                                          Mobile Number:
+                                        </td>
+                                        <td style={{ textAlign: "left" }}>
+                                          {
+                                            details?.cartsTotal?.[0]?.[0]
+                                              ?.mobileNumber
+                                          }
+                                        </td>
+                                      </tr>
+                                      {/* <tr>
+                                        <td style={{ textAlign: "left" }}>
+                                          City
+                                        </td>
+                                        <td style={{ textAlign: "left" }}>
+                                          {address?.city}
+                                        </td>
+                                      </tr>
+                                      <tr>
+                                        <td style={{ textAlign: "left" }}>
+                                          country
+                                        </td>
+                                        <td style={{ textAlign: "left" }}>
+                                          {address?.country}
+                                        </td>
+                                      </tr> */}
+                                    </tbody>
+                                  </table>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="col-4">
+                        <div className="row me-0">
+                          <div className="col-12 design_outter_comman mb-4 shadow">
+                            <div className="row comman_header justify-content-between">
+                              <div className="col">
+                                <h2> Delivery Address</h2>
+                              </div>
+                            </div>
+                            <div className="row">
+                              <div className="col-12 comman_table_design px-0">
+                                <div className="table-responsive">
+                                  <table className="table mb-0">
+                                    <tbody style={{ textAlign: "left" }}>
+                                      <tr>
+                                        <td style={{ textAlign: "left" }}>
+                                          Title
+                                        </td>
+                                        <td style={{ textAlign: "left" }}>
+                                          {address?.title}
+                                        </td>
+                                      </tr>
+                                      <tr>
+                                        <td style={{ textAlign: "left" }}>
+                                          Address
+                                        </td>
+                                        <td style={{ textAlign: "left" }}>
+                                          {address?.address}
+                                        </td>
+                                      </tr>
+                                      <tr>
+                                        <td style={{ textAlign: "left" }}>
+                                          Locality
+                                        </td>
+                                        <td style={{ textAlign: "left" }}>
+                                          {address?.locality}
+                                        </td>
+                                      </tr>
+                                      <tr>
+                                        <td style={{ textAlign: "left" }}>
+                                          City
+                                        </td>
+                                        <td style={{ textAlign: "left" }}>
+                                          {address?.city}
+                                        </td>
+                                      </tr>
+                                      <tr>
+                                        <td style={{ textAlign: "left" }}>
+                                          country
+                                        </td>
+                                        <td style={{ textAlign: "left" }}>
+                                          {address?.country}
+                                        </td>
+                                      </tr>
+                                    </tbody>
+                                  </table>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="col-4">
+                        <div className="row me-0">
+                          <div className="col-12 design_outter_comman mb-4 shadow">
+                            <div className="row comman_header justify-content-between">
+                              <div className="col">
+                                <h2> Product Location</h2>
+                              </div>
+                            </div>
+                            <div className="row">
+                              <div className="col-12 comman_table_design px-0">
+                                <div className="table-responsive">
+                                  <table className="table mb-0">
+                                    <tbody style={{ textAlign: "left" }}>
+                                      <div className="row mx-0 p-4 product_location">
+                                        <div className="col-12">
+                                          <iframe
+                                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d429154.75849258946!2d-117.38917548361756!3d32.8248175128601!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x80d9530fad921e4b%3A0xd3a21fdfd15df79!2sSan%20Diego%2C%20CA%2C%20USA!5e0!3m2!1sen!2sin!4v1669709877583!5m2!1sen!2sin"
+                                            width="100%"
+                                            height="350"
+                                            style={{ border: "0" }}
+                                            allowFullScreen=""
+                                            loading="lazy"
+                                            title="Google Maps - San Diego, California"
+                                            referrerPolicy="no-referrer-when-downgrade"
+                                          ></iframe>
+                                        </div>
+                                      </div>
+                                    </tbody>
+                                  </table>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  {/* <div className="col-12 design_outter_comman shadow">
                     <div className="row">
                       <div className="col-12 px-0">
                         <nav>
@@ -337,44 +635,16 @@ function OrderDetails() {
                             <div className="row mx-0 p-4 product_description">
                               <div className="col-12">
                                 <p>
-                                  Lorem ipsum dolor sit amet consectetur,
-                                  adipisicing elit. Quibusdam consectetur magnam
-                                  ex voluptates nisi architecto temporibus at
-                                  alias, ut cupiditate molestiae quia voluptatum
-                                  nesciunt possimus enim reiciendis natus
-                                  facilis minima!
+                                  <strong>Description: </strong>
+                                  {productId?.Description}
                                 </p>
                                 <p>
-                                  Lorem ipsum dolor sit amet consectetur,
-                                  adipisicing elit. Quibusdam consectetur magnam
-                                  ex voluptates nisi architecto temporibus at
-                                  alias, ut cupiditate molestiae quia voluptatum
-                                  nesciunt possimus enim reiciendis natus
-                                  facilis minima!
+                                  <strong>Care Instruction: </strong>
+                                  <span>{productId?.careInstuctions}</span>
                                 </p>
                                 <p>
-                                  Lorem ipsum dolor sit amet consectetur,
-                                  adipisicing elit. Quibusdam consectetur magnam
-                                  ex voluptates nisi architecto temporibus at
-                                  alias, ut cupiditate molestiae quia voluptatum
-                                  nesciunt possimus enim reiciendis natus
-                                  facilis minima!
-                                </p>
-                                <p>
-                                  Lorem ipsum dolor sit amet consectetur,
-                                  adipisicing elit. Quibusdam consectetur magnam
-                                  ex voluptates nisi architecto temporibus at
-                                  alias, ut cupiditate molestiae quia voluptatum
-                                  nesciunt possimus enim reiciendis natus
-                                  facilis minima!
-                                </p>
-                                <p>
-                                  Lorem ipsum dolor sit amet consectetur,
-                                  adipisicing elit. Quibusdam consectetur magnam
-                                  ex voluptates nisi architecto temporibus at
-                                  alias, ut cupiditate molestiae quia voluptatum
-                                  nesciunt possimus enim reiciendis natus
-                                  facilis minima!
+                                  <strong>Meta Description: </strong>
+                                  {productId?.metaDescription}
                                 </p>
                               </div>
                             </div>
@@ -530,7 +800,7 @@ function OrderDetails() {
                         </div>
                       </div>
                     </div>
-                  </div>
+                  </div> */}
                 </div>
               </div>
             </div>

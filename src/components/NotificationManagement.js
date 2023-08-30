@@ -501,7 +501,7 @@ function NotificationManagement() {
                                             `${data?._id}  item has been deleted.`,
                                             "success"
                                           ).then(() => {
-                                            window.location.reload();
+                                            subNotificationList();
                                           });
                                         }
                                       });

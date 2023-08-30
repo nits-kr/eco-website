@@ -406,7 +406,7 @@ function ThoughtsManagement() {
                                             `${thought?.title}  item has been deleted.`,
                                             "success"
                                           ).then(() => {
-                                            window.location.reload();
+                                            userList();
                                           });
                                         }
                                       });

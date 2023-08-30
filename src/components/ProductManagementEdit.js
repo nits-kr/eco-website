@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
+import { toast } from "react-toastify";
 import { Editor } from "@tinymce/tinymce-react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEye, faPencil, faTrashCan } from "@fortawesome/free-solid-svg-icons";
+import { faEye, faPencil, faCopy } from "@fortawesome/free-solid-svg-icons";
 import Sidebar from "./Sidebar";
 
 function ProductManagementEdit(props) {
@@ -114,7 +115,7 @@ function ProductManagementEdit(props) {
     const data = new FormData();
     data.append("productName_en", formData.productNameEn);
     data.append("productName_ar", formData.productNameAr);
-    data.append("slug", formData.slug);
+    // data.append("slug", formData.slug);
     data.append("Description", formData.DescriptionEn);
     data.append("Description_ar", formData.DescriptionAr);
     data.append("weight", formData.weight);
@@ -170,6 +171,35 @@ function ProductManagementEdit(props) {
       .catch((error) => {
         console.log(error.response.data);
       });
+  };
+
+  const copyToClipboard = async (text) => {
+    if (navigator.clipboard) {
+      try {
+        await navigator.clipboard.writeText(text);
+        if (text) {
+          toast.info(
+            <>
+              Copied To Clipboard:
+              <strong>{text}</strong>
+            </>,
+            {
+              position: "bottom-left",
+            }
+          );
+        }
+        return true;
+      } catch (error) {
+        console.error("Error copying to clipboard:", error);
+        return false;
+      }
+    } else {
+      console.error("Clipboard API is not supported.");
+      return false;
+    }
+  };
+  const displaySlug = (slug) => {
+    return slug.length > 10 ? `${slug.slice(0, 10)}...` : slug;
   };
   return (
     <>
@@ -275,23 +305,43 @@ function ProductManagementEdit(props) {
                                 *
                               </span>
                             </label>
-                            <input
+                            {/* <input
                               type="text"
                               className="form-control"
-                              // defaultValue=""
                               name="slug"
                               id="slug"
-                              // value={formData.slug}
                               defaultValue={
                                 productListItems.length > 0
                                   ? productListItems[0].slug
                                   : ""
                               }
                               placeholder="brandix-screwdriver150"
-                              onChange={handleInputChange}
-                              required
-                              //minLength="3"
+                              onClick={() =>
+                                copyToClipboard(productListItems[0].slug)
+                              }
+                              readOnly
+                            /> */}
+                            <input
+                              type="text"
+                              className="form-control"
+                              name="slug"
+                              id="slug"
+                              title="copy Slug"
+                              defaultValue={
+                                productListItems.length > 0
+                                  ? productListItems[0].slug
+                                  : ""
+                              }
+                              placeholder="brandix-screwdriver150"
+                              onClick={() =>
+                                copyToClipboard(productListItems[0].slug)
+                              }
+                              readOnly
+                              style={{
+                                cursor: "pointer",
+                              }}
                             />
+                            {/* <FontAwesomeIcon icon={faCopy} /> */}
                             <div className="Slug_text">
                               Unique Human-readable product identifier. No
                               Longer than 255 characters.

@@ -45,6 +45,10 @@ function OfferManagement() {
     subCategoryId: "",
     subCategoryPic: null,
   });
+  const [offer, setOffer] = useState({
+    startDate: "",
+    endDate: "",
+  });
   const [deleteOffer, response] = useDeleteOfferMutation();
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
@@ -52,40 +56,61 @@ function OfferManagement() {
     "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/offer/offer-list";
   const url2 =
     "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/offer/search-offer";
-  // useEffect(() => {
-  //   const reversedList =
-  //     offerListItems?.data?.results?.list?.slice().reverse() ?? [];
-  //   setOfferList(reversedList);
-  // }, [offerListItems]);
+
   const getReversedList = (list) => {
-    return list?.data?.results?.list?.slice().reverse() ?? [];
+    return list?.data?.results?.list?.slice()?.reverse() ?? [];
   };
   useEffect(() => {
     const reversedList = getReversedList(offerListItems);
     setNewOfferList(reversedList);
   }, [offerListItems]);
 
-  const handleSaveChanges = (e) => {
+  const handleSaveChanges = async (e) => {
     e.preventDefault();
     const newOffer = {
       title: title,
       code: code,
       Discount: discount,
+      startDate: offer.startDate,
+      endDate: offer.endDate,
       product_Id: subCategory.categoryId,
-      // productName: productName,
     };
-    createOffer(newOffer);
-    Swal.fire({
-      title: "Changes Saved",
-      text: "The offer has been created successfully.",
-      icon: "success",
-      confirmButtonText: "OK",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        window.location.reload();
+
+    try {
+      const response = await createOffer(newOffer);
+      console.log("offer response", response);
+      if (response?.data?.status_code === 201) {
+        Swal.fire({
+          title: "Changes Saved",
+          text: "The offer has been created successfully.",
+          icon: "success",
+          confirmButtonText: "OK",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            window.location.reload();
+          }
+        });
+      } else {
+        // Handle other response statuses if needed
+        Swal.fire({
+          title: "Error",
+          text: "There was an error creating the offer.",
+          icon: "error",
+          confirmButtonText: "OK",
+        });
       }
-    });
+    } catch (error) {
+      // Handle any network or other errors
+      console.error("Error creating offer:", error);
+      Swal.fire({
+        title: "Error",
+        text: "There was an error creating the offer.",
+        icon: "error",
+        confirmButtonText: "OK",
+      });
+    }
   };
+
   // useEffect(() => {
   //   handleSaveChanges2();
   // }, [title3]);
@@ -191,10 +216,25 @@ function OfferManagement() {
     setCode2(item?.code || "");
     setDiscount2(item?.Discount || "");
   };
+  // const handleInputChange = (event) => {
+  //   const { name, value } = event.target;
+  //   setSubCategory({ ...subCategory, [name]: value });
+  // };
   const handleInputChange = (event) => {
     const { name, value } = event.target;
-    setSubCategory({ ...subCategory, [name]: value });
+    if (value === "selectAll") {
+      const allProductIds = categories.map((category) => category._id);
+      setSubCategory({ ...subCategory, [name]: allProductIds });
+    } else {
+      setSubCategory({ ...subCategory, [name]: value });
+    }
   };
+
+  const handleInputChange1 = (event) => {
+    const { name, value } = event.target;
+    setOffer({ ...offer, [name]: value });
+  };
+
   useEffect(() => {
     axios
       .post(
@@ -291,7 +331,7 @@ function OfferManagement() {
                           Select Product
                           <span className="required-field text-danger">*</span>
                         </label>
-                        <select
+                        {/* <select
                           className="select form-control"
                           multiple=""
                           name="categoryId"
@@ -299,6 +339,28 @@ function OfferManagement() {
                           value={subCategory.categoryId}
                           onChange={handleInputChange}
                         >
+                          <option value="">Select Product</option>
+                          {Array.isArray(categories) &&
+                            categories.map((category) => (
+                              <option key={category._id} value={category._id}>
+                                {category.productName_en}
+                              </option>
+                            ))}
+                        </select> */}
+                        <select
+                          className="select form-control"
+                          multiple=""
+                          name="categoryId"
+                          id="selectCategory"
+                          // value={
+                          //   Array.isArray(subCategory.categoryId)
+                          //     ? subCategory.categoryId
+                          //     : []
+                          // }
+                          onChange={handleInputChange}
+                        >
+                          <option value="">Select Product</option>
+                          <option value="selectAll">All Products</option>
                           {Array.isArray(categories) &&
                             categories.map((category) => (
                               <option key={category._id} value={category._id}>
@@ -323,7 +385,7 @@ function OfferManagement() {
                           minLength="3"
                         />
                       </div>
-                      <div className="form-group mb-0 col">
+                      {/* <div className="form-group mb-0 col">
                         <label htmlFor="">
                           Code
                           <span className="required-field text-danger">*</span>
@@ -338,7 +400,58 @@ function OfferManagement() {
                           required
                           minLength="3"
                         />
+                      </div> */}
+                      <div className="form-group col-6">
+                        <label htmlFor="">
+                          Start Date
+                          <span className="required-field text-danger">*</span>
+                        </label>
+                        <input
+                          type="date"
+                          className="form-control"
+                          name="startDate"
+                          id="startDate"
+                          value={offer.startDate}
+                          onChange={handleInputChange1}
+                          required
+                          minLength="3"
+                        />
                       </div>
+                      <div className="form-group col-6">
+                        <label htmlFor="">
+                          End Date
+                          <span className="required-field text-danger">*</span>
+                        </label>
+                        <input
+                          type="date"
+                          className="form-control"
+                          name="endDate"
+                          id="endDate"
+                          value={offer.endDate}
+                          onChange={handleInputChange1}
+                          required
+                          minLength="3"
+                        />
+                      </div>
+                      <div className="form-group mb-0 col">
+                        <label htmlFor="">
+                          Code
+                          <span className="required-field text-danger">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          className="form-control"
+                          name="code"
+                          id="code"
+                          value={code}
+                          onChange={(e) => setCode(e.target.value)}
+                          required
+                          minLength="3"
+                          pattern="[0-9]+"
+                          title="Please enter a numeric value"
+                        />
+                      </div>
+
                       <div className="form-group mb-0 col">
                         <label htmlFor="">
                           Discount (%)
@@ -355,6 +468,7 @@ function OfferManagement() {
                           // minLength="3"
                         />
                       </div>
+
                       <div className="form-group mb-0 col-auto">
                         <button
                           className="comman_btn2"
@@ -432,7 +546,7 @@ function OfferManagement() {
                                 <th>Title</th>
                                 <th>Code</th>
                                 <th>Discount(%) </th>
-                                {/* <th>Status</th> */}
+                                <th>Valid UpTo</th>
                                 <th>Action</th>
                               </tr>
                             </thead>
@@ -464,6 +578,7 @@ function OfferManagement() {
                                           </div>
                                         </form>
                                       </td> */}
+                                    <td> {item?.endDate} </td>
                                     <td>
                                       <Link
                                         className="comman_btn table_viewbtn"
@@ -498,7 +613,14 @@ function OfferManagement() {
                                                 `${item?.title}  item has been deleted.`,
                                                 "success"
                                               ).then(() => {
-                                                window.location.reload();
+                                                const updatedOfferList =
+                                                  newOfferList.filter(
+                                                    (offer) =>
+                                                      offer._id !== item?._id
+                                                  );
+                                                setNewOfferList(
+                                                  updatedOfferList
+                                                );
                                               });
                                             }
                                           });

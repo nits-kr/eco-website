@@ -399,7 +399,7 @@ function ContactUs() {
                                               `${data?.userName_en}  item has been deleted.`,
                                               "success"
                                             ).then(() => {
-                                              window.location.reload();
+                                              fetchInformationList();
                                             });
                                           }
                                         });

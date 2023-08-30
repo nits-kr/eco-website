@@ -341,7 +341,7 @@ function Agent(props) {
                                                   `${agent?.name}  item has been deleted.`,
                                                   "success"
                                                 ).then(() => {
-                                                  window.location.reload(); // Reload the page
+                                                  agentManagementList();
                                                 });
                                               }
                                             });

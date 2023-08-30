@@ -269,6 +269,7 @@ function SubSubCategory() {
                   value={subSubCategory.categoryId}
                   onChange={handleInputChange}
                 >
+                  <option value="">Select Category</option>
                   {Array.isArray(categories) &&
                     categories.map((category) => (
                       <option key={category._id} value={category._id}>
@@ -287,6 +288,7 @@ function SubSubCategory() {
                   value={subSubCategory.categoryId1}
                   onChange={handleInputChange}
                 >
+                  <option value="">Select Sub Category</option>
                   {Array.isArray(subCategories) &&
                     subCategories.map((subCategory) => (
                       <option key={subCategory._id} value={subCategory._id}>
@@ -411,7 +413,7 @@ function SubSubCategory() {
                               </div>
                             </form>
                           </td> */}
-                          <td>
+                          <td style={{ cursor: "not-allowed" }}>
                             <form className="table_btns d-flex align-items-center">
                               <div className="check_toggle">
                                 <input
@@ -468,7 +470,7 @@ function SubSubCategory() {
                                       `${value?.subSubCategoryName_en}  item has been deleted.`,
                                       "success"
                                     ).then(() => {
-                                      window.location.reload();
+                                      subSubCategoryManagementList();
                                     });
                                   }
                                 });

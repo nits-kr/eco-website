@@ -157,20 +157,54 @@ function Value() {
   };
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
+  // const handleSubmit = async (event) => {
+  //   event.preventDefault();
+  //   try {
+  //     const response = await axios.post(
+  //       "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/values/createvalues",
+  //       {
+  //         valuesName_en: values.nameEn,
+  //         valuesName_ar: values.nameAr,
+  //         category_Id: values.categoryId,
+  //         subCategory_Id: values.categoryId1,
+  //         subSubCategory_Id: values.categoryId2,
+  //         attribute_Id: values.categoryId3,
+  //       }
+  //     );
+  //     console.log(response.data.results.createValues);
+  //     if (!response.data.error) {
+  //       Swal.fire({
+  //         icon: "success",
+  //         title: "Value Created",
+  //         text: "The Value has been created successfully.",
+  //       });
+  //       handleSave();
+  //     }
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
+      const requestBody = {
+        valuesName_en: values.nameEn,
+        valuesName_ar: values.nameAr,
+        category_Id: values.categoryId,
+        subCategory_Id: values.categoryId1,
+        attribute_Id: values.categoryId3,
+      };
+
+      // Conditionally add subSubCategory_Id if it exists
+      if (values.categoryId2) {
+        requestBody.subSubCategory_Id = values.categoryId2;
+      }
+
       const response = await axios.post(
         "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/values/createvalues",
-        {
-          valuesName_en: values.nameEn,
-          valuesName_ar: values.nameAr,
-          category_Id: values.categoryId,
-          subCategory_Id: values.categoryId1,
-          subSubCategory_Id: values.categoryId2,
-          attribute_Id: values.categoryId3,
-        }
+        requestBody
       );
+
       console.log(response.data.results.createValues);
       if (!response.data.error) {
         Swal.fire({
@@ -325,7 +359,7 @@ function Value() {
                   id="selectCategory"
                   value={values.categoryId}
                   onChange={handleInputChange}
-                >
+                ><option value="">Select Category</option>
                   {Array.isArray(categories) &&
                     categories.map((category) => (
                       <option key={category._id} value={category._id}>
@@ -345,6 +379,7 @@ function Value() {
                   // onChange={(e) => handleInputSubCategory(e.target.value)}
                   onChange={handleInputChange}
                 >
+                  <option value="">Select Sub Category</option>
                   {Array.isArray(subCategories) &&
                     subCategories.map((subCategory) => (
                       <option key={subCategory._id} value={subCategory._id}>
@@ -363,6 +398,7 @@ function Value() {
                   value={values.categoryId2}
                   onChange={handleInputChange}
                 >
+                  <option value="">Select Sub Sub Category</option>
                   {Array.isArray(subSubCategories) &&
                     subSubCategories.map((subSubCategory) => (
                       <option
@@ -384,6 +420,7 @@ function Value() {
                   value={values.categoryId3}
                   onChange={handleInputChange}
                 >
+                  <option value="">Select Attribute</option>
                   {Array.isArray(attributes) &&
                     attributes.map((attribute) => (
                       <option key={attribute._id} value={attribute._id}>
@@ -511,7 +548,7 @@ function Value() {
                               </div>
                             </form>
                           </td> */}
-                          <td>
+                          <td style={{ cursor: "not-allowed" }}>
                             <form className="table_btns d-flex align-items-center">
                               <div className="check_toggle">
                                 <input
@@ -563,7 +600,7 @@ function Value() {
                                       `${value?.valuesName_en}  item has been deleted.`,
                                       "success"
                                     ).then(() => {
-                                      window.location.reload();
+                                      subValueManagementList();
                                     });
                                   }
                                 });

@@ -1,4 +1,6 @@
 import "./App.css";
+import { ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 import { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import ResetPassword from "./components/ResetPassword";
@@ -51,6 +53,7 @@ import BrandManagement from "./components/brand/BrandManagement";
 import UserOfferPOsted from "./components/UserOfferPOsted";
 import UserOfferPostedDetails from "./components/UserOfferPostedDetails";
 import UserDetailsAll from "./components/UserDetailsAll";
+import AgentDetailsAll from "./components/AgentDetailsAll";
 
 function App() {
   const [progress, setProgress] = useState(0);
@@ -65,6 +68,7 @@ function App() {
   return (
     <>
       <BrowserRouter>
+      <ToastContainer />
         <LoadingBar height={3} color="#f11946" progress={progress} />
         <Routes>
           <Route exact className="active" path="/" element={<Login />} />
@@ -115,8 +119,15 @@ function App() {
             exact
             className="active"
             path="/agents-information/:id"
-            element={<AgentInformation />}
+            element={<AgentDetailsAll/>}
           />
+          {/* <Route
+            exact
+            className="active"
+            path="/agents-information/:id"
+            element={<AgentInformation />}
+          /> */}
+          
 
           <Route
             exact

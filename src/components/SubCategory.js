@@ -289,6 +289,7 @@ function SubCategory(props) {
                   value={subCategory.categoryId}
                   onChange={handleInputChange}
                 >
+                  <option value="">Select Category</option>
                   {Array.isArray(categories) &&
                     categories.map((category) => (
                       <option key={category._id} value={category._id}>
@@ -439,7 +440,7 @@ function SubCategory(props) {
                               </div>
                             </form>
                           </td> */}
-                          <td>
+                          <td style={{ cursor: "not-allowed" }}>
                             <form className="table_btns d-flex align-items-center">
                               <div className="check_toggle">
                                 <input
@@ -491,7 +492,7 @@ function SubCategory(props) {
                                       `${value?.subCategoryName_en}  item has been deleted.`,
                                       "success"
                                     ).then(() => {
-                                      window.location.reload();
+                                      subCategoryManagementList();
                                     });
                                   }
                                 });

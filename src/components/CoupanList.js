@@ -270,7 +270,7 @@ function CoupanList() {
                       <table className="table mb-0">
                         <thead>
                           <tr>
-                            <th>
+                            {/* <th>
                               <form
                                 className="table_btns d-flex align-items-center justify-content-center"
                                 style={{ marginTop: "-27px" }}
@@ -285,18 +285,19 @@ function CoupanList() {
                                   <label htmlFor="c1"></label>
                                 </div>
                               </form>
-                            </th>
+                            </th> */}
                             <th>Title</th>
                             <th>Code</th>
                             <th>Discount</th>
                             <th>Status</th>
+                            <th>Valid UpTo</th>
                             <th>Action</th>
                           </tr>
                         </thead>
                         <tbody>
                           {(coupanList || [])?.map((item, index) => (
                             <tr key={index}>
-                              <td>
+                              {/* <td>
                                 <form className="table_btns d-flex align-items-center justify-content-center my-2">
                                   <div className="check_radio mb-3">
                                     <input
@@ -308,7 +309,7 @@ function CoupanList() {
                                     <label htmlFor={`c${index + 2}`}></label>
                                   </div>
                                 </form>
-                              </td>
+                              </td> */}
                               <td>
                                 {item?.coupanTitle
                                   ? item?.coupanTitle
@@ -317,6 +318,7 @@ function CoupanList() {
                               <td>{item?.coupanCode}</td>
                               <td>{item?.DiscountType}</td>
                               <td>{item?.status}</td>
+                              <td> {item?.endDate} </td>
                               <td>
                                 <Link
                                   className="comman_btn table_viewbtn mx-2"
@@ -352,7 +354,7 @@ function CoupanList() {
                                           `${item?.coupanTitle_en}  item has been deleted.`,
                                           "success"
                                         ).then(() => {
-                                          window.location.reload();
+                                          fetchCoupanList();
                                         });
                                       }
                                     });

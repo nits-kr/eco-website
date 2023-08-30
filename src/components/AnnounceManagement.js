@@ -424,7 +424,7 @@ function AnnounceManagement() {
                                             `${data?.heading}  item has been deleted.`,
                                             "success"
                                           ).then(() => {
-                                            window.location.reload();
+                                            userList();
                                           });
                                         }
                                       });

@@ -312,6 +312,18 @@ export const PostApi = createApi({
         };
       },
     }),
+    orderAssign: builder.mutation({
+      query: (body) => {
+        console.log("update category", body);
+        const { id, ...data } = body;
+        console.log("update offer body data", data);
+        return {
+          url: `/admin/agent/agent/order-assign/${id}`,
+          method: "post",
+          body: data,
+        };
+      },
+    }),
     catogaryStatus: builder.mutation({
       query: (body) => {
         console.log("update category", body);
@@ -492,6 +504,17 @@ export const PostApi = createApi({
         };
       },
     }),
+    agentDetailsAll: builder.mutation({
+      query: (body) => {
+        console.log("update category", body);
+        const { id } = body;
+        console.log("user details body data", id);
+        return {
+          url: `/admin/agent/agent/user-details/${id}`,
+          method: "post",
+        };
+      },
+    }),
     orderDetailsAll: builder.mutation({
       query: (body) => {
         console.log("update category", body);
@@ -565,5 +588,6 @@ export const {
   useDeleteOrderMutation,
   useUpdateBrandMutation,
   useOrderDetailsAllMutation,
-  // useSearchOfferQuery,
+  useOrderAssignMutation,
+  useAgentDetailsAllMutation,
 } = PostApi;
