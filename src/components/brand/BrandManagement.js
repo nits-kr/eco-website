@@ -253,7 +253,17 @@ function BrandManagement(props) {
       );
       console.log(response.data.results.saveCategory);
       if (!response.data.error) {
-        alert("List saved!");
+        Swal.fire({
+          icon: "success",
+          title: "Changes Saved",
+          text: "The Brand has been added successfully.",
+          confirmButtonColor: "#3085d6",
+          confirmButtonText: "OK",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            window.location.reload();
+          }
+        });
         handleSave();
       }
     } catch (error) {

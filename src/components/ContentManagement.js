@@ -53,7 +53,7 @@ function ContentManagement() {
       Swal.fire({
         icon: "success",
         title: "Changes Saved",
-        text: "The subcategory has been updated successfully.",
+        text: "The Content has been updated successfully.",
         confirmButtonColor: "#3085d6",
         confirmButtonText: "OK",
       }).then((result) => {
@@ -65,7 +65,7 @@ function ContentManagement() {
       Swal.fire({
         icon: "error",
         title: "Error",
-        text: "An error occurred while updating the subcategory.",
+        text: "An error occurred while updating the Content.",
       });
     }
   };
@@ -82,7 +82,7 @@ function ContentManagement() {
       Swal.fire({
         icon: "success",
         title: "Changes Saved",
-        text: "The subcategory has been updated successfully.",
+        text: "The Content has been updated successfully.",
         confirmButtonColor: "#3085d6",
         confirmButtonText: "OK",
       }).then((result) => {
@@ -94,7 +94,7 @@ function ContentManagement() {
       Swal.fire({
         icon: "error",
         title: "Error",
-        text: "An error occurred while updating the subcategory.",
+        text: "An error occurred while updating the Content.",
       });
     }
   };
@@ -113,7 +113,7 @@ function ContentManagement() {
     createContent(newContact);
     Swal.fire({
       title: "Changes Saved",
-      text: "The offer has been created successfully.",
+      text: "The Content has been created successfully.",
       icon: "success",
       confirmButtonText: "OK",
     }).then((result) => {
@@ -137,7 +137,7 @@ function ContentManagement() {
                   data-bs-toggle="modal"
                   data-bs-target="#staticBackdrop5"
                 >
-                 + {" "} Create Content
+                  + Create Content
                 </Link>
               </div>
               {contentList?.map((data, index) => (
@@ -177,9 +177,7 @@ function ContentManagement() {
                           <i className="far fa-edit me-2"></i>
                           Edit
                         </Link>
-                        <p>
-                          {data?.Description_ar}
-                        </p>
+                        <p>{data?.Description_ar}</p>
                       </div>
                     </div>
                   </div>

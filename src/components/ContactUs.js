@@ -145,7 +145,7 @@ function ContactUs() {
     createContact(newContact);
     Swal.fire({
       title: "Changes Saved",
-      text: "The offer has been created successfully.",
+      text: "The Contact has been created successfully.",
       icon: "success",
       confirmButtonText: "OK",
     }).then((result) => {
