@@ -410,7 +410,7 @@ function OrderDetails() {
                       </div>
                     </div>
                     <div className="row">
-                      <div className="col-4">
+                      {/* <div className="col-4">
                         <div className="row me-0">
                           <div className="col-12 design_outter_comman mb-4 shadow">
                             <div className="row comman_header justify-content-between">
@@ -456,22 +456,7 @@ function OrderDetails() {
                                           }
                                         </td>
                                       </tr>
-                                      {/* <tr>
-                                        <td style={{ textAlign: "left" }}>
-                                          City
-                                        </td>
-                                        <td style={{ textAlign: "left" }}>
-                                          {address?.city}
-                                        </td>
-                                      </tr>
-                                      <tr>
-                                        <td style={{ textAlign: "left" }}>
-                                          country
-                                        </td>
-                                        <td style={{ textAlign: "left" }}>
-                                          {address?.country}
-                                        </td>
-                                      </tr> */}
+                                     
                                     </tbody>
                                   </table>
                                 </div>
@@ -479,8 +464,8 @@ function OrderDetails() {
                             </div>
                           </div>
                         </div>
-                      </div>
-                      <div className="col-4">
+                      </div> */}
+                      {/* <div className="col-4">
                         <div className="row me-0">
                           <div className="col-12 design_outter_comman mb-4 shadow">
                             <div className="row comman_header justify-content-between">
@@ -540,8 +525,8 @@ function OrderDetails() {
                             </div>
                           </div>
                         </div>
-                      </div>
-                      <div className="col-4">
+                      </div> */}
+                      {/* <div className="col-4">
                         <div className="row me-0">
                           <div className="col-12 design_outter_comman mb-4 shadow">
                             <div className="row comman_header justify-content-between">
@@ -575,7 +560,7 @@ function OrderDetails() {
                             </div>
                           </div>
                         </div>
-                      </div>
+                      </div> */}
                     </div>
                   </div>
                   {/* <div className="col-12 design_outter_comman shadow">
