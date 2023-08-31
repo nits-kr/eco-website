@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Sidebar from "./Sidebar";
 import Slider from "react-slick";
 import axios from "axios";
+import Swal from "sweetalert2";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -13,10 +14,19 @@ import {
   faFileExport,
   faCameraRetro,
 } from "@fortawesome/free-solid-svg-icons";
+import { useUpdateHomeScreenBannerMutation } from "../services/Post";
 
 function HomeScreenBanner2() {
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
+  const [homeScreen, res] = useUpdateHomeScreenBannerMutation();
+  const [itemId, setItemId] = useState("");
+  const [orderStatus, setOrderStatus] = useState([]);
+  const [bannerOne, setBannerOne] = useState([])
+  const [bannerTwo, setBannerTwo] = useState([])
+  const [bannerThree, setBannerThree] = useState([])
+  const [bannerFour, setBannerFour] = useState([])
+  const [bannerFive, setBannerFive] = useState([])
   const [selectedImage1, setSelectedImage1] = useState(null);
   const [imageUrl1, setImageUrl1] = useState("");
   const [selectedImage2, setSelectedImage2] = useState(null);
@@ -78,6 +88,8 @@ function HomeScreenBanner2() {
       if (!response.data.error) {
         alert("List saved!");
         setFormData(response?.data?.results?.bannersData);
+        console.log(response?.data?.results?.bannersData?._id);
+        setBannerOne(response?.data?.results?.bannersData?.homeScreenOne)
       }
     } catch (error) {
       console.error(error);
@@ -166,6 +178,27 @@ function HomeScreenBanner2() {
     slidesToShow: 3,
     slidesToScroll: 1,
     autoplay: true,
+  };
+  const handleSaveChanges1 = async (e) => {
+    e.preventDefault();
+    console.log("handleSaveChanges1", itemId);
+    const editOffer = {
+      id: itemId,
+      status: orderStatus,
+    };
+    try {
+      await homeScreen(editOffer);
+      Swal.fire({
+        title: "Changes Saved",
+        text: "The Order Status has been updated successfully.",
+        icon: "success",
+        confirmButtonText: "OK",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          window.location.reload();
+        }
+      });
+    } catch (error) {}
   };
   return (
     <>

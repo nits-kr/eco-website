@@ -51,7 +51,7 @@ function AgentDetailsAll() {
     };
     const response = await agentDetails(userdetailId);
     setAddress(response?.data?.results?.address);
-    setOrder(response?.data?.results?.order);
+    setOrder(response?.data?.results?.details);
     setReview(response?.data?.results?.review);
     setDetails(response?.data?.results?.userDetail);
     setTotalOrder(response?.data?.results);
@@ -71,7 +71,7 @@ function AgentDetailsAll() {
       });
       if (result.isConfirmed) {
         await deleteOrder(orderId);
-        window.location.reload();
+        userDetail();
       }
     } catch (error) {
       console.log("Error deleting order:", error);
@@ -312,6 +312,38 @@ function AgentDetailsAll() {
                                     </tr>
                                     <tr>
                                       <td style={{ textAlign: "left" }}>
+                                        Bank Name:
+                                      </td>
+                                      <td style={{ textAlign: "left" }}>
+                                        {details?.bankName}
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td style={{ textAlign: "left" }}>
+                                        Account Number:
+                                      </td>
+                                      <td style={{ textAlign: "left" }}>
+                                        {details?.accountNumber}
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td style={{ textAlign: "left" }}>
+                                        Account Name:
+                                      </td>
+                                      <td style={{ textAlign: "left" }}>
+                                        {details?.accountName}
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td style={{ textAlign: "left" }}>
+                                        Routing Number:
+                                      </td>
+                                      <td style={{ textAlign: "left" }}>
+                                        {details?.routingNumber}
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td style={{ textAlign: "left" }}>
                                         Wallet Amount
                                       </td>
                                       <td style={{ textAlign: "left" }}>
@@ -329,7 +361,7 @@ function AgentDetailsAll() {
                             <div className="col">
                               <h2>
                                 {" "}
-                                Delivery Address ({details?.address_Id?.title})
+                                 Address
                               </h2>
                             </div>
                           </div>
@@ -340,13 +372,13 @@ function AgentDetailsAll() {
                                   <tbody style={{ textAlign: "left" }}>
                                     <tr>
                                       <td style={{ textAlign: "left" }}>
-                                        Title
+                                        Address:
                                       </td>
                                       <td style={{ textAlign: "left" }}>
-                                        {details?.address_Id?.title}
+                                        {details?.address}
                                       </td>
                                     </tr>
-                                    <tr>
+                                    {/* <tr>
                                       <td style={{ textAlign: "left" }}>
                                         Address
                                       </td>
@@ -377,14 +409,14 @@ function AgentDetailsAll() {
                                       <td style={{ textAlign: "left" }}>
                                         {details?.address_Id?.country}
                                       </td>
-                                    </tr>
+                                    </tr> */}
                                   </tbody>
                                 </table>
                               </div>
                             </div>
                           </div>
                         </div>
-                        {address?.map((item, index) => {
+                        {/* {address?.map((item, index) => {
                           return (
                             <div
                               className="col-12 design_outter_comman mb-4 shadow"
@@ -447,7 +479,7 @@ function AgentDetailsAll() {
                               </div>
                             </div>
                           );
-                        })}
+                        })} */}
                       </div>
                     </div>
                     <div className="col-8">
@@ -489,12 +521,12 @@ function AgentDetailsAll() {
                             <div className="col pe-0">
                               <div className="dashboard_boxcontent">
                                 <h2>Total Earning</h2>
-                                <span>{totalOrder?.totalSpent}</span>
+                                <span>{totalOrder?.totalearning}</span>
                               </div>
                             </div>
                           </Link>
                         </div>
-                        <div className="col d-flex align-items-stretch">
+                        {/* <div className="col d-flex align-items-stretch">
                           <Link
                             to="/offers"
                             className="row dashboard_box box_design me-3 w-100"
@@ -514,13 +546,15 @@ function AgentDetailsAll() {
                               </div>
                             </div>
                           </Link>
-                        </div>
+                        </div> */}
                       </div>
                       <div className="row ms-0">
                         <div className="col-12 design_outter_comman mb-4 shadow">
                           <div className="row comman_header justify-content-between">
                             <div className="col">
-                              <h2>My Order ({order?.length ? order?.length : "0"})</h2>
+                              <h2>
+                                My Order ({order?.length ? order?.length : "0"})
+                              </h2>
                             </div>
                           </div>
                           <div className="row">

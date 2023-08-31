@@ -312,6 +312,18 @@ export const PostApi = createApi({
         };
       },
     }),
+    updateHomeScreenBanner: builder.mutation({
+      query: (body) => {
+        console.log("update category", body);
+        const { id, ...data } = body;
+        console.log("update offer body data", data);
+        return {
+          url: `/admin/home/homeScreen/update-status/${id}`,
+          method: "post",
+          body: data,
+        };
+      },
+    }),
     orderAssign: builder.mutation({
       query: (body) => {
         console.log("update category", body);
@@ -590,4 +602,5 @@ export const {
   useOrderDetailsAllMutation,
   useOrderAssignMutation,
   useAgentDetailsAllMutation,
+  useUpdateHomeScreenBannerMutation,
 } = PostApi;

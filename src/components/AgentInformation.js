@@ -44,7 +44,7 @@ function AgentInformation() {
 
   return (
     <>
-      <Sidebar Dash={"agents"}/>
+      <Sidebar Dash={"agents"} />
       <div className="admin_main">
         <div className="admin_main_inner">
           <div className="admin_panel_data height_adjust">
@@ -102,7 +102,9 @@ function AgentInformation() {
                     <div className="row">
                       <div className="col-12 d-flex">
                         <div className="col-4">
-                          <strong>{agentDetails?.createdAt?.slice(0,10)} </strong>
+                          <strong>
+                            {agentDetails?.createdAt?.slice(0, 10)}{" "}
+                          </strong>
                           <div>
                             {" "}
                             <strong style={{ color: "grey" }}>
@@ -167,7 +169,10 @@ function AgentInformation() {
                       </span>
                     </div>
                   </div>
-                  <div className="col-12 pe-5 mt-2 shadow" style={{backgroundColor:"#fff"}}>
+                  <div
+                    className="col-12 pe-5 mt-2 shadow"
+                    style={{ backgroundColor: "#fff" }}
+                  >
                     <div
                       className="users_right pe-2 mt-3"
                       style={{ width: "115%" }}
@@ -468,7 +473,7 @@ function AgentInformation() {
                                       <td>{item?.shippingPrice} </td>
                                       <td>{item?.cartsTotal} </td>
                                       <td> {item?.orderStatus} </td>
-                                      <td>{item?.createdAt.slice(0,10)} </td>
+                                      <td>{item?.createdAt.slice(0, 10)} </td>
                                       <td></td>
                                     </tr>
                                   );
