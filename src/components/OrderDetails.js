@@ -219,6 +219,10 @@ function OrderDetails() {
                                     <div className="col-md-6">
                                       <span>
                                         <i className="fas fa-list-ol me-2"></i>{" "}
+                                        Status: {details?.orderStatus}
+                                      </span>
+                                      <span>
+                                        <i className="fas fa-list-ol me-2"></i>{" "}
                                         {productId?.productName_en}
                                       </span>
                                       <span>
@@ -384,7 +388,7 @@ function OrderDetails() {
                       <div className="col-12 design_outter_comman mb-4 shadow">
                         <div className="row comman_header justify-content-between">
                           <div className="col">
-                            <h2>Product Location</h2>
+                            <h2>Delivery Location</h2>
                           </div>
                         </div>
                         <form

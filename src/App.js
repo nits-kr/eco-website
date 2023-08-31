@@ -1,6 +1,6 @@
 import "./App.css";
 import { ToastContainer } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
+import "react-toastify/dist/ReactToastify.css";
 import { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import ResetPassword from "./components/ResetPassword";
@@ -68,7 +68,7 @@ function App() {
   return (
     <>
       <BrowserRouter>
-      <ToastContainer />
+        <ToastContainer />
         <LoadingBar height={3} color="#f11946" progress={progress} />
         <Routes>
           <Route exact className="active" path="/" element={<Login />} />
@@ -97,12 +97,7 @@ function App() {
             path="/users-offer-details"
             element={<UserOfferPostedDetails setProgress={setProgress} />}
           />
-          <Route
-            exact
-            className="active"
-            path="/map"
-            element={<GoogleMap/>}
-          />
+          <Route exact className="active" path="/map" element={<GoogleMap />} />
           <Route
             exact
             className="active"
@@ -119,7 +114,7 @@ function App() {
             exact
             className="active"
             path="/agents-information/:id"
-            element={<AgentDetailsAll/>}
+            element={<AgentDetailsAll />}
           />
           {/* <Route
             exact
@@ -127,7 +122,6 @@ function App() {
             path="/agents-information/:id"
             element={<AgentInformation />}
           /> */}
-          
 
           <Route
             exact
@@ -151,9 +145,9 @@ function App() {
             exact
             className="active"
             path="/brand-management"
-            element={<BrandManagement/>}
+            element={<BrandManagement />}
           />
-          
+
           <Route
             exact
             className="active"
@@ -173,7 +167,7 @@ function App() {
             exact
             className="active"
             path="/offers"
-            element={<OfferManagement />}
+            element={<OfferManagement setProgress={setProgress} />}
           />
           <Route
             exact
@@ -234,7 +228,7 @@ function App() {
             exact
             className="active"
             path="/informations"
-            element={<Informations setProgress={setProgress}/>}
+            element={<Informations setProgress={setProgress} />}
           />
           <Route
             exact
@@ -320,9 +314,9 @@ function App() {
             exact
             className="active"
             path="/userDetails/:id"
-            element={<UserDetailsAll/>}
+            element={<UserDetailsAll />}
           />
-          
+
           <Route
             exact
             className="active"

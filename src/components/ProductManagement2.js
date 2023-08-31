@@ -242,7 +242,7 @@ function ProductManagement2() {
                               // defaultValue=""
                               name="slug"
                               id="slug"
-                              value={formData.slug}
+                              value={formData.productNameEn + formData.categoryName_en}
                               placeholder="brandix-screwdriver150"
                               onChange={handleInputChange}
                               required

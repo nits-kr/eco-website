@@ -73,7 +73,10 @@ function OfferManagement() {
       Discount: discount,
       startDate: offer.startDate,
       endDate: offer.endDate,
-      product_Id: subCategory.categoryId,
+      // product_Id: subCategory.categoryId,
+      carts: subCategory.categoryId.map((productId) => ({
+        product_Id: productId,
+      })),
     };
 
     try {
@@ -111,38 +114,6 @@ function OfferManagement() {
     }
   };
 
-  // useEffect(() => {
-  //   handleSaveChanges2();
-  // }, [title3]);
-
-  // const handleSaveChanges2 = async (e) => {
-  //   // e.preventDefault();
-  //   const newOffer = {
-  //     title: title3,
-  //   };
-  //   try {
-  //     const response = await searchOffer(newOffer);
-  //     console.log("response", response);
-  //     if (response?.data?.results?.offerData) {
-  //       setOfferList(response?.data?.results?.offerData);
-  //     } else {
-  //       setOfferList([]);
-  //       Swal.fire({
-  //         title: "No Results",
-  //         text: "No offers found for the given search criteria.",
-  //         icon: "info",
-  //         confirmButtonText: "OK",
-  //       }).then((result) => {
-  //         if (result.isConfirmed) {
-  //           window.location.reload();
-  //           // window.location.reload();
-  //         }
-  //       });
-  //     }
-  //   } catch (error) {
-  //     console.error("Error:", error.message);
-  //   }
-  // };
   useEffect(() => {
     handleSaveChanges2();
   }, [searchQuery]);
@@ -216,17 +187,18 @@ function OfferManagement() {
     setCode2(item?.code || "");
     setDiscount2(item?.Discount || "");
   };
-  // const handleInputChange = (event) => {
-  //   const { name, value } = event.target;
-  //   setSubCategory({ ...subCategory, [name]: value });
-  // };
+
   const handleInputChange = (event) => {
     const { name, value } = event.target;
+
     if (value === "selectAll") {
       const allProductIds = categories.map((category) => category._id);
       setSubCategory({ ...subCategory, [name]: allProductIds });
     } else {
-      setSubCategory({ ...subCategory, [name]: value });
+      const updatedCategoryIds = subCategory.categoryId.includes(value)
+        ? subCategory.categoryId.filter((id) => id !== value)
+        : [...subCategory.categoryId, value];
+      setSubCategory({ ...subCategory, [name]: updatedCategoryIds });
     }
   };
 
@@ -301,13 +273,7 @@ function OfferManagement() {
                   <div className="col-12 design_outter_comman mb-4 shadow">
                     <div className="row comman_header justify-content-between">
                       <div className="col">
-                        <h2
-                        // onClick={() => dispatch(increment())}
-                        >
-                          Add New Offer
-                          {/* <span>{count} */}
-                          {/* </span> */}
-                        </h2>
+                        <h2>Add New Offer</h2>
                       </div>
                     </div>
                     <form
@@ -315,48 +281,16 @@ function OfferManagement() {
                       action=""
                       onSubmit={handleSaveChanges}
                     >
-                      {/* <div className="form-group col-6">
-                        <label htmlFor="">Product Name</label>
-                        <input
-                          type="text"
-                          className="form-control"
-                          name="productName"
-                          id="productName"
-                          value={productName}
-                          onChange={(e) => setProductName(e.target.value)}
-                        />
-                      </div> */}
                       <div className="form-group col-6">
                         <label htmlFor="">
                           Select Product
                           <span className="required-field text-danger">*</span>
                         </label>
-                        {/* <select
-                          className="select form-control"
-                          multiple=""
-                          name="categoryId"
-                          id="selectCategory"
-                          value={subCategory.categoryId}
-                          onChange={handleInputChange}
-                        >
-                          <option value="">Select Product</option>
-                          {Array.isArray(categories) &&
-                            categories.map((category) => (
-                              <option key={category._id} value={category._id}>
-                                {category.productName_en}
-                              </option>
-                            ))}
-                        </select> */}
                         <select
                           className="select form-control"
                           multiple=""
                           name="categoryId"
                           id="selectCategory"
-                          // value={
-                          //   Array.isArray(subCategory.categoryId)
-                          //     ? subCategory.categoryId
-                          //     : []
-                          // }
                           onChange={handleInputChange}
                         >
                           <option value="">Select Product</option>
@@ -385,22 +319,7 @@ function OfferManagement() {
                           minLength="3"
                         />
                       </div>
-                      {/* <div className="form-group mb-0 col">
-                        <label htmlFor="">
-                          Code
-                          <span className="required-field text-danger">*</span>
-                        </label>
-                        <input
-                          type="text"
-                          className="form-control"
-                          name="code"
-                          id="code"
-                          value={code}
-                          onChange={(e) => setCode(e.target.value)}
-                          required
-                          minLength="3"
-                        />
-                      </div> */}
+
                       <div className="form-group col-6">
                         <label htmlFor="">
                           Start Date
@@ -556,8 +475,14 @@ function OfferManagement() {
                                   <tr key={index}>
                                     <td> {index + 1} </td>
                                     <td>
-                                      {" "}
-                                      {item?.product_Id?.productName_en}{" "}
+                                      {/* {
+                                        item?.products[0]?.product_Id
+                                          ?.productName_en
+                                      } */}
+                                      {item?.products?.length === 1
+                                        ? item?.products[0]?.product_Id
+                                            ?.productName_en
+                                        : "All Product"}
                                     </td>
                                     <td> {item?.title} </td>
                                     <td> {item?.code} </td>
@@ -578,7 +503,7 @@ function OfferManagement() {
                                           </div>
                                         </form>
                                       </td> */}
-                                    <td> {item?.endDate} </td>
+                                    <td> {item?.endDate?.slice(0, 10)} </td>
                                     <td>
                                       <Link
                                         className="comman_btn table_viewbtn"
