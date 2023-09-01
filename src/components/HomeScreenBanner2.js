@@ -102,7 +102,7 @@ function HomeScreenBanner2() {
       console.log(response?.data?.results?.bannersData);
 
       if (!response.data.error) {
-        alert("List saved!");
+        // alert("List saved!");
         setFormData(response?.data?.results?.bannersData);
         setItemId(response?.data?.results?.bannersData?._id);
         console.log(response?.data?.results?.bannersData?._id);
@@ -111,6 +111,18 @@ function HomeScreenBanner2() {
           response?.data?.results?.bannersData?.homeScreenOne
         );
       }
+      Swal.fire({
+        icon: "success",
+        title: "Success",
+        text: "Banner One created!",
+        confirmButtonColor: "#3085d6",
+        confirmButtonText: "OK",
+      }).then((result) => {
+        // You can add additional actions here if needed
+        if (result.isConfirmed) {
+          // Perform any additional actions when the user clicks "OK"
+        }
+      });
     } catch (error) {
       console.error(error);
     }
@@ -127,13 +139,25 @@ function HomeScreenBanner2() {
       console.log(response?.data?.results?.bannersData);
 
       if (!response.data.error) {
-        alert("List saved!");
+        // alert("List saved!");
         setFormData(response?.data?.results?.bannersData);
         localStorage?.setItem(
           "bannerTwo",
           response?.data?.results?.bannersData?.homeScreenTwo
         );
       }
+      Swal.fire({
+        icon: "success",
+        title: "Success",
+        text: "Banner Two created!",
+        confirmButtonColor: "#3085d6",
+        confirmButtonText: "OK",
+      }).then((result) => {
+        // You can add additional actions here if needed
+        if (result.isConfirmed) {
+          // Perform any additional actions when the user clicks "OK"
+        }
+      });
     } catch (error) {
       console.error(error);
     }
@@ -150,13 +174,25 @@ function HomeScreenBanner2() {
       console.log(response?.data?.results?.bannersData);
 
       if (!response.data.error) {
-        alert("List saved!");
+        // alert("List saved!");
         setFormData(response?.data?.results?.bannersData);
         localStorage?.setItem(
           "bannerThree",
           response?.data?.results?.bannersData?.homeScreenThree
         );
       }
+      Swal.fire({
+        icon: "success",
+        title: "Success",
+        text: "Banner Three created!",
+        confirmButtonColor: "#3085d6",
+        confirmButtonText: "OK",
+      }).then((result) => {
+        // You can add additional actions here if needed
+        if (result.isConfirmed) {
+          // Perform any additional actions when the user clicks "OK"
+        }
+      });
     } catch (error) {
       console.error(error);
     }
@@ -173,13 +209,25 @@ function HomeScreenBanner2() {
       console.log(response?.data?.results?.bannersData);
 
       if (!response.data.error) {
-        alert("List saved!");
+        // alert("List saved!");
         setFormData(response?.data?.results?.bannersData);
         localStorage?.setItem(
           "bannerFour",
           response?.data?.results?.bannersData?.homeScreenFour
         );
       }
+      Swal.fire({
+        icon: "success",
+        title: "Success",
+        text: "Banner Four created!",
+        confirmButtonColor: "#3085d6",
+        confirmButtonText: "OK",
+      }).then((result) => {
+        // You can add additional actions here if needed
+        if (result.isConfirmed) {
+          // Perform any additional actions when the user clicks "OK"
+        }
+      });
     } catch (error) {
       console.error(error);
     }
@@ -196,13 +244,25 @@ function HomeScreenBanner2() {
       console.log(response?.data?.results?.bannersData);
 
       if (!response.data.error) {
-        alert("List saved!");
+        // alert("List saved!");
         setFormData(response?.data?.results?.bannersData);
         localStorage?.setItem(
           "bannerFive",
           response?.data?.results?.bannersData?.homeScreenFive
         );
       }
+      Swal.fire({
+        icon: "success",
+        title: "Success",
+        text: "Banner Five created!",
+        confirmButtonColor: "#3085d6",
+        confirmButtonText: "OK",
+      }).then((result) => {
+        // You can add additional actions here if needed
+        if (result.isConfirmed) {
+          // Perform any additional actions when the user clicks "OK"
+        }
+      });
     } catch (error) {
       console.error(error);
     }
