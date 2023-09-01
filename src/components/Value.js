@@ -157,33 +157,6 @@ function Value() {
   };
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
-  // const handleSubmit = async (event) => {
-  //   event.preventDefault();
-  //   try {
-  //     const response = await axios.post(
-  //       "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/values/createvalues",
-  //       {
-  //         valuesName_en: values.nameEn,
-  //         valuesName_ar: values.nameAr,
-  //         category_Id: values.categoryId,
-  //         subCategory_Id: values.categoryId1,
-  //         subSubCategory_Id: values.categoryId2,
-  //         attribute_Id: values.categoryId3,
-  //       }
-  //     );
-  //     console.log(response.data.results.createValues);
-  //     if (!response.data.error) {
-  //       Swal.fire({
-  //         icon: "success",
-  //         title: "Value Created",
-  //         text: "The Value has been created successfully.",
-  //       });
-  //       handleSave();
-  //     }
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // };
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
@@ -237,9 +210,9 @@ function Value() {
     const fetchData = async () => {
       try {
         const response = await axios.post(
-          "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/values/selectCategory"
+          "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/category/list"
         );
-        setCategories(response.data.results.categoryData);
+        setCategories(response.data.results.list);
         console.log(response.data);
       } catch (error) {
         console.error(error);
@@ -251,45 +224,45 @@ function Value() {
     const fetchData = async () => {
       try {
         const response = await axios.post(
-          "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/attribute/selectSubCategory"
+          `http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/subCategory/selectCategory/${values.categoryId}`
         );
-        setSubCategories(response.data.results.subCategoryData);
+        setSubCategories(response.data.results.categoryData);
         console.log(response.data);
       } catch (error) {
         console.error(error);
       }
     };
     fetchData();
-  }, []);
+  }, [values.categoryId]);
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await axios.post(
-          "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/attribute/selectSubSubcategory"
+          `http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/subSubCategory/selectSubCategory/${values.categoryId1}`
         );
-        setSubSubCategories(response.data.results.subSubCategoryData);
+        setSubSubCategories(response.data.results.subCategoryData);
         console.log(response.data);
       } catch (error) {
         console.error(error);
       }
     };
     fetchData();
-  }, []);
+  }, [values.categoryId1]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await axios.post(
-          "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/values/selectAttribute"
+          `http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/attribute/selectSubSubCategory/${values.categoryId1}`
         );
-        setAttributes(response.data.results.attributeCategoryData);
+        setAttributes(response.data.results.subSubCategoryData);
         console.log(response.data);
       } catch (error) {
         console.error(error);
       }
     };
     fetchData();
-  }, []);
+  }, [values.categoryId1]);
 
   const handleSaveChanges1 = async (e) => {
     e.preventDefault();
@@ -359,7 +332,8 @@ function Value() {
                   id="selectCategory"
                   value={values.categoryId}
                   onChange={handleInputChange}
-                ><option value="">Select Category</option>
+                >
+                  <option value="">Select Category</option>
                   {Array.isArray(categories) &&
                     categories.map((category) => (
                       <option key={category._id} value={category._id}>
@@ -657,6 +631,7 @@ function Value() {
                     value={values.categoryId}
                     onChange={handleInputChange}
                   >
+                    <option value="">Select Category</option>
                     {Array.isArray(categories) &&
                       categories.map((category) => (
                         <option key={category._id} value={category._id}>
@@ -675,6 +650,7 @@ function Value() {
                     value={values.categoryId1}
                     onChange={handleInputChange}
                   >
+                    <option value="">Select Sub Category</option>
                     {Array.isArray(subCategories) &&
                       subCategories.map((subCategory) => (
                         <option key={subCategory._id} value={subCategory._id}>
@@ -693,6 +669,7 @@ function Value() {
                     value={values.categoryId2}
                     onChange={handleInputChange}
                   >
+                    <option value="">Select Sub Sub Category</option>
                     {Array.isArray(subSubCategories) &&
                       subSubCategories.map((subSubCategory) => (
                         <option
@@ -714,6 +691,7 @@ function Value() {
                     value={values.categoryId3}
                     onChange={handleInputChange}
                   >
+                    <option value="">Select Attribute</option>
                     {Array.isArray(attributes) &&
                       attributes.map((attribute) => (
                         <option key={attribute._id} value={attribute._id}>

@@ -424,8 +424,8 @@ function CategoryManagement(props) {
                                         marginLeft: "15px",
                                         width: "95%",
                                       }}
-                                      required
-                                      accept=".jpg, .jpeg, .png"
+                                      // required
+                                      // accept=".jpg, .jpeg, .png"
                                     />
                                   </div>
                                   <div className="invalid-feedback">

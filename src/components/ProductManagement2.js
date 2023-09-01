@@ -15,13 +15,19 @@ function ProductManagement2() {
 
   const [categories, setCategories] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
+  const [subSubCategories, setSubSubCategories] = useState([]);
   const [brands, setBrands] = useState([]);
+  const [attribute, setAttribute] = useState([]);
+  const [value, setValue] = useState([]);
   const [subSubCategory, setSubSubCategory] = useState({
     nameEn: "",
     nameAr: "",
     categoryId: "",
     categoryId1: "",
+    categoryId3: "",
     brandId1: "",
+    attributeId: "",
+    valueId: "",
   });
   const [categoryName, setCategoryName] = useState("");
   const [subCategoryName, setSubCategoryName] = useState("");
@@ -29,7 +35,9 @@ function ProductManagement2() {
     "slug",
     "www.ecommerce.com" + "/" + categoryName + "/" + subCategoryName
   );
-  const slug = `www.ecommerce.com/${categoryName}/${subCategoryName}`;
+  const categoryNameNew = categoryName.replace(/\s+/g, "");
+  const subCategoryNameNew = subCategoryName.replace(/\s+/g, "");
+  const slug = `www.ecommerce.com/${categoryNameNew}/${subCategoryNameNew}`;
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
   const navigate = useNavigate();
@@ -80,9 +88,9 @@ function ProductManagement2() {
     const fetchData = async () => {
       try {
         const response = await axios.post(
-          "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/subSubCategory/selectCategory"
+          "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/category/list"
         );
-        setCategories(response.data.results.categoryData);
+        setCategories(response.data.results.list);
         console.log(response.data);
       } catch (error) {
         console.error(error);
@@ -94,16 +102,30 @@ function ProductManagement2() {
     const fetchData = async () => {
       try {
         const response = await axios.post(
-          "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/subSubCategory/selectSubCategory"
+          `http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/subCategory/selectCategory/${subSubCategory.categoryId}`
         );
-        setSubCategories(response.data.results.subCategoryData);
+        setSubCategories(response.data.results.categoryData);
         console.log(response.data);
       } catch (error) {
         console.error(error);
       }
     };
     fetchData();
-  }, []);
+  }, [subSubCategory.categoryId]);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.post(
+          `http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/subSubCategory/selectSubCategory/${subSubCategory.categoryId1}`
+        );
+        setSubSubCategories(response.data.results.subCategoryData);
+        console.log(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchData();
+  }, [subSubCategory.categoryId1]);
   useEffect(() => {
     const fetchData2 = async () => {
       try {
@@ -118,6 +140,20 @@ function ProductManagement2() {
     };
     fetchData2();
   }, []);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.post(
+          `http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/attribute/selectSubSubCategory/${subSubCategory.attributeId}`
+        );
+        setAttribute(response.data.results.subSubCategoryData);
+        console.log(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchData();
+  }, [subSubCategory.attributeId]);
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -165,6 +201,9 @@ function ProductManagement2() {
     data.append("category_Id", subSubCategory.categoryId);
     data.append("Subcategory_Id", subSubCategory.categoryId1);
     // data.append("brand_Id", subSubCategory.brandId1);
+    if (subSubCategory.categoryId3) {
+      data.append("subSubcategory_Id", subSubCategory.categoryId3);
+    }
     if (subSubCategory.brandId1) {
       data.append("brand_Id", subSubCategory.brandId1);
     }
@@ -247,6 +286,173 @@ function ProductManagement2() {
                           className="form-design py-4 px-3 help-support-form row align-items-end justify-content-between"
                           action=""
                         >
+                          {subSubCategories.length > 0 ? (
+                            <>
+                              {" "}
+                              <div className="form-group col-6">
+                                <label htmlFor=""> Select Category</label>
+                                <select
+                                  className="select form-control"
+                                  multiple=""
+                                  name="categoryId"
+                                  id="categoryId"
+                                  value={subSubCategory.categoryId}
+                                  onChange={handleInputChange1}
+                                >
+                                  <option value="">Select Category</option>
+                                  {Array.isArray(categories) &&
+                                    categories.map((category) => (
+                                      <option
+                                        key={category._id}
+                                        value={category._id}
+                                      >
+                                        {category.categoryName_en}
+                                      </option>
+                                    ))}
+                                </select>
+                              </div>
+                              <div className="form-group col-6">
+                                <label htmlFor="">Select Sub-Category</label>
+                                <select
+                                  className="select form-control"
+                                  multiple=""
+                                  name="categoryId1"
+                                  id="categoryId1"
+                                  value={subSubCategory.categoryId1}
+                                  onChange={handleInputChange2}
+                                >
+                                  <option value="">Select Sub Category</option>
+                                  {Array.isArray(subCategories) &&
+                                    subCategories.map((subCategory) => (
+                                      <option
+                                        key={subCategory._id}
+                                        value={subCategory._id}
+                                      >
+                                        {subCategory.subCategoryName_en}
+                                      </option>
+                                    ))}
+                                </select>
+                              </div>
+                              <div className="form-group col-6">
+                                <label htmlFor="">
+                                  Select Sub-Sub-Category
+                                </label>
+                                <select
+                                  className="select form-control"
+                                  multiple=""
+                                  name="categoryId3"
+                                  id="categoryId3"
+                                  value={subSubCategory.categoryId3}
+                                  onChange={handleInputChange3}
+                                >
+                                  <option value="">
+                                    Select Sub Sub Category
+                                  </option>
+                                  {Array.isArray(subSubCategories) &&
+                                    subSubCategories.map((subSubCategory) => (
+                                      <option
+                                        key={subSubCategory._id}
+                                        value={subSubCategory._id}
+                                      >
+                                        {subSubCategory.subSubCategoryName_en}
+                                      </option>
+                                    ))}
+                                </select>
+                              </div>
+                              <div className="form-group col-6">
+                                <label htmlFor="">Select Brand</label>
+                                <select
+                                  className="select form-control"
+                                  multiple=""
+                                  name="brandId1"
+                                  id="brandId1"
+                                  value={subSubCategory.brandId1}
+                                  onChange={handleInputChange3}
+                                >
+                                  <option value="">Select Brand</option>
+                                  {Array.isArray(brands) &&
+                                    brands.map((subCategory) => (
+                                      <option
+                                        key={subCategory._id}
+                                        value={subCategory._id}
+                                      >
+                                        {subCategory.brandName_en}
+                                      </option>
+                                    ))}
+                                </select>
+                              </div>
+                            </>
+                          ) : (
+                            <>
+                              <div className="form-group col-4">
+                                <label htmlFor=""> Select Category</label>
+                                <select
+                                  className="select form-control"
+                                  multiple=""
+                                  name="categoryId"
+                                  id="categoryId"
+                                  value={subSubCategory.categoryId}
+                                  onChange={handleInputChange1}
+                                >
+                                  <option value="">Select Category</option>
+                                  {Array.isArray(categories) &&
+                                    categories.map((category) => (
+                                      <option
+                                        key={category._id}
+                                        value={category._id}
+                                      >
+                                        {category.categoryName_en}
+                                      </option>
+                                    ))}
+                                </select>
+                              </div>
+                              <div className="form-group col-4">
+                                <label htmlFor="">Select Sub-Category</label>
+                                <select
+                                  className="select form-control"
+                                  multiple=""
+                                  name="categoryId1"
+                                  id="categoryId1"
+                                  value={subSubCategory.categoryId1}
+                                  onChange={handleInputChange2}
+                                >
+                                  <option value="">Select Sub Category</option>
+                                  {Array.isArray(subCategories) &&
+                                    subCategories.map((subCategory) => (
+                                      <option
+                                        key={subCategory._id}
+                                        value={subCategory._id}
+                                      >
+                                        {subCategory.subCategoryName_en}
+                                      </option>
+                                    ))}
+                                </select>
+                              </div>
+                              <div className="form-group col-4">
+                                <label htmlFor="">Select Brand</label>
+                                <select
+                                  className="select form-control"
+                                  multiple=""
+                                  name="brandId1"
+                                  id="brandId1"
+                                  value={subSubCategory.brandId1}
+                                  onChange={handleInputChange3}
+                                >
+                                  <option value="">Select Brand</option>
+                                  {Array.isArray(brands) &&
+                                    brands.map((subCategory) => (
+                                      <option
+                                        key={subCategory._id}
+                                        value={subCategory._id}
+                                      >
+                                        {subCategory.brandName_en}
+                                      </option>
+                                    ))}
+                                </select>
+                              </div>
+                            </>
+                          )}
+
                           <div className="form-group col-6">
                             <label htmlFor="productNameEn">
                               Product Name(En)
@@ -304,30 +510,6 @@ function ProductManagement2() {
                               minLength="3"
                             />
                           </div>
-                          {/* <div className="form-group col-12">
-                            <label htmlFor="slug">
-                              Slug
-                              <span className="required-field text-danger">
-                                *
-                              </span>
-                            </label>
-                            <input
-                              type="text"
-                              className="form-control"
-                              // defaultValue=""
-                              name="slug"
-                              id="slug"
-                              value={formData.productNameEn + formData.categoryName_en}
-                              placeholder="brandix-screwdriver150"
-                              onChange={handleInputChange}
-                              required
-                              minLength="3"
-                            />
-                            <div className="Slug_text">
-                              Unique Human-readable product identifier. No
-                              Longer than 255 characters.
-                            </div>
-                          </div> */}
                           <div className="form-group col-6">
                             <label htmlFor="DescriptionEn">
                               Description(En)
@@ -424,7 +606,7 @@ function ProductManagement2() {
                               minLength="3"
                             />
                           </div>
-                          <div className="form-group col-6">
+                          {/* <div className="form-group col-6">
                             <label htmlFor="weight">
                               Weight(En)
                               <span className="required-field text-danger">
@@ -463,7 +645,7 @@ function ProductManagement2() {
                               required
                               minLength="3"
                             />
-                          </div>
+                          </div> */}
                         </div>
                       </div>
                       <div className="col-12 design_outter_comman mb-4 shadow">
@@ -473,7 +655,7 @@ function ProductManagement2() {
                           </div>
                         </div>
                         <div
-                          className="form-design py-4 px-3 help-support-form row align-items-end justify-content-between"
+                          className="form-design px-3 help-support-form row align-items-end justify-content-between mt-4"
                           action=""
                         >
                           <div className="form-group col-4">
@@ -544,6 +726,57 @@ function ProductManagement2() {
                               id="name"
                             />
                           </div> */}
+                        </div>
+                        <div className="col-12 design_outter_comman mb-4 ">
+                          <div
+                            className="form-design py-3 px-2 help-support-form row align-items-end justify-content-between"
+                            action=""
+                          >
+                            <div className="form-group col-6">
+                              <label htmlFor="">Select Attribute</label>
+                              <select
+                                className="select form-control"
+                                multiple=""
+                                name="attribute"
+                                id="attribute"
+                                value={subSubCategory.attributeId}
+                                onChange={handleInputChange3}
+                              >
+                                <option value="">Select Attribute</option>
+                                {Array.isArray(attribute) &&
+                                  attribute.map((subCategory) => (
+                                    <option
+                                      key={subCategory._id}
+                                      value={subCategory._id}
+                                    >
+                                      {subCategory.attributeName_en}
+                                    </option>
+                                  ))}
+                              </select>
+                            </div>
+                            <div className="form-group col-6">
+                              <label htmlFor="">Select Values</label>
+                              <select
+                                className="select form-control"
+                                multiple=""
+                                name="value"
+                                id="valueId"
+                                value={subSubCategory.valueId}
+                                onChange={handleInputChange3}
+                              >
+                                <option value="">Select Values</option>
+                                {Array.isArray(value) &&
+                                  value.map((subCategory) => (
+                                    <option
+                                      key={subCategory._id}
+                                      value={subCategory._id}
+                                    >
+                                      {subCategory.attributeName_en}
+                                    </option>
+                                  ))}
+                              </select>
+                            </div>
+                          </div>
                         </div>
                       </div>
                       <div className="col-12 design_outter_comman mb-4 shadow">
@@ -861,7 +1094,7 @@ function ProductManagement2() {
                           </div>
                         </div>
                       </div>
-                      <div className="col-12 design_outter_comman mb-4 shadow">
+                      {/* <div className="col-12 design_outter_comman mb-4 shadow">
                         <div className="row comman_header justify-content-between">
                           <div className="col">
                             <h2>Category</h2>
@@ -894,8 +1127,8 @@ function ProductManagement2() {
                             </select>
                           </div>
                         </div>
-                      </div>
-                      <div className="col-12 design_outter_comman mb-4 shadow">
+                      </div> */}
+                      {/* <div className="col-12 design_outter_comman mb-4 shadow">
                         <div className="row comman_header justify-content-between">
                           <div className="col">
                             <h2>Sub Category</h2>
@@ -928,7 +1161,7 @@ function ProductManagement2() {
                             </select>
                           </div>
                         </div>
-                      </div>
+                      </div> */}
                       <div className="col-12 design_outter_comman mb-4 shadow">
                         <div className="row comman_header justify-content-between">
                           <div className="col">
@@ -1053,7 +1286,7 @@ function ProductManagement2() {
                           </div>
                         </div>
                       </div>
-                      <div className="col-12 design_outter_comman mb-4 shadow">
+                      {/* <div className="col-12 design_outter_comman mb-4 shadow">
                         <div className="row comman_header justify-content-between">
                           <div className="col">
                             <h2>Product Color(En)</h2>
@@ -1110,7 +1343,7 @@ function ProductManagement2() {
                             />
                           </div>
                         </div>
-                      </div>
+                      </div> */}
                     </div>
                   </div>
                 </form>

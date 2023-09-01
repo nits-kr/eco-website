@@ -185,9 +185,9 @@ function SubSubCategory() {
     const fetchData = async () => {
       try {
         const response = await axios.post(
-          "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/subSubCategory/selectCategory"
+          "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/category/list"
         );
-        setCategories(response.data.results.categoryData);
+        setCategories(response.data.results.list);
         console.log(response.data);
       } catch (error) {
         console.error(error);
@@ -199,16 +199,16 @@ function SubSubCategory() {
     const fetchData = async () => {
       try {
         const response = await axios.post(
-          "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/subSubCategory/selectSubCategory"
+          `http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/subCategory/selectCategory/${subSubCategory.categoryId}`
         );
-        setSubCategories(response.data.results.subCategoryData);
+        setSubCategories(response.data.results.categoryData);
         console.log(response.data);
       } catch (error) {
         console.error(error);
       }
     };
     fetchData();
-  }, []);
+  }, [subSubCategory.categoryId]);
   const handleSave = async () => {
     try {
       const response = await axios.post(

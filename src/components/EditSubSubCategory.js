@@ -40,9 +40,9 @@ function EditSubSubCategory(props) {
   const fetchData = async () => {
     try {
       const response = await axios.post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/attribute/selectCategory"
+        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/category/list"
       );
-      setCategories(response.data.results.categoryData);
+      setCategories(response.data.results.list);
       console.log(response.data);
     } catch (error) {
       console.error(error);
@@ -53,16 +53,16 @@ function EditSubSubCategory(props) {
     const fetchData = async () => {
       try {
         const response = await axios.post(
-          "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/attribute/selectSubcategory"
+          `http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/subCategory/selectCategory/${category.categoryId}`
         );
-        setSubCategories(response.data.results.subCategoryData);
+        setSubCategories(response.data.results.categoryData);
         console.log(response.data);
       } catch (error) {
         console.error(error);
       }
     };
     fetchData();
-  }, []);
+  }, [category.categoryId]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -105,7 +105,7 @@ function EditSubSubCategory(props) {
           subSubCategoryName_en: category.nameEn,
           subSubCategoryName_ar: category.nameAr,
           category_Id: category.categoryId,
-          subCategory_Id: category.categoryId1
+          subCategory_Id: category.categoryId1,
         }
       )
       .then((response) => {
@@ -170,6 +170,7 @@ function EditSubSubCategory(props) {
                     value={category.categoryId}
                     onChange={handleInputChange}
                   >
+                    <option value="">Select Category</option>
                     {Array.isArray(categories) &&
                       categories.map((category) => (
                         <option key={category._id} value={category._id}>
@@ -188,6 +189,7 @@ function EditSubSubCategory(props) {
                     value={category.categoryId1}
                     onChange={handleInputChange}
                   >
+                    <option value="">Select Sub Category</option>
                     {Array.isArray(subCategories) &&
                       subCategories.map((subCategory) => (
                         <option key={subCategory._id} value={subCategory._id}>

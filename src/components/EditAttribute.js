@@ -66,9 +66,9 @@ function EditAttribute(props) {
     const fetchData = async () => {
       try {
         const response = await axios.post(
-          "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/attribute/selectCategory"
+          "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/category/list"
         );
-        setCategories(response.data.results.categoryData);
+        setCategories(response.data.results.list);
         console.log(response.data);
       } catch (error) {
         console.error(error);
@@ -80,24 +80,24 @@ function EditAttribute(props) {
     const fetchData = async () => {
       try {
         const response = await axios.post(
-          "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/attribute/selectSubcategory"
+          `http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/subCategory/selectCategory/${editAttributes.categoryId}`
         );
-        setSubCategories(response.data.results.subCategoryData);
+        setSubCategories(response.data.results.categoryData);
         console.log(response.data);
       } catch (error) {
         console.error(error);
       }
     };
     fetchData();
-  }, []);
+  }, [editAttributes.categoryId]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await axios.post(
-          "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/attribute/selectSubSubCategory"
+          `http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/subSubCategory/selectSubCategory/${editAttributes.categoryId1}`
         );
-        setSubSubCategories(response.data.results.subSubCategoryData);
+        setSubSubCategories(response.data.results.subCategoryData);
         console.log(response.data);
       } catch (error) {
         console.error(error);
@@ -146,6 +146,7 @@ function EditAttribute(props) {
                     value={editAttributes.categoryId}
                     onChange={handleInputChange}
                   >
+                    <option value="">Select Category</option>
                     {Array.isArray(categories) &&
                       categories.map((category) => (
                         <option key={category._id} value={category._id}>
@@ -164,6 +165,7 @@ function EditAttribute(props) {
                     value={editAttributes.categoryId1}
                     onChange={handleInputChange}
                   >
+                    <option value="">Select Sub Category</option>
                     {Array.isArray(subCategories) &&
                       subCategories.map((subCategory) => (
                         <option key={subCategory._id} value={subCategory._id}>
@@ -182,6 +184,7 @@ function EditAttribute(props) {
                     value={editAttributes.categoryId2}
                     onChange={handleInputChange}
                   >
+                    <option value="">Select Sub Sub Category</option>
                     {Array.isArray(subSubCategories) &&
                       subSubCategories.map((subSubCategory) => (
                         <option

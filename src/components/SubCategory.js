@@ -213,10 +213,10 @@ function SubCategory(props) {
   const fetchData = async () => {
     try {
       const response = await axios.post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/subCategory/selectCategory"
+        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/category/list"
       );
-      setCategories(response?.data?.results?.categoryData);
-      console.log(response?.data?.results?.categoryData);
+      setCategories(response?.data?.results?.list);
+      console.log(response?.data?.results?.list);
     } catch (error) {
       console.error(error);
     }
@@ -549,6 +549,7 @@ function SubCategory(props) {
                     onChange={handleInputChange1}
                     // onChange={(e) => setCategoryNew(e.target.value)}
                   >
+                    <option value="">Select Category</option>
                     {categories.map((category) => (
                       <option key={category._id} value={category?._id}>
                         {category?.categoryName_en}

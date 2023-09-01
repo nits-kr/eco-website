@@ -207,9 +207,9 @@ function Attribute() {
     const fetchData = async () => {
       try {
         const response = await axios.post(
-          "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/attribute/selectCategory"
+          "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/category/list"
         );
-        setCategories(response.data.results.categoryData);
+        setCategories(response.data.results.list);
         console.log(response.data);
       } catch (error) {
         console.error(error);
@@ -222,31 +222,31 @@ function Attribute() {
     const fetchData = async () => {
       try {
         const response = await axios.post(
-          "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/attribute/selectSubcategory"
+          `http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/subCategory/selectCategory/${attributes.categoryId}`
         );
-        setSubCategories(response.data.results.subCategoryData);
+        setSubCategories(response.data.results.categoryData);
         console.log(response.data);
       } catch (error) {
         console.error(error);
       }
     };
     fetchData();
-  }, []);
+  }, [attributes.categoryId]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await axios.post(
-          "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/attribute/selectSubSubCategory"
+          `http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/subSubCategory/selectSubCategory/${attributes.categoryId1}`
         );
-        setSubSubCategories(response.data.results.subSubCategoryData);
-        console.log(response.data.results.subSubCategoryData);
+        setSubSubCategories(response.data.results.subCategoryData);
+        console.log(response.data.results.subCategoryData);
       } catch (error) {
         console.error(error);
       }
     };
     fetchData();
-  }, []);
+  }, [attributes.categoryId1]);
 
   const handleSave = async () => {
     await axios
