@@ -881,6 +881,7 @@ function ProductManagement2() {
                               value={subSubCategory.categoryId}
                               onChange={handleInputChange1}
                             >
+                              <option value="">Select Category</option>
                               {Array.isArray(categories) &&
                                 categories.map((category) => (
                                   <option
@@ -914,6 +915,7 @@ function ProductManagement2() {
                               value={subSubCategory.categoryId1}
                               onChange={handleInputChange2}
                             >
+                              <option value="">Select Sub Category</option>
                               {Array.isArray(subCategories) &&
                                 subCategories.map((subCategory) => (
                                   <option
@@ -947,6 +949,7 @@ function ProductManagement2() {
                               value={subSubCategory.brandId1}
                               onChange={handleInputChange3}
                             >
+                              <option value="">Select Brand</option>
                               {Array.isArray(brands) &&
                                 brands.map((subCategory) => (
                                   <option
