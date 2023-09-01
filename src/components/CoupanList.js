@@ -318,7 +318,7 @@ function CoupanList() {
                               <td>{item?.coupanCode}</td>
                               <td>{item?.DiscountType}</td>
                               <td>{item?.status}</td>
-                              <td> {item?.endDate} </td>
+                              <td> {item?.enddate?.slice(0,10)} </td>
                               <td>
                                 <Link
                                   className="comman_btn table_viewbtn mx-2"

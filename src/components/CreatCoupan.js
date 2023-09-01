@@ -74,8 +74,8 @@ export default function CreatCoupan() {
         {
           coupanTitle_en: coupan.coupanTitle,
           coupanCode: coupan.coupanCode,
-          startDate: coupan.startDate,
-          endDate: coupan.endDate,
+          startdate: coupan.startDate,
+          enddate: coupan.endDate,
           Quantity: coupan.quantity,
           DiscountType: coupan.discountType,
           status: coupan.coupanStatus,

@@ -353,7 +353,7 @@ function UsersManagement(props) {
                                   <th>Mobile Number</th>
                                   <th>Registration Date</th>
                                   {/* <th>Special Offers</th> */}
-                                  <th>Status</th>
+                                  {/* <th>Status</th> */}
                                   <th>Action</th>
                                 </tr>
                               </thead>
@@ -373,7 +373,7 @@ function UsersManagement(props) {
                                         .join("-")}{" "}
                                     </td>
                                     {/* <td>{user?.specialOffer}</td> */}
-                                    <td>
+                                    {/* <td>
                                       <form className="table_btns d-flex align-items-center">
                                         <div className="check_toggle">
                                           <input
@@ -390,7 +390,7 @@ function UsersManagement(props) {
                                           ></label>
                                         </div>
                                       </form>
-                                    </td>
+                                    </td> */}
                                     <td>
                                       <Link
                                         className="comman_btn2 table_viewbtn"
