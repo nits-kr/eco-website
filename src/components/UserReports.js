@@ -188,9 +188,9 @@ export default function UserReports(props) {
                         <tr key={index}>
                           <td>{index + 1}</td>
                           <td>{data?.product_Id?.productName_en}</td>
-                          <td>{data.reporterAgainst}</td>
-                          <td>{data.reporterAgainst}</td>
-                          <td>{data.reporterAgainst}</td>
+                          <td>{data.reporterName}</td>
+                          <td>{data.reporterNumber}</td>
+                          <td>{data.reporterEmail}</td>
                           <td>{data.reason}</td>
                           <td>{data?.description?.slice(0, 20)}...</td>
                           <td>
