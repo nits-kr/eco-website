@@ -24,13 +24,22 @@ function Sidebar({ Dash }) {
             </div>
             <div className="sidebar_menus">
               <ul className="list-unstyled ps-1 m-0">
-                <li
+                {/* <li
                   className={
                     Dash === "dashboard" ? "nav-link active" : "nav-link"
                   }
                 >
                   <Link className="" to="/dashboard">
                     <i className="fal fa-home"></i>Dashboard
+                  </Link>
+                </li> */}
+                <li
+                  className={
+                    Dash === "dashboard" ? "nav-link active" : "nav-link"
+                  }
+                >
+                  <Link className="" to="/dashboard">
+                    <i className="fal fa-box-full"></i>Dashboard
                   </Link>
                 </li>
                 <li
@@ -40,42 +49,6 @@ function Sidebar({ Dash }) {
                     <i className="fal fa-user"></i>Users Management
                   </Link>
                 </li>
-                
-                {/* <li
-                  className={
-                    Dash === "categories" ? "nav-link active" : "nav-link"
-                  }
-                >
-                  <div className="dropdown">
-                    <Link
-                      className="btn btn-primary dropdown-toggle"
-                      to="/categories"
-                      role="button"
-                      data-bs-toggle="dropdown"
-                      aria-expanded="false"
-                    >
-                      <FontAwesomeIcon icon={faList} />Category Management
-                    </Link>
-                    <ul className="dropdown-menu">
-                      <li>
-                        <Link className="dropdown-item" href="/products">
-                          Product List
-                        </Link>
-                      </li>
-                      <li>
-                        <a className="dropdown-item" href="#">
-                          Another action
-                        </a>
-                      </li>
-                      <li>
-                        <a className="dropdown-item" href="#">
-                          Something else here
-                        </a>
-                      </li>
-                    </ul>
-                  </div>
-                </li> */}
-
                 <li
                   className={
                     Dash === "categories" ? "nav-link active" : "nav-link"
@@ -133,7 +106,6 @@ function Sidebar({ Dash }) {
                     </Link>
                   </li>
                 </ul>
-
                 <li
                   className={
                     Dash === "product-management"
@@ -148,9 +120,7 @@ function Sidebar({ Dash }) {
                 </li>
                 <li
                   className={
-                    Dash === "brand-management"
-                      ? "nav-link active"
-                      : "nav-link"
+                    Dash === "brand-management" ? "nav-link active" : "nav-link"
                   }
                 >
                   <Link className="ms-link " to="/brand-management">
@@ -239,7 +209,7 @@ function Sidebar({ Dash }) {
                     <i className="far fa-bullhorn"></i> Announcement Management
                   </Link>
                 </li>
-                <li
+                {/* <li
                   className={
                     Dash === "thoughts-management"
                       ? "nav-link active"
@@ -249,7 +219,7 @@ function Sidebar({ Dash }) {
                   <Link className="" to="/thoughts-management">
                     <i className="fal fa-lightbulb-on"></i> Thoughts Management
                   </Link>
-                </li>
+                </li> */}
                 <li
                   className={
                     Dash === "content-management"
@@ -309,6 +279,11 @@ function Sidebar({ Dash }) {
               </div>
 
               <div className="col-auto d-flex align-items-center">
+                {/* <div className="row me-2">
+                    <div className="notification_icon5">
+                      <i className="far fa-bell"></i>
+                    </div>
+                </div> */}
                 <Link className="change_language" to="">
                   <img src="../assets/img/saudi_flag1.png" alt="" />
                   عربى

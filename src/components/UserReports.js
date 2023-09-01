@@ -175,7 +175,9 @@ export default function UserReports(props) {
                       <tr>
                         <th>S.No.</th>
                         <th>Product Name</th>
-                        <th>Reported Against</th>
+                        <th> Reporter Name</th>
+                        <th> Number</th>
+                        <th> Email</th>
                         <th>Reason</th>
                         <th>Description</th>
                         <th>Action</th>
@@ -186,6 +188,8 @@ export default function UserReports(props) {
                         <tr key={index}>
                           <td>{index + 1}</td>
                           <td>{data?.product_Id?.productName_en}</td>
+                          <td>{data.reporterAgainst}</td>
+                          <td>{data.reporterAgainst}</td>
                           <td>{data.reporterAgainst}</td>
                           <td>{data.reason}</td>
                           <td>{data?.description?.slice(0, 20)}...</td>

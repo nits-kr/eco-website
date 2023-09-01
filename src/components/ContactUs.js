@@ -177,7 +177,7 @@ function ContactUs() {
                     >
                       <div className="form-group col-4">
                         <label htmlFor="">
-                          User Name
+                          Mobile Number
                           <span className="required-field text-danger">*</span>
                         </label>
                         <input
@@ -191,6 +191,22 @@ function ContactUs() {
                           minLength="3"
                         />
                       </div>
+                      {/* <div className="form-group col-4">
+                        <label htmlFor="">
+                          User Name
+                          <span className="required-field text-danger">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          className="form-control"
+                          name="userName"
+                          id="userName"
+                          value={userName}
+                          onChange={(e) => setUserName(e.target.value)}
+                          required
+                          minLength="3"
+                        />
+                      </div> */}
                       <div className="form-group col-4">
                         <label htmlFor="">
                           Email
@@ -223,7 +239,87 @@ function ContactUs() {
                           minLength="3"
                         />
                       </div>
+                      <div className="form-group col-4">
+                        <label htmlFor="">
+                          Facebook Link
+                          <span className="required-field text-danger">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          className="form-control"
+                          name="subject"
+                          id="subject"
+                          value={subject}
+                          onChange={(e) => setSubject(e.target.value)}
+                          required
+                          minLength="3"
+                        />
+                      </div>
+                      <div className="form-group col-4">
+                        <label htmlFor="">
+                          Telegram Link
+                          <span className="required-field text-danger">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          className="form-control"
+                          name="subject"
+                          id="subject"
+                          value={subject}
+                          onChange={(e) => setSubject(e.target.value)}
+                          required
+                          minLength="3"
+                        />
+                      </div>
+                      <div className="form-group col-4">
+                        <label htmlFor="">
+                          Instagram Link
+                          <span className="required-field text-danger">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          className="form-control"
+                          name="subject"
+                          id="subject"
+                          value={subject}
+                          onChange={(e) => setSubject(e.target.value)}
+                          required
+                          minLength="3"
+                        />
+                      </div>
                       <div className="form-group col-6">
+                        <label htmlFor="">
+                          YouTube Link
+                          <span className="required-field text-danger">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          className="form-control"
+                          name="subject"
+                          id="subject"
+                          value={subject}
+                          onChange={(e) => setSubject(e.target.value)}
+                          required
+                          minLength="3"
+                        />
+                      </div>
+                      <div className="form-group col-6">
+                        <label htmlFor="">
+                          LinkedIn Link
+                          <span className="required-field text-danger">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          className="form-control"
+                          name="subject"
+                          id="subject"
+                          value={subject}
+                          onChange={(e) => setSubject(e.target.value)}
+                          required
+                          minLength="3"
+                        />
+                      </div>
+                      {/* <div className="form-group col-6">
                         <label htmlFor="">
                           Description(En)
                           <span className="required-field text-danger">*</span>
@@ -252,7 +348,7 @@ function ContactUs() {
                           onChange={(e) => setDescriptionAr(e.target.value)}
                           required
                         ></textarea>
-                      </div>
+                      </div> */}
                       <div className="form-group mb-0 col-auto">
                         <button
                           className="comman_btn2"

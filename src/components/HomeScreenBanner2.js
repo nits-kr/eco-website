@@ -22,13 +22,24 @@ function HomeScreenBanner2() {
   const [homeScreen, res] = useUpdateHomeScreenBannerMutation();
   const [itemId, setItemId] = useState("");
   const [orderStatus, setOrderStatus] = useState([]);
-  const [bannerOne, setBannerOne] = useState([])
-  const [bannerTwo, setBannerTwo] = useState([])
-  const [bannerThree, setBannerThree] = useState([])
-  const [bannerFour, setBannerFour] = useState([])
-  const [bannerFive, setBannerFive] = useState([])
+  // const [bannerOne, setBannerOne] = useState([]);
+  const bannerOne = localStorage?.getItem("bannerOne");
+  const bannerTwo = localStorage?.getItem("bannerTwo");
+  const bannerThree = localStorage?.getItem("bannerThree");
+  const bannerFour = localStorage?.getItem("bannerFour");
+  const bannerFive = localStorage?.getItem("bannerFive");
+  const [banners1, setBanners1] = useState([]);
+  const [banners2, setBanners2] = useState([]);
+  const [banners3, setBanners3] = useState([]);
+  const [banners4, setBanners4] = useState([]);
+  const [banners5, setBanners5] = useState([]);
   const [selectedImage1, setSelectedImage1] = useState(null);
   const [imageUrl1, setImageUrl1] = useState("");
+  const bannerUrl1 = localStorage?.getItem("bannerUrl1");
+  const bannerUrl2 = localStorage?.getItem("bannerUrl2");
+  const bannerUrl3 = localStorage?.getItem("bannerUrl3");
+  const bannerUrl4 = localStorage?.getItem("bannerUrl4");
+  const bannerUrl5 = localStorage?.getItem("bannerUrl5");
   const [selectedImage2, setSelectedImage2] = useState(null);
   const [imageUrl2, setImageUrl2] = useState("");
   const [selectedImage3, setSelectedImage3] = useState(null);
@@ -49,30 +60,35 @@ function HomeScreenBanner2() {
     setSelectedImage1(URL.createObjectURL(file));
     setFormData({ ...formData, bannerPic1: event.target.files[0] });
     setImageUrl1(URL.createObjectURL(file));
+    localStorage?.setItem("bannerUrl1", URL.createObjectURL(file));
   };
   const handleImageUpload2 = (event) => {
     const file = event.target.files[0];
     setSelectedImage2(URL.createObjectURL(file));
     setFormData({ ...formData, bannerPic2: event.target.files[0] });
     setImageUrl2(URL.createObjectURL(file));
+    localStorage?.setItem("bannerUrl2", URL.createObjectURL(file));
   };
   const handleImageUpload3 = (event) => {
     const file = event.target.files[0];
     setSelectedImage3(URL.createObjectURL(file));
     setFormData({ ...formData, bannerPic3: event.target.files[0] });
     setImageUrl3(URL.createObjectURL(file));
+    localStorage?.setItem("bannerUrl3", URL.createObjectURL(file));
   };
   const handleImageUpload4 = (event) => {
     const file = event.target.files[0];
     setSelectedImage4(URL.createObjectURL(file));
     setFormData({ ...formData, bannerPic4: event.target.files[0] });
     setImageUrl4(URL.createObjectURL(file));
+    localStorage?.setItem("bannerUrl4", URL.createObjectURL(file));
   };
   const handleImageUpload5 = (event) => {
     const file = event.target.files[0];
     setSelectedImage5(URL.createObjectURL(file));
     setFormData({ ...formData, bannerPic5: event.target.files[0] });
     setImageUrl5(URL.createObjectURL(file));
+    localStorage?.setItem("bannerUrl5", URL.createObjectURL(file));
   };
   const handleOnSave1 = async (event) => {
     event.preventDefault();
@@ -88,8 +104,12 @@ function HomeScreenBanner2() {
       if (!response.data.error) {
         alert("List saved!");
         setFormData(response?.data?.results?.bannersData);
+        setItemId(response?.data?.results?.bannersData?._id);
         console.log(response?.data?.results?.bannersData?._id);
-        setBannerOne(response?.data?.results?.bannersData?.homeScreenOne)
+        localStorage?.setItem(
+          "bannerOne",
+          response?.data?.results?.bannersData?.homeScreenOne
+        );
       }
     } catch (error) {
       console.error(error);
@@ -109,6 +129,10 @@ function HomeScreenBanner2() {
       if (!response.data.error) {
         alert("List saved!");
         setFormData(response?.data?.results?.bannersData);
+        localStorage?.setItem(
+          "bannerTwo",
+          response?.data?.results?.bannersData?.homeScreenTwo
+        );
       }
     } catch (error) {
       console.error(error);
@@ -128,6 +152,10 @@ function HomeScreenBanner2() {
       if (!response.data.error) {
         alert("List saved!");
         setFormData(response?.data?.results?.bannersData);
+        localStorage?.setItem(
+          "bannerThree",
+          response?.data?.results?.bannersData?.homeScreenThree
+        );
       }
     } catch (error) {
       console.error(error);
@@ -147,6 +175,10 @@ function HomeScreenBanner2() {
       if (!response.data.error) {
         alert("List saved!");
         setFormData(response?.data?.results?.bannersData);
+        localStorage?.setItem(
+          "bannerFour",
+          response?.data?.results?.bannersData?.homeScreenFour
+        );
       }
     } catch (error) {
       console.error(error);
@@ -166,11 +198,29 @@ function HomeScreenBanner2() {
       if (!response.data.error) {
         alert("List saved!");
         setFormData(response?.data?.results?.bannersData);
+        localStorage?.setItem(
+          "bannerFive",
+          response?.data?.results?.bannersData?.homeScreenFive
+        );
       }
     } catch (error) {
       console.error(error);
     }
   };
+  useEffect(() => {
+    banner1();
+  }, []);
+  const banner1 = async () => {
+    const response = await axios.get(
+      `http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/home/homeScreen/display/64f07c6b3728c32b0996ffbe`
+    );
+    console.log(
+      "banner1 response",
+      response?.data?.results?.banners?.homeScreenOne
+    );
+    setBanners1(response?.data?.results?.banners);
+  };
+
   const settings = {
     dots: true,
     infinite: true,
@@ -179,8 +229,23 @@ function HomeScreenBanner2() {
     slidesToScroll: 1,
     autoplay: true,
   };
+  const handleToggleClick = () => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "Do you want to save the changes?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes",
+      cancelButtonText: "No",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        handleSaveChanges1();
+      } else {
+        // Handle if user chooses "No"
+      }
+    });
+  };
   const handleSaveChanges1 = async (e) => {
-    e.preventDefault();
     console.log("handleSaveChanges1", itemId);
     const editOffer = {
       id: itemId,
@@ -200,6 +265,45 @@ function HomeScreenBanner2() {
       });
     } catch (error) {}
   };
+  // const handleSaveChanges1 = async (e, confirmed) => {
+  //   console.log("handleSaveChanges1", itemId);
+  //   const status = confirmed ? true : false;
+
+  //   const editOffer = {
+  //     id: itemId,
+  //     status: status,
+  //   };
+  //   try {
+  //     await homeScreen(editOffer);
+  //     Swal.fire({
+  //       title: "Changes Saved",
+  //       text: "The Order Status has been updated successfully.",
+  //       icon: "success",
+  //       confirmButtonText: "OK",
+  //     }).then((result) => {
+  //       if (result.isConfirmed) {
+  //         window.location.reload();
+  //       }
+  //     });
+  //   } catch (error) {}
+  // };
+  // const handleToggleClick = () => {
+  //   Swal.fire({
+  //     title: "Are you sure?",
+  //     text: "Do you want to save the changes?",
+  //     icon: "warning",
+  //     showCancelButton: true,
+  //     confirmButtonText: "Yes",
+  //     cancelButtonText: "No",
+  //   }).then((result) => {
+  //     if (result.isConfirmed) {
+  //       handleSaveChanges1(null, true);
+  //     } else {
+  //       handleSaveChanges1(null, false);
+  //     }
+  //   });
+  // };
+
   return (
     <>
       <Sidebar Dash={"Home-Screen-banners"} />
@@ -214,16 +318,6 @@ function HomeScreenBanner2() {
                       <div className="col-auto">
                         <h2>Home Screen Banners</h2>
                       </div>
-                      {/* <div className="col-auto">
-                        <button
-                          className="comman_btn2 mx-2"
-                          data-bs-toggle="modal"
-                          data-bs-target="#staticBackdrop4"
-                        >
-                          Preview
-                        </button>
-                        <button className="comman_btn2">Save</button>
-                      </div> */}
                     </div>
                     <form
                       className="form-design banner_sliders py-5 px-5 row mx-0 align-items-end justify-content-between"
@@ -237,12 +331,11 @@ function HomeScreenBanner2() {
                               <div className="form-check form-switch">
                                 <input
                                   className="form-check-input"
-                                  data-bs-toggle="modal"
-                                  data-bs-target="#staticBackdrop2"
                                   type="checkbox"
                                   role="switch"
                                   id="flexSwitchCheckChecked"
                                   defaultChecked=""
+                                  onClick={handleToggleClick}
                                 />
                                 <label
                                   className="form-check-label"
@@ -260,7 +353,7 @@ function HomeScreenBanner2() {
                                       />
                                     ) : (
                                       <img
-                                        src="assets/img/Group 3994.png"
+                                        src={bannerOne}
                                         alt=""
                                         style={{ height: "150px" }}
                                       />
@@ -270,7 +363,6 @@ function HomeScreenBanner2() {
                                     <label htmlFor="file1">
                                       <i className="upload-button fas fa-camera" />
                                     </label>
-                                    {/* <FontAwesomeIcon icon={faCameraRetro} /> */}
                                     <input
                                       className="form-control d-none"
                                       type="file"
@@ -291,8 +383,6 @@ function HomeScreenBanner2() {
                                 display: "flex",
                                 flexDirection: "row",
                                 justifyContent: "space-between",
-                                // marginLeft: "15px",
-                                // width: "550px",
                               }}
                             >
                               <div className="col-9">
@@ -301,7 +391,7 @@ function HomeScreenBanner2() {
                                   <input
                                     className="form-control"
                                     type="text"
-                                    value={imageUrl1}
+                                    value={imageUrl1 ? imageUrl1 : bannerUrl1}
                                     readOnly
                                   />
                                 </div>
@@ -325,16 +415,6 @@ function HomeScreenBanner2() {
                           <div className="banner_sliders_box me-2">
                             <div className="row Onboarding_box mb-4 mx-0">
                               <span className="head_spann">Home Screen 2</span>
-                              {/* <div className="check_toggle">
-                                <input
-                                  type="checkbox"
-                                  defaultChecked=""
-                                  name="check1"
-                                  id="check1"
-                                  className="d-none"
-                                />
-                                <label htmlFor="check1" />
-                              </div> */}
                               <div className="form-check form-switch">
                                 <input
                                   className="form-check-input"
@@ -361,7 +441,11 @@ function HomeScreenBanner2() {
                                       />
                                     ) : (
                                       <img
-                                        src="assets/img/Group 3994.png"
+                                        src={
+                                          bannerTwo
+                                            ? bannerTwo
+                                            : "assets/img/Group 3994.png"
+                                        }
                                         alt=""
                                         style={{ height: "150px" }}
                                       />
@@ -391,8 +475,6 @@ function HomeScreenBanner2() {
                                 display: "flex",
                                 flexDirection: "row",
                                 justifyContent: "space-between",
-                                // marginLeft: "15px",
-                                // width: "550px",
                               }}
                             >
                               <div className="col-9">
@@ -401,7 +483,7 @@ function HomeScreenBanner2() {
                                   <input
                                     className="form-control"
                                     type="text"
-                                    value={imageUrl2}
+                                    value={imageUrl2 ? imageUrl2 : bannerUrl2}
                                     readOnly
                                   />
                                 </div>
@@ -425,16 +507,6 @@ function HomeScreenBanner2() {
                           <div className="banner_sliders_box me-2">
                             <div className="row Onboarding_box mb-4 mx-0">
                               <span className="head_spann">Home Screen 3</span>
-                              {/* <div className="check_toggle">
-                                <input
-                                  type="checkbox"
-                                  defaultChecked=""
-                                  name="check1"
-                                  id="check1"
-                                  className="d-none"
-                                />
-                                <label htmlFor="check1" />
-                              </div> */}
                               <div className="form-check form-switch">
                                 <input
                                   className="form-check-input"
@@ -461,7 +533,11 @@ function HomeScreenBanner2() {
                                       />
                                     ) : (
                                       <img
-                                        src="assets/img/Group 3994.png"
+                                        src={
+                                          bannerThree
+                                            ? bannerThree
+                                            : "assets/img/Group 3994.png"
+                                        }
                                         alt=""
                                         style={{ height: "150px" }}
                                       />
@@ -491,8 +567,6 @@ function HomeScreenBanner2() {
                                 display: "flex",
                                 flexDirection: "row",
                                 justifyContent: "space-between",
-                                // marginLeft: "15px",
-                                // width: "550px",
                               }}
                             >
                               <div className="col-9">
@@ -501,7 +575,7 @@ function HomeScreenBanner2() {
                                   <input
                                     className="form-control"
                                     type="text"
-                                    value={imageUrl3}
+                                    value={imageUrl3 ? imageUrl3 : bannerUrl3}
                                     readOnly
                                   />
                                 </div>
@@ -525,16 +599,6 @@ function HomeScreenBanner2() {
                           <div className="banner_sliders_box me-2">
                             <div className="row Onboarding_box mb-4 mx-0">
                               <span className="head_spann">Home Screen 4</span>
-                              {/* <div className="check_toggle">
-                                <input
-                                  type="checkbox"
-                                  defaultChecked=""
-                                  name="check1"
-                                  id="check1"
-                                  className="d-none"
-                                />
-                                <label htmlFor="check1" />
-                              </div> */}
                               <div className="form-check form-switch">
                                 <input
                                   className="form-check-input"
@@ -561,7 +625,11 @@ function HomeScreenBanner2() {
                                       />
                                     ) : (
                                       <img
-                                        src="assets/img/Group 3994.png"
+                                        src={
+                                          bannerFour
+                                            ? bannerFour
+                                            : "assets/img/Group 3994.png"
+                                        }
                                         alt=""
                                         style={{ height: "150px" }}
                                       />
@@ -591,8 +659,6 @@ function HomeScreenBanner2() {
                                 display: "flex",
                                 flexDirection: "row",
                                 justifyContent: "space-between",
-                                // marginLeft: "15px",
-                                // width: "550px",
                               }}
                             >
                               <div className="col-9">
@@ -601,7 +667,7 @@ function HomeScreenBanner2() {
                                   <input
                                     className="form-control"
                                     type="text"
-                                    value={imageUrl4}
+                                    value={imageUrl4 ? imageUrl4 : bannerUrl4}
                                     readOnly
                                   />
                                 </div>
@@ -625,16 +691,6 @@ function HomeScreenBanner2() {
                           <div className="banner_sliders_box me-2">
                             <div className="row Onboarding_box mb-4 mx-0">
                               <span className="head_spann">Home Screen 5</span>
-                              {/* <div className="check_toggle">
-                                <input
-                                  type="checkbox"
-                                  defaultChecked=""
-                                  name="check1"
-                                  id="check1"
-                                  className="d-none"
-                                />
-                                <label htmlFor="check1" />
-                              </div> */}
                               <div className="form-check form-switch">
                                 <input
                                   className="form-check-input"
@@ -661,7 +717,11 @@ function HomeScreenBanner2() {
                                       />
                                     ) : (
                                       <img
-                                        src="assets/img/Group 3994.png"
+                                        src={
+                                          bannerFive
+                                            ? bannerFive
+                                            : "assets/img/Group 3994.png"
+                                        }
                                         alt=""
                                         style={{ height: "150px" }}
                                       />
@@ -691,8 +751,6 @@ function HomeScreenBanner2() {
                                 display: "flex",
                                 flexDirection: "row",
                                 justifyContent: "space-between",
-                                // marginLeft: "15px",
-                                // width: "550px",
                               }}
                             >
                               <div className="col-9">
@@ -701,7 +759,7 @@ function HomeScreenBanner2() {
                                   <input
                                     className="form-control"
                                     type="text"
-                                    value={imageUrl5}
+                                    value={imageUrl5 ? imageUrl5 : bannerUrl5}
                                     readOnly
                                   />
                                 </div>

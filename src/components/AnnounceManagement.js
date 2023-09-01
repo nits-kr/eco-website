@@ -313,7 +313,7 @@ function AnnounceManagement() {
                           required
                         ></textarea>
                       </div>
-                      <div className="form-group col-auto mt-2 text-center">
+                      {/* <div className="form-group col-auto mt-2 text-center">
                         <div className="check_radio">
                           <input
                             type="checkbox"
@@ -325,7 +325,7 @@ function AnnounceManagement() {
                             Set as home screen banner
                           </label>
                         </div>
-                      </div>
+                      </div> */}
                       <div className="form-group col-12 text-center">
                         <button className="comman_btn2 mt-4">Send</button>
                       </div>

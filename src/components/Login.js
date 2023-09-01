@@ -10,6 +10,31 @@ function Login() {
   const [userNameError, setUserNameError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const navigate = useNavigate();
+  // useEffect(() => {
+  //   if (res.isSuccess) {
+  //     localStorage.setItem("loginId", res.data?.results?.login?._id);
+  //     localStorage.setItem("token", res.data?.results?.token);
+  //     localStorage.setItem(
+  //       "userLoginEmail",
+  //       res.data?.results?.login?.userEmail
+  //     );
+  //     Swal.fire({
+  //       title: "Login Successful!",
+  //       icon: "success",
+  //       text: "You have successfully logged in.",
+  //     }).then((result) => {
+  //       if (result.isConfirmed) {
+  //         navigate("/dashboard");
+  //       }
+  //     });
+  //   } else if (res.isError && res.error?.data?.error) {
+  //     Swal.fire({
+  //       title: "Incorrect Password!",
+  //       icon: "error",
+  //       text: res.error?.data?.message || "Unknown error occurred.",
+  //     });
+  //   }
+  // }, [res, navigate]);
   useEffect(() => {
     if (res.isSuccess) {
       localStorage.setItem("loginId", res.data?.results?.login?._id);
@@ -22,11 +47,10 @@ function Login() {
         title: "Login Successful!",
         icon: "success",
         text: "You have successfully logged in.",
-      }).then((result) => {
-        if (result.isConfirmed) {
-          navigate("/dashboard");
-
-        }
+        showConfirmButton: false,
+        timer: 500,
+      }).then(() => {
+        navigate("/dashboard");
       });
     } else if (res.isError && res.error?.data?.error) {
       Swal.fire({

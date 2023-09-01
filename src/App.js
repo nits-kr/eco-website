@@ -54,6 +54,7 @@ import UserOfferPOsted from "./components/UserOfferPOsted";
 import UserOfferPostedDetails from "./components/UserOfferPostedDetails";
 import UserDetailsAll from "./components/UserDetailsAll";
 import AgentDetailsAll from "./components/AgentDetailsAll";
+import Dashboard2 from "./components/Dashboard2";
 
 function App() {
   const [progress, setProgress] = useState(0);
@@ -76,9 +77,15 @@ function App() {
             exact
             className="active"
             path="/dashboard"
-            element={<Dashboard setProgress={setProgress} />}
+            element={<Dashboard2 setProgress={setProgress} />}
           />
-          {/* <Dashboard2/> */}
+          {/* <Route
+            exact
+            className="active"
+            path="/dashboard"
+            element={<Dashboard setProgress={setProgress} />}
+          /> */}
+         {/* <Dashboard2/> */}
           <Route
             exact
             className="active"

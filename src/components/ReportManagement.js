@@ -108,7 +108,7 @@ function ReportManagement() {
                           role="tab"
                           aria-controls="nav-profile"
                           aria-selected="false"
-                          style={{width:"100%"}}
+                          style={{ width: "100%" }}
                         >
                           {" "}
                           Products{" "}

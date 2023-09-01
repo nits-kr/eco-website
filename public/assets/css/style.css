@@ -1201,6 +1201,16 @@ strong.box_tag_left {
   font-size: 60px;
   width: 100%;
 }
+.notification_icon5 {
+  background-color: #fff;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #144881;
+  font-size: 42px;
+  width: 100%;
+}
 
 .notification-box-content {
   padding: 20px 0;

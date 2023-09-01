@@ -89,6 +89,17 @@ function ProductList2(props) {
         setLoading(false);
       });
   }, []);
+  const fetchProductList = () => {
+    axios
+      .post(
+        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/product/productList"
+      )
+      .then((response) => {
+        setProductList(response?.data?.results?.list.reverse());
+        console.log(response.data);
+      });
+  };
+
   const handleItem = (item) => {
     setProductName2(item?.productName || "");
     // setTitle2(item?.title || "");
@@ -431,7 +442,7 @@ function ProductList2(props) {
                                       >
                                         Edit
                                       </Link>
-                                      <Link
+                                      {/* <Link
                                         className="comman_btn2 table_viewbtn ms-2"
                                         to="#"
                                         onClick={() => {
@@ -453,6 +464,35 @@ function ProductList2(props) {
                                                 "success"
                                               ).then(() => {
                                                 window.location.reload(); // Reload the page
+                                              });
+                                            }
+                                          });
+                                        }}
+                                      >
+                                        Delete
+                                      </Link> */}
+                                      <Link
+                                        className="comman_btn2 table_viewbtn ms-2"
+                                        to="#"
+                                        onClick={() => {
+                                          Swal.fire({
+                                            title: "Are you sure?",
+                                            text: "You won't be able to revert this!",
+                                            icon: "warning",
+                                            showCancelButton: true,
+                                            confirmButtonColor: "#3085d6",
+                                            cancelButtonColor: "#d33",
+                                            confirmButtonText:
+                                              "Yes, delete it!",
+                                          }).then((result) => {
+                                            if (result.isConfirmed) {
+                                              deleteProductList(product?._id);
+                                              Swal.fire(
+                                                "Deleted!",
+                                                `${product?.productName_en} item has been deleted.`,
+                                                "success"
+                                              ).then(() => {
+                                                fetchProductList();
                                               });
                                             }
                                           });

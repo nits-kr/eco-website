@@ -248,7 +248,7 @@ function NotificationManagement() {
             <div className="row transaction-management justify-content-center">
               <div className="col-12">
                 <div className="row mx-0">
-                  <div className="col-12 design_outter_comman shadow mb-4">
+                  {/* <div className="col-12 design_outter_comman shadow mb-4">
                     <div className="row comman_header justify-content-between">
                       <div className="col-auto">
                         <h2>Notifications</h2>
@@ -263,10 +263,10 @@ function NotificationManagement() {
                             role="tablist"
                           >
                             <button
-                              className="nav-link active"
+                              className="nav-link active w-100"
                               id="nav-home-tab"
-                              data-bs-toggle="tab"
-                              data-bs-target="#nav-home"
+                              // data-bs-toggle="tab"
+                              // data-bs-target="#nav-home"
                               type="button"
                               role="tab"
                               aria-controls="nav-home"
@@ -396,12 +396,12 @@ function NotificationManagement() {
                         </div>
                       </div>
                     </div>
-                  </div>
+                  </div> */}
                   <div className="col-12 design_outter_comman shadow">
                     <div className="row comman_header justify-content-between">
                       <div className="col">
                         <h2>
-                          Notification{" "}
+                          Report Notification{" "}
                           <span> ({notificationList?.length}) </span>
                         </h2>
                       </div>
@@ -442,7 +442,7 @@ function NotificationManagement() {
                       <div className="col-12">
                         <div className="category_btns_main">
                           <div className="row mb-5">
-                            <div className="col">
+                            {/* <div className="col">
                               <Link className="category_btns active" to="#">
                                 All <span>(100)</span>
                               </Link>
@@ -466,7 +466,7 @@ function NotificationManagement() {
                               <Link className="category_btns" to="#">
                                 Category <span>4</span>
                               </Link>
-                            </div>
+                            </div> */}
                           </div>
 
                           {(notificationList || []).map((data, index) => (

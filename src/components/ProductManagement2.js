@@ -3,6 +3,7 @@ import { Editor } from "@tinymce/tinymce-react";
 import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import axios from "axios";
+import { toast } from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faPencil, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import Sidebar from "./Sidebar";
@@ -10,6 +11,8 @@ import Sidebar from "./Sidebar";
 function ProductManagement2() {
   const [selectedImage, setSelectedImage] = useState([]);
   const [formData, setFormData] = useState([]);
+  console.log("slug form date", formData);
+
   const [categories, setCategories] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
   const [brands, setBrands] = useState([]);
@@ -20,12 +23,58 @@ function ProductManagement2() {
     categoryId1: "",
     brandId1: "",
   });
+  const [categoryName, setCategoryName] = useState("");
+  const [subCategoryName, setSubCategoryName] = useState("");
+  console.log(
+    "slug",
+    "www.ecommerce.com" + "/" + categoryName + "/" + subCategoryName
+  );
+  const slug = `www.ecommerce.com/${categoryName}/${subCategoryName}`;
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
   const navigate = useNavigate();
+  // const handleInputChange1 = (event) => {
+  //   const { name, value } = event.target;
+  //   setSubSubCategory({ ...subSubCategory, [name]: value });
+  // };
   const handleInputChange1 = (event) => {
     const { name, value } = event.target;
-    setSubSubCategory({ ...subSubCategory, [name]: value });
+    setSubSubCategory({
+      ...subSubCategory,
+      [name]: value,
+    });
+    const selectedCategory = categories.find(
+      (category) => category._id === value
+    );
+    if (selectedCategory) {
+      setCategoryName(selectedCategory.categoryName_en);
+      console.log(selectedCategory.categoryName_en);
+    } else {
+      setCategoryName("");
+    }
+  };
+  const handleInputChange2 = (event) => {
+    const { name, value } = event.target;
+    setSubSubCategory({
+      ...subSubCategory,
+      [name]: value,
+    });
+    const selectedSubCategory = subCategories.find(
+      (subCategory) => subCategory._id === value
+    );
+    if (selectedSubCategory) {
+      setSubCategoryName(selectedSubCategory.subCategoryName_en);
+      console.log(selectedSubCategory.subCategoryName_en);
+    } else {
+      setSubCategoryName("");
+    }
+  };
+  const handleInputChange3 = (event) => {
+    const { name, value } = event.target;
+    setSubSubCategory({
+      ...subSubCategory,
+      [name]: value,
+    });
   };
   useEffect(() => {
     const fetchData = async () => {
@@ -74,6 +123,7 @@ function ProductManagement2() {
     const { name, value } = event.target;
     setFormData({ ...formData, [name]: value });
   };
+
   const handleFileChange = (e, key) => {
     const files = e.target.files;
     let img = [...selectedImage];
@@ -88,7 +138,7 @@ function ProductManagement2() {
     const data = new FormData();
     data.append("productName_en", formData.productNameEn);
     data.append("productName_ar", formData.productNameAr);
-    // data.append("slug", formData.slug);
+    data.append("slug", slug);
     data.append("Description", formData.DescriptionEn);
     data.append("Description_ar", formData.DescriptionAr);
     data.append("weight", formData.weight);
@@ -144,6 +194,31 @@ function ProductManagement2() {
       .catch((error) => {
         console.log(error.response.data);
       });
+  };
+  const copyToClipboard = async (text) => {
+    if (navigator.clipboard) {
+      try {
+        await navigator.clipboard.writeText(text);
+        if (text) {
+          toast.info(
+            <>
+              Copied To Clipboard:
+              <strong>{text}</strong>
+            </>,
+            {
+              position: "bottom-left",
+            }
+          );
+        }
+        return true;
+      } catch (error) {
+        console.error("Error copying to clipboard:", error);
+        return false;
+      }
+    } else {
+      console.error("Clipboard API is not supported.");
+      return false;
+    }
   };
   return (
     <>
@@ -837,7 +912,7 @@ function ProductManagement2() {
                               name="categoryId1"
                               id="categoryId1"
                               value={subSubCategory.categoryId1}
-                              onChange={handleInputChange1}
+                              onChange={handleInputChange2}
                             >
                               {Array.isArray(subCategories) &&
                                 subCategories.map((subCategory) => (
@@ -870,7 +945,7 @@ function ProductManagement2() {
                               name="brandId1"
                               id="brandId1"
                               value={subSubCategory.brandId1}
-                              onChange={handleInputChange1}
+                              onChange={handleInputChange3}
                             >
                               {Array.isArray(brands) &&
                                 brands.map((subCategory) => (
@@ -882,6 +957,38 @@ function ProductManagement2() {
                                   </option>
                                 ))}
                             </select>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="col-12 design_outter_comman mb-4 shadow">
+                        <div className="row comman_header justify-content-between">
+                          <div className="col">
+                            <h2>Slug</h2>
+                          </div>
+                        </div>
+                        <div
+                          className="form-design py-3 px-2 help-support-form row align-items-end justify-content-between"
+                          action=""
+                        >
+                          <div className="form-group col-12">
+                            <label htmlFor="Tags">
+                              Slug
+                              <span className="required-field text-danger">
+                                *
+                              </span>
+                            </label>
+                            <input
+                              type="text"
+                              className="form-control"
+                              id="slug"
+                              name="slug"
+                              value={slug}
+                              placeholder="Create slug"
+                              onClick={() => copyToClipboard(slug)}
+                              title="Copy Slug"
+                              style={{ cursor: "pointer" }}
+                              readOnly
+                            />
                           </div>
                         </div>
                       </div>
