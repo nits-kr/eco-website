@@ -2481,7 +2481,9 @@ function ProductManagement2(props) {
                                 <th>MRP</th>
                                 <th>Old Price</th>
                                 <th>Stock</th>
+                                <th>Attribute</th>
                                 <th>Value</th>
+
                                 <th>Action</th>
                               </tr>
                             </thead>
@@ -2515,9 +2517,14 @@ function ProductManagement2(props) {
                                             {variant.stockQuantity || "N/A"}
                                           </td>
                                           <td>
+                                            {variant?.attribute_Id
+                                              ?.attributeName_en || "N/A"}
+                                          </td>
+                                          <td>
                                             {variant?.values_Id
                                               ?.valuesName_en || "N/A"}
                                           </td>
+
                                           <td>
                                             <Link
                                               className="comman_btn2 table_viewbtn"
