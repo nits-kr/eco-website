@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faPencil, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import Sidebar from "./Sidebar";
+import Spinner from "./Spinner";
 
 function ProductManagement2(props) {
   const [loading, setLoading] = useState(false);
@@ -353,6 +354,7 @@ function ProductManagement2(props) {
       .then((response) => {
         setFormData(response.data.results.saveProduct);
         console.log(response.data.results.saveProduct);
+        fetchProductList();
         Swal.fire({
           title: "Product Created!",
           text: "Your new product has been created successfully.",
@@ -361,7 +363,7 @@ function ProductManagement2(props) {
           confirmButtonText: "OK",
         }).then((result) => {
           if (result.isConfirmed) {
-            navigate("/products");
+            // navigate("/products");
           }
         });
       })
@@ -409,8 +411,20 @@ function ProductManagement2(props) {
         setLoading(false);
       });
   }, []);
+
+  const fetchProductList = () => {
+    axios
+      .post(
+        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/product/productList"
+      )
+      .then((response) => {
+        setProductList(response?.data?.results?.list.reverse());
+        console.log(response.data);
+      });
+  };
   return (
     <>
+      {loading}
       <Sidebar Dash={"product-management"} />
       <div className="admin_main">
         <div className="admin_main_inner">
@@ -421,9 +435,9 @@ function ProductManagement2(props) {
                   <div className="col-9 mb-4">
                     <div className="main_head">Add Product </div>
                   </div>
-                  <div className="col-3 text-end mb-4">
+                  {/* <div className="col-3 text-end mb-4">
                     <button className="comman_btn2">Save</button>
-                  </div>
+                  </div> */}
                   <div className="col-9">
                     <div className="row me-0">
                       <div className="col-12 design_outter_comman mb-4 shadow">
@@ -2455,69 +2469,74 @@ function ProductManagement2(props) {
                             })}
                           </tbody>
                         </table> */}
-                        <table className="table mb-0">
-                          <thead>
-                            <tr>
-                              <th>S.No.</th>
-                              <th>Image</th>
-                              <th>SKU</th>
-                              <th>MRP</th>
-                              <th>Old Price</th>
-                              <th>Stock</th>
-                              {/* <th>Weight</th> */}
-                              <th>Action</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {productList?.map((item, index) => {
-                              return (
-                                <React.Fragment key={item._id}>
-                                  {item.addVarient.map(
-                                    (variant, variantIndex) => (
-                                      <tr key={`${item._id}-${variantIndex}`}>
-                                        <td>{index + 1}</td>
-                                        <td>
-                                          {variant.product_Pic[0] ? (
-                                            <img
-                                              src={
-                                                variant.product_Pic[0]
-                                              }
-                                              className="avatar lg rounded"
-                                              alt=""
-                                              style={{
-                                                width: "5vh",
-                                                height: "5vh",
-                                              }}
-                                            />
-                                          ) : (
-                                            <span>No Image</span>
-                                          )}
-                                        </td>
-                                        <td>{variant.SKU || "N/A"}</td>
-                                        <td>{variant.oldPrice || "N/A"}</td>
-                                        <td>{variant.Price || "N/A"}</td>
-                                        <td>
-                                          {variant.stockQuantity || "N/A"}
-                                        </td>
-                                        {/* <td>{variant.weight || "N/A"}</td> */}
-                                        <td>
-                                          <Link
-                                            className="comman_btn2 table_viewbtn"
-                                            to={item.slug}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                          >
-                                            View
-                                          </Link>
-                                        </td>
-                                      </tr>
-                                    )
-                                  )}
-                                </React.Fragment>
-                              );
-                            })}
-                          </tbody>
-                        </table>
+                        {loading ? (
+                          <Spinner />
+                        ) : (
+                          <table className="table mb-0">
+                            <thead>
+                              <tr>
+                                <th>S.No.</th>
+                                <th>Image</th>
+                                <th>SKU</th>
+                                <th>MRP</th>
+                                <th>Old Price</th>
+                                <th>Stock</th>
+                                <th>Value</th>
+                                <th>Action</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {productList?.map((item, index) => {
+                                return (
+                                  <React.Fragment key={item._id}>
+                                    {item.addVarient.map(
+                                      (variant, variantIndex) => (
+                                        <tr key={`${item._id}-${variantIndex}`}>
+                                          <td>{index + 1}</td>
+                                          <td>
+                                            {variant.product_Pic[0] ? (
+                                              <img
+                                                src={variant.product_Pic[0]}
+                                                className="avatar lg rounded"
+                                                alt=""
+                                                style={{
+                                                  width: "5vh",
+                                                  height: "5vh",
+                                                }}
+                                              />
+                                            ) : (
+                                              <span>No Image</span>
+                                            )}
+                                          </td>
+                                          <td>{variant.SKU || "N/A"}</td>
+                                          <td>{variant.oldPrice || "N/A"}</td>
+                                          <td>{variant.Price || "N/A"}</td>
+                                          <td>
+                                            {variant.stockQuantity || "N/A"}
+                                          </td>
+                                          <td>
+                                            {variant?.values_Id
+                                              ?.valuesName_en || "N/A"}
+                                          </td>
+                                          <td>
+                                            <Link
+                                              className="comman_btn2 table_viewbtn"
+                                              to={item.slug}
+                                              target="_blank"
+                                              rel="noopener noreferrer"
+                                            >
+                                              View
+                                            </Link>
+                                          </td>
+                                        </tr>
+                                      )
+                                    )}
+                                  </React.Fragment>
+                                );
+                              })}
+                            </tbody>
+                          </table>
+                        )}
                       </div>
                     </div>
                   </div>

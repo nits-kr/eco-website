@@ -361,7 +361,9 @@ function ProductList2(props) {
                                     <td>
                                       {" "}
                                       <img
-                                        src={product?.addVarient[0]?.product_Pic[0]}
+                                        src={
+                                          product?.addVarient[0]?.product_Pic[0]
+                                        }
                                         className="avatar lg rounded"
                                         alt=""
                                         style={{
@@ -416,7 +418,9 @@ function ProductList2(props) {
                                         {" "}
                                         ₹{product?.oldPrice}{" "}
                                       </del>{" "} */}
-                                      {product?.brand_Id?.brandName_en ? product?.brand_Id?.brandName_en : "None"}
+                                      {product?.brand_Id?.brandName_en
+                                        ? product?.brand_Id?.brandName_en
+                                        : "None"}
                                     </td>
                                     <td
                                       style={{
