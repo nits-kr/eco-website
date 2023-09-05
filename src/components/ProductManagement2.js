@@ -2514,7 +2514,18 @@ function ProductManagement2(props) {
                                           <td>{variant.oldPrice || "N/A"}</td>
                                           <td>{variant.Price || "N/A"}</td>
                                           <td>
-                                            {variant.stockQuantity || "N/A"}
+                                            <span
+                                              className={`fs-6 badge ${
+                                                variant.stockQuantity === 0
+                                                  ? "bg-danger"
+                                                  : variant.stockQuantity <= 10
+                                                  ? "bg-warning"
+                                                  : "bg-success"
+                                              }`}
+                                            >
+                                              {variant.stockQuantity || "N/A"}
+                                            </span>{" "}
+                                            {/* {variant.stockQuantity || "N/A"} */}
                                           </td>
                                           <td>
                                             {variant?.attribute_Id

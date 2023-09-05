@@ -347,7 +347,7 @@ function ProductList2(props) {
                                   <th>Product name</th>
                                   <th>Category</th>
 
-                                  <th>Stock</th>
+                                  {/* <th>Stock</th> */}
                                   <th>Brand</th>
                                   <th>Slug</th>
                                   <th>Recommended</th>
@@ -396,7 +396,7 @@ function ProductList2(props) {
                                       </strong>
                                     </td>
 
-                                    <td>
+                                    {/* <td>
                                       {" "}
                                       <span
                                         className={`fs-6 badge ${
@@ -409,7 +409,7 @@ function ProductList2(props) {
                                       >
                                         {product.stockQuantity}
                                       </span>{" "}
-                                    </td>
+                                    </td> */}
 
                                     <td>
                                       {/* {" "}
