@@ -462,7 +462,7 @@ function ProductList2(props) {
                                           setItemId(product?._id);
                                         }}
                                       >
-                                        Edit
+                                        View
                                       </Link>
                                       {/* <Link
                                         className="comman_btn2 table_viewbtn ms-2"

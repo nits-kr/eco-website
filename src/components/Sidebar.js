@@ -59,7 +59,7 @@ function Sidebar({ Dash }) {
                       <i className="fas fa-list-ol"></i>
                       Category Management
                     </Link>
-                    <Link
+                    {/* <Link
                       className={
                         Dash === "products" ? "nav-link active" : "nav-link"
                       }
@@ -87,11 +87,38 @@ function Sidebar({ Dash }) {
                         className="fa fa-chevron-down text-end fs-6"
                         style={{ fontSize: "6px", marginRight: "4px" }}
                       ></i>
-                    </Link>
+                    </Link> */}
                   </div>
                 </li>
-                <ul className="sub-menu collapse" id="menu-product">
-                  <li
+                {/* <ul className="sub-menu collapse" id="menu-product"> */}
+                  {/* <li
+                    className={
+                      Dash === "products" ? "nav-link active" : "nav-link"
+                    }
+                  >
+                    <Link
+                      className="ms-link"
+                      to="/products"
+                      // onClick={() => handleItemClick("products")}
+                    >
+                      <i className="fas fa-check-square"></i>
+                      <span> Product List</span>
+                    </Link>
+                  </li> */}
+                {/* </ul> */}
+                <li
+                  className={
+                    Dash === "product-management"
+                      ? "nav-link active"
+                      : "nav-link"
+                  }
+                >
+                  <Link className="ms-link " to="/product-management">
+                    <i className="fas fa-cogs"></i>
+                    <span>Add New Product</span>
+                  </Link>
+                </li>
+                <li
                     className={
                       Dash === "products" ? "nav-link active" : "nav-link"
                     }
@@ -105,19 +132,6 @@ function Sidebar({ Dash }) {
                       <span> Product List</span>
                     </Link>
                   </li>
-                </ul>
-                <li
-                  className={
-                    Dash === "product-management"
-                      ? "nav-link active"
-                      : "nav-link"
-                  }
-                >
-                  <Link className="ms-link " to="/product-management">
-                    <i className="fas fa-cogs"></i>
-                    <span>Add New Product</span>
-                  </Link>
-                </li>
                 <li
                   className={
                     Dash === "brand-management" ? "nav-link active" : "nav-link"

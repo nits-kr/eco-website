@@ -363,7 +363,7 @@ function ProductManagement2(props) {
           confirmButtonText: "OK",
         }).then((result) => {
           if (result.isConfirmed) {
-            // navigate("/products");
+            navigate("/products");
           }
         });
       })
@@ -2024,7 +2024,9 @@ function ProductManagement2(props) {
                           </div>
                         </div>
                       </div> */}
+                      
                     </div>
+                    
                   </div>
                 </div>
                 {showAddButton2 ? (
@@ -2235,7 +2237,7 @@ function ProductManagement2(props) {
                         className="form-design py-4 px-3 help-support-form row align-items-end justify-content-between"
                         action=""
                       >
-                        <div className="form-group mb-0 col-3">
+                        {/* <div className="form-group mb-0 col-3">
                           <div className="banner-profile position-relative">
                             <div
                               className="banner-Box bg-light"
@@ -2362,7 +2364,7 @@ function ProductManagement2(props) {
                               />
                             </div>
                           </div>
-                        </div>
+                        </div> */}
 
                         <div className="form-group col-4 choose_file position-relative">
                           <span>Upload Image</span>
@@ -2398,171 +2400,117 @@ function ProductManagement2(props) {
                           </button>
                         </div>
                       </div>
-                      {/* <div
-                        style={{ display: "flex", justifyContent: "center" }}
-                      >
-                        <button
-                          className="comman_btn mb-4"
-                          onClick={handleClick3}
-                        >
-                          Save
-                        </button>
-                      </div> */}
+                      
                     </div>
                   ))
                 ) : (
-                  <div className="row ">
-                    <div className="col-12 design_outter_comman comman_table_design px-0 shadow">
-                      <div className="row comman_header justify-content-between">
-                        <div
-                          className="col"
-                          style={{ display: "flex", justifyContent: "center" }}
-                        >
-                          <h2>Varients</h2>
-                        </div>
-                      </div>
-                      <div className="table-responsive">
-                        {/* <table className="table mb-0">
-                          <thead>
-                            <tr>
-                              <th>S.No.</th>
-                              <th>Image</th>
-                              <th>SKU</th>
-                              <th>MRP</th>
-                              <th>S.P.</th>
-                              <th>Stock</th>
-                              <th>Weight</th>
-                              <th>Action</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {productList?.map((item, index) => {
-                              return (
-                                <tr>
-                              <td>1</td>
-                              <td>
-                                <img
-                                  src=""
-                                  className="avatar lg rounded"
-                                  alt=""
-                                  style={{
-                                    width: "5vh",
-                                    height: "5vh",
-                                  }}
-                                />
-                              </td>
-                              <td>Ajay Sharma</td>
-                              <td>Ram Jain</td>
-                              <td>+966 9876543210</td>
-                              <td>01/07/2022</td>
-                              <td>Free</td>
-                              <td>
-                                <a
-                                  className="comman_btn2 table_viewbtn"
-                                  href="recent-orders-details.html"
-                                >
-                                  View
-                                </a>
-                              </td>
-                            </tr>
-                              )
-                            })}
-                          </tbody>
-                        </table> */}
-                        {loading ? (
-                          <Spinner />
-                        ) : (
-                          <table className="table mb-0">
-                            <thead>
-                              <tr>
-                                <th>S.No.</th>
-                                <th>Image</th>
-                                <th>SKU</th>
-                                <th>MRP</th>
-                                <th>Old Price</th>
-                                <th>Stock</th>
-                                <th>Attribute</th>
-                                <th>Value</th>
+                  // <div className="row ">
+                  //   <div className="col-12 design_outter_comman comman_table_design px-0 shadow">
+                  //     <div className="row comman_header justify-content-between">
+                  //       <div
+                  //         className="col"
+                  //         style={{ display: "flex", justifyContent: "center" }}
+                  //       >
+                  //         <h2>Varients</h2>
+                  //       </div>
+                  //     </div>
+                  //     <div className="table-responsive">
+                       
+                  //       {loading ? (
+                  //         <Spinner />
+                  //       ) : (
+                  //         <table className="table mb-0">
+                  //           <thead>
+                  //             <tr>
+                  //               <th>S.No.</th>
+                  //               <th>Image</th>
+                  //               <th>SKU</th>
+                  //               <th>MRP</th>
+                  //               <th>Old Price</th>
+                  //               <th>Stock</th>
+                  //               <th>Attribute</th>
+                  //               <th>Value</th>
 
-                                <th>Action</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {productList?.map((item, index) => {
-                                return (
-                                  <React.Fragment key={item._id}>
-                                    {item.addVarient.map(
-                                      (variant, variantIndex) => (
-                                        <tr key={`${item._id}-${variantIndex}`}>
-                                          <td>{index + 1}</td>
-                                          <td>
-                                            {variant.product_Pic[0] ? (
-                                              <img
-                                                src={variant.product_Pic[0]}
-                                                className="avatar lg rounded"
-                                                alt=""
-                                                style={{
-                                                  width: "5vh",
-                                                  height: "5vh",
-                                                }}
-                                              />
-                                            ) : (
-                                              <span>No Image</span>
-                                            )}
-                                          </td>
-                                          <td>{variant.SKU || "N/A"}</td>
-                                          <td>{variant.oldPrice || "N/A"}</td>
-                                          <td>{variant.Price || "N/A"}</td>
-                                          <td>
-                                            <span
-                                              className={`fs-6 badge ${
-                                                variant.stockQuantity === 0
-                                                  ? "bg-danger"
-                                                  : variant.stockQuantity <= 10
-                                                  ? "bg-warning"
-                                                  : "bg-success"
-                                              }`}
-                                            >
-                                              {variant.stockQuantity || "N/A"}
-                                            </span>{" "}
-                                            {/* {variant.stockQuantity || "N/A"} */}
-                                          </td>
-                                          <td>
-                                            {variant?.attribute_Id
-                                              ?.attributeName_en || "N/A"}
-                                          </td>
-                                          <td>
-                                            {variant?.values_Id
-                                              ?.valuesName_en || "N/A"}
-                                          </td>
+                  //               <th>Action</th>
+                  //             </tr>
+                  //           </thead>
+                  //           <tbody>
+                  //             {productList?.map((item, index) => {
+                  //               return (
+                  //                 <React.Fragment key={item._id}>
+                  //                   {item.addVarient.map(
+                  //                     (variant, variantIndex) => (
+                  //                       <tr key={`${item._id}-${variantIndex}`}>
+                  //                         <td>{index + 1}</td>
+                  //                         <td>
+                  //                           {variant.product_Pic[0] ? (
+                  //                             <img
+                  //                               src={variant.product_Pic[0]}
+                  //                               className="avatar lg rounded"
+                  //                               alt=""
+                  //                               style={{
+                  //                                 width: "5vh",
+                  //                                 height: "5vh",
+                  //                               }}
+                  //                             />
+                  //                           ) : (
+                  //                             <span>No Image</span>
+                  //                           )}
+                  //                         </td>
+                  //                         <td>{variant.SKU || "N/A"}</td>
+                  //                         <td>{variant.oldPrice || "N/A"}</td>
+                  //                         <td>{variant.Price || "N/A"}</td>
+                  //                         <td>
+                  //                           <span
+                  //                             className={`fs-6 badge ${
+                  //                               variant.stockQuantity === 0
+                  //                                 ? "bg-danger"
+                  //                                 : variant.stockQuantity <= 10
+                  //                                 ? "bg-warning"
+                  //                                 : "bg-success"
+                  //                             }`}
+                  //                           >
+                  //                             {variant.stockQuantity || "N/A"}
+                  //                           </span>{" "}
+                                            
+                  //                         </td>
+                  //                         <td>
+                  //                           {variant?.attribute_Id
+                  //                             ?.attributeName_en || "N/A"}
+                  //                         </td>
+                  //                         <td>
+                  //                           {variant?.values_Id
+                  //                             ?.valuesName_en || "N/A"}
+                  //                         </td>
 
-                                          <td>
-                                            <Link
-                                              className="comman_btn2 table_viewbtn"
-                                              to={item.slug}
-                                              target="_blank"
-                                              rel="noopener noreferrer"
-                                            >
-                                              View
-                                            </Link>
-                                          </td>
-                                        </tr>
-                                      )
-                                    )}
-                                  </React.Fragment>
-                                );
-                              })}
-                            </tbody>
-                          </table>
-                        )}
-                      </div>
-                    </div>
-                  </div>
+                  //                         <td>
+                  //                           <Link
+                  //                             className="comman_btn2 table_viewbtn"
+                  //                             to={item.slug}
+                  //                             target="_blank"
+                  //                             rel="noopener noreferrer"
+                  //                           >
+                  //                             View
+                  //                           </Link>
+                  //                         </td>
+                  //                       </tr>
+                  //                     )
+                  //                   )}
+                  //                 </React.Fragment>
+                  //               );
+                  //             })}
+                  //           </tbody>
+                  //         </table>
+                  //       )}
+                  //     </div>
+                  //   </div>
+                  // </div>
+                  null
                 )}
 
                 {showAddButton ? (
-                  <div style={{ display: "flex", justifyContent: "center" }}>
-                    <button className="comman_btn mt-4" onClick={handleClick2}>
+                  <div style={{ display: "flex", justifyContent: "center", marginLeft:"-260px" }}>
+                    <button className="comman_btn mt-2" onClick={handleClick2}>
                       Add New Varient
                     </button>
                   </div>

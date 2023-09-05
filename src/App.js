@@ -55,6 +55,7 @@ import UserOfferPostedDetails from "./components/UserOfferPostedDetails";
 import UserDetailsAll from "./components/UserDetailsAll";
 import AgentDetailsAll from "./components/AgentDetailsAll";
 import Dashboard2 from "./components/Dashboard2";
+import ProductManagementEdit2 from "./components/ProductManagementEdit2";
 
 function App() {
   const [progress, setProgress] = useState(0);
@@ -159,9 +160,16 @@ function App() {
             exact
             className="active"
             path="/product-management-edit/:id"
-            element={<ProductManagementEdit />}
+            element={<ProductManagementEdit2 setProgress={setProgress}/>}
           />
+          {/* <Route
+            exact
+            className="active"
+            path="/product-management-edit/:id"
+            element={<ProductManagementEdit />}
+          /> */}
           {/* <ProductManagement2/> */}
+          {/* <ProductManagementEdit2/> */}
 
           <Route
             exact
