@@ -11,6 +11,10 @@ import Sidebar from "./Sidebar";
 function ProductManagement2() {
   const [selectedImage, setSelectedImage] = useState([]);
   const [formData, setFormData] = useState([]);
+  const [count, setCount] = useState(0);
+  console.log("count", count);
+  const [showAddButton, setShowAddButton] = useState(false);
+  const [showAddButton2, setShowAddButton2] = useState(false);
   console.log("slug form date", formData);
 
   const [categories, setCategories] = useState([]);
@@ -31,16 +35,28 @@ function ProductManagement2() {
   });
   const [categoryName, setCategoryName] = useState("");
   const [subCategoryName, setSubCategoryName] = useState("");
-  console.log(
-    "slug",
-    "www.ecommerce.com" + "/" + categoryName + "/" + subCategoryName
-  );
   const categoryNameNew = categoryName.replace(/\s+/g, "");
   const subCategoryNameNew = subCategoryName.replace(/\s+/g, "");
   const slug = `www.ecommerce.com/${categoryNameNew}/${subCategoryNameNew}`;
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
+  const [variantCount, setVariantCount] = useState(1);
+
+  const handleAddVariant = () => {
+    setVariantCount(variantCount + 1);
+  };
   const navigate = useNavigate();
+  const handleClick = () => {
+    setShowAddButton(true);
+  };
+  const handleClick2 = () => {
+    setShowAddButton2(true);
+    setShowAddButton(false);
+  };
+  const handleClick3 = () => {
+    setShowAddButton2(false);
+    setShowAddButton(true);
+  };
   // const handleInputChange1 = (event) => {
   //   const { name, value } = event.target;
   //   setSubSubCategory({ ...subSubCategory, [name]: value });
@@ -144,7 +160,7 @@ function ProductManagement2() {
     const fetchData = async () => {
       try {
         const response = await axios.post(
-          `http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/attribute/selectSubSubCategory/${subSubCategory.attributeId}`
+          `http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/attribute/selectSubSubCategory/${subSubCategory.categoryId}`
         );
         setAttribute(response.data.results.subSubCategoryData);
         console.log(response.data);
@@ -153,13 +169,25 @@ function ProductManagement2() {
       }
     };
     fetchData();
+  }, [subSubCategory.categoryId]);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.post(
+          `http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/values/selectAttribute/${subSubCategory.attributeId}`
+        );
+        setValue(response.data.results.attributeCategoryData);
+        console.log(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchData();
   }, [subSubCategory.attributeId]);
-
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setFormData({ ...formData, [name]: value });
   };
-
   const handleFileChange = (e, key) => {
     const files = e.target.files;
     let img = [...selectedImage];
@@ -177,8 +205,8 @@ function ProductManagement2() {
     data.append("slug", slug);
     data.append("Description", formData.DescriptionEn);
     data.append("Description_ar", formData.DescriptionAr);
-    data.append("weight", formData.weight);
-    data.append("weight_ar", formData.weightAr);
+    // data.append("weight", formData.weight);
+    // data.append("weight_ar", formData.weightAr);
     data.append("productColor", formData.color);
     data.append("productColor_ar", formData.colorAr);
     data.append("careInstuctions", formData.shortDescriptionEn);
@@ -189,10 +217,18 @@ function ProductManagement2() {
     data.append("SKU", formData.SKUEn);
     data.append("SKU_ar", formData.SKUAr);
     data.append("stockQuantity", formData.stockQuantity);
-    data.append("pageTitle", formData.pageTitleEn);
-    data.append("pageTitle_ar", formData.pageTitleAr);
-    data.append("metaDescription", formData.metaDescriptionEn);
-    data.append("metaDescription_ar", formData.metaDescriptionAr);
+    if (formData.pageTitleEn) {
+      data.append("pageTitle", formData.pageTitleEn);
+    }
+    if (formData.pageTitleAr) {
+      data.append("pageTitle_ar", formData.pageTitleAr);
+    }
+    if (formData.metaDescriptionEn) {
+      data.append("metaDescription", formData.metaDescriptionEn);
+    }
+    if (formData.metaDescriptionAr) {
+      data.append("metaDescription_ar", formData.metaDescriptionAr);
+    }
     data.append("visibility", formData.visibility);
     data.append("visibility_ar", formData.visibilityAr);
     data.append("publishDate", formData.datepicker);
@@ -200,16 +236,23 @@ function ProductManagement2() {
     data.append("Tags_ar", formData.TagsAr);
     data.append("category_Id", subSubCategory.categoryId);
     data.append("Subcategory_Id", subSubCategory.categoryId1);
-    // data.append("brand_Id", subSubCategory.brandId1);
     if (subSubCategory.categoryId3) {
       data.append("subSubcategory_Id", subSubCategory.categoryId3);
+    }
+    if (subSubCategory.valueId) {
+      data.append("values_Id", subSubCategory.valueId);
+    }
+    if (subSubCategory.attributeId) {
+      data.append("attribute_Id", subSubCategory.attributeId);
     }
     if (subSubCategory.brandId1) {
       data.append("brand_Id", subSubCategory.brandId1);
     }
-    selectedImage.map((item, index) => {
-      data.append(`product_Pic`, item);
-    });
+    if (selectedImage && selectedImage.length > 0) {
+      selectedImage.map((item, index) => {
+        data.append(`product_Pic`, item);
+      });
+    }
     axios
       .post(
         "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/product/createProduct",
@@ -647,11 +690,514 @@ function ProductManagement2() {
                             />
                           </div> */}
                         </div>
+                        <div className="col-12 text-end mb-4">
+                          {/* {showAddButton ? (
+                            <button
+                              className="comman_btn"
+                              onClick={handleAddVariant}
+                            >
+                              Add New variant
+                            </button>
+                          ) : (
+                            <button
+                              className="comman_btn"
+                              onClick={handleClick}
+                            >
+                              Save
+                            </button>
+                          )} */}
+                          <div style={{ display: "flex", justifyContent: "center" }}>
+                          <button className="comman_btn" onClick={handleClick}>
+                            Save
+                          </button>
+                          </div>
+                        </div>
                       </div>
-                      <div className="col-12 design_outter_comman mb-4 shadow">
+                      {/* {showAddButton ? (
+                        <button
+                          className="comman_btn mb-4"
+                          onClick={handleClick2}
+                        >
+                          Add New Varient
+                        </button>
+                      ) : null} */}
+
+                      {/* {Array.from({ length: variantCount }).map((_, index) => (
+                        <div
+                          className="col-12 design_outter_comman mb-4 shadow"
+                          key={index}
+                        >
+                          <div className="row comman_header justify-content-between">
+                            <div className="col">
+                              <h2>Pricing</h2>
+                            </div>
+                          </div>
+                          <div className="col-12 design_outter_comman mb-4 ">
+                            <div
+                              className="form-design pt-3 px-2 help-support-form row align-items-end justify-content-between"
+                              action=""
+                            >
+                              <div className="form-group col-6">
+                                <label htmlFor="">Select Attribute</label>
+                                <select
+                                  className="select form-control"
+                                  multiple=""
+                                  name="attributeId"
+                                  id="attributeId"
+                                  value={subSubCategory.attributeId}
+                                  onChange={handleInputChange3}
+                                >
+                                  <option value="">Select Attribute</option>
+                                  {Array.isArray(attribute) &&
+                                    attribute.map((subCategory) => (
+                                      <option
+                                        key={subCategory._id}
+                                        value={subCategory._id}
+                                      >
+                                        {subCategory.attributeName_en}
+                                      </option>
+                                    ))}
+                                </select>
+                              </div>
+                              <div className="form-group col-6">
+                                <label htmlFor="">Select Values</label>
+                                <select
+                                  className="select form-control"
+                                  multiple=""
+                                  name="valueId"
+                                  id="valueId"
+                                  value={subSubCategory.valueId}
+                                  onChange={handleInputChange3}
+                                >
+                                  <option value="">Select Values</option>
+                                  {Array.isArray(value) &&
+                                    value.map((subCategory) => (
+                                      <option
+                                        key={subCategory._id}
+                                        value={subCategory._id}
+                                      >
+                                        {subCategory.valuesName_en}
+                                      </option>
+                                    ))}
+                                </select>
+                              </div>
+                            </div>
+                          </div>
+                          <div
+                            className="form-design px-3 help-support-form row align-items-end justify-content-between"
+                            action=""
+                          >
+                            <div className="form-group col-6">
+                              <label htmlFor="SKUEn">
+                                SKU(En)
+                                <span className="required-field text-danger">
+                                  *
+                                </span>
+                              </label>
+                              <input
+                                type="text"
+                                className="form-control"
+                                // defaultValue=""
+                                name="SKUEn"
+                                id="SKUEn"
+                                value={formData.SKUEn}
+                                onChange={handleInputChange}
+                                required
+                                minLength="3"
+                              />
+                            </div>
+                            <div className="form-group col-6">
+                              <label htmlFor="SKUAr">
+                                SKU(Ar)
+                                <span className="required-field text-danger">
+                                  *
+                                </span>
+                              </label>
+                              <input
+                                type="text"
+                                className="form-control"
+                                // defaultValue=""
+                                name="SKUAr"
+                                id="SKUAr"
+                                value={formData.SKUAr}
+                                onChange={handleInputChange}
+                                required
+                                minLength="3"
+                              />
+                            </div>
+                            <div className="form-group col-12">
+                              <label htmlFor="">
+                                Stock Quantity
+                                <span className="required-field text-danger">
+                                  *
+                                </span>
+                              </label>
+                              <input
+                                type="text"
+                                className="form-control"
+                                // defaultValue=""
+                                name="stockQuantity"
+                                id="stockQuantity"
+                                value={formData.stockQuantity}
+                                placeholder="40"
+                                onChange={handleInputChange}
+                                required
+                                // minLength="3"
+                              />
+                            </div>
+                          </div>
+                          <div
+                            className="form-design px-3 help-support-form row align-items-end justify-content-between mt-4"
+                            action=""
+                          >
+                            <div className="form-group col-4">
+                              <label htmlFor="Price">
+                                Price
+                                <span className="required-field text-danger">
+                                  *
+                                </span>
+                              </label>
+                              <input
+                                type="text"
+                                className="form-control"
+                                // defaultValue=""
+                                name="Price"
+                                id="Price"
+                                value={formData.Price}
+                                placeholder="1499"
+                                onChange={handleInputChange}
+                                required
+                                // minLength="3"
+                              />
+                            </div>
+                            <div className="form-group col-4">
+                              <label htmlFor="oldPrice">
+                                Old Price
+                                <span className="required-field text-danger">
+                                  *
+                                </span>
+                              </label>
+                              <input
+                                type="text"
+                                className="form-control"
+                                // defaultValue=""
+                                name="oldPrice"
+                                id="oldPrice"
+                                value={formData.oldPrice}
+                                onChange={handleInputChange}
+                                required
+                                // minLength="3"
+                              />
+                            </div>
+                            <div className="form-group col-4">
+                              <label htmlFor="dollar">
+                                Dollar Price
+                                <span className="required-field text-danger">
+                                  *
+                                </span>
+                              </label>
+                              <input
+                                type="text"
+                                className="form-control"
+                                // defaultValue=""
+                                name="dollar"
+                                id="dollar"
+                                value={formData.dollar}
+                                onChange={handleInputChange}
+                                required
+                              />
+                            </div>
+                          </div>
+                          <div
+                            className="form-design px-3 help-support-form row align-items-end justify-content-between mt-4"
+                            action=""
+                          >
+                            <div className="form-group col-12 new_radio_design">
+                              <input
+                                className="d-none"
+                                type="checkbox"
+                                id="Enable"
+                                name="returnable"
+                                value="true"
+                                checked={formData.returnable === "true"}
+                                onChange={handleInputChange}
+                              />
+                              <label htmlFor="Enable">Returnable </label>
+                            </div>
+                          </div>
+                          <div
+                            className="form-design py-4 px-3 help-support-form row align-items-end justify-content-between"
+                            action=""
+                          >
+                            <div className="form-group mb-0 col-3">
+                              <div className="banner-profile position-relative">
+                                <div
+                                  className="banner-Box bg-light"
+                                  style={{
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    height: "150px",
+                                  }}
+                                >
+                                  <img src="..." class="img-fluid" alt="..." />
+                                  <div>150 X 150</div>
+                                </div>
+                                <div className="p-image">
+                                  <label htmlFor="file1">
+                                    <i className="upload-button fas fa-camera" />
+                                  </label>
+                                  <input
+                                    className="form-control d-none"
+                                    type="file"
+                                    accept="image/*"
+                                    name="file1"
+                                    id="file1"
+                                    // onChange={(e) =>
+                                    //   handleImageUpload1(e, "file1")
+                                    // }
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                            <div className="form-group mb-0 col-3">
+                              <div className="banner-profile position-relative">
+                                <div
+                                  className="banner-Box bg-light"
+                                  style={{
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    height: "150px",
+                                  }}
+                                >
+                                  <img src="..." class="img-fluid" alt="..." />
+                                  <div>150 X 150</div>
+                                </div>
+                                <div className="p-image">
+                                  <label htmlFor="file1">
+                                    <i className="upload-button fas fa-camera" />
+                                  </label>
+                                  <input
+                                    className="form-control d-none"
+                                    type="file"
+                                    accept="image/*"
+                                    name="file1"
+                                    id="file1"
+                                    // onChange={(e) =>
+                                    //   handleImageUpload1(e, "file1")
+                                    // }
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                            <div className="form-group mb-0 col-3">
+                              <div className="banner-profile position-relative">
+                                <div
+                                  className="banner-Box bg-light"
+                                  style={{
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    height: "150px",
+                                  }}
+                                >
+                                  <img src="..." class="img-fluid" alt="..." />
+                                  <div>150 X 150</div>
+                                </div>
+                                <div className="p-image">
+                                  <label htmlFor="file1">
+                                    <i className="upload-button fas fa-camera" />
+                                  </label>
+                                  <input
+                                    className="form-control d-none"
+                                    type="file"
+                                    accept="image/*"
+                                    name="file1"
+                                    id="file1"
+                                    // onChange={(e) =>
+                                    //   handleImageUpload1(e, "file1")
+                                    // }
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                            <div className="form-group mb-0 col-3">
+                              <div className="banner-profile position-relative">
+                                <div
+                                  className="banner-Box bg-light"
+                                  style={{
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    height: "150px",
+                                  }}
+                                >
+                                  <img src="..." class="img-fluid" alt="..." />
+                                  <div>150 X 150</div>
+                                </div>
+                                <div className="p-image">
+                                  <label htmlFor="file1">
+                                    <i className="upload-button fas fa-camera" />
+                                  </label>
+                                  <input
+                                    className="form-control d-none"
+                                    type="file"
+                                    accept="image/*"
+                                    name="file1"
+                                    id="file1"
+                                    // onChange={(e) =>
+                                    //   handleImageUpload1(e, "file1")
+                                    // }
+                                  />
+                                </div>
+                              </div>
+                            </div>
+
+                            <div className="form-group col-12 choose_file position-relative">
+                              <span>Upload Image</span>
+                              <label htmlFor="gallery_images">
+                                <i className="fal fa-camera me-1" />
+                                Choose File{" "}
+                              </label>
+                              <input
+                                type="file"
+                                className="form-control"
+                                defaultValue=""
+                                id="gallery_images"
+                                accept="image/*"
+                                name="gallery_images"
+                                onChange={(e) =>
+                                  handleFileChange(e, "gallery_images")
+                                }
+                                multiple
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      ))} */}
+                      {/* <div className="col-12 design_outter_comman mb-4 shadow">
                         <div className="row comman_header justify-content-between">
                           <div className="col">
                             <h2>Pricing</h2>
+                          </div>
+                        </div>
+                        <div className="col-12 design_outter_comman mb-4 ">
+                          <div
+                            className="form-design pt-3 px-2 help-support-form row align-items-end justify-content-between"
+                            action=""
+                          >
+                            <div className="form-group col-6">
+                              <label htmlFor="">Select Attribute</label>
+                              <select
+                                className="select form-control"
+                                multiple=""
+                                name="attributeId"
+                                id="attributeId"
+                                value={subSubCategory.attributeId}
+                                onChange={handleInputChange3}
+                              >
+                                <option value="">Select Attribute</option>
+                                {Array.isArray(attribute) &&
+                                  attribute.map((subCategory) => (
+                                    <option
+                                      key={subCategory._id}
+                                      value={subCategory._id}
+                                    >
+                                      {subCategory.attributeName_en}
+                                    </option>
+                                  ))}
+                              </select>
+                            </div>
+                            <div className="form-group col-6">
+                              <label htmlFor="">Select Values</label>
+                              <select
+                                className="select form-control"
+                                multiple=""
+                                name="valueId"
+                                id="valueId"
+                                value={subSubCategory.valueId}
+                                onChange={handleInputChange3}
+                              >
+                                <option value="">Select Values</option>
+                                {Array.isArray(value) &&
+                                  value.map((subCategory) => (
+                                    <option
+                                      key={subCategory._id}
+                                      value={subCategory._id}
+                                    >
+                                      {subCategory.valuesName_en}
+                                    </option>
+                                  ))}
+                              </select>
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          className="form-design px-3 help-support-form row align-items-end justify-content-between"
+                          action=""
+                        >
+                          <div className="form-group col-6">
+                            <label htmlFor="SKUEn">
+                              SKU(En)
+                              <span className="required-field text-danger">
+                                *
+                              </span>
+                            </label>
+                            <input
+                              type="text"
+                              className="form-control"
+                              // defaultValue=""
+                              name="SKUEn"
+                              id="SKUEn"
+                              value={formData.SKUEn}
+                              onChange={handleInputChange}
+                              required
+                              minLength="3"
+                            />
+                          </div>
+                          <div className="form-group col-6">
+                            <label htmlFor="SKUAr">
+                              SKU(Ar)
+                              <span className="required-field text-danger">
+                                *
+                              </span>
+                            </label>
+                            <input
+                              type="text"
+                              className="form-control"
+                              // defaultValue=""
+                              name="SKUAr"
+                              id="SKUAr"
+                              value={formData.SKUAr}
+                              onChange={handleInputChange}
+                              required
+                              minLength="3"
+                            />
+                          </div>
+                          <div className="form-group col-12">
+                            <label htmlFor="">
+                              Stock Quantity
+                              <span className="required-field text-danger">
+                                *
+                              </span>
+                            </label>
+                            <input
+                              type="text"
+                              className="form-control"
+                              // defaultValue=""
+                              name="stockQuantity"
+                              id="stockQuantity"
+                              value={formData.stockQuantity}
+                              placeholder="40"
+                              onChange={handleInputChange}
+                              required
+                              // minLength="3"
+                            />
                           </div>
                         </div>
                         <div
@@ -713,150 +1259,24 @@ function ProductManagement2() {
                               value={formData.dollar}
                               onChange={handleInputChange}
                               required
-                              // minLength="3"
                             />
-                          </div>
-                          {/* <div className="form-group col-6">
-                            <label htmlFor="">Discount</label>
-                            <input
-                              type="text"
-                              className="form-control"
-                              defaultValue=""
-                              name="name"
-                              id="name"
-                            />
-                          </div> */}
-                        </div>
-                        <div className="col-12 design_outter_comman mb-4 ">
-                          <div
-                            className="form-design py-3 px-2 help-support-form row align-items-end justify-content-between"
-                            action=""
-                          >
-                            <div className="form-group col-6">
-                              <label htmlFor="">Select Attribute</label>
-                              <select
-                                className="select form-control"
-                                multiple=""
-                                name="attribute"
-                                id="attribute"
-                                value={subSubCategory.attributeId}
-                                onChange={handleInputChange3}
-                              >
-                                <option value="">Select Attribute</option>
-                                {Array.isArray(attribute) &&
-                                  attribute.map((subCategory) => (
-                                    <option
-                                      key={subCategory._id}
-                                      value={subCategory._id}
-                                    >
-                                      {subCategory.attributeName_en}
-                                    </option>
-                                  ))}
-                              </select>
-                            </div>
-                            <div className="form-group col-6">
-                              <label htmlFor="">Select Values</label>
-                              <select
-                                className="select form-control"
-                                multiple=""
-                                name="value"
-                                id="valueId"
-                                value={subSubCategory.valueId}
-                                onChange={handleInputChange3}
-                              >
-                                <option value="">Select Values</option>
-                                {Array.isArray(value) &&
-                                  value.map((subCategory) => (
-                                    <option
-                                      key={subCategory._id}
-                                      value={subCategory._id}
-                                    >
-                                      {subCategory.attributeName_en}
-                                    </option>
-                                  ))}
-                              </select>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="col-12 design_outter_comman mb-4 shadow">
-                        <div className="row comman_header justify-content-between">
-                          <div className="col">
-                            <h2>Inventory</h2>
                           </div>
                         </div>
                         <div
-                          className="form-design py-4 px-3 help-support-form row align-items-end justify-content-between"
+                          className="form-design px-3 help-support-form row align-items-end justify-content-between mt-4"
                           action=""
                         >
-                          <div className="form-group col-6">
-                            <label htmlFor="SKUEn">
-                              SKU(En)
-                              <span className="required-field text-danger">
-                                *
-                              </span>
-                            </label>
-                            <input
-                              type="text"
-                              className="form-control"
-                              // defaultValue=""
-                              name="SKUEn"
-                              id="SKUEn"
-                              value={formData.SKUEn}
-                              onChange={handleInputChange}
-                              required
-                              minLength="3"
-                            />
-                          </div>
-                          <div className="form-group col-6">
-                            <label htmlFor="SKUAr">
-                              SKU(Ar)
-                              <span className="required-field text-danger">
-                                *
-                              </span>
-                            </label>
-                            <input
-                              type="text"
-                              className="form-control"
-                              // defaultValue=""
-                              name="SKUAr"
-                              id="SKUAr"
-                              value={formData.SKUAr}
-                              onChange={handleInputChange}
-                              required
-                              minLength="3"
-                            />
-                          </div>
-                          {/* <div className="form-group col-12 new_radio_design">
+                          <div className="form-group col-12 new_radio_design">
                             <input
                               className="d-none"
-                              type="radio"
+                              type="checkbox"
                               id="Enable"
-                              name="Enable"
-                            />
-                            <label htmlFor="Enable">
-                              Enable Stock Management{" "}
-                            </label>
-                          </div> */}
-                          <div className="form-group col-12">
-                            <label htmlFor="">
-                              Stock Quantity
-                              <span className="required-field text-danger">
-                                *
-                              </span>
-                            </label>
-                            <input
-                              type="text"
-                              className="form-control"
-                              // defaultValue=""
-                              name="stockQuantity"
-                              id="stockQuantity"
-                              value={formData.stockQuantity}
-                              placeholder="40"
+                              name="returnable"
+                              value="true"
+                              checked={formData.returnable === "true"}
                               onChange={handleInputChange}
-                              required
-                              // minLength="3"
                             />
+                            <label htmlFor="Enable">Returnable </label>
                           </div>
                         </div>
                       </div>
@@ -870,9 +1290,138 @@ function ProductManagement2() {
                           className="form-design py-4 px-3 help-support-form row align-items-end justify-content-between"
                           action=""
                         >
+                          <div className="form-group mb-0 col-3">
+                            <div className="banner-profile position-relative">
+                              <div
+                                className="banner-Box bg-light"
+                                style={{
+                                  display: "flex",
+                                  flexDirection: "column",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                  height: "150px",
+                                }}
+                              >
+                                <img src="..." class="img-fluid" alt="..." />
+                                <div>150 X 150</div>
+                              </div>
+                              <div className="p-image">
+                                <label htmlFor="file1">
+                                  <i className="upload-button fas fa-camera" />
+                                </label>
+                                <input
+                                  className="form-control d-none"
+                                  type="file"
+                                  accept="image/*"
+                                  name="file1"
+                                  id="file1"
+                                  // onChange={(e) =>
+                                  //   handleImageUpload1(e, "file1")
+                                  // }
+                                />
+                              </div>
+                            </div>
+                          </div>
+                          <div className="form-group mb-0 col-3">
+                            <div className="banner-profile position-relative">
+                              <div
+                                className="banner-Box bg-light"
+                                style={{
+                                  display: "flex",
+                                  flexDirection: "column",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                  height: "150px",
+                                }}
+                              >
+                                <img src="..." class="img-fluid" alt="..." />
+                                <div>150 X 150</div>
+                              </div>
+                              <div className="p-image">
+                                <label htmlFor="file1">
+                                  <i className="upload-button fas fa-camera" />
+                                </label>
+                                <input
+                                  className="form-control d-none"
+                                  type="file"
+                                  accept="image/*"
+                                  name="file1"
+                                  id="file1"
+                                  // onChange={(e) =>
+                                  //   handleImageUpload1(e, "file1")
+                                  // }
+                                />
+                              </div>
+                            </div>
+                          </div>
+                          <div className="form-group mb-0 col-3">
+                            <div className="banner-profile position-relative">
+                              <div
+                                className="banner-Box bg-light"
+                                style={{
+                                  display: "flex",
+                                  flexDirection: "column",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                  height: "150px",
+                                }}
+                              >
+                                <img src="..." class="img-fluid" alt="..." />
+                                <div>150 X 150</div>
+                              </div>
+                              <div className="p-image">
+                                <label htmlFor="file1">
+                                  <i className="upload-button fas fa-camera" />
+                                </label>
+                                <input
+                                  className="form-control d-none"
+                                  type="file"
+                                  accept="image/*"
+                                  name="file1"
+                                  id="file1"
+                                  // onChange={(e) =>
+                                  //   handleImageUpload1(e, "file1")
+                                  // }
+                                />
+                              </div>
+                            </div>
+                          </div>
+                          <div className="form-group mb-0 col-3">
+                            <div className="banner-profile position-relative">
+                              <div
+                                className="banner-Box bg-light"
+                                style={{
+                                  display: "flex",
+                                  flexDirection: "column",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                  height: "150px",
+                                }}
+                              >
+                                <img src="..." class="img-fluid" alt="..." />
+                                <div>150 X 150</div>
+                              </div>
+                              <div className="p-image">
+                                <label htmlFor="file1">
+                                  <i className="upload-button fas fa-camera" />
+                                </label>
+                                <input
+                                  className="form-control d-none"
+                                  type="file"
+                                  accept="image/*"
+                                  name="file1"
+                                  id="file1"
+                                  // onChange={(e) =>
+                                  //   handleImageUpload1(e, "file1")
+                                  // }
+                                />
+                              </div>
+                            </div>
+                          </div>
+
                           <div className="form-group col-12 choose_file position-relative">
                             <span>Upload Image</span>
-                            <label htmlFor="upload_video">
+                            <label htmlFor="gallery_images">
                               <i className="fal fa-camera me-1" />
                               Choose File{" "}
                             </label>
@@ -890,11 +1439,11 @@ function ProductManagement2() {
                             />
                           </div>
                         </div>
-                      </div>
-                      <div className="col-12 design_outter_comman mb-4 shadow">
+                      </div> */}
+                      {/* <div className="col-12 design_outter_comman mb-4 shadow">
                         <div className="row comman_header justify-content-between">
                           <div className="col">
-                            <h2>Search Engine Optimization</h2>
+                            <h2>Search Engine Optimization(optional) </h2>
                           </div>
                         </div>
                         <div
@@ -907,12 +1456,7 @@ function ProductManagement2() {
                             Search Engine
                           </div>
                           <div className="form-group col-6">
-                            <label htmlFor="pageTitleEn">
-                              Page Title(En)
-                              <span className="required-field text-danger">
-                                *
-                              </span>
-                            </label>
+                            <label htmlFor="pageTitleEn">Page Title(En)</label>
                             <input
                               type="text"
                               className="form-control"
@@ -921,17 +1465,10 @@ function ProductManagement2() {
                               id="pageTitleEn"
                               value={formData.pageTitleEn}
                               onChange={handleInputChange}
-                              required
-                              minLength="3"
                             />
                           </div>
                           <div className="form-group col-6">
-                            <label htmlFor="pageTitleAr">
-                              Page Title(Ar)
-                              <span className="required-field text-danger">
-                                *
-                              </span>
-                            </label>
+                            <label htmlFor="pageTitleAr">Page Title(Ar)</label>
                             <input
                               type="text"
                               className="form-control"
@@ -940,16 +1477,11 @@ function ProductManagement2() {
                               id="pageTitleAr"
                               value={formData.pageTitleAr}
                               onChange={handleInputChange}
-                              required
-                              minLength="3"
                             />
                           </div>
                           <div className="form-group col-6">
                             <label htmlFor="metaDescriptionEn">
                               Meta Description(En)
-                              <span className="required-field text-danger">
-                                *
-                              </span>
                             </label>
                             <textarea
                               name="metaDescriptionEn"
@@ -959,16 +1491,11 @@ function ProductManagement2() {
                               // defaultValue={""}
                               value={formData.metaDescriptionEn}
                               onChange={handleInputChange}
-                              required
-                              minLength="3"
                             />
                           </div>
                           <div className="form-group col-6">
                             <label htmlFor="metaDescriptionAr">
                               Meta Description(Ar)
-                              <span className="required-field text-danger">
-                                *
-                              </span>
                             </label>
                             <textarea
                               name="metaDescriptionAr"
@@ -977,12 +1504,10 @@ function ProductManagement2() {
                               style={{ height: 120 }}
                               value={formData.metaDescriptionAr}
                               onChange={handleInputChange}
-                              required
-                              minLength="3"
                             />
                           </div>
                         </div>
-                      </div>
+                      </div> */}
                     </div>
                   </div>
                   <div className="col-3">
@@ -1162,7 +1687,7 @@ function ProductManagement2() {
                           </div>
                         </div>
                       </div> */}
-                      <div className="col-12 design_outter_comman mb-4 shadow">
+                      {/* <div className="col-12 design_outter_comman mb-4 shadow">
                         <div className="row comman_header justify-content-between">
                           <div className="col">
                             <h2>Brand</h2>
@@ -1195,7 +1720,7 @@ function ProductManagement2() {
                             </select>
                           </div>
                         </div>
-                      </div>
+                      </div> */}
                       <div className="col-12 design_outter_comman mb-4 shadow">
                         <div className="row comman_header justify-content-between">
                           <div className="col">
@@ -1228,7 +1753,7 @@ function ProductManagement2() {
                           </div>
                         </div>
                       </div>
-                      <div className="col-12 design_outter_comman mb-4 shadow">
+                      {/* <div className="col-12 design_outter_comman mb-4 shadow">
                         <div className="row comman_header justify-content-between">
                           <div className="col">
                             <h2>Tags(En)</h2>
@@ -1285,7 +1810,7 @@ function ProductManagement2() {
                             />
                           </div>
                         </div>
-                      </div>
+                      </div> */}
                       {/* <div className="col-12 design_outter_comman mb-4 shadow">
                         <div className="row comman_header justify-content-between">
                           <div className="col">
@@ -1347,6 +1872,469 @@ function ProductManagement2() {
                     </div>
                   </div>
                 </form>
+                {showAddButton2 ? (
+                  Array.from({ length: variantCount }).map((_, index) => (
+                    <div
+                      className="col-12 design_outter_comman mb-4 shadow"
+                      key={index}
+                    >
+                      <div className="row comman_header justify-content-between">
+                        <div className="col">
+                          <h2>Pricing</h2>
+                        </div>
+                      </div>
+                      <div className="col-12 design_outter_comman mb-4 ">
+                        <div
+                          className="form-design pt-3 px-2 help-support-form row align-items-end justify-content-between"
+                          action=""
+                        >
+                          <div className="form-group col-6">
+                            <label htmlFor="">Select Attribute</label>
+                            <select
+                              className="select form-control"
+                              multiple=""
+                              name="attributeId"
+                              id="attributeId"
+                              value={subSubCategory.attributeId}
+                              onChange={handleInputChange3}
+                            >
+                              <option value="">Select Attribute</option>
+                              {Array.isArray(attribute) &&
+                                attribute.map((subCategory) => (
+                                  <option
+                                    key={subCategory._id}
+                                    value={subCategory._id}
+                                  >
+                                    {subCategory.attributeName_en}
+                                  </option>
+                                ))}
+                            </select>
+                          </div>
+                          <div className="form-group col-6">
+                            <label htmlFor="">Select Values</label>
+                            <select
+                              className="select form-control"
+                              multiple=""
+                              name="valueId"
+                              id="valueId"
+                              value={subSubCategory.valueId}
+                              onChange={handleInputChange3}
+                            >
+                              <option value="">Select Values</option>
+                              {Array.isArray(value) &&
+                                value.map((subCategory) => (
+                                  <option
+                                    key={subCategory._id}
+                                    value={subCategory._id}
+                                  >
+                                    {subCategory.valuesName_en}
+                                  </option>
+                                ))}
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        className="form-design px-3 help-support-form row align-items-end justify-content-between"
+                        action=""
+                      >
+                        <div className="form-group col-6">
+                          <label htmlFor="SKUEn">
+                            SKU(En)
+                            <span className="required-field text-danger">
+                              *
+                            </span>
+                          </label>
+                          <input
+                            type="text"
+                            className="form-control"
+                            // defaultValue=""
+                            name="SKUEn"
+                            id="SKUEn"
+                            value={formData.SKUEn}
+                            onChange={handleInputChange}
+                            required
+                            minLength="3"
+                          />
+                        </div>
+                        <div className="form-group col-6">
+                          <label htmlFor="SKUAr">
+                            SKU(Ar)
+                            <span className="required-field text-danger">
+                              *
+                            </span>
+                          </label>
+                          <input
+                            type="text"
+                            className="form-control"
+                            // defaultValue=""
+                            name="SKUAr"
+                            id="SKUAr"
+                            value={formData.SKUAr}
+                            onChange={handleInputChange}
+                            required
+                            minLength="3"
+                          />
+                        </div>
+                        <div className="form-group col-12">
+                          <label htmlFor="">
+                            Stock Quantity
+                            <span className="required-field text-danger">
+                              *
+                            </span>
+                          </label>
+                          <input
+                            type="text"
+                            className="form-control"
+                            // defaultValue=""
+                            name="stockQuantity"
+                            id="stockQuantity"
+                            value={formData.stockQuantity}
+                            placeholder="40"
+                            onChange={handleInputChange}
+                            required
+                            // minLength="3"
+                          />
+                        </div>
+                      </div>
+                      <div
+                        className="form-design px-3 help-support-form row align-items-end justify-content-between mt-4"
+                        action=""
+                      >
+                        <div className="form-group col-4">
+                          <label htmlFor="Price">
+                            Price
+                            <span className="required-field text-danger">
+                              *
+                            </span>
+                          </label>
+                          <input
+                            type="text"
+                            className="form-control"
+                            // defaultValue=""
+                            name="Price"
+                            id="Price"
+                            value={formData.Price}
+                            placeholder="1499"
+                            onChange={handleInputChange}
+                            required
+                            // minLength="3"
+                          />
+                        </div>
+                        <div className="form-group col-4">
+                          <label htmlFor="oldPrice">
+                            Old Price
+                            <span className="required-field text-danger">
+                              *
+                            </span>
+                          </label>
+                          <input
+                            type="text"
+                            className="form-control"
+                            // defaultValue=""
+                            name="oldPrice"
+                            id="oldPrice"
+                            value={formData.oldPrice}
+                            onChange={handleInputChange}
+                            required
+                            // minLength="3"
+                          />
+                        </div>
+                        <div className="form-group col-4">
+                          <label htmlFor="dollar">
+                            Dollar Price
+                            <span className="required-field text-danger">
+                              *
+                            </span>
+                          </label>
+                          <input
+                            type="text"
+                            className="form-control"
+                            // defaultValue=""
+                            name="dollar"
+                            id="dollar"
+                            value={formData.dollar}
+                            onChange={handleInputChange}
+                            required
+                          />
+                        </div>
+                      </div>
+                      <div
+                        className="form-design px-3 help-support-form row align-items-end justify-content-between mt-4"
+                        action=""
+                      >
+                        <div className="form-group col-12 new_radio_design">
+                          <input
+                            className="d-none"
+                            type="checkbox"
+                            id="Enable"
+                            name="returnable"
+                            value="true"
+                            checked={formData.returnable === "true"}
+                            onChange={handleInputChange}
+                          />
+                          <label htmlFor="Enable">Returnable </label>
+                        </div>
+                      </div>
+                      <div
+                        className="form-design py-4 px-3 help-support-form row align-items-end justify-content-between"
+                        action=""
+                      >
+                        <div className="form-group mb-0 col-3">
+                          <div className="banner-profile position-relative">
+                            <div
+                              className="banner-Box bg-light"
+                              style={{
+                                display: "flex",
+                                flexDirection: "column",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                height: "150px",
+                              }}
+                            >
+                              <img src="..." class="img-fluid" alt="..." />
+                              <div>150 X 150</div>
+                            </div>
+                            <div className="p-image">
+                              <label htmlFor="file1">
+                                <i className="upload-button fas fa-camera" />
+                              </label>
+                              <input
+                                className="form-control d-none"
+                                type="file"
+                                accept="image/*"
+                                name="file1"
+                                id="file1"
+                                // onChange={(e) =>
+                                //   handleImageUpload1(e, "file1")
+                                // }
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        <div className="form-group mb-0 col-3">
+                          <div className="banner-profile position-relative">
+                            <div
+                              className="banner-Box bg-light"
+                              style={{
+                                display: "flex",
+                                flexDirection: "column",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                height: "150px",
+                              }}
+                            >
+                              <img src="..." class="img-fluid" alt="..." />
+                              <div>150 X 150</div>
+                            </div>
+                            <div className="p-image">
+                              <label htmlFor="file1">
+                                <i className="upload-button fas fa-camera" />
+                              </label>
+                              <input
+                                className="form-control d-none"
+                                type="file"
+                                accept="image/*"
+                                name="file1"
+                                id="file1"
+                                // onChange={(e) =>
+                                //   handleImageUpload1(e, "file1")
+                                // }
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        <div className="form-group mb-0 col-3">
+                          <div className="banner-profile position-relative">
+                            <div
+                              className="banner-Box bg-light"
+                              style={{
+                                display: "flex",
+                                flexDirection: "column",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                height: "150px",
+                              }}
+                            >
+                              <img src="..." class="img-fluid" alt="..." />
+                              <div>150 X 150</div>
+                            </div>
+                            <div className="p-image">
+                              <label htmlFor="file1">
+                                <i className="upload-button fas fa-camera" />
+                              </label>
+                              <input
+                                className="form-control d-none"
+                                type="file"
+                                accept="image/*"
+                                name="file1"
+                                id="file1"
+                                // onChange={(e) =>
+                                //   handleImageUpload1(e, "file1")
+                                // }
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        <div className="form-group mb-0 col-3">
+                          <div className="banner-profile position-relative">
+                            <div
+                              className="banner-Box bg-light"
+                              style={{
+                                display: "flex",
+                                flexDirection: "column",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                height: "150px",
+                              }}
+                            >
+                              <img src="..." class="img-fluid" alt="..." />
+                              <div>150 X 150</div>
+                            </div>
+                            <div className="p-image">
+                              <label htmlFor="file1">
+                                <i className="upload-button fas fa-camera" />
+                              </label>
+                              <input
+                                className="form-control d-none"
+                                type="file"
+                                accept="image/*"
+                                name="file1"
+                                id="file1"
+                                // onChange={(e) =>
+                                //   handleImageUpload1(e, "file1")
+                                // }
+                              />
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="form-group col-12 choose_file position-relative">
+                          <span>Upload Image</span>
+                          <label htmlFor="gallery_images">
+                            <i className="fal fa-camera me-1" />
+                            Choose File{" "}
+                          </label>
+                          <input
+                            type="file"
+                            className="form-control"
+                            defaultValue=""
+                            id="gallery_images"
+                            accept="image/*"
+                            name="gallery_images"
+                            onChange={(e) =>
+                              handleFileChange(e, "gallery_images")
+                            }
+                            multiple
+                          />
+                        </div>
+                      </div>
+                      <div
+                        style={{ display: "flex", justifyContent: "center" }}
+                      >
+                        <button
+                          className="comman_btn mb-4"
+                          onClick={handleClick3}
+                        >
+                          Save
+                        </button>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="row ">
+                    <div className="col-12 design_outter_comman comman_table_design px-0 shadow">
+                      <div className="row comman_header justify-content-between">
+                        <div
+                          className="col"
+                          style={{ display: "flex", justifyContent: "center" }}
+                        >
+                          <h2>Varients</h2>
+                        </div>
+                      </div>
+                      <div className="table-responsive">
+                        <table className="table mb-0">
+                          <thead>
+                            <tr>
+                              <th>S.No.</th>
+                              <th>Image</th>
+                              <th>SKU</th>
+                              <th>MRP</th>
+                              <th>S.P.</th>
+                              <th>Stock</th>
+                              <th>Weight</th>
+                              <th>Action</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td>1</td>
+                              <td>
+                                <img
+                                  src=""
+                                  className="avatar lg rounded"
+                                  alt=""
+                                  style={{
+                                    width: "5vh",
+                                    height: "5vh",
+                                  }}
+                                />
+                              </td>
+                              <td>Ajay Sharma</td>
+                              <td>Ram Jain</td>
+                              <td>+966 9876543210</td>
+                              <td>01/07/2022</td>
+                              <td>Free</td>
+                              <td>
+                                <a
+                                  className="comman_btn2 table_viewbtn"
+                                  href="recent-orders-details.html"
+                                >
+                                  View
+                                </a>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>2</td>
+                              <td>
+                                <img
+                                  src=""
+                                  className="avatar lg rounded"
+                                  alt=""
+                                  style={{
+                                    width: "5vh",
+                                    height: "5vh",
+                                  }}
+                                />
+                              </td>
+                              <td>Ajay Sharma</td>
+                              <td>Ram Jain</td>
+                              <td>+966 9876543210</td>
+                              <td>01/07/2022</td>
+                              <td>Fixed</td>
+                              <td>
+                                <a
+                                  className="comman_btn2 table_viewbtn"
+                                  href="#"
+                                >
+                                  View
+                                </a>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {showAddButton ? (
+                  <div style={{ display: "flex", justifyContent: "center" }}>
+                    <button className="comman_btn mt-4" onClick={handleClick2}>
+                      Add New Varient
+                    </button>
+                  </div>
+                ) : null}
               </div>
             </div>
           </div>

@@ -198,6 +198,9 @@ function Attribute() {
           text: "The Attribute has been created successfully.",
         });
         handleSave();
+        setTimeout(() => {
+          window?.location?.reload();
+        }, 500);
       }
     } catch (error) {
       console.error(error);

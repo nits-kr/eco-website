@@ -19,6 +19,7 @@ function SubCategory(props) {
   const [subCategory, setSubCategory] = useState({
     nameEn: "",
     nameAr: "",
+    categoryId: "",
     categoryId1: "",
     subCategoryId: "",
     subCategoryPic: null,
@@ -200,6 +201,9 @@ function SubCategory(props) {
           subCategoryPic: null,
         });
         subCategoryManagementList();
+        setTimeout(() => {
+          window?.location?.reload();
+        }, 500);
       }
     } catch (error) {
       console.error(error);
@@ -225,10 +229,25 @@ function SubCategory(props) {
   const handleSaveChanges1 = (event) => {
     event.preventDefault();
     const formData = new FormData();
-    formData.append("subCategoryName_en", category.nameEn);
-    formData.append("subCategoryName_ar", category.nameAr);
-    formData.append("subCategoryPic", category.uploadImage);
-    formData.append("category_Id", category.categoryId1);
+    // formData.append("subCategoryName_en", category.nameEn);
+    // formData.append("subCategoryName_ar", category.nameAr);
+    // formData.append("subCategoryPic", category.uploadImage);
+    // formData.append("category_Id", category.categoryId1);
+    if (category.nameEn) {
+      formData.append("subCategoryName_en", category.nameEn);
+    }
+
+    if (category.nameAr) {
+      formData.append("subCategoryName_ar", category.nameAr);
+    }
+
+    if (category.uploadImage) {
+      formData.append("subCategoryPic", category.uploadImage);
+    }
+
+    if (category.categoryId1) {
+      formData.append("category_Id", category.categoryId1);
+    }
     axios
       .patch(
         `http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/subCategory/subCategoryUpdate/${itemId}`,
@@ -335,7 +354,7 @@ function SubCategory(props) {
                 <div className="form-group mb-0 col choose_file position-relative">
                   <span>Upload Image</span>
                   <label
-                    htmlFor="upload-video"
+                    htmlFor="uploadImage"
                     style={{ marginTop: "-1px", height: "63%" }}
                   >
                     <i className="fal fa-camera me-1"></i>

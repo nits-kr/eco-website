@@ -167,8 +167,6 @@ function Value() {
         subCategory_Id: values.categoryId1,
         attribute_Id: values.categoryId3,
       };
-
-      // Conditionally add subSubCategory_Id if it exists
       if (values.categoryId2) {
         requestBody.subSubCategory_Id = values.categoryId2;
       }
@@ -186,6 +184,9 @@ function Value() {
           text: "The Value has been created successfully.",
         });
         handleSave();
+        setTimeout(() => {
+          window?.location?.reload();
+        }, 500);
       }
     } catch (error) {
       console.error(error);
@@ -253,7 +254,7 @@ function Value() {
     const fetchData = async () => {
       try {
         const response = await axios.post(
-          `http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/attribute/selectSubSubCategory/${values.categoryId1}`
+          `http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/attribute/selectSubSubCategory/${values.categoryId}`
         );
         setAttributes(response.data.results.subSubCategoryData);
         console.log(response.data);
@@ -262,7 +263,7 @@ function Value() {
       }
     };
     fetchData();
-  }, [values.categoryId1]);
+  }, [values.categoryId]);
 
   const handleSaveChanges1 = async (e) => {
     e.preventDefault();

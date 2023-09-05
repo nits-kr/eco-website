@@ -364,14 +364,7 @@ function UsersManagement(props) {
                                     <td>{user?.userName}</td>
                                     <td>{user?.mobileNumber}</td>
                                     {/* <td>{user?.createdAt.slice(0,10)}</td> */}
-                                    <td>
-                                      {" "}
-                                      {user?.createdAt
-                                        .slice(0, 10)
-                                        .split("-")
-                                        .reverse()
-                                        .join("-")}{" "}
-                                    </td>
+                                    <td> {user?.createdAt.slice(0, 10)} </td>
                                     {/* <td>{user?.specialOffer}</td> */}
                                     {/* <td>
                                       <form className="table_btns d-flex align-items-center">

@@ -191,6 +191,9 @@ function CategoryManagement(props) {
           text: "The category has been created successfully.",
         });
         handleSave();
+        setTimeout(() => {
+          window?.location?.reload();
+        }, 500);
       }
     } catch (error) {
       console.error(error);

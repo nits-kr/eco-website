@@ -172,6 +172,9 @@ function SubSubCategory() {
             text: "The Sub Sub Category has been created successfully.",
           });
           handleSave();
+          setTimeout(() => {
+            window?.location?.reload();
+          }, 500);
         } else {
           alert("Errors in response!");
         }

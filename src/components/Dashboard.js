@@ -188,6 +188,44 @@ function Dashboard(props) {
       }
     }
   };
+
+  function formatTimeAgo(createdAt) {
+    const currentDate = new Date();
+    const createdAtDate = new Date(createdAt);
+    const timeDifferenceInSeconds = Math.floor(
+      (currentDate - createdAtDate) / 1000
+    );
+    if (timeDifferenceInSeconds < 60) {
+      return `${timeDifferenceInSeconds} sec ago`;
+    } else if (timeDifferenceInSeconds < 3600) {
+      const minutes = Math.floor(timeDifferenceInSeconds / 60);
+      return `${minutes} min ago`;
+    } else if (timeDifferenceInSeconds < 86400) {
+      const hours = Math.floor(timeDifferenceInSeconds / 3600);
+      return `${hours} hours ago`;
+    } else {
+      const days = Math.floor(timeDifferenceInSeconds / 86400);
+      return `${days} days ago`;
+    }
+  }
+
+  function getStatusBackgroundColor(orderStatus) {
+    switch (orderStatus) {
+      case "Pending":
+        return "yellow";
+      case "Processing":
+        return "orange";
+      case "Shipped":
+        return "green";
+      case "Delivered":
+        return "blue";
+      case "Cancelled":
+        return "red";
+      default:
+        return "gray";
+    }
+  }
+
   return (
     <>
       {loading}
@@ -366,22 +404,34 @@ function Dashboard(props) {
                                 {(recentOrderList || [])?.map(
                                   (order, index) => (
                                     <tr key={index}>
-                                      <td>
-                                        {" "}
-                                        {order?._id}{" "}
-                                      </td>
+                                      <td> {order?._id} </td>
                                       <td> {order?.user_Id?.userName} </td>
                                       {/* <td> {order?.createdAt.slice(0,10)} </td> */}
                                       <td>
-                                        {" "}
-                                        {order?.createdAt
-                                          .slice(0, 10)
-                                          .split("-")
-                                          .reverse()
-                                          .join("-")}{" "}
+                                        <td>
+                                          {order?.createdAt &&
+                                            formatTimeAgo(order.createdAt)}
+                                        </td>
                                       </td>
-                                      <td> {order?.cartsTotal[0][0]?.totalAfterDiscount} </td>
-                                      <td> {order?.orderStatus} </td>
+                                      <td>
+                                        {" "}
+                                        {
+                                          order?.cartsTotal[0][0]
+                                            ?.totalAfterDiscount
+                                        }{" "}
+                                      </td>
+                                      {/* <td> {order?.orderStatus} </td> */}
+                                      <td
+                                        style={{
+                                          backgroundColor:
+                                            getStatusBackgroundColor(
+                                              order?.orderStatus
+                                            ),
+                                        }}
+                                      >
+                                        {order?.orderStatus}
+                                      </td>
+
                                       <td> {order?.paymentIntent} </td>
                                     </tr>
                                   )

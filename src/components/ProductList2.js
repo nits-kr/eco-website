@@ -15,6 +15,7 @@ import { useDeleteProductListMutation } from "../services/Post";
 
 function ProductList2(props) {
   const [loading, setLoading] = useState(false);
+  const [selectedProducts, setSelectedProducts] = useState([]);
   const [userCounts, setUserCounts] = useState(0);
   const [recentOrderList, setRecentOrderList] = useState([]);
   const [startDate, setStartDate] = useState("");
@@ -217,6 +218,14 @@ function ProductList2(props) {
     return slug.length > 10 ? `${slug.slice(0, 10)}...` : slug;
   };
 
+  const handleCheckboxChange = (productId) => {
+    if (selectedProducts.includes(productId)) {
+      setSelectedProducts(selectedProducts.filter((id) => id !== productId));
+    } else {
+      setSelectedProducts([...selectedProducts, productId]);
+    }
+  };
+
   return (
     <>
       {loading}
@@ -336,11 +345,12 @@ function ProductList2(props) {
                                 <tr>
                                   <th>Product Image</th>
                                   <th>Product name</th>
-                                  <th>Sub Category</th>
+                                  <th>Category</th>
 
                                   <th>Stock</th>
-                                  <th>Price</th>
+                                  <th>Brand</th>
                                   <th>Slug</th>
+                                  <th>Recommended</th>
                                   <th>Action</th>
                                   {/* <th>Action</th> */}
                                 </tr>
@@ -370,10 +380,7 @@ function ProductList2(props) {
                                         }}
                                       >
                                         <strong className="text-dark-emphasis">
-                                          {product.productName_en
-                                            ? product.productName_en.toUpperCase()
-                                            : product.productName &&
-                                              product.productName.toUpperCase()}
+                                          {product.productName_en.toUpperCase()}
                                         </strong>
                                         <strong className="text-body-tertiary">
                                           SKU: {product.SKU}
@@ -383,12 +390,7 @@ function ProductList2(props) {
                                     <td>
                                       {" "}
                                       <strong>
-                                        {product?.Subcategory_Id
-                                          ?.subCategoryName
-                                          ? product?.Subcategory_Id
-                                              ?.subCategoryName
-                                          : product?.Subcategory_Id
-                                              ?.subCategoryName_en}
+                                        {product?.category_Id?.categoryName_en}
                                       </strong>
                                     </td>
 
@@ -408,12 +410,13 @@ function ProductList2(props) {
                                     </td>
 
                                     <td>
-                                      {" "}
+                                      {/* {" "}
                                       ₹{product.Price}{" "}
                                       <del className="fs-6 ms-1 text-secondary">
                                         {" "}
                                         ₹{product?.oldPrice}{" "}
-                                      </del>{" "}
+                                      </del>{" "} */}
+                                      {product?.brand_Id?.brandName_en ? product?.brand_Id?.brandName_en : "None"}
                                     </td>
                                     <td
                                       style={{
@@ -430,6 +433,21 @@ function ProductList2(props) {
                                       <span className="text-secondary">
                                         <FontAwesomeIcon icon={faCopy} />
                                       </span>
+                                    </td>
+                                    <td>
+                                      <strong>
+                                        <input
+                                          type="checkbox"
+                                          name={`checkbox-${product.productName_en}`}
+                                          id={product._id}
+                                          checked={selectedProducts.includes(
+                                            product._id
+                                          )}
+                                          onChange={() =>
+                                            handleCheckboxChange(product._id)
+                                          }
+                                        />
+                                      </strong>
                                     </td>
                                     <td>
                                       <Link
