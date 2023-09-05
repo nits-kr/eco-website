@@ -146,7 +146,7 @@ function App() {
             exact
             className="active"
             path="/product-management"
-            element={<ProductManagement2 />}
+            element={<ProductManagement2 setProgress={setProgress} />}
           />
           <Route
             exact

@@ -361,7 +361,7 @@ function ProductList2(props) {
                                     <td>
                                       {" "}
                                       <img
-                                        src={product?.product_Pic[0]}
+                                        src={product?.addVarient[0]?.product_Pic[0]}
                                         className="avatar lg rounded"
                                         alt=""
                                         style={{

@@ -8,7 +8,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faPencil, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import Sidebar from "./Sidebar";
 
-function ProductManagement2() {
+function ProductManagement2(props) {
+  const [loading, setLoading] = useState(false);
   const [selectedImage, setSelectedImage] = useState([]);
   const [formData, setFormData] = useState([]);
   const [count, setCount] = useState(0);
@@ -16,7 +17,7 @@ function ProductManagement2() {
   const [showAddButton, setShowAddButton] = useState(false);
   const [showAddButton2, setShowAddButton2] = useState(false);
   console.log("slug form date", formData);
-
+  const [productList, setProductList] = useState([]);
   const [categories, setCategories] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
   const [subSubCategories, setSubSubCategories] = useState([]);
@@ -207,16 +208,16 @@ function ProductManagement2() {
     data.append("Description_ar", formData.DescriptionAr);
     // data.append("weight", formData.weight);
     // data.append("weight_ar", formData.weightAr);
-    data.append("productColor", formData.color);
-    data.append("productColor_ar", formData.colorAr);
+    // data.append("productColor", formData.color);
+    // data.append("productColor_ar", formData.colorAr);
     data.append("careInstuctions", formData.shortDescriptionEn);
     data.append("careInstuctions_ar", formData.shortDescriptionAr);
-    data.append("Price", formData.Price);
-    data.append("oldPrice", formData.oldPrice);
-    data.append("dollarPrice", formData.dollar);
-    data.append("SKU", formData.SKUEn);
-    data.append("SKU_ar", formData.SKUAr);
-    data.append("stockQuantity", formData.stockQuantity);
+    // data.append("Price", formData.Price);
+    // data.append("oldPrice", formData.oldPrice);
+    // data.append("dollarPrice", formData.dollar);
+    // data.append("SKU", formData.SKUEn);
+    // data.append("SKU_ar", formData.SKUAr);
+    // data.append("stockQuantity", formData.stockQuantity);
     if (formData.pageTitleEn) {
       data.append("pageTitle", formData.pageTitleEn);
     }
@@ -229,11 +230,14 @@ function ProductManagement2() {
     if (formData.metaDescriptionAr) {
       data.append("metaDescription_ar", formData.metaDescriptionAr);
     }
-    data.append("visibility", formData.visibility);
-    data.append("visibility_ar", formData.visibilityAr);
-    data.append("publishDate", formData.datepicker);
-    data.append("Tags", formData.Tags);
-    data.append("Tags_ar", formData.TagsAr);
+    data.append("visibility", formData.visibility || "published");
+    data.append("visibility_ar", formData.visibilityAr || "نشرت");
+    data.append(
+      "publishDate",
+      formData.datepicker || new Date().toISOString().split("T")[0]
+    );
+    // data.append("Tags", formData.Tags);
+    // data.append("Tags_ar", formData.TagsAr);
     data.append("category_Id", subSubCategory.categoryId);
     data.append("Subcategory_Id", subSubCategory.categoryId1);
     if (subSubCategory.categoryId3) {
@@ -256,6 +260,94 @@ function ProductManagement2() {
     axios
       .post(
         "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/product/createProduct",
+        data
+      )
+      .then((response) => {
+        setFormData(response.data.results.saveProduct);
+        console.log(response.data.results.saveProduct);
+        localStorage?.setItem(
+          "productId",
+          response?.data?.results?.saveProduct?._id
+        );
+        Swal.fire({
+          title: "Product Created!",
+          text: "Your new product has been created successfully.",
+          icon: "success",
+          confirmButtonColor: "#3085d6",
+          confirmButtonText: "OK",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            // navigate("/products");
+          }
+        });
+      })
+      .catch((error) => {
+        console.log(error.response.data);
+      });
+  };
+  const productId = localStorage?.getItem("productId");
+  const handleOnSave1 = (e) => {
+    e.preventDefault();
+    const data = new FormData();
+    // data.append("productName_en", formData.productNameEn);
+    // data.append("productName_ar", formData.productNameAr);
+    // data.append("slug", slug);
+    // data.append("Description", formData.DescriptionEn);
+    // data.append("Description_ar", formData.DescriptionAr);
+    // data.append("weight", formData.weight);
+    // data.append("weight_ar", formData.weightAr);
+    // data.append("productColor", formData.color);
+    // data.append("productColor_ar", formData.colorAr);
+    // data.append("careInstuctions", formData.shortDescriptionEn);
+    // data.append("careInstuctions_ar", formData.shortDescriptionAr);
+    data.append("Price", formData.Price);
+    data.append("oldPrice", formData.oldPrice);
+    data.append("dollarPrice", formData.dollar);
+    data.append("SKU", formData.SKUEn);
+    data.append("SKU_ar", formData.SKUAr);
+    data.append("stockQuantity", formData.stockQuantity);
+    if (formData.pageTitleEn) {
+      data.append("pageTitle", formData.pageTitleEn);
+    }
+    if (formData.pageTitleAr) {
+      data.append("pageTitle_ar", formData.pageTitleAr);
+    }
+    if (formData.metaDescriptionEn) {
+      data.append("metaDescription", formData.metaDescriptionEn);
+    }
+    if (formData.metaDescriptionAr) {
+      data.append("metaDescription_ar", formData.metaDescriptionAr);
+    }
+    // data.append("visibility", formData.visibility || "published");
+    // data.append("visibility_ar", formData.visibilityAr || "نشرت");
+    // data.append(
+    //   "publishDate",
+    //   formData.datepicker || new Date().toISOString().split("T")[0]
+    // );
+    // data.append("Tags", formData.Tags);
+    // data.append("Tags_ar", formData.TagsAr);
+    // data.append("category_Id", subSubCategory.categoryId);
+    // data.append("Subcategory_Id", subSubCategory.categoryId1);
+    if (subSubCategory.categoryId3) {
+      data.append("subSubcategory_Id", subSubCategory.categoryId3);
+    }
+    if (subSubCategory.valueId) {
+      data.append("values_Id", subSubCategory.valueId);
+    }
+    if (subSubCategory.attributeId) {
+      data.append("attribute_Id", subSubCategory.attributeId);
+    }
+    if (subSubCategory.brandId1) {
+      data.append("brand_Id", subSubCategory.brandId1);
+    }
+    if (selectedImage && selectedImage.length > 0) {
+      selectedImage.map((item, index) => {
+        data.append(`product_Pic`, item);
+      });
+    }
+    axios
+      .post(
+        `http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/product/new-varient/${productId}`,
         data
       )
       .then((response) => {
@@ -302,6 +394,21 @@ function ProductManagement2() {
       return false;
     }
   };
+
+  useEffect(() => {
+    props.setProgress(10);
+    setLoading(true);
+    axios
+      .post(
+        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/product/productList"
+      )
+      .then((response) => {
+        setProductList(response?.data?.results?.list?.reverse());
+        console.log(response.data);
+        props.setProgress(100);
+        setLoading(false);
+      });
+  }, []);
   return (
     <>
       <Sidebar Dash={"product-management"} />
@@ -310,7 +417,7 @@ function ProductManagement2() {
           <div className="admin_panel_data height_adjust">
             <div className="row offer-management justify-content-center">
               <div className="col-12">
-                <form className="row" onSubmit={handleOnSave}>
+                <div className="row">
                   <div className="col-9 mb-4">
                     <div className="main_head">Add Product </div>
                   </div>
@@ -509,7 +616,7 @@ function ProductManagement2() {
                               // defaultValue=""
                               name="productNameEn"
                               id="productNameEn"
-                              value={formData.productNameEn}
+                              value={formData?.productNameEn}
                               onChange={handleInputChange}
                               required
                               minLength="3"
@@ -528,7 +635,7 @@ function ProductManagement2() {
                               // defaultValue=""
                               name="productNameAr"
                               id="productNameAr"
-                              value={formData.productNameAr}
+                              value={formData?.productNameAr}
                               onChange={handleInputChange}
                               required
                               minLength="3"
@@ -547,7 +654,7 @@ function ProductManagement2() {
                               // defaultValue=""
                               name="productType"
                               id="productType"
-                              value={formData.productType}
+                              value={formData?.productType}
                               onChange={handleInputChange}
                               required
                               minLength="3"
@@ -566,7 +673,7 @@ function ProductManagement2() {
                               id="DescriptionEn"
                               style={{ height: 120 }}
                               // defaultValue={""}
-                              value={formData.DescriptionEn}
+                              value={formData?.DescriptionEn}
                               onChange={handleInputChange}
                               required
                               minLength="3"
@@ -585,7 +692,7 @@ function ProductManagement2() {
                               id="DescriptionAr"
                               style={{ height: 120 }}
                               // defaultValue={""}
-                              value={formData.DescriptionAr}
+                              value={formData?.DescriptionAr}
                               onChange={handleInputChange}
                               required
                               minLength="3"
@@ -622,7 +729,7 @@ function ProductManagement2() {
                               className="form-control"
                               id="shortDescriptionEn"
                               style={{ height: 120 }}
-                              value={formData.shortDescriptionEn}
+                              value={formData?.shortDescriptionEn}
                               placeholder="Enter care Insructions..."
                               onChange={handleInputChange}
                               required
@@ -642,7 +749,7 @@ function ProductManagement2() {
                               id="shortDescriptionAr"
                               style={{ height: 120 }}
                               // defaultValue={""}
-                              defaultValue={formData.shortDescriptionAr}
+                              defaultValue={formData?.shortDescriptionAr}
                               placeholder="أدخل وصفًا موجزًا"
                               onChange={handleInputChange}
                               required
@@ -706,10 +813,27 @@ function ProductManagement2() {
                               Save
                             </button>
                           )} */}
-                          <div style={{ display: "flex", justifyContent: "center" }}>
-                          <button className="comman_btn" onClick={handleClick}>
-                            Save
-                          </button>
+                          <div
+                            style={{
+                              display: "flex",
+                              justifyContent: "center",
+                            }}
+                          >
+                            {/* <button
+                              className="comman_btn"
+                              onClick={handleClick}
+                            >
+                              Save
+                            </button> */}
+                            <button
+                              className="comman_btn"
+                              onClick={(e) => {
+                                handleClick();
+                                handleOnSave(e);
+                              }}
+                            >
+                              Save
+                            </button>
                           </div>
                         </div>
                       </div>
@@ -1531,6 +1655,7 @@ function ProductManagement2() {
                               value="published"
                               // defaultValue={formData.published}
                               onChange={handleInputChange}
+                              defaultChecked
                             />
                             <label htmlFor="published">Published </label>
                           </div>
@@ -1542,7 +1667,7 @@ function ProductManagement2() {
                               name="visibility"
                               value="scheduled"
                               onChange={handleInputChange}
-                              defaultChecked
+                              // defaultChecked
                             />
                             <label htmlFor="scheduled">Schedduled </label>
                           </div>
@@ -1557,7 +1682,7 @@ function ProductManagement2() {
                             />
                             <label htmlFor="hidden">Hidden </label>
                           </div>
-                          <div className="form-group col-12">
+                          {/* <div className="form-group col-12">
                             <label htmlFor="">Publish Date</label>
                             <input
                               type="date"
@@ -1567,6 +1692,21 @@ function ProductManagement2() {
                               id="datepicker"
                               placeholder="Select date and time"
                               value={formData.datepicker}
+                              onChange={handleInputChange}
+                            />
+                          </div> */}
+                          <div className="form-group col-12">
+                            <label htmlFor="">Publish Date</label>
+                            <input
+                              type="date"
+                              className="form-control"
+                              name="datepicker"
+                              id="datepicker"
+                              placeholder="Select date and time"
+                              value={
+                                formData?.datepicker ||
+                                new Date().toISOString().split("T")[0]
+                              }
                               onChange={handleInputChange}
                             />
                           </div>
@@ -1591,6 +1731,7 @@ function ProductManagement2() {
                               value="نشرت"
                               // defaultValue={formData.published}
                               onChange={handleInputChange}
+                              defaultChecked
                             />
                             <label htmlFor="publishedAr">نشرت </label>
                           </div>
@@ -1602,7 +1743,7 @@ function ProductManagement2() {
                               name="visibilityAr"
                               value="المقرر"
                               onChange={handleInputChange}
-                              defaultChecked
+                              // defaultChecked
                             />
                             <label htmlFor="scheduledAr">المقرر </label>
                           </div>
@@ -1871,7 +2012,7 @@ function ProductManagement2() {
                       </div> */}
                     </div>
                   </div>
-                </form>
+                </div>
                 {showAddButton2 ? (
                   Array.from({ length: variantCount }).map((_, index) => (
                     <div
@@ -2209,7 +2350,7 @@ function ProductManagement2() {
                           </div>
                         </div>
 
-                        <div className="form-group col-12 choose_file position-relative">
+                        <div className="form-group col-4 choose_file position-relative">
                           <span>Upload Image</span>
                           <label htmlFor="gallery_images">
                             <i className="fal fa-camera me-1" />
@@ -2228,8 +2369,22 @@ function ProductManagement2() {
                             multiple
                           />
                         </div>
+                        <div
+                          className="col-4"
+                          style={{ display: "flex", justifyContent: "end" }}
+                        >
+                          <button
+                            className="comman_btn mb-4"
+                            onClick={(e) => {
+                              handleClick3();
+                              handleOnSave1(e);
+                            }}
+                          >
+                            Save
+                          </button>
+                        </div>
                       </div>
-                      <div
+                      {/* <div
                         style={{ display: "flex", justifyContent: "center" }}
                       >
                         <button
@@ -2238,7 +2393,7 @@ function ProductManagement2() {
                         >
                           Save
                         </button>
-                      </div>
+                      </div> */}
                     </div>
                   ))
                 ) : (
@@ -2253,7 +2408,7 @@ function ProductManagement2() {
                         </div>
                       </div>
                       <div className="table-responsive">
-                        <table className="table mb-0">
+                        {/* <table className="table mb-0">
                           <thead>
                             <tr>
                               <th>S.No.</th>
@@ -2267,7 +2422,9 @@ function ProductManagement2() {
                             </tr>
                           </thead>
                           <tbody>
-                            <tr>
+                            {productList?.map((item, index) => {
+                              return (
+                                <tr>
                               <td>1</td>
                               <td>
                                 <img
@@ -2294,33 +2451,71 @@ function ProductManagement2() {
                                 </a>
                               </td>
                             </tr>
+                              )
+                            })}
+                          </tbody>
+                        </table> */}
+                        <table className="table mb-0">
+                          <thead>
                             <tr>
-                              <td>2</td>
-                              <td>
-                                <img
-                                  src=""
-                                  className="avatar lg rounded"
-                                  alt=""
-                                  style={{
-                                    width: "5vh",
-                                    height: "5vh",
-                                  }}
-                                />
-                              </td>
-                              <td>Ajay Sharma</td>
-                              <td>Ram Jain</td>
-                              <td>+966 9876543210</td>
-                              <td>01/07/2022</td>
-                              <td>Fixed</td>
-                              <td>
-                                <a
-                                  className="comman_btn2 table_viewbtn"
-                                  href="#"
-                                >
-                                  View
-                                </a>
-                              </td>
+                              <th>S.No.</th>
+                              <th>Image</th>
+                              <th>SKU</th>
+                              <th>MRP</th>
+                              <th>Old Price</th>
+                              <th>Stock</th>
+                              {/* <th>Weight</th> */}
+                              <th>Action</th>
                             </tr>
+                          </thead>
+                          <tbody>
+                            {productList?.map((item, index) => {
+                              return (
+                                <React.Fragment key={item._id}>
+                                  {item.addVarient.map(
+                                    (variant, variantIndex) => (
+                                      <tr key={`${item._id}-${variantIndex}`}>
+                                        <td>{index + 1}</td>
+                                        <td>
+                                          {variant.product_Pic[0] ? (
+                                            <img
+                                              src={
+                                                variant.product_Pic[0]
+                                              }
+                                              className="avatar lg rounded"
+                                              alt=""
+                                              style={{
+                                                width: "5vh",
+                                                height: "5vh",
+                                              }}
+                                            />
+                                          ) : (
+                                            <span>No Image</span>
+                                          )}
+                                        </td>
+                                        <td>{variant.SKU || "N/A"}</td>
+                                        <td>{variant.oldPrice || "N/A"}</td>
+                                        <td>{variant.Price || "N/A"}</td>
+                                        <td>
+                                          {variant.stockQuantity || "N/A"}
+                                        </td>
+                                        {/* <td>{variant.weight || "N/A"}</td> */}
+                                        <td>
+                                          <Link
+                                            className="comman_btn2 table_viewbtn"
+                                            to={item.slug}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                          >
+                                            View
+                                          </Link>
+                                        </td>
+                                      </tr>
+                                    )
+                                  )}
+                                </React.Fragment>
+                              );
+                            })}
                           </tbody>
                         </table>
                       </div>
