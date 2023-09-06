@@ -2608,7 +2608,7 @@ function ProductManagement2(props) {
                     style={{
                       display: "flex",
                       justifyContent: "center",
-                      marginLeft: "-260px",
+                      marginLeft: "-300px",
                     }}
                   >
                     <button className="comman_btn mt-2" onClick={handleClick2}>
