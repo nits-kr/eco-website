@@ -31,6 +31,7 @@ function BrandManagement(props) {
   const [deleteBrand, res] = useDeleteBrabdListMutation();
   const [nameEn1, setNameEn1] = useState([]);
   const [nameAr1, setNameAr1] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [pic1, setPic1] = useState([]);
   const [id1, setId1] = useState([]);
   localStorage?.setItem("brandId", id1);
@@ -44,6 +45,14 @@ function BrandManagement(props) {
     nameEn1: "",
     nameAr1: "",
     uploadImage1: null,
+  });
+  const [subCategory, setSubCategory] = useState({
+    nameEn: "",
+    nameAr: "",
+    categoryId: "",
+    categoryId1: "",
+    subCategoryId: "",
+    subCategoryPic: null,
   });
   const handleInputChange1 = (event) => {
     const { name, value } = event.target;
@@ -230,6 +239,25 @@ function BrandManagement(props) {
     const { name, value } = event.target;
     setFormData({ ...formData, [name]: value });
   };
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      const response = await axios.post(
+        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/category/list"
+      );
+      setCategories(response?.data?.results?.list);
+      console.log(response?.data?.results?.list);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const handleInputChange2 = (event) => {
+    const { name, value } = event.target;
+    setSubCategory({ ...subCategory, [name]: value });
+  };
 
   const handleFileChange = (event) => {
     setFormData({ ...formData, categoryPic: event.target.files[0] });
@@ -238,6 +266,7 @@ function BrandManagement(props) {
     event.preventDefault();
     try {
       const data = new FormData();
+      data.append("category_Id", subCategory.categoryId);
       data.append("brandName_en", formData.nameEn);
       data.append("brandName_ar", formData.nameAr);
       data.append("brandPic", formData.categoryPic);
@@ -371,7 +400,47 @@ function BrandManagement(props) {
                                   className="form-design py-4 px-3 help-support-form row align-items-end justify-content-between"
                                   onSubmit={handleSubmit}
                                 >
-                                  <div className="form-group mb-0 col">
+                                  {/* <div className="form-group mb-0 col-6">
+                                    <label htmlFor="name-en">
+                                      Enter Category Name
+                                      <span className="required-field text-danger">
+                                        *
+                                      </span>
+                                    </label>
+                                    <input
+                                      type="text"
+                                      className="form-control"
+                                      name="nameEn"
+                                      id="name-en"
+                                      value={formData.nameEn}
+                                      onChange={handleInputChange}
+                                      required
+                                      minLength="3"
+                                    />
+                                  </div> */}
+                                  <div className="form-group mb-0 col-6">
+                                    <label htmlFor="">Select Category</label>
+                                    <select
+                                      className="select form-control"
+                                      multiple=""
+                                      name="categoryId"
+                                      id="selectCategory"
+                                      value={subCategory.categoryId}
+                                      onChange={handleInputChange2}
+                                    >
+                                      <option value="">Select Category</option>
+                                      {Array.isArray(categories) &&
+                                        categories.map((category) => (
+                                          <option
+                                            key={category._id}
+                                            value={category._id}
+                                          >
+                                            {category.categoryName_en}
+                                          </option>
+                                        ))}
+                                    </select>
+                                  </div>
+                                  <div className="form-group mb-0 col-6">
                                     <label htmlFor="name-en">
                                       Enter Brand Name (En)
                                       <span className="required-field text-danger">
@@ -389,7 +458,7 @@ function BrandManagement(props) {
                                       minLength="3"
                                     />
                                   </div>
-                                  <div className="form-group mb-0 col">
+                                  <div className="form-group mb-0 mt-3 col">
                                     <label htmlFor="name-ar">
                                       Enter Brand Name (Ar)
                                       <span className="required-field text-danger">
@@ -407,7 +476,7 @@ function BrandManagement(props) {
                                       minLength="3"
                                     />
                                   </div>
-                                  <div className="form-group mb-0 col choose_file position-relative">
+                                  <div className="form-group mb-0 mt-3 col choose_file position-relative">
                                     <span>Upload Image</span>
                                     <label htmlFor="upload-video">
                                       <i className="fal fa-camera me-1"></i>

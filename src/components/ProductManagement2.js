@@ -190,16 +190,16 @@ function ProductManagement2(props) {
     const fetchData2 = async () => {
       try {
         const response = await axios.post(
-          "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/product/brand-list"
+          `http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/product/select-brand/${subSubCategory.categoryId}`
         );
-        setBrands(response.data.results.list);
+        setBrands(response.data.results.selectBrand);
         console.log(response.data);
       } catch (error) {
         console.error(error);
       }
     };
     fetchData2();
-  }, []);
+  }, [subSubCategory.categoryId]);
   useEffect(() => {
     const fetchData = async () => {
       try {
