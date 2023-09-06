@@ -384,9 +384,9 @@ function ProductList2(props) {
                                         <strong className="text-dark-emphasis">
                                           {product.productName_en.toUpperCase()}
                                         </strong>
-                                        <strong className="text-body-tertiary">
+                                        {/* <strong className="text-body-tertiary">
                                           SKU: {product.SKU}
-                                        </strong>
+                                        </strong> */}
                                       </div>
                                     </td>
                                     <td>

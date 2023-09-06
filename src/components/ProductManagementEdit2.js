@@ -2664,6 +2664,7 @@ function ProductManagementEdit2(props) {
                               <tr>
                                 <th>S.No.</th>
                                 <th>Image</th>
+                                <th>Product Name</th>
                                 <th>SKU</th>
                                 <th>MRP</th>
                                 <th>Old Price</th>
@@ -2697,6 +2698,7 @@ function ProductManagementEdit2(props) {
                                               <span>No Image</span>
                                             )}
                                           </td>
+                                          <td>{productListItems[0].productName_en || "N/A"}</td>
                                           <td>{variant.SKU || "N/A"}</td>
                                           <td>{variant.oldPrice || "N/A"}</td>
                                           <td>{variant.Price || "N/A"}</td>
