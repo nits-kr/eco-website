@@ -562,6 +562,7 @@ function BrandManagement(props) {
                                               <th>S.No.</th>
                                               <th>Brand Name (En)</th>
                                               <th>Brand Name (Ar)</th>
+                                              <th>Category Name</th>
                                               <th>Media</th>
                                               {/* <th>SHIPMENT SERVICE</th> */}
                                               {/* <th>Status</th> */}
@@ -579,6 +580,7 @@ function BrandManagement(props) {
                                                   <td>
                                                     {category?.brandName_ar}
                                                   </td>
+                                                  <td> {category?.category_Id?.categoryName_en} </td>
                                                   <td>
                                                     <img
                                                       className="table_img"
@@ -586,6 +588,7 @@ function BrandManagement(props) {
                                                       alt=""
                                                     />
                                                   </td>
+                                                  
                                                   {/* <td>
                                                     <form className="table_btns d-flex align-items-center">
                                                       <div className="check_toggle">

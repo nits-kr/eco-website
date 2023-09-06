@@ -64,25 +64,25 @@ function ProductManagement2(props) {
   const handleImageUpload1 = (event) => {
     const file = event.target.files[0];
     setSelectedImage1(URL.createObjectURL(file));
-    setFormData1({ ...formData, bannerPic1: event.target.files[0] });
+    setFormData1({ ...formData1, bannerPic1: event.target.files[0] });
     setImageUrl1(URL.createObjectURL(file));
   };
   const handleImageUpload2 = (event) => {
     const file = event.target.files[0];
     setSelectedImage2(URL.createObjectURL(file));
-    setFormData1({ ...formData, bannerPic2: event.target.files[0] });
+    setFormData1({ ...formData1, bannerPic2: event.target.files[0] });
     setImageUrl2(URL.createObjectURL(file));
   };
   const handleImageUpload3 = (event) => {
     const file = event.target.files[0];
     setSelectedImage3(URL.createObjectURL(file));
-    setFormData1({ ...formData, bannerPic3: event.target.files[0] });
+    setFormData1({ ...formData1, bannerPic3: event.target.files[0] });
     setImageUrl3(URL.createObjectURL(file));
   };
   const handleImageUpload4 = (event) => {
     const file = event.target.files[0];
     setSelectedImage4(URL.createObjectURL(file));
-    setFormData1({ ...formData, bannerPic4: event.target.files[0] });
+    setFormData1({ ...formData1, bannerPic4: event.target.files[0] });
     setImageUrl4(URL.createObjectURL(file));
   };
 
@@ -246,6 +246,7 @@ function ProductManagement2(props) {
     const data = new FormData();
     data.append("productName_en", formData.productNameEn);
     data.append("productName_ar", formData.productNameAr);
+    data.append("productType", formData.productType);
     data.append("slug", slug);
     data.append("Description", formData.DescriptionEn);
     data.append("Description_ar", formData.DescriptionAr);
@@ -329,20 +330,10 @@ function ProductManagement2(props) {
       });
   };
   const productId = localStorage?.getItem("productId");
+  // console.log("bannerPic1", formData1.bannerPic1);
   const handleOnSave1 = (e) => {
     e.preventDefault();
     const data = new FormData();
-    // data.append("productName_en", formData.productNameEn);
-    // data.append("productName_ar", formData.productNameAr);
-    // data.append("slug", slug);
-    // data.append("Description", formData.DescriptionEn);
-    // data.append("Description_ar", formData.DescriptionAr);
-    // data.append("weight", formData.weight);
-    // data.append("weight_ar", formData.weightAr);
-    // data.append("productColor", formData.color);
-    // data.append("productColor_ar", formData.colorAr);
-    // data.append("careInstuctions", formData.shortDescriptionEn);
-    // data.append("careInstuctions_ar", formData.shortDescriptionAr);
     data.append("Price", formData.Price);
     data.append("oldPrice", formData.oldPrice);
     data.append("dollarPrice", formData.dollar);
@@ -361,16 +352,6 @@ function ProductManagement2(props) {
     if (formData.metaDescriptionAr) {
       data.append("metaDescription_ar", formData.metaDescriptionAr);
     }
-    // data.append("visibility", formData.visibility || "published");
-    // data.append("visibility_ar", formData.visibilityAr || "نشرت");
-    // data.append(
-    //   "publishDate",
-    //   formData.datepicker || new Date().toISOString().split("T")[0]
-    // );
-    // data.append("Tags", formData.Tags);
-    // data.append("Tags_ar", formData.TagsAr);
-    // data.append("category_Id", subSubCategory.categoryId);
-    // data.append("Subcategory_Id", subSubCategory.categoryId1);
     if (subSubCategory.categoryId3) {
       data.append("subSubcategory_Id", subSubCategory.categoryId3);
     }
@@ -391,6 +372,7 @@ function ProductManagement2(props) {
     if (formData1.bannerPic1) {
       data.append("product_Pic", formData1.bannerPic1);
     }
+    // data.append("product_Pic", formData1.bannerPic1);
     if (formData1.bannerPic2) {
       data.append("product_Pic", formData1.bannerPic2);
     }
@@ -400,15 +382,15 @@ function ProductManagement2(props) {
     if (formData1.bannerPic4) {
       data.append("product_Pic", formData1.bannerPic4);
     }
-    axios
+     axios
       .post(
         `http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/product/new-varient/${productId}`,
         data
       )
       .then((response) => {
-        setFormData(response.data.results.saveProduct);
-        console.log(response.data.results.saveProduct);
-        fetchProductList();
+        setFormData(response?.data?.results?.saveVarient);
+        console.log("save product", response?.data?.results?.saveVarient);
+        // fetchProductList();
         Swal.fire({
           title: "Product Created!",
           text: "Your new product has been created successfully.",
@@ -1133,7 +1115,7 @@ function ProductManagement2(props) {
                                     height: "150px",
                                   }}
                                 >
-                                  <img src="..." class="img-fluid" alt="..." />
+                                  <img src="..." className="img-fluid" alt="..." />
                                   <div>150 X 150</div>
                                 </div>
                                 <div className="p-image">
@@ -1165,7 +1147,7 @@ function ProductManagement2(props) {
                                     height: "150px",
                                   }}
                                 >
-                                  <img src="..." class="img-fluid" alt="..." />
+                                  <img src="..." className="img-fluid" alt="..." />
                                   <div>150 X 150</div>
                                 </div>
                                 <div className="p-image">
@@ -1197,7 +1179,7 @@ function ProductManagement2(props) {
                                     height: "150px",
                                   }}
                                 >
-                                  <img src="..." class="img-fluid" alt="..." />
+                                  <img src="..." className="img-fluid" alt="..." />
                                   <div>150 X 150</div>
                                 </div>
                                 <div className="p-image">
@@ -1229,7 +1211,7 @@ function ProductManagement2(props) {
                                     height: "150px",
                                   }}
                                 >
-                                  <img src="..." class="img-fluid" alt="..." />
+                                  <img src="..." className="img-fluid" alt="..." />
                                   <div>150 X 150</div>
                                 </div>
                                 <div className="p-image">
@@ -1494,7 +1476,7 @@ function ProductManagement2(props) {
                                   height: "150px",
                                 }}
                               >
-                                <img src="..." class="img-fluid" alt="..." />
+                                <img src="..." className="img-fluid" alt="..." />
                                 <div>150 X 150</div>
                               </div>
                               <div className="p-image">
@@ -1526,7 +1508,7 @@ function ProductManagement2(props) {
                                   height: "150px",
                                 }}
                               >
-                                <img src="..." class="img-fluid" alt="..." />
+                                <img src="..." className="img-fluid" alt="..." />
                                 <div>150 X 150</div>
                               </div>
                               <div className="p-image">
@@ -1558,7 +1540,7 @@ function ProductManagement2(props) {
                                   height: "150px",
                                 }}
                               >
-                                <img src="..." class="img-fluid" alt="..." />
+                                <img src="..." className="img-fluid" alt="..." />
                                 <div>150 X 150</div>
                               </div>
                               <div className="p-image">
@@ -1590,7 +1572,7 @@ function ProductManagement2(props) {
                                   height: "150px",
                                 }}
                               >
-                                <img src="..." class="img-fluid" alt="..." />
+                                <img src="..." className="img-fluid" alt="..." />
                                 <div>150 X 150</div>
                               </div>
                               <div className="p-image">
@@ -2304,14 +2286,14 @@ function ProductManagement2(props) {
                                 {selectedImage1 ? (
                                   <img
                                     src={selectedImage1}
-                                    class="img-fluid"
+                                    className="img-fluid"
                                     alt="..."
                                   />
                                 ) : (
                                   <>
                                     <img
                                       src="..."
-                                      class="img-fluid"
+                                      className="img-fluid"
                                       alt="..."
                                     />{" "}
                                     <div>150 X 150</div>
@@ -2350,20 +2332,20 @@ function ProductManagement2(props) {
                                 {selectedImage2 ? (
                                   <img
                                     src={selectedImage2}
-                                    class="img-fluid"
+                                    className="img-fluid"
                                     alt="..."
                                   />
                                 ) : (
                                   <>
                                     <img
                                       src="..."
-                                      class="img-fluid"
+                                      className="img-fluid"
                                       alt="..."
                                     />{" "}
                                     <div>150 X 150</div>
                                   </>
                                 )}
-                                {/* <img src="..." class="img-fluid" alt="..." /> */}
+                                {/* <img src="..." className="img-fluid" alt="..." /> */}
                                 {/* <div>150 X 150</div> */}
                               </div>
                               <div className="p-image">
@@ -2398,20 +2380,20 @@ function ProductManagement2(props) {
                                 {selectedImage3 ? (
                                   <img
                                     src={selectedImage3}
-                                    class="img-fluid"
+                                    className="img-fluid"
                                     alt="..."
                                   />
                                 ) : (
                                   <>
                                     <img
                                       src="..."
-                                      class="img-fluid"
+                                      className="img-fluid"
                                       alt="..."
                                     />{" "}
                                     <div>150 X 150</div>
                                   </>
                                 )}
-                                {/* <img src="..." class="img-fluid" alt="..." /> */}
+                                {/* <img src="..." className="img-fluid" alt="..." /> */}
                                 {/* <div>150 X 150</div> */}
                               </div>
                               <div className="p-image">
@@ -2446,20 +2428,20 @@ function ProductManagement2(props) {
                                 {selectedImage4 ? (
                                   <img
                                     src={selectedImage4}
-                                    class="img-fluid"
+                                    className="img-fluid"
                                     alt="..."
                                   />
                                 ) : (
                                   <>
                                     <img
                                       src="..."
-                                      class="img-fluid"
+                                      className="img-fluid"
                                       alt="..."
                                     />{" "}
                                     <div>150 X 150</div>
                                   </>
                                 )}
-                                {/* <img src="..." class="img-fluid" alt="..." /> */}
+                                {/* <img src="..." className="img-fluid" alt="..." /> */}
                                 {/* <div>150 X 150</div> */}
                               </div>
                               <div className="p-image">

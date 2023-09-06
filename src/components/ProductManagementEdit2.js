@@ -83,25 +83,25 @@ function ProductManagementEdit2(props) {
   const handleImageUpload1 = (event) => {
     const file = event.target.files[0];
     setSelectedImage1(URL.createObjectURL(file));
-    setFormData1({ ...formData, bannerPic1: event.target.files[0] });
+    setFormData1({ ...formData1, bannerPic1: event.target.files[0] });
     setImageUrl1(URL.createObjectURL(file));
   };
   const handleImageUpload2 = (event) => {
     const file = event.target.files[0];
     setSelectedImage2(URL.createObjectURL(file));
-    setFormData1({ ...formData, bannerPic2: event.target.files[0] });
+    setFormData1({ ...formData1, bannerPic2: event.target.files[0] });
     setImageUrl2(URL.createObjectURL(file));
   };
   const handleImageUpload3 = (event) => {
     const file = event.target.files[0];
     setSelectedImage3(URL.createObjectURL(file));
-    setFormData1({ ...formData, bannerPic3: event.target.files[0] });
+    setFormData1({ ...formData1, bannerPic3: event.target.files[0] });
     setImageUrl3(URL.createObjectURL(file));
   };
   const handleImageUpload4 = (event) => {
     const file = event.target.files[0];
     setSelectedImage4(URL.createObjectURL(file));
-    setFormData1({ ...formData, bannerPic4: event.target.files[0] });
+    setFormData1({ ...formData1, bannerPic4: event.target.files[0] });
     setImageUrl4(URL.createObjectURL(file));
   };
 
@@ -423,6 +423,7 @@ function ProductManagementEdit2(props) {
     if (formData1.bannerPic1) {
       data.append("product_Pic", formData1.bannerPic1);
     }
+
     if (formData1.bannerPic2) {
       data.append("product_Pic", formData1.bannerPic2);
     }
@@ -438,8 +439,8 @@ function ProductManagementEdit2(props) {
         data
       )
       .then((response) => {
-        setFormData(response.data.results.saveProduct);
-        console.log(response.data.results.saveProduct);
+        setFormData(response.data.results.saveVarient);
+        console.log(response.data.results.saveVarient);
         fetchProductList2();
         Swal.fire({
           title: "Product Created!",
@@ -571,7 +572,11 @@ function ProductManagementEdit2(props) {
                           className="form-design py-4 px-3 help-support-form row align-items-end justify-content-between"
                           action=""
                         >
-                          {subSubCategories.length > 0 ? (
+                          {subSubCategories.length > 0 ||
+                          (productListItems[0]?.subSubcategory_Id
+                            ?.subSubCategoryName_en !== null &&
+                            productListItems[0]?.subSubcategory_Id
+                              ?.subSubCategoryName_en !== undefined) ? (
                             <>
                               {" "}
                               <div className="form-group col-6">
@@ -584,7 +589,13 @@ function ProductManagementEdit2(props) {
                                   value={subSubCategory.categoryId}
                                   onChange={handleInputChange1}
                                 >
-                                  <option value="">Select Category</option>
+                                  <option value="">
+                                    {" "}
+                                    {
+                                      productListItems[0]?.category_Id
+                                        ?.categoryName_en
+                                    }{" "}
+                                  </option>
                                   {Array.isArray(categories) &&
                                     categories.map((category) => (
                                       <option
@@ -606,7 +617,13 @@ function ProductManagementEdit2(props) {
                                   value={subSubCategory.categoryId1}
                                   onChange={handleInputChange2}
                                 >
-                                  <option value="">Select Sub Category</option>
+                                  <option value="">
+                                    {" "}
+                                    {
+                                      productListItems[0]?.Subcategory_Id
+                                        ?.subCategoryName_en
+                                    }{" "}
+                                  </option>
                                   {Array.isArray(subCategories) &&
                                     subCategories.map((subCategory) => (
                                       <option
@@ -631,7 +648,10 @@ function ProductManagementEdit2(props) {
                                   onChange={handleInputChange3}
                                 >
                                   <option value="">
-                                    Select Sub Sub Category
+                                    {
+                                      productListItems[0]?.subSubcategory_Id
+                                        ?.subSubCategoryName_en
+                                    }
                                   </option>
                                   {Array.isArray(subSubCategories) &&
                                     subSubCategories.map((subSubCategory) => (
@@ -654,7 +674,13 @@ function ProductManagementEdit2(props) {
                                   value={subSubCategory.brandId1}
                                   onChange={handleInputChange3}
                                 >
-                                  <option value="">Select Brand</option>
+                                  <option value="">
+                                    {" "}
+                                    {
+                                      productListItems[0]?.brand_Id
+                                        ?.brandName_en
+                                    }{" "}
+                                  </option>
                                   {Array.isArray(brands) &&
                                     brands.map((subCategory) => (
                                       <option
@@ -679,7 +705,13 @@ function ProductManagementEdit2(props) {
                                   value={subSubCategory.categoryId}
                                   onChange={handleInputChange1}
                                 >
-                                  <option value="">Select Category</option>
+                                  <option value="">
+                                    {" "}
+                                    {
+                                      productListItems[0]?.category_Id
+                                        ?.categoryName_en
+                                    }{" "}
+                                  </option>
                                   {Array.isArray(categories) &&
                                     categories.map((category) => (
                                       <option
@@ -701,7 +733,13 @@ function ProductManagementEdit2(props) {
                                   value={subSubCategory.categoryId1}
                                   onChange={handleInputChange2}
                                 >
-                                  <option value="">Select Sub Category</option>
+                                  <option value="">
+                                    {" "}
+                                    {
+                                      productListItems[0]?.Subcategory_Id
+                                        ?.subCategoryName_en
+                                    }{" "}
+                                  </option>
                                   {Array.isArray(subCategories) &&
                                     subCategories.map((subCategory) => (
                                       <option
@@ -723,7 +761,12 @@ function ProductManagementEdit2(props) {
                                   value={subSubCategory.brandId1}
                                   onChange={handleInputChange3}
                                 >
-                                  <option value="">Select Brand</option>
+                                  <option value="">
+                                    {
+                                      productListItems[0]?.brand_Id
+                                        ?.brandName_en
+                                    }
+                                  </option>
                                   {Array.isArray(brands) &&
                                     brands.map((subCategory) => (
                                       <option
@@ -801,7 +844,7 @@ function ProductManagementEdit2(props) {
                               id="productType"
                               defaultValue={
                                 productListItems.length > 0
-                                  ? productListItems[0].productName_en
+                                  ? productListItems[0].productType
                                   : ""
                               }
                               //   value={formData?.productType}
@@ -2765,7 +2808,13 @@ function ProductManagementEdit2(props) {
                 )}
 
                 {showAddButton ? (
-                  <div style={{ display: "flex", justifyContent: "center" }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      marginLeft: "-300px",
+                    }}
+                  >
                     <button className="comman_btn mt-4" onClick={handleClick2}>
                       Add New Varient
                     </button>
