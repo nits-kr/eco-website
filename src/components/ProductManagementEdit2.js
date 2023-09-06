@@ -58,7 +58,17 @@ function ProductManagementEdit2(props) {
   });
   const categoryNameNew = categoryName.replace(/\s+/g, "");
   const subCategoryNameNew = subCategoryName.replace(/\s+/g, "");
-  const slug = `www.ecommerce.com/${categoryNameNew}/${subCategoryNameNew}`;
+  // const slug = `www.ecommerce.com/${categoryNameNew}/${subCategoryNameNew}`;
+  let slug;
+
+  if (categoryNameNew && subCategoryNameNew) {
+    slug = `www.ecommerce.com/${categoryNameNew}/${subCategoryNameNew}`;
+  } else if (productListItems[0]?.slug) {
+    slug = productListItems[0].slug;
+  } else {
+    slug = "www.ecommerce.com/default-slug";
+  }
+
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
   const { id } = useParams();
@@ -2605,7 +2615,7 @@ function ProductManagementEdit2(props) {
                           className="col"
                           style={{ display: "flex", justifyContent: "center" }}
                         >
-                          <h2>Varients</h2>
+                          <h2> Product Varients</h2>
                         </div>
                       </div>
                       <div className="table-responsive">
@@ -2698,7 +2708,10 @@ function ProductManagementEdit2(props) {
                                               <span>No Image</span>
                                             )}
                                           </td>
-                                          <td>{productListItems[0].productName_en || "N/A"}</td>
+                                          <td>
+                                            {productListItems[0]
+                                              .productName_en || "N/A"}
+                                          </td>
                                           <td>{variant.SKU || "N/A"}</td>
                                           <td>{variant.oldPrice || "N/A"}</td>
                                           <td>{variant.Price || "N/A"}</td>
