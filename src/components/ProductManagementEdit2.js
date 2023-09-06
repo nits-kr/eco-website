@@ -47,7 +47,7 @@ function ProductManagementEdit2(props) {
   const [imageUrl3, setImageUrl3] = useState("");
   const [selectedImage4, setSelectedImage4] = useState(null);
   const [imageUrl4, setImageUrl4] = useState("");
-  const [selectedImage5, setSelectedImage5] = useState(null);
+  // const [selectedImage5, setSelectedImage5] = useState(null);
   const [imageUrl5, setImageUrl5] = useState("");
   const [formData1, setFormData1] = useState({
     bannerPic1: null,
