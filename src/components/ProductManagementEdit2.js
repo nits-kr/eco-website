@@ -2577,6 +2577,7 @@ function ProductManagementEdit2(props) {
                               handleFileChange(e, "gallery_images")
                             }
                             multiple
+                            style={{marginLeft: "12px"}}
                           />
                         </div>
                         <div
