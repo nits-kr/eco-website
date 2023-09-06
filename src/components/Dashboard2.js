@@ -319,9 +319,46 @@ function Dashboard2() {
     } catch (error) {}
   };
 
+  function formatTimeAgo(createdAt) {
+    const currentDate = new Date();
+    const createdAtDate = new Date(createdAt);
+    const timeDifferenceInSeconds = Math.floor(
+      (currentDate - createdAtDate) / 1000
+    );
+    if (timeDifferenceInSeconds < 60) {
+      return `${timeDifferenceInSeconds} sec ago`;
+    } else if (timeDifferenceInSeconds < 3600) {
+      const minutes = Math.floor(timeDifferenceInSeconds / 60);
+      return `${minutes} min ago`;
+    } else if (timeDifferenceInSeconds < 86400) {
+      const hours = Math.floor(timeDifferenceInSeconds / 3600);
+      return `${hours} hours ago`;
+    } else {
+      const days = Math.floor(timeDifferenceInSeconds / 86400);
+      return `${days} days ago`;
+    }
+  }
+
+  function getStatusBackgroundColor(orderStatus) {
+    switch (orderStatus) {
+      case "Pending":
+        return "yellow";
+      case "Processing":
+        return "orange";
+      case "Shipped":
+        return "green";
+      case "Delivered":
+        return "blue";
+      case "Cancelled":
+        return "red";
+      default:
+        return "gray";
+    }
+  }
+
   return (
     <>
-      <Sidebar Dash={"dashboard"}/>
+      <Sidebar Dash={"dashboard"} />
       <div className="admin_main">
         <div className="admin_main_inner">
           <div className="admin_panel_data height_adjust">
@@ -414,7 +451,7 @@ function Dashboard2() {
                             <thead>
                               <tr>
                                 <th>Order ID</th>
-                                <th>Date</th>
+                                <th>Created</th>
                                 <th>Payment Method</th>
                                 <th>Amount</th>
                                 <th>Delivery Status</th>
@@ -426,7 +463,10 @@ function Dashboard2() {
                               {orderList?.map((data, index) => (
                                 <tr key={index}>
                                   <td> {data?._id} </td>
-                                  <td> {data?.createdAt?.slice(0, 10)} </td>
+                                  <td className="text-secondary fs-7">
+                                    {data?.createdAt &&
+                                      formatTimeAgo(data.createdAt)}
+                                  </td>
                                   <td> {data.paymentIntent} </td>
                                   <td>
                                     {" "}

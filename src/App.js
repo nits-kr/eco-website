@@ -56,6 +56,7 @@ import UserDetailsAll from "./components/UserDetailsAll";
 import AgentDetailsAll from "./components/AgentDetailsAll";
 import Dashboard2 from "./components/Dashboard2";
 import ProductManagementEdit2 from "./components/ProductManagementEdit2";
+import DashboardNew from "./components/DashboardNew";
 
 function App() {
   const [progress, setProgress] = useState(0);
@@ -87,6 +88,7 @@ function App() {
             element={<Dashboard setProgress={setProgress} />}
           /> */}
          {/* <Dashboard2/> */}
+         {/* <DashboardNew/> */}
           <Route
             exact
             className="active"
