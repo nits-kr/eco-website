@@ -2383,6 +2383,7 @@ function ProductManagement2(props) {
                               handleFileChange(e, "gallery_images")
                             }
                             multiple
+                            style={{marginLeft:"10px"}}
                           />
                         </div>
                         <div
