@@ -72,6 +72,7 @@ function ProductManagementEdit2(props) {
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
   const { id } = useParams();
+  console.log(id);
   const [variantCount, setVariantCount] = useState(1);
 
   const handleAddVariant = () => {
@@ -2577,7 +2578,7 @@ function ProductManagementEdit2(props) {
                               handleFileChange(e, "gallery_images")
                             }
                             multiple
-                            style={{marginLeft: "12px"}}
+                            style={{ marginLeft: "12px" }}
                           />
                         </div>
                         <div
