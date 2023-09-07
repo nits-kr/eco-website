@@ -382,7 +382,14 @@ function ProductList2(props) {
                                         }}
                                       >
                                         <strong className="text-dark-emphasis">
-                                          {product.productName_en.toUpperCase()}
+                                          {/* {product?.productName_en?.toUpperCase()?.slice(0, 20) + '...' || "N/A"} */}
+                                          {product?.productName_en?.toUpperCase()
+                                            ?.length > 20
+                                            ? product.productName_en
+                                                .toUpperCase()
+                                                .slice(0, 20) + "..."
+                                            : product.productName_en?.toUpperCase() ||
+                                              "N/A"}
                                         </strong>
                                         {/* <strong className="text-body-tertiary">
                                           SKU: {product.SKU}

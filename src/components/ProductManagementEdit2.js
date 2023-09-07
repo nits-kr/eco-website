@@ -2754,9 +2754,19 @@ function ProductManagementEdit2(props) {
                                             )}
                                           </td>
                                           <td>
-                                            {productListItems[0]
-                                              .productName_en || "N/A"}
+                                            {/* {productListItems[0]?.productName_en?.slice(
+                                              0,
+                                              20
+                                            ) + "..." || "N/A"} */}
+                                            {productListItems[0]?.productName_en?.toUpperCase()
+                                              ?.length > 20
+                                              ? productListItems[0].productName_en
+                                                  .toUpperCase()
+                                                  .slice(0, 20) + "..."
+                                              : productListItems[0].productName_en?.toUpperCase() ||
+                                                "N/A"}
                                           </td>
+
                                           <td>{variant.SKU || "N/A"}</td>
                                           <td>{variant.oldPrice || "N/A"}</td>
                                           <td>{variant.Price || "N/A"}</td>
