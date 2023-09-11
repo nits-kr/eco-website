@@ -242,11 +242,7 @@ function OrderDetails() {
                                       </span>
                                       <span>
                                         <i className="fal fa-sack-dollar me-2"></i>{" "}
-                                        Price:{" "}
-                                        {
-                                          details?.cartsTotal?.[0]?.[0]
-                                            ?.totalAfterDiscount[0]
-                                        }
+                                        Price: {details?.cartsTotal?.[0]?.[0]}
                                       </span>
                                     </div>
                                   </div>

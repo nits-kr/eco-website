@@ -6,7 +6,7 @@ const CanvasJSChart = CanvasJSReact.CanvasJSChart;
 const Barchart = () => {
   const options = {
     title: {
-      text: "Average Daily Sales",
+      text: " Daily Sales",
     },
     height: 300,
     dataPointWidth: 10,
@@ -75,7 +75,7 @@ export default Barchart;
 
 // const generateRandomData = () => {
 //   // return labels.map(() => faker.datatype.number({ min: 0, max: 1000 }));
-//   return labels.map(() => Math.floor(Math.random() * 1000)); 
+//   return labels.map(() => Math.floor(Math.random() * 1000));
 // };
 
 // const data = {

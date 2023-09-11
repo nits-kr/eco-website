@@ -62,6 +62,12 @@ export const PostApi = createApi({
         method: "post",
       }),
     }),
+    getDashboardCount: builder.query({
+      query: (name) => ({
+        url: "/admin/dashboards/count/order-dashboards",
+        method: "post",
+      }),
+    }),
     getLatLongitude: builder.query({
       query: (name) => ({
         url: "/admin/user/location",
@@ -603,4 +609,5 @@ export const {
   useOrderAssignMutation,
   useAgentDetailsAllMutation,
   useUpdateHomeScreenBannerMutation,
+  useGetDashboardCountQuery,
 } = PostApi;

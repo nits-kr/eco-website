@@ -25,7 +25,7 @@ const DashboardConvaschart = () => {
         enabled: true,
         snapToDataPoint: true,
         labelFormatter: function (e) {
-          return "$" + CanvasJS.formatNumber(e.value, "$##0.00k");
+          return CanvasJS.formatNumber(e.value, "$##0.00k");
         },
       },
     },

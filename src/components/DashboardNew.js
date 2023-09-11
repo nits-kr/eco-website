@@ -14,7 +14,7 @@ import DashboardConvaschart from "./chart/DashboardConvaschart";
 import DashboardDougnetChart from "./chart/DashboardDougnetChart";
 import Barchart from "./chart/Barchart";
 import DashboardDiscountedChart from "./chart/DashboardDiscountedChart";
-import { useGetFileQuery } from "../services/Post";
+import { useGetDashboardCountQuery, useGetFileQuery } from "../services/Post";
 import { useEditOrderListMutation } from "../services/Post";
 import { useDeleteOrderListMutation } from "../services/Post";
 import { useOrderAssignMutation } from "../services/Post";
@@ -32,6 +32,8 @@ function DashboardNew(props) {
   const [loading, setLoading] = useState(false);
   const [deleteOrder, response] = useDeleteOrderListMutation();
   const { data, isLoading, isError } = useGetFileQuery("file-id");
+  const dashboard = useGetDashboardCountQuery();
+  console.log("dashboard", dashboard);
   const [updateOrder] = useEditOrderListMutation();
   const [assignOrder] = useOrderAssignMutation();
   // console.log("down load data", data);
@@ -52,6 +54,12 @@ function DashboardNew(props) {
   const [selectedBrandIds, setSelectedBrandIds] = useState([]);
   const [productList, setProductList] = useState([]);
   const [totalStockQuantity, setTotalStockQuantity] = useState(0);
+  const [usersList, setUsersList] = useState([]);
+  const [salesList, setSalesList] = useState([]);
+  const [monthlySales, setMonthlySales] = useState({});
+  const [expectedEarnings, setExpectedEarnings] = useState(0);
+  const [totalCartsTotal, setTotalCartsTotal] = useState(0);
+
   console.log("selectedBrandIds", selectedBrandIds);
   console.log("totalStockQuantity", totalStockQuantity);
   const [subSubCategory, setSubSubCategory] = useState({
@@ -61,9 +69,64 @@ function DashboardNew(props) {
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
   // Initialize a variable to keep track of the total delivered items
-  let totalDeliveredItems = 0;
+  const url1 =
+    "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/dashboards/count/order-dashboards";
+  useEffect(() => {
+    userManagementList();
+  }, []);
+  const userManagementList = () => {
+    props.setProgress(10);
+    setLoading(true);
+    axios
+      .post(url1)
+      .then((response) => {
+        setUsersList(response?.data?.results?.customerMonth || []);
+        const orderyearData = response?.data?.results?.orderyear || [];
+        let totalCartsTotal = 0;
+        orderyearData.forEach((order) => {
+          order.cartsTotal.forEach((cartTotal) => {
+            if (cartTotal.length > 0) {
+              totalCartsTotal += cartTotal[0];
+            }
+          });
+        });
+        console.log(
+          "Total CartsTotal from orderyear:",
+          totalCartsTotal.toFixed(2)
+        );
 
-  // Iterate through the orderList and count delivered items
+        const salesData = response?.data?.results?.salesDAy || [];
+        const totalSales = salesData.reduce((sum, sale) => {
+          sale.cartsTotal.forEach((cartTotal) => {
+            if (cartTotal.length > 0) {
+              sum += cartTotal[0];
+            }
+          });
+          return sum;
+        }, 0);
+
+        setSalesList(totalSales.toFixed(2));
+
+        props.setProgress(100);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.log(error.response.data);
+      });
+  };
+
+  const calculateTotalAfterDiscount = () => {
+    let total = 0;
+    for (const user of usersList) {
+      if (user.totalAfterDiscount && user.totalAfterDiscount.length > 0) {
+        total += user.totalAfterDiscount[0];
+      }
+    }
+    return total.toFixed(2);
+  };
+
+  const totalAfterDiscount = calculateTotalAfterDiscount();
+  let totalDeliveredItems = 0;
   orderList.forEach((data) => {
     if (data.orderStatus === "Shipped") {
       totalDeliveredItems++;
@@ -168,7 +231,9 @@ function DashboardNew(props) {
       .post(url)
       .then((response) => {
         setOrderList(response?.data?.results?.list);
+        calculateTotalCartsTotal(response?.data?.results?.list);
       })
+
       .catch((error) => {
         console.log(error.response.data);
         Swal.fire({
@@ -178,47 +243,36 @@ function DashboardNew(props) {
         });
       });
   };
-
-  const handleSearch = (e) => {
-    e.preventDefault();
-    axios
-      .post(url, {
-        from: startDate,
-        to: endDate,
-      })
-      .then((response) => {
-        const list = response?.data?.results?.list;
-        if (list && list.length > 0) {
-          Swal.fire({
-            title: "List Found!",
-            text: "list is available for the selected date.",
-            icon: "success",
-            confirmButtonText: "OK",
-          }).then((result) => {
-            if (result.isConfirmed) {
-              setOrderList(list);
-            }
-          });
-          // setOrderList(list);
-        } else {
-          setOrderList([]);
-          Swal.fire({
-            icon: "warning",
-            title: "No data found!",
-            text: "There is no list between the selected dates.",
-            confirmButtonText: "OK",
-          }).then((result) => {
-            if (result.isConfirmed) {
-              subOrderList();
-            }
-          });
+  const calculateTotalCartsTotal = (orderList) => {
+    let total = 0;
+    for (const order of orderList) {
+      for (const cartTotal of order.cartsTotal) {
+        for (const value of cartTotal) {
+          total += value;
         }
-      })
-      .catch((error) => {
-        console.log(error.response.data);
-      });
+      }
+    }
+    setTotalCartsTotal(total);
   };
+  useEffect(() => {
+    // Calculate expected earnings when the orderList changes
+    const calculatedEarnings = calculateExpectedEarnings(orderList);
+    setExpectedEarnings(calculatedEarnings);
+  }, [orderList]);
 
+  // Function to calculate expected earnings
+  const calculateExpectedEarnings = (orders) => {
+    let totalEarnings = 0;
+
+    orders.forEach((order) => {
+      order.products.forEach((product) => {
+        totalEarnings +=
+          product.quantity * product.product_Id.addVarient[0].Price;
+      });
+    });
+
+    return totalEarnings;
+  };
   const userList2 = async () => {
     if (!startDate1) return;
     try {
@@ -391,6 +445,26 @@ function DashboardNew(props) {
     }
   }
 
+  const calculateAverageDailySales = (orderList) => {
+    if (!orderList || orderList.length === 0) {
+      return 0;
+    }
+    const totalSales = orderList.reduce((total, order) => {
+      return (
+        total +
+        order.products.reduce((subTotal, product) => {
+          return subTotal + product.quantity;
+        }, 0)
+      );
+    }, 0);
+
+    const averageDailySales = totalSales / orderList.length;
+    return averageDailySales;
+  };
+
+  const averageDailySales = calculateAverageDailySales(orderList);
+  console.log("Average Daily Sales:", averageDailySales);
+
   return (
     <>
       <Sidebar Dash={"dashboard"} />
@@ -412,7 +486,8 @@ function DashboardNew(props) {
                           <div className="col-12 p-4">
                             <div className="canvas_top d-flex align-items-center">
                               <h3>
-                                <span>$</span>69,700
+                                <span>$</span>
+                                {totalCartsTotal.toFixed(2)}
                               </h3>
                               <div className="Percent_box ms-2">2.2%</div>
                             </div>
@@ -435,7 +510,8 @@ function DashboardNew(props) {
                           <div className="col-12 p-4">
                             <div className="canvas_top d-flex align-items-center">
                               <h3>
-                                <span>$</span>69,700
+                                <span>$</span>
+                                {salesList}
                               </h3>
                               <div className="Percent_box ms-2">2.2%</div>
                             </div>
@@ -463,7 +539,8 @@ function DashboardNew(props) {
                           <div className="col-12 p-4">
                             <div className="canvas_top d-flex align-items-center">
                               <h3>
-                                <span>$</span>69,700
+                                <span>$</span>
+                                {totalAfterDiscount}
                               </h3>
                               <div className="Percent_box ms-2">2.2%</div>
                             </div>
@@ -478,17 +555,33 @@ function DashboardNew(props) {
                     <div className="row mx-0 w-100">
                       <div className="col-12 design_outter_comman shadow">
                         <div className="row comman_header justify-content-between">
+                          <div className="canvas_top d-flex align-items-center mt-3">
+                            <h3 className="p-0">
+                              {" "}
+                              {
+                                dashboard?.data?.results?.orderMonth[0]?.count
+                              }{" "}
+                            </h3>
+                            <div className="Percent_box ms-2">2.2%</div>
+                          </div>
+                          <div className="col text-secondary">
+                            <h6>Orders This Month</h6>
+                          </div>
+                        </div>
+                        {/* <div className="row comman_header justify-content-between">
                           <div className="col">
                             <h2>Orders This Month</h2>
                           </div>
-                        </div>
+                        </div> */}
                         <div className="row">
                           <div className="col-12 p-4">
-                            <div className="canvas_top d-flex align-items-center mb-5">
-                              <h3 className="p-0">1,836</h3>
+                            {/* <div className="canvas_top d-flex align-items-center mb-5">
+                              <h3 className="p-0">
+                                {dashboard?.data?.results?.orderMonth[0]?.count}
+                              </h3>
                               <div className="Percent_box ms-2">2.2%</div>
-                            </div>
-                            <div className="order_this">
+                            </div> */}
+                            <div className="order_this mt-5">
                               <div className="order_top">
                                 <strong>1,048 to Goal</strong>
                                 <span>62%</span>
@@ -513,15 +606,15 @@ function DashboardNew(props) {
                     <div className="row mx-0 w-100">
                       <div className="col-12 design_outter_comman shadow">
                         <div className="row comman_header justify-content-between">
-                          <div className="col">
-                            <h2>New Customers This Month</h2>
+                          <div className="canvas_top d-flex align-items-center mt-3">
+                            <h3 className="p-0"> {usersList?.length} </h3>
+                          </div>
+                          <div className="col text-secondary">
+                            <h6>New Customers This Month</h6>
                           </div>
                         </div>
-                        <div className="row">
+                        <div className="row mt-5">
                           <div className="col-12 p-4">
-                            <div className="canvas_top d-flex align-items-center mb-3">
-                              <h3 className="p-0">6.3k </h3>
-                            </div>
                             <div className="today_heros">
                               <strong className="mb-2 d-block">
                                 Today’s Heroes
@@ -535,66 +628,80 @@ function DashboardNew(props) {
                                   gap: "10px",
                                 }}
                               >
-                                <Link
-                                  data-bs-toggle="tooltip"
-                                  title="Alan Warden"
-                                  className="heros"
-                                  href="javascript:;"
-                                >
-                                  <img
-                                    src="assets/img/profile.png"
-                                    alt=""
-                                    style={{ width: "50px", height: "50px" }}
-                                  />
-                                </Link>
-                                <Link
-                                  data-bs-toggle="tooltip"
-                                  title="Michael Eberon"
-                                  className="heros"
-                                  href="javascript:;"
-                                >
-                                  <img
-                                    src="assets/img/profile.png"
-                                    alt=""
-                                    style={{ width: "50px", height: "50px" }}
-                                  />
-                                </Link>
-                                <Link
-                                  data-bs-toggle="tooltip"
-                                  title="Susan Redwood"
-                                  className="heros"
-                                  href="javascript:;"
-                                >
-                                  <img
-                                    src="assets/img/profile.png"
-                                    alt=""
-                                    style={{ width: "50px", height: "50px" }}
-                                  />
-                                </Link>
-                                <Link
-                                  data-bs-toggle="tooltip"
-                                  title="Disabled tooltip"
-                                  className="heros"
-                                  href="javascript:;"
-                                >
-                                  <img
-                                    src="assets/img/profile.png"
-                                    alt=""
-                                    style={{ width: "50px", height: "50px" }}
-                                  />
-                                </Link>
-                                <Link
-                                  data-bs-toggle="tooltip"
-                                  title="Melody Macy"
-                                  className="heros"
-                                  href="javascript:;"
-                                >
-                                  <img
-                                    src="assets/img/profile.png"
-                                    alt=""
-                                    style={{ width: "50px", height: "50px" }}
-                                  />
-                                </Link>
+                                {usersList.length < 3 ? (
+                                  <div>
+                                    {usersList.map((data, index) => (
+                                      <Link
+                                        key={data._id}
+                                        data-bs-toggle="tooltip"
+                                        title="Alan Warden"
+                                        className="heros"
+                                        href="javascript:;"
+                                      >
+                                        <img
+                                          src={
+                                            data.profile_Pic ||
+                                            "assets/img/profile.png"
+                                          }
+                                          alt=""
+                                          style={{
+                                            width: "50px",
+                                            height: "50px",
+                                          }}
+                                        />
+                                      </Link>
+                                    ))}
+                                  </div>
+                                ) : (
+                                  <>
+                                    {usersList
+                                      ?.slice(0, 3)
+                                      .map((data, index) => (
+                                        <Link
+                                          key={data._id}
+                                          data-bs-toggle="tooltip"
+                                          title="Alan Warden"
+                                          className="heros"
+                                          href="javascript:;"
+                                        >
+                                          <img
+                                            src={
+                                              data.profile_Pic ||
+                                              "assets/img/profile.png"
+                                            }
+                                            alt=""
+                                            style={{
+                                              width: "50px",
+                                              height: "50px",
+                                            }}
+                                          />
+                                        </Link>
+                                      ))}
+                                    <Link
+                                      title="Click For More"
+                                      className="heros"
+                                      data-bs-toggle="modal"
+                                      data-bs-target="#staticBackdrop"
+                                      href="javascript:;"
+                                    >
+                                      <div
+                                        style={{
+                                          width: "50px",
+                                          height: "50px",
+                                          backgroundColor: "blue",
+                                          borderRadius: "50%",
+                                          display: "flex",
+                                          justifyContent: "center",
+                                          alignItems: "center",
+                                          color: "white",
+                                          fontWeight: "bold",
+                                        }}
+                                      >
+                                        {usersList?.length}+
+                                      </div>
+                                    </Link>
+                                  </>
+                                )}
                               </div>
                             </div>
                           </div>
@@ -602,7 +709,30 @@ function DashboardNew(props) {
                       </div>
                     </div>
                   </div>
-                  <div className="col-md-12 mb-4">
+                  <div className="col-md-6 mb-4">
+                    <div className="row mx-0 w-100">
+                      <div className="col-12 design_outter_comman shadow">
+                        <div className="row comman_header justify-content-between">
+                          <div className="col">
+                            <h2>Average Mothly Sales</h2>
+                          </div>
+                        </div>
+                        <div className="row">
+                          <div className="col-6 p-4">
+                            <div className="canvas_top d-flex align-items-center">
+                              <h3>
+                                <span>$</span>
+                                {(totalCartsTotal / 12).toFixed(2)}
+                              </h3>
+                              <div className="Percent_box ms-2">2.2%</div>
+                            </div>
+                            {/* <canvas id="line-chart1" className="w-full w-100" /> */}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="col-md-6 mb-4">
                     <div className="row mx-0 w-100">
                       <div className="col-12 design_outter_comman shadow">
                         <div className="row comman_header justify-content-between">
@@ -611,10 +741,11 @@ function DashboardNew(props) {
                           </div>
                         </div>
                         <div className="row">
-                          <div className="col-12 p-4">
+                          <div className="col-6 p-4">
                             <div className="canvas_top d-flex align-items-center">
                               <h3>
-                                <span>$</span>69,700
+                                <span>$</span>
+                                {salesList / 30}
                               </h3>
                               <div className="Percent_box ms-2">2.2%</div>
                             </div>
@@ -646,51 +777,55 @@ function DashboardNew(props) {
                                   </tr>
                                 </thead>
                                 <tbody>
-                                  {orderList?.map((data, index) => (
-                                    <tr key={index}>
-                                      <td> {index + 1} </td>
-                                      <td>
-                                        <div className="product_showw">
-                                          <img
-                                            src={
-                                              data.products[0]?.product_Id
-                                                ?.addVarient[0]
-                                                ?.product_Pic[0] ||
-                                              "assets/img/product1.png"
-                                            }
-                                            alt=""
-                                          />
-                                          <div className="product_showw_iiner">
-                                            <a href="javascript:;">
-                                              {data.products[0]?.product_Id?.productName_en?.slice(
-                                                0,
-                                                8
-                                              )}
-                                            </a>
-                                            {/* <span>
+                                  {orderList
+                                    ?.slice(0, 5)
+                                    ?.map((data, index) => (
+                                      <tr key={index}>
+                                        <td> {index + 1} </td>
+                                        <td>
+                                          <div className="product_showw">
+                                            <img
+                                              src={
+                                                data.products[0]?.product_Id
+                                                  ?.addVarient[0]
+                                                  ?.product_Pic[0] ||
+                                                "assets/img/product1.png"
+                                              }
+                                              alt=""
+                                            />
+                                            <div className="product_showw_iiner">
+                                              <a href="javascript:;">
+                                                {data.products[0]?.product_Id?.productName_en?.slice(
+                                                  0,
+                                                  8
+                                                )}
+                                              </a>
+                                              {/* <span>
                                               Item: #
                                               {
                                                 data.products[0]?.product_Id
                                                   ?._id
                                               }
                                             </span> */}
+                                            </div>
                                           </div>
-                                        </div>
-                                      </td>
-                                      <td>X {data.products[0]?.quantity}</td>
-                                      <td>
-                                        $
-                                        {data.products[0]?.product_Id
-                                          ?.addVarient[0]?.Price || 0.0}
-                                      </td>
-                                      <td>
-                                        $
-                                        {data.cartsTotal[0]?.[0]?.totalAfterDiscount[0]?.toFixed(
-                                          2
-                                        )}
-                                      </td>
-                                    </tr>
-                                  ))}
+                                        </td>
+                                        <td>X {data.products[0]?.quantity}</td>
+                                        <td>
+                                          $
+                                          {data.products[0]?.product_Id
+                                            ?.addVarient[0]?.Price || 0.0}
+                                        </td>
+                                        <td>
+                                          {typeof data.cartsTotal?.[0]?.[0] ===
+                                          "number"
+                                            ? `$${data.cartsTotal?.[0]?.[0].toFixed(
+                                                2
+                                              )}`
+                                            : "N/A"}
+                                        </td>
+                                      </tr>
+                                    ))}
                                 </tbody>
                               </table>
                             </div>
@@ -752,13 +887,14 @@ function DashboardNew(props) {
                                         {data?.createdAt &&
                                           formatTimeAgo(data.createdAt)}
                                       </td>
-                                      <td>{data.cartsTotal[0][0].userName}</td>
+                                      <td>{data.user_Id.userName}</td>
                                       <td>
-                                        $
-                                        {
-                                          data.cartsTotal[0][0]
-                                            .totalAfterDiscount[0]
-                                        }
+                                        {typeof data.cartsTotal?.[0]?.[0] ===
+                                        "number"
+                                          ? `$${data.cartsTotal?.[0]?.[0].toFixed(
+                                              2
+                                            )}`
+                                          : "N/A"}
                                       </td>
                                       {/* <td>
                                         ${calculateProfit(data.cartsTotal[0])}
@@ -855,7 +991,7 @@ function DashboardNew(props) {
                                             <strong>
                                               {" "}
                                               &nbsp;
-                                              {data?.cartsTotal[0][0]?.userName}
+                                              {data?.user_Id?.userName}
                                             </strong>
                                           </div>
                                           <div
@@ -1016,6 +1152,101 @@ function DashboardNew(props) {
                         </div>
                       </div>
                     </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        className="modal fade Edit_modal"
+        id="staticBackdrop"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+        tabIndex="-1"
+        aria-labelledby="staticBackdropLabel"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog modal-dialog-centered">
+          <div className="modal-content">
+            <div className="modal-header">
+              <div className="col d-flex flex-column align-items-center justify-content-center">
+                <div>
+                  <h2>Browse Users</h2>
+                </div>
+                {/* <div>
+                  If you need more information, please check out our Users
+                  Directory.
+                </div> */}
+              </div>
+
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div className="modal-body">
+              <div className="row">
+                <div className="col-12 comman_table_design px-0">
+                  <div className="table-responsive">
+                    <table className="table mb-0">
+                      <tbody>
+                        {usersList?.map((data, index) => (
+                          <tr key={index}>
+                            <td> {index + 1} </td>
+                            <td>
+                              <div className="product_showw">
+                                <img
+                                  src={
+                                    data.profile_Pic || "assets/img/profile.png"
+                                  }
+                                  alt=""
+                                />
+                                <div>
+                                  <div className="product_showw_iiner">
+                                    <a href="javascript:;">
+                                      <strong>{data.userName}</strong>{" "}
+                                    </a>
+                                  </div>
+                                  <div className="product_showw_iiner">
+                                    <a
+                                      href="javascript:;"
+                                      className="text-secondary"
+                                    >
+                                      {data.userEmail}
+                                    </a>
+                                  </div>
+                                </div>
+                              </div>
+                            </td>
+                            <td>
+                              <div>
+                                <div className="product_showw_iiner">
+                                  <a href="javascript:;">
+                                    <strong>
+                                      $
+                                      {data.totalAfterDiscount[0]?.toFixed(2) ||
+                                        0.0}
+                                    </strong>{" "}
+                                  </a>
+                                </div>
+                                <div className="product_showw_iiner">
+                                  <a
+                                    href="javascript:;"
+                                    className="text-secondary"
+                                  >
+                                    Sales
+                                  </a>
+                                </div>
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
                   </div>
                 </div>
               </div>

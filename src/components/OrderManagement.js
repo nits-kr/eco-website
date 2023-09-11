@@ -428,11 +428,19 @@ function OrderManagement() {
                                   <td> {data?._id} </td>
                                   <td> {data?.createdAt?.slice(0, 10)} </td>
                                   <td> {data.paymentIntent} </td>
-                                  <td>
+                                  {/* <td>
                                     {" "}
                                     {data.cartsTotal[0]?.[0]?.totalAfterDiscount[0]?.toFixed(
                                       2
                                     )}{" "}
+                                  </td> */}
+                                  <td>
+                                    {typeof data.cartsTotal?.[0]?.[0] ===
+                                    "number"
+                                      ? `$${data.cartsTotal?.[0]?.[0].toFixed(
+                                          2
+                                        )}`
+                                      : "N/A"}
                                   </td>
                                   <td> {data.orderStatus} </td>
                                   <td>
