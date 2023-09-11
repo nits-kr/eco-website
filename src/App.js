@@ -79,7 +79,7 @@ function App() {
             exact
             className="active"
             path="/dashboard"
-            element={<Dashboard2 setProgress={setProgress} />}
+            element={<DashboardNew setProgress={setProgress} />}
           />
           {/* <Route
             exact

@@ -224,7 +224,6 @@ h6 {
   align-items: flex-start;
 }
 
-
 .sidebar_menus {
   height: calc(100vh - 230px);
   overflow: auto;
@@ -244,7 +243,6 @@ h6 {
 .sidebar_menus::-webkit-scrollbar-thumb:hover {
   /* background: #555; */
   background: #da3c3b;
-  
 }
 .sidebar_menus::-webkit-scrollbar {
   width: 10px;
@@ -576,16 +574,17 @@ div#google_translate_element {
 }
 
 .comman_header {
-  background-color: #da3c3b;
   align-items: center;
   padding: 0 15px;
   height: 60px;
 }
 
 .comman_header h2 {
-  color: #fff;
-  font-size: 18px;
+  color: #3d3d3d;
+  font-size: 20px;
   margin: 0;
+  font-weight: 600;
+  text-transform: uppercase;
 }
 
 .design_outter_comman {
@@ -636,6 +635,7 @@ div#google_translate_element {
   box-shadow: unset !important;
   border: 0;
   font-size: 13px;
+  border: 1px solid #f2f2f2;
 }
 
 .design_outter_comman .comman_header .icons_set i {
@@ -997,9 +997,8 @@ strong.box_tag_left {
   padding: 16px 0;
 }
 
-.inner_design_comman {
-  border-radius: 10px;
-  overflow: hidden;
+.inner_design_comman .comman_header {
+  background: #fff;
 }
 
 .inner_design_comman .comman_header h2 {
@@ -1032,10 +1031,6 @@ strong.box_tag_left {
 
 .choose_file .form-control {
   line-height: 26px;
-}
-
-.inner_design_comman .comman_header {
-  background: #144881;
 }
 
 .table_img {
@@ -1123,8 +1118,8 @@ strong.box_tag_left {
 }
 
 .comman_header .comman_btn2 {
-  background-color: #fff;
-  color: #144881;
+  background-color: #144881;
+  color: #fff;
   padding: 8px 18px;
   border: 0;
 }
@@ -2281,13 +2276,13 @@ strong.box_tag_left {
   transition: background-position 0.15s ease-in-out;
 }
 
-
 .nav-link {
   display: block;
   padding: 0.5rem 1rem;
   color: #0d6efd;
   text-decoration: none;
-  transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
+    border-color 0.15s ease-in-out;
 }
 
 .download_invoice5 {
@@ -2300,4 +2295,170 @@ strong.box_tag_left {
   font-size: 13px;
   font-weight: 600;
   color: #fff !important;
+}
+
+.canvas_top h3 {
+  font-weight: 700;
+  margin: 0 0 4px;
+  color: #144881;
+  position: relative;
+  padding-left: 12px;
+}
+.canvas_top h3 span {
+  font-size: 17px;
+  display: inline-flex;
+  margin-right: 3px;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+.Percent_box {
+  background-color: #f2f2f2;
+  display: inline-block;
+  padding: 1px 7px;
+  font-weight: 500;
+  font-size: 14px;
+  border-radius: 5px;
+}
+.canvas_top {
+  margin-bottom: 10px;
+}
+.progress {
+  height: 10px;
+  border-radius: 12px;
+}
+.progress-bar {
+  border-radius: 12px;
+  background-color: #92d050;
+}
+.order_top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 7px;
+}
+.order_top strong {
+  font-weight: 600;
+  font-size: 16px;
+}
+.order_top span {
+  display: block;
+  font-size: 15px;
+  font-weight: 600;
+  color: #b3b3b3;
+}
+.heros img {
+  max-width: 100%;
+}
+.heros {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50px;
+  height: 40px;
+  width: 40px;
+  margin-left: -15px;
+}
+.heros_img {
+  padding-left: 13px;
+}
+.product_showw img {
+  max-height: 30px;
+  margin-right: 15px;
+}
+.product_showw {
+  display: flex;
+  align-items: center;
+  text-align: left;
+}
+.product_showw_iiner a {
+  display: block;
+  font-weight: 600;
+  color: #3d3d3d;
+}
+.product_showw_iiner span {
+  display: block;
+  font-weight: 500;
+  color: #b3b3b3;
+}
+
+/* Define CSS classes for order status colors */
+.status-pending {
+  background-color: yellow;
+}
+
+.status-processing {
+  background-color: green;
+}
+
+.status-shipped {
+  background-color: blue;
+}
+
+.status-delivered {
+  background-color: #66ff66; /* Change this to the desired color */
+}
+
+.status-cancelled {
+  background-color: red;
+}
+
+/* .heros img:hover {
+  opacity: 0.8;
+  transition: opacity 0.3s ease;
+} */
+
+/* Container for the images */
+/* .heros {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+} */
+
+/* Image styles */
+.heros img {
+  width: 60px; /* Adjust the image width as needed */
+  height: 60px; /* Adjust the image height as needed */
+  border-radius: 50%; /* Makes the images circular */
+  transition: transform 0.3s ease, opacity 0.3s ease, box-shadow 0.3s ease;
+  /* Apply a box shadow */
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Image hover effect */
+.heros img:hover {
+  opacity: 0.8; /* Reduce opacity on hover */
+  transform: scale(1.1); /* Enlarge by 10% on hover */
+  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.4); /* Add box shadow on hover */
+}
+
+/* Tooltip styles */
+[data-bs-toggle="tooltip"]::after {
+  content: attr(title);
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 1;
+}
+
+[data-bs-toggle="tooltip"]:hover::after {
+  opacity: 1; /* Show tooltip on hover */
+}
+
+/* Updated title style */
+.mb-2.d-block {
+  font-size: 24px; /* Adjust the font size as needed */
+  font-weight: bold; /* Add bold font weight */
+  color: #333; /* Change the title color */
+  text-align: left; /* Center-align the title */
+  margin-bottom: 20px; /* Add margin to separate it from the images */
 }

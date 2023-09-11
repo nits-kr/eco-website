@@ -76,41 +76,45 @@ function OrderDetails() {
                               data-bs-ride="carousel"
                             >
                               <div className="carousel-inner">
-                                {productId?.product_Pic?.map((item, index) => (
-                                  <div
-                                    className={`carousel-item ${
-                                      index === 0 ? "active" : ""
-                                    }`}
-                                    key={index}
-                                  >
-                                    <img
-                                      src={item}
-                                      className="d-block w-100"
-                                      alt={`Slide ${index + 1}`}
-                                    />
-                                    <span className="label_s">
-                                      {item.label}
-                                    </span>
-                                  </div>
-                                ))}
+                                {productId?.addVarient?.[0]?.product_Pic?.map(
+                                  (item, index) => (
+                                    <div
+                                      className={`carousel-item ${
+                                        index === 0 ? "active" : ""
+                                      }`}
+                                      key={index}
+                                    >
+                                      <img
+                                        src={item}
+                                        className="d-block w-100"
+                                        alt={`Slide ${index + 1}`}
+                                      />
+                                      <span className="label_s">
+                                        {item.label}
+                                      </span>
+                                    </div>
+                                  )
+                                )}
                               </div>
                               <div className="carousel-indicators">
-                                {productId?.product_Pic?.map((item, index) => (
-                                  <button
-                                    type="button"
-                                    data-bs-target="#carouselExampleIndicators"
-                                    data-bs-slide-to={index}
-                                    key={index}
-                                    aria-label={`Slide ${index + 1}`}
-                                    className={index === 0 ? "active" : ""}
-                                  >
-                                    <img
-                                      src={item}
-                                      className="thumnail_img"
-                                      alt={`Slide ${index + 1}`}
-                                    />
-                                  </button>
-                                ))}
+                                {productId?.addVarient?.[0]?.product_Pic?.map(
+                                  (item, index) => (
+                                    <button
+                                      type="button"
+                                      data-bs-target="#carouselExampleIndicators"
+                                      data-bs-slide-to={index}
+                                      key={index}
+                                      aria-label={`Slide ${index + 1}`}
+                                      className={index === 0 ? "active" : ""}
+                                    >
+                                      <img
+                                        src={item}
+                                        className="thumnail_img"
+                                        alt={`Slide ${index + 1}`}
+                                      />
+                                    </button>
+                                  )
+                                )}
                               </div>
                             </div>
                           </div>

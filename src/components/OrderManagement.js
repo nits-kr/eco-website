@@ -430,9 +430,9 @@ function OrderManagement() {
                                   <td> {data.paymentIntent} </td>
                                   <td>
                                     {" "}
-                                    {
-                                      data?.cartsTotal[0][0]?.totalAfterDiscount
-                                    }{" "}
+                                    {data.cartsTotal[0]?.[0]?.totalAfterDiscount[0]?.toFixed(
+                                      2
+                                    )}{" "}
                                   </td>
                                   <td> {data.orderStatus} </td>
                                   <td>
