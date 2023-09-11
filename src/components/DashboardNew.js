@@ -644,10 +644,10 @@ function DashboardNew(props) {
                                             "assets/img/profile.png"
                                           }
                                           alt=""
-                                          style={{
-                                            width: "50px",
-                                            height: "50px",
-                                          }}
+                                          // style={{
+                                          //   width: "50px",
+                                          //   height: "50px",
+                                          // }}
                                         />
                                       </Link>
                                     ))}
@@ -670,10 +670,10 @@ function DashboardNew(props) {
                                               "assets/img/profile.png"
                                             }
                                             alt=""
-                                            style={{
-                                              width: "50px",
-                                              height: "50px",
-                                            }}
+                                            // style={{
+                                            //   width: "50px",
+                                            //   height: "50px",
+                                            // }}
                                           />
                                         </Link>
                                       ))}
@@ -686,8 +686,8 @@ function DashboardNew(props) {
                                     >
                                       <div
                                         style={{
-                                          width: "50px",
-                                          height: "50px",
+                                          width: "60px",
+                                          height: "60px",
                                           backgroundColor: "blue",
                                           borderRadius: "50%",
                                           display: "flex",
