@@ -812,7 +812,51 @@ function DashboardNew(props) {
                                       {/* <td>
                                         ${calculateProfit(data.cartsTotal[0])}
                                       </td> */}
-                                      <td>{data.orderStatus}</td>
+                                      <td>
+                                        <div
+                                          className={
+                                            data?.orderStatus === "Cancelled"
+                                              ? "text-danger"
+                                              : data?.orderStatus === "Pending"
+                                              ? "text-warning"
+                                              : data?.orderStatus === "Packed"
+                                              ? "text-info"
+                                              : data?.orderStatus === "Approved"
+                                              ? "text-success"
+                                              : data?.orderStatus ===
+                                                "Inprogress"
+                                              ? "text-primary"
+                                              : data?.orderStatus ===
+                                                "Delivered"
+                                              ? "text-secondary"
+                                              : "text-default"
+                                          }
+                                          style={{
+                                            background:
+                                              data?.orderStatus === "Cancelled"
+                                                ? "#ffe5e5"
+                                                : data?.orderStatus ===
+                                                  "Pending"
+                                                ? "#fff6e5"
+                                                : data?.orderStatus === "Packed"
+                                                ? "#e5f0ff"
+                                                : data?.orderStatus ===
+                                                  "Approved"
+                                                ? "#e5ffe5"
+                                                : data?.orderStatus ===
+                                                  "Inprogress"
+                                                ? "#e5e5ff"
+                                                : data?.orderStatus ===
+                                                  "Delivered"
+                                                ? "#f3f3f3"
+                                                : "#f9f9f9", // Add a default background color for unrecognized statuses
+                                            borderRadius: "5px",
+                                            padding: "2px 5px",
+                                          }}
+                                        >
+                                          {data?.orderStatus}
+                                        </div>
+                                      </td>
                                     </tr>
                                   ))}
                                 </tbody>
@@ -907,7 +951,7 @@ function DashboardNew(props) {
                                               {data?.user_Id?.userName}
                                             </strong>
                                           </div>
-                                          <div
+                                          {/* <div
                                             className={
                                               data?.orderStatus === "Cancelled"
                                                 ? "text-danger"
@@ -942,6 +986,53 @@ function DashboardNew(props) {
                                                     "Inprogress"
                                                   ? "#e5e5ff"
                                                   : "#f3f3f3",
+                                              borderRadius: "5px",
+                                              padding: "2px 5px",
+                                            }}
+                                          >
+                                            {data?.orderStatus}
+                                          </div> */}
+                                          <div
+                                            className={
+                                              data?.orderStatus === "Cancelled"
+                                                ? "text-danger"
+                                                : data?.orderStatus ===
+                                                  "Pending"
+                                                ? "text-warning"
+                                                : data?.orderStatus === "Packed"
+                                                ? "text-info"
+                                                : data?.orderStatus ===
+                                                  "Approved"
+                                                ? "text-success"
+                                                : data?.orderStatus ===
+                                                  "Inprogress"
+                                                ? "text-primary"
+                                                : data?.orderStatus ===
+                                                  "Delivered"
+                                                ? "text-secondary"
+                                                : "text-default" // Add a default class for unrecognized statuses
+                                            }
+                                            style={{
+                                              background:
+                                                data?.orderStatus ===
+                                                "Cancelled"
+                                                  ? "#ffe5e5"
+                                                  : data?.orderStatus ===
+                                                    "Pending"
+                                                  ? "#fff6e5"
+                                                  : data?.orderStatus ===
+                                                    "Packed"
+                                                  ? "#e5f0ff"
+                                                  : data?.orderStatus ===
+                                                    "Approved"
+                                                  ? "#e5ffe5"
+                                                  : data?.orderStatus ===
+                                                    "Inprogress"
+                                                  ? "#e5e5ff"
+                                                  : data?.orderStatus ===
+                                                    "Delivered"
+                                                  ? "#f3f3f3"
+                                                  : "#f9f9f9", // Add a default background color for unrecognized statuses
                                               borderRadius: "5px",
                                               padding: "2px 5px",
                                             }}
