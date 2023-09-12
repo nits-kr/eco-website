@@ -30,7 +30,6 @@ import { Radar, Bar, getElementsAtEvent } from "react-chartjs-2";
 
 function DashboardNew(props) {
   const [loading, setLoading] = useState(false);
-  const [deleteOrder, response] = useDeleteOrderListMutation();
   const { data, isLoading, isError } = useGetFileQuery("file-id");
   const dashboard = useGetDashboardCountQuery();
   console.log("dashboard", dashboard);
@@ -38,33 +37,20 @@ function DashboardNew(props) {
   const [assignOrder] = useOrderAssignMutation();
   // console.log("down load data", data);
   const [orderList, setOrderList] = useState([]);
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
-  const [searchQuery, setSearchQuery] = useState("");
   const [startDate1, setStartDate1] = useState("");
-  const [status, setStatus] = useState("");
-  const [status2, setStatus2] = useState("");
-  const [itemId, setItemId] = useState("");
   const [itemId3, setItemId3] = useState("");
   console.log("item id 3", itemId3);
-  const [itemId2, setItemId2] = useState("");
-  const [orderStatus, setOrderStatus] = useState([]);
-  const [orderStatusAr, setOrderStatusAr] = useState([]);
   const [brands, setBrands] = useState([]);
   const [selectedBrandIds, setSelectedBrandIds] = useState([]);
   const [productList, setProductList] = useState([]);
   const [totalStockQuantity, setTotalStockQuantity] = useState(0);
   const [usersList, setUsersList] = useState([]);
   const [salesList, setSalesList] = useState([]);
-  const [monthlySales, setMonthlySales] = useState({});
   const [expectedEarnings, setExpectedEarnings] = useState(0);
   const [totalCartsTotal, setTotalCartsTotal] = useState(0);
 
   console.log("selectedBrandIds", selectedBrandIds);
   console.log("totalStockQuantity", totalStockQuantity);
-  const [subSubCategory, setSubSubCategory] = useState({
-    brandId1: "",
-  });
 
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
@@ -327,60 +313,6 @@ function DashboardNew(props) {
     userList2();
   }, [startDate1]);
 
-  useEffect(() => {
-    handleSearch1();
-  }, [searchQuery]);
-
-  const handleSearch1 = async () => {
-    try {
-      const url1 = searchQuery !== "" ? url2 : url;
-      const response = await axios.post(url1, {
-        orderStatus: searchQuery,
-      });
-      const { error, results } = response.data;
-      if (error) {
-        setOrderList([]);
-        Swal.fire({
-          title: "Error!",
-          // text: error.response.data,
-          text: "Error searching for products. Data is not found",
-          icon: "error",
-          confirmButtonText: "OK",
-        }).then((result) => {
-          if (result.isConfirmed) {
-            subOrderList();
-          }
-        });
-        // throw new Error("Error searching for products. Data is not found.");
-      } else {
-        setOrderList(searchQuery !== "" ? results?.orderData : results?.list);
-      }
-    } catch (error) {
-      if (error.response) {
-        Swal.fire({
-          title: "Error!",
-          text: error.response.data,
-          icon: "error",
-          confirmButtonText: "OK",
-        });
-      } else if (error.request) {
-        Swal.fire({
-          title: "Error!",
-          text: "Network error. Please try again later.",
-          icon: "error",
-          confirmButtonText: "OK",
-        });
-      } else {
-        Swal.fire({
-          title: "Error!",
-          text: error.message,
-          icon: "error",
-          confirmButtonText: "OK",
-        });
-      }
-    }
-  };
-
   const handleDownload = () => {
     if (data) {
       const blob = new Blob([data]);
@@ -391,40 +323,12 @@ function DashboardNew(props) {
       link.click();
     }
   };
-
   if (isLoading) {
     return <div>Loading...</div>;
   }
-
   if (isError) {
     return <div>Error occurred while fetching the file.</div>;
   }
-
-  const handleItem = (item) => {
-    setStatus2(item?.orderStatus || "");
-  };
-  const handleSaveChanges1 = async (e) => {
-    e.preventDefault();
-    console.log("handleSaveChanges1", itemId);
-    const editOffer = {
-      id: itemId,
-      orderStatus: orderStatus,
-      orderStatus_ar: orderStatusAr,
-    };
-    try {
-      await updateOrder(editOffer);
-      Swal.fire({
-        title: "Changes Saved",
-        text: "The Order Status has been updated successfully.",
-        icon: "success",
-        confirmButtonText: "OK",
-      }).then((result) => {
-        if (result.isConfirmed) {
-          window.location.reload();
-        }
-      });
-    } catch (error) {}
-  };
 
   function formatTimeAgo(createdAt) {
     const currentDate = new Date();
