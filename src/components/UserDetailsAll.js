@@ -532,10 +532,11 @@ function UserDetailsAll() {
                                           <tr key={ind}>
                                             <td> {item?._id} </td>
                                             <td>
-                                              {
+                                              {item?.cartsTotal[0][0]?.toFixed(2)}
+                                              {/* {
                                                 item?.cartsTotal[0][0]
                                                   ?.totalAfterDiscount[0]
-                                              }
+                                              } */}
                                             </td>
                                             <td> {item?.orderStatus} </td>
                                             <td>

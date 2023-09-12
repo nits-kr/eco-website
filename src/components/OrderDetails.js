@@ -180,10 +180,7 @@ function OrderDetails() {
                                       <Link to="user-details.html">
                                         <strong>
                                           {" "}
-                                          {
-                                            details?.cartsTotal?.[0]?.[0]
-                                              ?.userName
-                                          }{" "}
+                                          {details?.address_Id?.fullName}{" "}
                                         </strong>
                                       </Link>
                                       {/* <div className="rating_box">
@@ -274,8 +271,11 @@ function OrderDetails() {
                               name="productName"
                               id="productName"
                               defaultValue={
-                                details?.cartsTotal?.[0]?.[0]?.userName
+                                details?.address_Id?.fullName
                               }
+                              // defaultValue={
+                              //   details?.cartsTotal?.[0]?.[0]?.userName
+                              // }
                               readOnly
                             />
                           </div>

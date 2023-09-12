@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import Sidebar from "./Sidebar";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -68,6 +68,15 @@ function DashboardNew(props) {
 
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
+
+  const navigate = useNavigate();
+
+  const reloadUsersPage = () => {
+    navigate("/users");
+    setTimeout(() => {
+      window?.location?.reload();
+    }, 500);
+  };
   // Initialize a variable to keep track of the total delivered items
   const url1 =
     "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/dashboards/count/order-dashboards";
@@ -1187,6 +1196,14 @@ function DashboardNew(props) {
                 data-bs-dismiss="modal"
                 aria-label="Close"
               ></button>
+            </div>
+            <div
+              className="d-flex align-items-center justify-content-center"
+              onClick={reloadUsersPage}
+              style={{ cursor: "pointer" }}
+            >
+              If you need more information, please check out our{" "}
+              <span className="ms-1 text-primary"> Users Directory</span> .
             </div>
             <div className="modal-body">
               <div className="row">
