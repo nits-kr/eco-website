@@ -27,8 +27,8 @@ export default function ProductReports() {
     const { data } = await axios.post(
       "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/reporter/reporter/list",
       {
-        from:startDate,
-        to:endDate,
+        from: startDate,
+        to: endDate,
       }
     );
     // const filteredUsers = data.results.list.filter(

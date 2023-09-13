@@ -8,6 +8,7 @@ import {
   faMoneyBill1Wave,
   faDownload,
   faFileExport,
+  faCog,
 } from "@fortawesome/free-solid-svg-icons";
 
 function Sidebar({ Dash }) {
@@ -91,7 +92,7 @@ function Sidebar({ Dash }) {
                   </div>
                 </li>
                 {/* <ul className="sub-menu collapse" id="menu-product"> */}
-                  {/* <li
+                {/* <li
                     className={
                       Dash === "products" ? "nav-link active" : "nav-link"
                     }
@@ -119,19 +120,19 @@ function Sidebar({ Dash }) {
                   </Link>
                 </li>
                 <li
-                    className={
-                      Dash === "products" ? "nav-link active" : "nav-link"
-                    }
+                  className={
+                    Dash === "products" ? "nav-link active" : "nav-link"
+                  }
+                >
+                  <Link
+                    className="ms-link"
+                    to="/products"
+                    // onClick={() => handleItemClick("products")}
                   >
-                    <Link
-                      className="ms-link"
-                      to="/products"
-                      // onClick={() => handleItemClick("products")}
-                    >
-                      <i className="fas fa-check-square"></i>
-                      <span> Product List</span>
-                    </Link>
-                  </li>
+                    <i className="fas fa-check-square"></i>
+                    <span> Product List</span>
+                  </Link>
+                </li>
                 <li
                   className={
                     Dash === "brand-management" ? "nav-link active" : "nav-link"
@@ -271,6 +272,36 @@ function Sidebar({ Dash }) {
                   <Link className="" to="/contact-us">
                     <i className="fas fa-cogs"></i>Contact us
                   </Link>
+                </li>
+                <li>
+                  <div className="dropdown">
+                    <button
+                      className="btn btn-secondary dropdown-toggle w-100 d-flex align-items-center"
+                      type="button"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false"
+                    >
+                      <FontAwesomeIcon icon={faCog} className="mx-2" />
+                      Configurations
+                    </button>
+                    <ul className="dropdown-menu dropdown-menu-dark w-100">
+                      <li>
+                        <Link className="dropdown-item active" to="#">
+                          FAQs
+                        </Link>
+                      </li>
+                      <li>
+                        <Link className="dropdown-item" to="#">
+                          Theme Settings
+                        </Link>
+                      </li>
+                      <li>
+                        <Link className="dropdown-item" to="/store-settings">
+                          Store Setting
+                        </Link>
+                      </li>
+                    </ul>
+                  </div>
                 </li>
                 <li
                   className={Dash === "help" ? "nav-link active" : "nav-link"}

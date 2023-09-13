@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import Sidebar from "./Sidebar";
 import { Link, useNavigate } from "react-router-dom";
+// import { getDatabase } from "firebase/database";
+import { getDatabase, ref, push, set } from "firebase/database";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -29,6 +31,12 @@ import {
 import { Radar, Bar, getElementsAtEvent } from "react-chartjs-2";
 
 function DashboardNew(props) {
+  const db = getDatabase();
+  const postListRef = ref(db, "posts");
+  const newPostRef = push(postListRef);
+  set(newPostRef, {
+    // ...
+  });
   const [loading, setLoading] = useState(false);
   const { data, isLoading, isError } = useGetFileQuery("file-id");
   const dashboard = useGetDashboardCountQuery();

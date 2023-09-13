@@ -57,6 +57,7 @@ import AgentDetailsAll from "./components/AgentDetailsAll";
 import Dashboard2 from "./components/Dashboard2";
 import ProductManagementEdit2 from "./components/ProductManagementEdit2";
 import DashboardNew from "./components/DashboardNew";
+import StoreSettings from "./components/configurations/StoreSettings";
 
 function App() {
   const [progress, setProgress] = useState(0);
@@ -370,6 +371,13 @@ function App() {
             path="/verificationModal"
             element={<VerificationModal />}
           />
+          <Route
+            exact
+            className="active"
+            path="/store-settings"
+            element={<StoreSettings/>}
+          />
+          
         </Routes>
       </BrowserRouter>
     </>
