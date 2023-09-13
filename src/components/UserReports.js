@@ -11,7 +11,6 @@ export default function UserReports(props) {
   const [endDate, setEndDate] = useState("");
   const [descriptionEn2, setDescriptionEn2] = useState("");
   const [itemId, setItemId] = useState(null);
-
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
   const fetchStaffList = async () => {

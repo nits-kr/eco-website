@@ -50,6 +50,7 @@ function OrderDetails() {
       link.click();
     }
   };
+  
   return (
     <>
       <Sidebar />

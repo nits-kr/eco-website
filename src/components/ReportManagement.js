@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 //import { Link } from "react-router-dom"
 import axios from "axios";
+import { Link } from "react-router-dom";
 import ProductReports from "./ProductReports";
 import UserReports from "./UserReports";
 import Swal from "sweetalert2";
@@ -9,35 +10,71 @@ import { useGetReportListQuery } from "../services/Post";
 
 function ReportManagement() {
   const reportListItems = useGetReportListQuery();
-  const [searchQuery, setSearchQuery] = useState("");
-  const [reportList, setReportList] = useState([]);
-  const handleSearch1 = async (e) => {
-    e.preventDefault();
-    if (searchQuery) {
-      try {
-        const response = await axios.post(
-          "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/reporter/reporter/search",
-          {
-            reporter: searchQuery,
-          }
-        );
-        const { error, results } = response.data;
-        if (error) {
-          throw new Error("Error searching for products.Data are Not Found");
-        } else {
-          setReportList(results?.repoterData);
-        }
-      } catch (error) {
-        Swal.fire({
-          title: "Error!",
-          text: error.message,
-          icon: "error",
-          confirmButtonText: "OK",
-        });
+  const [descriptionEn2, setDescriptionEn2] = useState("");
+  const [descriptionEn21, setDescriptionEn21] = useState("");
+  const [descriptionEn22, setDescriptionEn22] = useState("");
+  const [customerList, setCustomerList] = useState([]);
+  const [productList, setProductList] = useState([]);
+  const [orderList, setOrderList] = useState([]);
+  axios.defaults.headers.common["x-auth-token-user"] =
+    localStorage.getItem("token");
+  const fetchStaffList = async () => {
+    try {
+      const response = await axios.post(
+        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/reporter/reporter/list"
+      );
+      console.log("API Response:", response.data); // Log the response
+      if (response.data.error === false) {
+        setProductList(response.data.results.list);
+      } else {
+        console.error("Error fetching data:", response.data.message);
       }
-    } else {
-      setReportList([]);
+    } catch (error) {
+      console.error("Error:", error);
     }
+  };
+
+  useEffect(() => {
+    fetchStaffList();
+    console.log("useEffect for product list ran");
+  }, []);
+
+  const fetchStaffList2 = async () => {
+    try {
+      const response = await axios.post(
+        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/user/user/user/user-reports-list"
+      );
+      setCustomerList(response?.data?.results?.reportsList?.reverse());
+    } catch (error) {
+      console.log(error.response.data);
+    }
+  };
+  useEffect(() => {
+    fetchStaffList2();
+  }, []);
+
+  const fetchStaffList3 = async () => {
+    try {
+      const response = await axios.post(
+        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/user/user/user/order-reports-list"
+      );
+      setOrderList(response?.data?.results?.reportsList?.reverse());
+    } catch (error) {
+      console.log(error.response.data);
+    }
+  };
+  useEffect(() => {
+    fetchStaffList3();
+  }, []);
+
+  const handleItem = (item) => {
+    setDescriptionEn2(item?.description || "");
+  };
+  const handleItem2 = (item) => {
+    setDescriptionEn21(item?.description || "");
+  };
+  const handleItem3 = (item) => {
+    setDescriptionEn22(item?.description || "");
   };
   return (
     <>
@@ -308,16 +345,25 @@ function ReportManagement() {
                               className="form-design py-4 px-3 help-support-form row align-items-end justify-content-between"
                               action=""
                             >
-                              <div className="form-group mb-0 col-5">
+                              <div className="form-group mb-0 col-4">
                                 <label htmlFor="">From</label>
                                 <input type="date" className="form-control" />
                               </div>
-                              <div className="form-group mb-0 col-5">
+                              <div className="form-group mb-0 col-4">
                                 <label htmlFor="">To</label>
                                 <input type="date" className="form-control" />
                               </div>
                               <div className="form-group mb-0 col-auto">
                                 <button className="comman_btn2">Search</button>
+                              </div>
+                              <div className="col-auto">
+                                <button
+                                  className="comman_btn"
+                                  // onClick={handleDownload}
+                                >
+                                  <i className="fal fa-download me-2"></i>
+                                  Customer
+                                </button>
                               </div>
                             </form>
                             <div className="row">
@@ -328,92 +374,39 @@ function ReportManagement() {
                                       <tr>
                                         <th>S.No.</th>
                                         <th>Reporter</th>
+                                        <th>Email</th>
+                                        <th>mobileNumber</th>
                                         <th>Reported Against</th>
-                                        <th>Reason</th>
+                                        <th>Description</th>
                                         <th>Action</th>
                                       </tr>
                                     </thead>
                                     <tbody>
-                                      <tr>
-                                        <td>1</td>
-                                        <td>Ajay Sharma</td>
-                                        <td>Ram Jain</td>
-                                        <td>Inappropriate</td>
-                                        <td>
-                                          <a
-                                            className="comman_btn2 table_viewbtn"
-                                            href="user-details.html"
-                                          >
-                                            View
-                                          </a>
-                                          <a
-                                            className="comman_btn ms-1 table_viewbtn"
-                                            href="javascript:;"
-                                          >
-                                            Notify
-                                          </a>
-                                        </td>
-                                      </tr>
-                                      <tr>
-                                        <td>2</td>
-                                        <td>Ajay Sharma</td>
-                                        <td>Ram Jain</td>
-                                        <td>Spam</td>
-                                        <td>
-                                          <a
-                                            className="comman_btn2 table_viewbtn"
-                                            href="user-details.html"
-                                          >
-                                            View
-                                          </a>
-                                          <a
-                                            className="comman_btn ms-1 table_viewbtn"
-                                            href="javascript:;"
-                                          >
-                                            Notify
-                                          </a>
-                                        </td>
-                                      </tr>
-                                      <tr>
-                                        <td>3</td>
-                                        <td>Ajay Sharma</td>
-                                        <td>Ram Jain</td>
-                                        <td>Inappropriate</td>
-                                        <td>
-                                          <a
-                                            className="comman_btn2 table_viewbtn"
-                                            href="user-details.html"
-                                          >
-                                            View
-                                          </a>
-                                          <a
-                                            className="comman_btn ms-1 table_viewbtn"
-                                            href="javascript:;"
-                                          >
-                                            Notify
-                                          </a>
-                                        </td>
-                                      </tr>
-                                      <tr>
-                                        <td>4</td>
-                                        <td>Ajay Sharma</td>
-                                        <td>Ram Jain</td>
-                                        <td>Spam</td>
-                                        <td>
-                                          <a
-                                            className="comman_btn2 table_viewbtn"
-                                            href="user-details.html"
-                                          >
-                                            View
-                                          </a>
-                                          <a
-                                            className="comman_btn ms-1 table_viewbtn"
-                                            href="javascript:;"
-                                          >
-                                            Notify
-                                          </a>
-                                        </td>
-                                      </tr>
+                                      {customerList?.map((item, index) => {
+                                        return (
+                                          <tr key={index}>
+                                            <td>{index + 1}</td>
+                                            <td>{item.userName}</td>
+                                            <td>{item.userEmail}</td>
+                                            <td>{item.mobileNumber}</td>
+                                            <td></td>
+                                            <td>{item.description}</td>
+                                            <td>
+                                              <Link
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#staticBackdrop7"
+                                                className="comman_btn table_viewbtn me-2"
+                                                to="#"
+                                                onClick={() => {
+                                                  handleItem3(item);
+                                                }}
+                                              >
+                                                View
+                                              </Link>
+                                            </td>
+                                          </tr>
+                                        );
+                                      })}
                                     </tbody>
                                   </table>
                                 </div>
@@ -434,16 +427,24 @@ function ReportManagement() {
                               className="form-design py-4 px-3 help-support-form row align-items-end justify-content-between"
                               action=""
                             >
-                              <div className="form-group mb-0 col-5">
+                              <div className="form-group mb-0 col-4">
                                 <label htmlFor="">From</label>
                                 <input type="date" className="form-control" />
                               </div>
-                              <div className="form-group mb-0 col-5">
+                              <div className="form-group mb-0 col-4">
                                 <label htmlFor="">To</label>
                                 <input type="date" className="form-control" />
                               </div>
                               <div className="form-group mb-0 col-auto">
                                 <button className="comman_btn2">Search</button>
+                              </div>
+                              <div className="col-auto">
+                                <button
+                                  className="comman_btn"
+                                  // onClick={handleDownload}
+                                >
+                                  <i className="fal fa-download me-2"></i>Order
+                                </button>
                               </div>
                             </form>
                             <div className="row">
@@ -454,97 +455,44 @@ function ReportManagement() {
                                       <tr>
                                         <th>S.No.</th>
                                         <th>Reporter</th>
+                                        <th>Email</th>
+                                        <th>MobileNumber</th>
                                         <th>Product Name</th>
                                         <th>Reported Against</th>
-                                        <th>Reason</th>
+                                        <th>Description</th>
                                         <th>Action</th>
                                       </tr>
                                     </thead>
                                     <tbody>
-                                      <tr>
-                                        <td>1</td>
-                                        <td>Ajay Sharma</td>
-                                        <td>Lorem</td>
-                                        <td>Ram Jain</td>
-                                        <td>Inappropriate</td>
-                                        <td>
-                                          <a
-                                            className="comman_btn2 table_viewbtn"
-                                            href="offer-details.html"
-                                          >
-                                            View
-                                          </a>
-                                          <a
-                                            className="comman_btn ms-1 table_viewbtn"
-                                            href="javascript:;"
-                                          >
-                                            Notify
-                                          </a>
-                                        </td>
-                                      </tr>
-                                      <tr>
-                                        <td>2</td>
-                                        <td>Ajay Sharma</td>
-                                        <td>Lorem</td>
-                                        <td>Ram Jain</td>
-                                        <td>Spam</td>
-                                        <td>
-                                          <a
-                                            className="comman_btn2 table_viewbtn"
-                                            href="offer-details.html"
-                                          >
-                                            View
-                                          </a>
-                                          <a
-                                            className="comman_btn ms-1 table_viewbtn"
-                                            href="javascript:;"
-                                          >
-                                            Notify
-                                          </a>
-                                        </td>
-                                      </tr>
-                                      <tr>
-                                        <td>3</td>
-                                        <td>Ajay Sharma</td>
-                                        <td>Lorem</td>
-                                        <td>Ram Jain</td>
-                                        <td>Inappropriate</td>
-                                        <td>
-                                          <a
-                                            className="comman_btn2 table_viewbtn"
-                                            href="offer-details.html"
-                                          >
-                                            View
-                                          </a>
-                                          <a
-                                            className="comman_btn ms-1 table_viewbtn"
-                                            href="javascript:;"
-                                          >
-                                            Notify
-                                          </a>
-                                        </td>
-                                      </tr>
-                                      <tr>
-                                        <td>4</td>
-                                        <td>Ajay Sharma</td>
-                                        <td>Lorem</td>
-                                        <td>Ram Jain</td>
-                                        <td>Spam</td>
-                                        <td>
-                                          <a
-                                            className="comman_btn2 table_viewbtn"
-                                            href="offer-details.html"
-                                          >
-                                            View
-                                          </a>
-                                          <a
-                                            className="comman_btn ms-1 table_viewbtn"
-                                            href="javascript:;"
-                                          >
-                                            Notify
-                                          </a>
-                                        </td>
-                                      </tr>
+                                      {orderList?.map((item, index) => (
+                                        <tr key={index}>
+                                          <td>{index + 1}</td>
+                                          <td>{item.userName}</td>
+                                          <td>{item.userEmail}</td>
+                                          <td>{item.mobileNumber}</td>
+                                          <td>
+                                            {
+                                              item?.order_Id?.products[0]
+                                                ?.product_Id
+                                            }
+                                          </td>
+                                          <td>Reported Against</td>
+                                          <td>{item.description}</td>
+                                          <td>
+                                            <Link
+                                              data-bs-toggle="modal"
+                                              data-bs-target="#staticBackdrop6"
+                                              className="comman_btn table_viewbtn me-2"
+                                              to="#"
+                                              onClick={() => {
+                                                handleItem2(item);
+                                              }}
+                                            >
+                                              View
+                                            </Link>
+                                          </td>
+                                        </tr>
+                                      ))}
                                     </tbody>
                                   </table>
                                 </div>
@@ -565,16 +513,25 @@ function ReportManagement() {
                               className="form-design py-4 px-3 help-support-form row align-items-end justify-content-between"
                               action=""
                             >
-                              <div className="form-group mb-0 col-5">
+                              <div className="form-group mb-0 col-4">
                                 <label htmlFor="">From</label>
                                 <input type="date" className="form-control" />
                               </div>
-                              <div className="form-group mb-0 col-5">
+                              <div className="form-group mb-0 col-4">
                                 <label htmlFor="">To</label>
                                 <input type="date" className="form-control" />
                               </div>
                               <div className="form-group mb-0 col-auto">
                                 <button className="comman_btn2">Search</button>
+                              </div>
+                              <div className="col-auto">
+                                <button
+                                  className="comman_btn"
+                                  // onClick={handleDownload}
+                                >
+                                  <i className="fal fa-download me-2"></i>
+                                  Product
+                                </button>
                               </div>
                             </form>
                             <div className="row">
@@ -584,98 +541,48 @@ function ReportManagement() {
                                     <thead>
                                       <tr>
                                         <th>S.No.</th>
-                                        <th>Reporter</th>
                                         <th>Product Name</th>
-                                        <th>Reported Against</th>
+                                        <th> Reporter Name</th>
+                                        <th> Number</th>
+                                        <th> Email</th>
                                         <th>Reason</th>
+                                        <th>Description</th>
                                         <th>Action</th>
                                       </tr>
                                     </thead>
                                     <tbody>
-                                      <tr>
-                                        <td>1</td>
-                                        <td>Ajay Sharma</td>
-                                        <td>Lorem</td>
-                                        <td>Ram Jain</td>
-                                        <td>Inappropriate</td>
-                                        <td>
-                                          <a
-                                            className="comman_btn2 table_viewbtn"
-                                            href="offer-details.html"
-                                          >
-                                            View
-                                          </a>
-                                          <a
-                                            className="comman_btn ms-1 table_viewbtn"
-                                            href="javascript:;"
-                                          >
-                                            Notify
-                                          </a>
-                                        </td>
-                                      </tr>
-                                      <tr>
-                                        <td>2</td>
-                                        <td>Ajay Sharma</td>
-                                        <td>Lorem</td>
-                                        <td>Ram Jain</td>
-                                        <td>Spam</td>
-                                        <td>
-                                          <a
-                                            className="comman_btn2 table_viewbtn"
-                                            href="offer-details.html"
-                                          >
-                                            View
-                                          </a>
-                                          <a
-                                            className="comman_btn ms-1 table_viewbtn"
-                                            href="javascript:;"
-                                          >
-                                            Notify
-                                          </a>
-                                        </td>
-                                      </tr>
-                                      <tr>
-                                        <td>3</td>
-                                        <td>Ajay Sharma</td>
-                                        <td>Lorem</td>
-                                        <td>Ram Jain</td>
-                                        <td>Inappropriate</td>
-                                        <td>
-                                          <a
-                                            className="comman_btn2 table_viewbtn"
-                                            href="offer-details.html"
-                                          >
-                                            View
-                                          </a>
-                                          <a
-                                            className="comman_btn ms-1 table_viewbtn"
-                                            href="javascript:;"
-                                          >
-                                            Notify
-                                          </a>
-                                        </td>
-                                      </tr>
-                                      <tr>
-                                        <td>4</td>
-                                        <td>Ajay Sharma</td>
-                                        <td>Lorem</td>
-                                        <td>Ram Jain</td>
-                                        <td>Spam</td>
-                                        <td>
-                                          <a
-                                            className="comman_btn2 table_viewbtn"
-                                            href="offer-details.html"
-                                          >
-                                            View
-                                          </a>
-                                          <a
-                                            className="comman_btn ms-1 table_viewbtn"
-                                            href="javascript:;"
-                                          >
-                                            Notify
-                                          </a>
-                                        </td>
-                                      </tr>
+                                      {console.log("productList", productList)}
+                                      {productList.map((item, index) => {
+                                        return (
+                                          <tr key={index}>
+                                            <td>{index + 1}</td>
+                                            <td>
+                                              {item?.product_Id?.productName_en}
+                                            </td>
+                                            <td>{item.reporterName}</td>
+                                            <td>{item.reporterNumber}</td>
+                                            <td>{item.reporterEmail}</td>
+                                            <td>{item.reason}</td>
+                                            <td>
+                                              {item?.description?.slice(0, 20)}
+                                              ...
+                                            </td>
+                                            <td>
+                                              <Link
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#staticBackdrop5"
+                                                className="comman_btn table_viewbtn me-2"
+                                                to="#"
+                                                onClick={() => {
+                                                  handleItem(item);
+                                                }}
+                                              >
+                                                View
+                                              </Link>
+                                            </td>
+                                          </tr>
+                                        );
+                                      })}
                                     </tbody>
                                   </table>
                                 </div>
@@ -783,6 +690,96 @@ function ReportManagement() {
                   <button className="comman_btn2">Save</button>{" "}
                 </div>
               </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        className="modal fade reply_modal"
+        id="staticBackdrop5"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+        tabIndex="-1"
+        aria-labelledby="staticBackdropLabel"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog modal-dialog-centered">
+          <div className="modal-content border-0">
+            <div className="modal-header">
+              <h5 className="modal-title" id="staticBackdropLabel">
+                DESCRIPTION
+              </h5>
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div className="modal-body py-4">
+              <div className="chatpart_main">
+                <p>{descriptionEn2}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        className="modal fade reply_modal"
+        id="staticBackdrop6"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+        tabIndex="-1"
+        aria-labelledby="staticBackdropLabel"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog modal-dialog-centered">
+          <div className="modal-content border-0">
+            <div className="modal-header">
+              <h5 className="modal-title" id="staticBackdropLabel">
+                DESCRIPTION
+              </h5>
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div className="modal-body py-4">
+              <div className="chatpart_main">
+                <p>{descriptionEn21}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        className="modal fade reply_modal"
+        id="staticBackdrop7"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+        tabIndex="-1"
+        aria-labelledby="staticBackdropLabel"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog modal-dialog-centered">
+          <div className="modal-content border-0">
+            <div className="modal-header">
+              <h5 className="modal-title" id="staticBackdropLabel">
+                DESCRIPTION
+              </h5>
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div className="modal-body py-4">
+              <div className="chatpart_main">
+                <p>{descriptionEn22}</p>
+              </div>
             </div>
           </div>
         </div>
