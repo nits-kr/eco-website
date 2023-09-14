@@ -180,7 +180,7 @@ function Sidebar({ Dash }) {
                     <i className="far fa-repeat-1"></i>Transaction Management
                   </Link>
                 </li>
-                <li
+                {/* <li
                   className={
                     Dash === "reports" ? "nav-link active" : "nav-link"
                   }
@@ -189,7 +189,7 @@ function Sidebar({ Dash }) {
                     <i className="far fa-file-spreadsheet"></i>Reports
                     Management
                   </Link>
-                </li>
+                </li> */}
                 <li
                   className={
                     Dash === "Home-Screen-banners"
