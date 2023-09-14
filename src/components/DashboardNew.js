@@ -358,8 +358,8 @@ function DashboardNew(props) {
     }
   }
   function trimProductName(productName) {
-    const words = productName.split(" ");
-    if (words.length > 3) {
+    const words = productName?.split(" ");
+    if (words?.length > 3) {
       return words.slice(0, 3).join(" ");
     } else {
       return productName;
@@ -810,12 +810,15 @@ function DashboardNew(props) {
                                       </td>
                                       <td>{data.user_Id.userName}</td>
                                       <td>
-                                        {typeof data.cartsTotal?.[0]?.[0] ===
+                                        {data?.products[0]?.Price
+                                          ? data?.products[0]?.Price
+                                          : "N/A"}
+                                        {/* {typeof data.cartsTotal?.[0]?.[0] ===
                                         "number"
                                           ? `$${data.cartsTotal?.[0]?.[0].toFixed(
                                               2
                                             )}`
-                                          : "N/A"}
+                                          : "N/A"} */}
                                       </td>
                                       {/* <td>
                                         ${calculateProfit(data.cartsTotal[0])}

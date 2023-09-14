@@ -435,12 +435,13 @@ function OrderManagement() {
                                     )}{" "}
                                   </td> */}
                                   <td>
-                                    {typeof data.cartsTotal?.[0]?.[0] ===
+                                    {data?.products[0]?.Price ? data?.products[0]?.Price : "N/A"}
+                                    {/* {typeof data.cartsTotal?.[0]?.[0] ===
                                     "number"
                                       ? `$${data.cartsTotal?.[0]?.[0].toFixed(
                                           2
                                         )}`
-                                      : "N/A"}
+                                      : "N/A"} */}
                                   </td>
                                   <td> {data.orderStatus} </td>
                                   <td>
