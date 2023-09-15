@@ -435,7 +435,9 @@ function OrderManagement() {
                                     )}{" "}
                                   </td> */}
                                   <td>
-                                    {data?.products[0]?.Price ? data?.products[0]?.Price : "N/A"}
+                                    {data?.cartsTotal
+                                      ? data?.cartsTotal?.toFixed(2)
+                                      : "N/A"}
                                     {/* {typeof data.cartsTotal?.[0]?.[0] ===
                                     "number"
                                       ? `$${data.cartsTotal?.[0]?.[0].toFixed(
@@ -443,20 +445,76 @@ function OrderManagement() {
                                         )}`
                                       : "N/A"} */}
                                   </td>
-                                  <td> {data.orderStatus} </td>
                                   <td>
-                                    <Link
-                                      className="comman_btn table_viewbtn"
-                                      data-bs-toggle="modal"
-                                      data-bs-target="#edittoffer"
-                                      to="#"
-                                      onClick={() => {
-                                        handleItem(data);
-                                        setItemId(data?._id);
+                                    {" "}
+                                    <div
+                                      className={
+                                        data?.orderStatus === "Cancelled"
+                                          ? "text-danger"
+                                          : data?.orderStatus === "Pending"
+                                          ? "text-warning"
+                                          : data?.orderStatus === "Packed"
+                                          ? "text-info"
+                                          : data?.orderStatus === "Approved"
+                                          ? "text-success"
+                                          : data?.orderStatus === "Inprogress"
+                                          ? "text-primary"
+                                          : data?.orderStatus === "Delivered"
+                                          ? "text-secondary"
+                                          : "text-default"
+                                      }
+                                      style={{
+                                        background:
+                                          data?.orderStatus === "Cancelled"
+                                            ? "#ffe5e5"
+                                            : data?.orderStatus === "Pending"
+                                            ? "#fff6e5"
+                                            : data?.orderStatus === "Packed"
+                                            ? "#e5f0ff"
+                                            : data?.orderStatus === "Approved"
+                                            ? "#e5ffe5"
+                                            : data?.orderStatus === "Inprogress"
+                                            ? "#e5e5ff"
+                                            : data?.orderStatus === "Delivered"
+                                            ? "#f3f3f3"
+                                            : "#f9f9f9",
+                                        borderRadius: "5px",
+                                        padding: "2px 5px",
                                       }}
                                     >
-                                      Edit
-                                    </Link>
+                                      {data?.orderStatus}
+                                    </div>{" "}
+                                  </td>
+                                  <td>
+                                    {data.orderStatus === "Delivered" ? (
+                                      <Link
+                                        className="comman_btn table_viewbtn"
+                                        title="Can't Edit"
+                                        to="#"
+                                        style={{
+                                          cursor: "not-allowed",
+                                          filter: "blur(0.5px)",
+                                          backgroundColor: "#fa9898",
+                                        }}
+                                        disabled
+                                      >
+                                        Edit
+                                      </Link>
+                                    ) : (
+                                      <Link
+                                        className="comman_btn table_viewbtn"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#edittoffer"
+                                        to="#"
+                                        onClick={() => {
+                                          handleItem(data);
+                                          setItemId(data?._id);
+                                        }}
+                                      >
+                                        Edit
+                                      </Link>
+                                    )}
+
                                     <Link
                                       className="comman_btn table_viewbtn ms-2"
                                       to={`/order-details/${data?._id}`}

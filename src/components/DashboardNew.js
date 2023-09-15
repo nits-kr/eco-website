@@ -45,6 +45,7 @@ function DashboardNew(props) {
   const [assignOrder] = useOrderAssignMutation();
   // console.log("down load data", data);
   const [orderList, setOrderList] = useState([]);
+  console.log("order new list", orderList);
   const [startDate1, setStartDate1] = useState("");
   const [itemId3, setItemId3] = useState("");
   console.log("item id 3", itemId3);
@@ -53,10 +54,12 @@ function DashboardNew(props) {
   const [productList, setProductList] = useState([]);
   const [totalStockQuantity, setTotalStockQuantity] = useState(0);
   const [usersList, setUsersList] = useState([]);
+  console.log("userlist", usersList);
   const [salesList, setSalesList] = useState([]);
+  console.log("salesList", salesList);
   const [expectedEarnings, setExpectedEarnings] = useState(0);
   const [totalCartsTotal, setTotalCartsTotal] = useState(0);
-
+  console.log("totalCartsTotal", totalCartsTotal);
   console.log("selectedBrandIds", selectedBrandIds);
   console.log("totalStockQuantity", totalStockQuantity);
 
@@ -85,30 +88,39 @@ function DashboardNew(props) {
       .then((response) => {
         setUsersList(response?.data?.results?.customerMonth || []);
         const orderyearData = response?.data?.results?.orderyear || [];
+        const customerMonthData = response?.data?.results?.customerMonth || [];
+        console.log("orderyearData", orderyearData);
+        const salesData = response?.data?.results?.salesDAy || [];
         let totalCartsTotal = 0;
         orderyearData.forEach((order) => {
-          order.cartsTotal.forEach((cartTotal) => {
-            if (cartTotal.length > 0) {
-              totalCartsTotal += cartTotal[0];
-            }
-          });
+          totalCartsTotal += order.cartsTotal;
         });
         console.log(
           "Total CartsTotal from orderyear:",
           totalCartsTotal.toFixed(2)
         );
-
-        const salesData = response?.data?.results?.salesDAy || [];
-        const totalSales = salesData.reduce((sum, sale) => {
-          sale.cartsTotal.forEach((cartTotal) => {
-            if (cartTotal.length > 0) {
-              sum += cartTotal[0];
-            }
-          });
+        const totalSalesCartsTotal = salesData.reduce((sum, sale) => {
+          sum += sale.cartsTotal;
           return sum;
         }, 0);
 
-        setSalesList(totalSales.toFixed(2));
+        setSalesList(totalSalesCartsTotal.toFixed(2));
+        console.log("Total Sales CartsTotal:", totalSalesCartsTotal.toFixed(2));
+
+        const totalDiscountSum = customerMonthData.reduce((sum, customer) => {
+          if (
+            Array.isArray(customer.totalAfterDiscount) &&
+            customer.totalAfterDiscount.length > 0
+          ) {
+            sum += customer.totalAfterDiscount[0];
+          }
+          return sum;
+        }, 0);
+
+        console.log(
+          "Total Sales CartsTotal totalAfterDiscount:",
+          totalDiscountSum.toFixed(2)
+        );
 
         props.setProgress(100);
         setLoading(false);
@@ -148,33 +160,6 @@ function DashboardNew(props) {
     });
   };
 
-  const handleSelectChange = async (e, itemId, index) => {
-    e.preventDefault();
-    handleInputChange1(e, index);
-    setItemId3(data?._id);
-    const updatedSelectedBrandIds = [...selectedBrandIds];
-    updatedSelectedBrandIds[index] = e.target.value;
-
-    const editOffer = {
-      id: itemId,
-      deliverdBy: updatedSelectedBrandIds.filter(Boolean),
-    };
-    try {
-      await assignOrder(editOffer);
-      Swal.fire({
-        title: "Changes Saved",
-        text: "The Order has been updated successfully.",
-        icon: "success",
-        confirmButtonText: "OK",
-      }).then((result) => {
-        if (result.isConfirmed) {
-          window.location.reload();
-        }
-      });
-    } catch (error) {
-      // Handle error here
-    }
-  };
   useEffect(() => {
     props.setProgress(10);
     setLoading(true);
@@ -233,6 +218,7 @@ function DashboardNew(props) {
     await axios
       .post(url)
       .then((response) => {
+        console.log("Order List:", orderList);
         setOrderList(response?.data?.results?.list);
         calculateTotalCartsTotal(response?.data?.results?.list);
       })
@@ -246,14 +232,11 @@ function DashboardNew(props) {
         });
       });
   };
+
   const calculateTotalCartsTotal = (orderList) => {
     let total = 0;
     for (const order of orderList) {
-      for (const cartTotal of order.cartsTotal) {
-        for (const value of cartTotal) {
-          total += value;
-        }
-      }
+      total += order.cartsTotal;
     }
     setTotalCartsTotal(total);
   };
@@ -267,12 +250,12 @@ function DashboardNew(props) {
   const calculateExpectedEarnings = (orders) => {
     let totalEarnings = 0;
 
-    orders.forEach((order) => {
-      order.products.forEach((product) => {
-        totalEarnings +=
-          product.quantity * product.product_Id.addVarient[0].Price;
-      });
-    });
+    // orders.forEach((order) => {
+    //   order.products.forEach((product) => {
+    //     totalEarnings +=
+    //       product.quantity * product.product_Id.addVarient[0].Price;
+    //   });
+    // });
 
     return totalEarnings;
   };
@@ -666,7 +649,7 @@ function DashboardNew(props) {
                             <div className="canvas_top d-flex align-items-center">
                               <h3>
                                 <span>$</span>
-                                {salesList / 30}
+                                {(salesList / 30)?.toFixed(2)}
                               </h3>
                               <div className="Percent_box ms-2">2.2%</div>
                             </div>
@@ -721,28 +704,38 @@ function DashboardNew(props) {
                                                   8
                                                 )}
                                               </a>
-                                              {/* <span>
-                                              Item: #
-                                              {
-                                                data.products[0]?.product_Id
-                                                  ?._id
-                                              }
-                                            </span> */}
                                             </div>
                                           </div>
                                         </td>
-                                        <td>X {data.products[0]?.quantity}</td>
                                         <td>
-                                          $
-                                          {data.products[0]?.product_Id
-                                            ?.addVarient[0]?.Price || 0.0}
+                                          X{" "}
+                                          {data.products.reduce(
+                                            (totalQuantity, item) => {
+                                              return (
+                                                totalQuantity + item.quantity
+                                              );
+                                            },
+                                            0
+                                          )}
                                         </td>
                                         <td>
-                                          {typeof data.cartsTotal?.[0]?.[0] ===
-                                          "number"
-                                            ? `$${data.cartsTotal?.[0]?.[0].toFixed(
-                                                2
-                                              )}`
+                                          $
+                                          {(
+                                            data?.cartsTotal /
+                                            data.products.reduce(
+                                              (totalQuantity, item) => {
+                                                return (
+                                                  totalQuantity + item.quantity
+                                                );
+                                              },
+                                              0
+                                            )
+                                          ).toFixed(2)}
+                                        </td>
+
+                                        <td>
+                                          {data?.cartsTotal
+                                            ? data?.cartsTotal?.toFixed(2)
                                             : "N/A"}
                                         </td>
                                       </tr>
@@ -810,8 +803,8 @@ function DashboardNew(props) {
                                       </td>
                                       <td>{data.user_Id.userName}</td>
                                       <td>
-                                        {data?.products[0]?.Price
-                                          ? data?.products[0]?.Price
+                                        {data?.cartsTotal
+                                          ? data?.cartsTotal?.toFixed(2)
                                           : "N/A"}
                                         {/* {typeof data.cartsTotal?.[0]?.[0] ===
                                         "number"
@@ -860,7 +853,7 @@ function DashboardNew(props) {
                                                 : data?.orderStatus ===
                                                   "Delivered"
                                                 ? "#f3f3f3"
-                                                : "#f9f9f9", // Add a default background color for unrecognized statuses
+                                                : "#f9f9f9",
                                             borderRadius: "5px",
                                             padding: "2px 5px",
                                           }}
