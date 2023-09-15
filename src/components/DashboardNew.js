@@ -1183,10 +1183,7 @@ function DashboardNew(props) {
                 <div>
                   <h2>Browse Users</h2>
                 </div>
-                {/* <div>
-                  If you need more information, please check out our Users
-                  Directory.
-                </div> */}
+                
               </div>
 
               <button
