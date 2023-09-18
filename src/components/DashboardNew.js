@@ -369,6 +369,11 @@ function DashboardNew(props) {
   const averageDailySales = calculateAverageDailySales(orderList);
   console.log("Average Daily Sales:", averageDailySales);
 
+  // Define previousTotal and calculate percentageChange based on your logic
+  // const previousTotal = 100; // Replace with the actual previous total
+  // const totalCartsTotal1 = 120; // Replace with the actual current total
+  // const percentageChange = ((totalCartsTotal - previousTotal) / previousTotal) * 100;
+
   return (
     <>
       <Sidebar Dash={"dashboard"} />
@@ -395,10 +400,33 @@ function DashboardNew(props) {
                               </h3>
                               <div className="Percent_box ms-2">2.2%</div>
                             </div>
-                            {/* <canvas className="w-100" id="myChart" /> */}
                             <DashboardDougnetChart />
                           </div>
                         </div>
+                        {/* <div className="row">
+                          <div className="col-12 p-4">
+                            <div className="canvas_top d-flex align-items-center">
+                              <h3>
+                                <span>$</span>
+                                {totalCartsTotal.toFixed(2)}
+                              </h3>
+                              {totalCartsTotal > previousTotal ? (
+                                <div className="Percent_box ms-2 text-success">
+                                  <i className="fas fa-arrow-up"></i>{" "}
+                                  {percentageChange.toFixed(2)}%
+                                </div>
+                              ) : totalCartsTotal < previousTotal ? (
+                                <div className="Percent_box ms-2 text-danger">
+                                  <i className="fas fa-arrow-down"></i>{" "}
+                                  {percentageChange.toFixed(2)}%
+                                </div>
+                              ) : (
+                                <div className="Percent_box ms-2">0.00%</div>
+                              )}
+                            </div>
+                            <DashboardDougnetChart />
+                          </div>
+                        </div> */}
                       </div>
                     </div>
                   </div>
@@ -1183,7 +1211,6 @@ function DashboardNew(props) {
                 <div>
                   <h2>Browse Users</h2>
                 </div>
-                
               </div>
 
               <button
