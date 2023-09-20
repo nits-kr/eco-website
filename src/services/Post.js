@@ -62,6 +62,12 @@ export const PostApi = createApi({
         method: "post",
       }),
     }),
+    getBannerList: builder.query({
+      query: (name) => ({
+        url: "admin/home/homeScreen/category-banner-list",
+        method: "post",
+      }),
+    }),
     getDashboardCount: builder.query({
       query: (name) => ({
         url: "/admin/dashboards/count/order-dashboards",
@@ -95,6 +101,30 @@ export const PostApi = createApi({
     getContentList: builder.query({
       query: (name) => ({
         url: `admin/content/content/list`,
+        method: "post",
+      }),
+    }),
+    getCatogarySideBannerList: builder.query({
+      query: (name) => ({
+        url: "admin/home/homeScreen/side-banner-list",
+        method: "post",
+      }),
+    }),
+    getCatogaryBottomBannerList: builder.query({
+      query: (name) => ({
+        url: "admin/home/homeScreen/bottom-banner-list",
+        method: "post",
+      }),
+    }),
+    getCatogaryMiddleBannerList: builder.query({
+      query: (name) => ({
+        url: "admin/home/homeScreen/middle-banner-list",
+        method: "post",
+      }),
+    }),
+    getCatogaryScrollBannerList: builder.query({
+      query: (name) => ({
+        url: "admin/home/homeScreen/scroll-banner-list",
         method: "post",
       }),
     }),
@@ -168,6 +198,36 @@ export const PostApi = createApi({
         method: "DELETE",
       }),
     }),
+    deleteCategoryTopBanner: builder.mutation({
+      query: (id) => ({
+        url: `admin/home/homeScreen/top-banner-delete/${id}`,
+        method: "post",
+      }),
+    }),
+    deleteCategoryMiddleBanner: builder.mutation({
+      query: (id) => ({
+        url: `admin/home/homeScreen/middle-banner-delete/${id}`,
+        method: "post",
+      }),
+    }),
+    deleteCategorySideBanner: builder.mutation({
+      query: (id) => ({
+        url: `admin/home/homeScreen/side-banner-delete/${id}`,
+        method: "post",
+      }),
+    }),
+    deleteCategoryBottomBanner: builder.mutation({
+      query: (id) => ({
+        url: `admin/home/homeScreen/bottom-banner-delete/${id}`,
+        method: "post",
+      }),
+    }),
+    deleteCategoryScrollBanner: builder.mutation({
+      query: (id) => ({
+        url: `admin/home/homeScreen/scroll-banner-delete/${id}`,
+        method: "post",
+      }),
+    }),
     updateAddress: builder.mutation({
       query: (body) => {
         console.log("update address", body);
@@ -217,7 +277,7 @@ export const PostApi = createApi({
       },
     }),
     updateBrand: builder.mutation({
-      query: ({id1, formData}) => {
+      query: ({ id1, formData }) => {
         return {
           url: `/admin/product/edit-brand/${id1}`,
           method: "post",
@@ -610,4 +670,14 @@ export const {
   useAgentDetailsAllMutation,
   useUpdateHomeScreenBannerMutation,
   useGetDashboardCountQuery,
+  useGetBannerListQuery,
+  useGetCatogarySideBannerListQuery,
+  useGetCatogaryBottomBannerListQuery,
+  useGetCatogaryMiddleBannerListQuery,
+  useGetCatogaryScrollBannerListQuery,
+  useDeleteCategoryTopBannerMutation,
+  useDeleteCategoryBottomBannerMutation,
+  useDeleteCategoryMiddleBannerMutation,
+  useDeleteCategoryScrollBannerMutation,
+  useDeleteCategorySideBannerMutation,
 } = PostApi;

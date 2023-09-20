@@ -52,6 +52,7 @@ function DashboardNew(props) {
   const [brands, setBrands] = useState([]);
   const [selectedBrandIds, setSelectedBrandIds] = useState([]);
   const [productList, setProductList] = useState([]);
+  const [monthPrice, setMonthPrice] = useState([]);
   const [totalStockQuantity, setTotalStockQuantity] = useState(0);
   const [usersList, setUsersList] = useState([]);
   console.log("userlist", usersList);
@@ -89,24 +90,23 @@ function DashboardNew(props) {
         setUsersList(response?.data?.results?.customerMonth || []);
         const orderyearData = response?.data?.results?.orderyear || [];
         const customerMonthData = response?.data?.results?.customerMonth || [];
-        console.log("orderyearData", orderyearData);
+        const orderMonthData = response?.data?.results?.OrderMonth || [];
+        const totalOrderMonth = orderMonthData.reduce((sum, order) => {
+          return (sum += order.cartsTotal);
+        }, 0); // Initialize sum to 0
+        setMonthPrice(totalOrderMonth);
         const salesData = response?.data?.results?.salesDAy || [];
         let totalCartsTotal = 0;
         orderyearData.forEach((order) => {
           totalCartsTotal += order.cartsTotal;
         });
-        console.log(
-          "Total CartsTotal from orderyear:",
-          totalCartsTotal.toFixed(2)
-        );
+
         const totalSalesCartsTotal = salesData.reduce((sum, sale) => {
           sum += sale.cartsTotal;
           return sum;
         }, 0);
 
         setSalesList(totalSalesCartsTotal.toFixed(2));
-        console.log("Total Sales CartsTotal:", totalSalesCartsTotal.toFixed(2));
-
         const totalDiscountSum = customerMonthData.reduce((sum, customer) => {
           if (
             Array.isArray(customer.totalAfterDiscount) &&
@@ -116,12 +116,6 @@ function DashboardNew(props) {
           }
           return sum;
         }, 0);
-
-        console.log(
-          "Total Sales CartsTotal totalAfterDiscount:",
-          totalDiscountSum.toFixed(2)
-        );
-
         props.setProgress(100);
         setLoading(false);
       })
@@ -147,9 +141,6 @@ function DashboardNew(props) {
       totalDeliveredItems++;
     }
   });
-
-  // Now, totalDeliveredItems contains the count of delivered items
-  console.log("Total Delivered Items:", totalDeliveredItems);
 
   const handleInputChange1 = (event, index) => {
     const { value } = event.target;
@@ -472,7 +463,7 @@ function DashboardNew(props) {
                             <div className="canvas_top d-flex align-items-center">
                               <h3>
                                 <span>$</span>
-                                {totalAfterDiscount}
+                                {monthPrice}
                               </h3>
                               <div className="Percent_box ms-2">2.2%</div>
                             </div>
@@ -829,7 +820,7 @@ function DashboardNew(props) {
                                         {data?.createdAt &&
                                           formatTimeAgo(data.createdAt)}
                                       </td>
-                                      <td>{data.user_Id.userName}</td>
+                                      <td>{data?.user_Id?.userName}</td>
                                       <td>
                                         {data?.cartsTotal
                                           ? data?.cartsTotal?.toFixed(2)

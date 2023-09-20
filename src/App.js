@@ -58,6 +58,8 @@ import Dashboard2 from "./components/Dashboard2";
 import ProductManagementEdit2 from "./components/ProductManagementEdit2";
 import DashboardNew from "./components/DashboardNew";
 import StoreSettings from "./components/configurations/StoreSettings";
+import Banners from "./components/banners/Banners";
+import ProductBanner from "./components/banners/ProductBanner";
 
 function App() {
   const [progress, setProgress] = useState(0);
@@ -88,8 +90,8 @@ function App() {
             path="/dashboard"
             element={<Dashboard setProgress={setProgress} />}
           /> */}
-         {/* <Dashboard2/> */}
-         {/* <DashboardNew/> */}
+          {/* <Dashboard2/> */}
+          {/* <DashboardNew/> */}
           <Route
             exact
             className="active"
@@ -163,7 +165,7 @@ function App() {
             exact
             className="active"
             path="/product-management-edit/:id"
-            element={<ProductManagementEdit2 setProgress={setProgress}/>}
+            element={<ProductManagementEdit2 setProgress={setProgress} />}
           />
           {/* <Route
             exact
@@ -215,9 +217,23 @@ function App() {
             exact
             className="active"
             path="/Home-Screen-banners"
-            element={<HomeScreenBanner2 />}
+            element={<Banners setProgress={setProgress}/>}
           />
+          <Route
+            exact
+            className="active"
+            path="/Home-Screen-banners-product"
+            element={<ProductBanner setProgress={setProgress}/>}
+          />
+
+          {/* <Route
+            exact
+            className="active"
+            path="/Home-Screen-banners"
+            element={<HomeScreenBanner2 />}
+          /> */}
           {/* <HomeScreenBanner2/> */}
+
           <Route
             exact
             className="active"
@@ -375,9 +391,8 @@ function App() {
             exact
             className="active"
             path="/store-settings"
-            element={<StoreSettings/>}
+            element={<StoreSettings />}
           />
-          
         </Routes>
       </BrowserRouter>
     </>

@@ -190,7 +190,7 @@ function Sidebar({ Dash }) {
                     Management
                   </Link>
                 </li> */}
-                <li
+                {/* <li
                   className={
                     Dash === "Home-Screen-banners"
                       ? "nav-link active"
@@ -201,6 +201,56 @@ function Sidebar({ Dash }) {
                     <i className="fal fa-sign-in-alt"></i>Home Screen Banners
                     Management
                   </Link>
+                </li> */}
+                <li
+                  className={
+                    Dash === "Home-Screen-banners"
+                      ? "nav-link active"
+                      : "nav-link"
+                  }
+                >
+                  <div className="dropdown">
+                    <button
+                      className="btn btn-secondary dropdown-toggle w-100 d-flex align-items-center"
+                      type="button"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false"
+                      style={{ marginLeft: "-8px" }}
+                    >
+                      <i className="fal fa-sign-in-alt me-2"></i>
+                      Banners Management
+                    </button>
+                    <ul className="dropdown-menu dropdown-menu-dark w-100">
+                      <li
+                        className={
+                          Dash === "category-banners"
+                            ? "nav-link active"
+                            : "nav-link"
+                        }
+                      >
+                        <Link
+                          className="dropdown-item active"
+                          to="/Home-Screen-banners"
+                        >
+                          Category Banners
+                        </Link>
+                      </li>
+                      <li
+                        className={
+                          Dash === "product-banners"
+                            ? "nav-link active"
+                            : "nav-link"
+                        }
+                      >
+                        <Link
+                          className="dropdown-item"
+                          to="/Home-Screen-banners-product"
+                        >
+                          Product Banners
+                        </Link>
+                      </li>
+                    </ul>
+                  </div>
                 </li>
                 <li
                   className={
