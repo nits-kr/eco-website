@@ -6,31 +6,31 @@ import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import {
-  useDeleteCategoryBottomBannerMutation,
-  useDeleteCategoryMiddleBannerMutation,
-  useDeleteCategoryScrollBannerMutation,
-  useDeleteCategorySideBannerMutation,
-  useDeleteCategoryTopBannerMutation,
-  useGetBannerListQuery,
-  useGetCatogaryBottomBannerListQuery,
-  useGetCatogaryMiddleBannerListQuery,
-  useGetCatogaryScrollBannerListQuery,
-  useGetCatogarySideBannerListQuery,
+  useDeleteProductBottomBannerMutation,
+  useDeleteProductMiddleBannerMutation,
+  useDeleteProductScrollBannerMutation,
+  useDeleteProductSideBannerMutation,
+  useDeleteProductTopBannerMutation,
+  useGetProductBottomBannerListQuery,
+  useGetProductMiddleBannerListQuery,
+  useGetProductScrollBannerListQuery,
+  useGetProductSideBannerListQuery,
+  useGetProductTopBannerListQuery,
 } from "../../services/Post";
 import Spinner from "../Spinner";
 
 function ProductBanner(props) {
   const [loading, setLoading] = useState(true);
-  const { data: bannerAll } = useGetBannerListQuery();
-  const { data: sideBanner } = useGetCatogarySideBannerListQuery();
-  const { data: bottomBanner } = useGetCatogaryBottomBannerListQuery();
-  const { data: middleBanner } = useGetCatogaryMiddleBannerListQuery();
-  const { data: scrollBanner } = useGetCatogaryScrollBannerListQuery();
-  const [deleteTopBanner] = useDeleteCategoryTopBannerMutation();
-  const [deleteMiddleBanner] = useDeleteCategoryMiddleBannerMutation();
-  const [deleteBottomBanner] = useDeleteCategoryBottomBannerMutation();
-  const [deleteSideBanner] = useDeleteCategorySideBannerMutation();
-  const [deleteScrollBanner] = useDeleteCategoryScrollBannerMutation();
+  const { data: bannerAll } = useGetProductTopBannerListQuery();
+  const { data: sideBanner } = useGetProductSideBannerListQuery();
+  const { data: bottomBanner } = useGetProductBottomBannerListQuery();
+  const { data: middleBanner } = useGetProductMiddleBannerListQuery();
+  const { data: scrollBanner } = useGetProductScrollBannerListQuery();
+  const [deleteTopBanner] = useDeleteProductTopBannerMutation();
+  const [deleteMiddleBanner] = useDeleteProductMiddleBannerMutation();
+  const [deleteBottomBanner] = useDeleteProductBottomBannerMutation();
+  const [deleteSideBanner] = useDeleteProductSideBannerMutation();
+  const [deleteScrollBanner] = useDeleteProductScrollBannerMutation();
   const [bannerList, setBannerList] = useState([]);
   const [sideBannerList, setSideBannerList] = useState([]);
   const [bottomBannerList, setBottomBannerList] = useState([]);
@@ -162,7 +162,7 @@ function ProductBanner(props) {
       data.append("categoryBanner", formData.bannerPic);
 
       const response = await axios.post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/home/homeScreen/category-banner",
+        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/home/homeScreen/product-banner",
         data
       );
 
@@ -201,7 +201,7 @@ function ProductBanner(props) {
       data.append("bottomBanner", formData.bannerPic);
 
       const response = await axios.post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/home/homeScreen/bottom-banner",
+        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/home/homeScreen/product-bottom",
         data
       );
 
@@ -218,9 +218,9 @@ function ProductBanner(props) {
         //   subCategoryPic: null,
         // });
         // subCategoryManagementList();
-        setTimeout(() => {
-          window?.location?.reload();
-        }, 500);
+        // setTimeout(() => {
+        //   window?.location?.reload();
+        // }, 500);
       }
     } catch (error) {
       console.error(error);
@@ -240,7 +240,7 @@ function ProductBanner(props) {
       data.append("sideBanner", formData.bannerPic);
 
       const response = await axios.post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/home/homeScreen/side-banner",
+        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/home/homeScreen/product-side",
         data
       );
 
@@ -279,7 +279,7 @@ function ProductBanner(props) {
       data.append("middleBanner", formData.bannerPic);
 
       const response = await axios.post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/home/homeScreen/middle-banner",
+        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/home/homeScreen/product-middle",
         data
       );
 
@@ -318,7 +318,7 @@ function ProductBanner(props) {
       data.append("scrollBanner", formData.bannerPic);
 
       const response = await axios.post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/home/homeScreen/scroll-banner",
+        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/home/homeScreen/product-scroll",
         data
       );
 
@@ -404,7 +404,7 @@ function ProductBanner(props) {
     setBottomBannerToShow(item?.bottomBanner[0] || null);
   };
   const handleUpdateMiddle = (item) => {
-    setMiddleBannerToShow(item?.sideBanner[0] || null);
+    setMiddleBannerToShow(item?.middleBanner[0] || null);
   };
   const handleUpdateScroll = (item) => {
     setScrollBannerToShow(item?.scrollBanner[0] || null);
@@ -750,7 +750,7 @@ function ProductBanner(props) {
                                         <td>
                                           <img
                                             className="table_img"
-                                            src={item?.sideBanner[0]}
+                                            src={item?.middleBanner[0]}
                                             alt={
                                               item?.category_Id?.categoryName_en
                                             }

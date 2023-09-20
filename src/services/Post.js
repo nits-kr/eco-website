@@ -128,6 +128,36 @@ export const PostApi = createApi({
         method: "post",
       }),
     }),
+    getProductTopBannerList: builder.query({
+      query: (name) => ({
+        url: "admin/home/homeScreen/product-banner-list",
+        method: "post",
+      }),
+    }),
+    getProductBottomBannerList: builder.query({
+      query: (name) => ({
+        url: "admin/home/homeScreen/product-bottom-list",
+        method: "post",
+      }),
+    }),
+    getProductSideBannerList: builder.query({
+      query: (name) => ({
+        url: "admin/home/homeScreen/product-side-list",
+        method: "post",
+      }),
+    }),
+    getProductMiddleBannerList: builder.query({
+      query: (name) => ({
+        url: "admin/home/homeScreen/product-midlle-list",
+        method: "post",
+      }),
+    }),
+    getProductScrollBannerList: builder.query({
+      query: (name) => ({
+        url: "admin/home/homeScreen/product-scroll-list",
+        method: "post",
+      }),
+    }),
     getFile: builder.query({
       query: (name) => ({
         url: `admin/user/download`,
@@ -225,6 +255,36 @@ export const PostApi = createApi({
     deleteCategoryScrollBanner: builder.mutation({
       query: (id) => ({
         url: `admin/home/homeScreen/scroll-banner-delete/${id}`,
+        method: "post",
+      }),
+    }),
+    deleteProductTopBanner: builder.mutation({
+      query: (id) => ({
+        url: `admin/home/homeScreen/product-top-delete/${id}`,
+        method: "post",
+      }),
+    }),
+    deleteProductMiddleBanner: builder.mutation({
+      query: (id) => ({
+        url: `admin/home/homeScreen/product-middle-delete/${id}`,
+        method: "post",
+      }),
+    }),
+    deleteProductSideBanner: builder.mutation({
+      query: (id) => ({
+        url: `admin/home/homeScreen/product-side-delete/${id}`,
+        method: "post",
+      }),
+    }),
+    deleteProductBottomBanner: builder.mutation({
+      query: (id) => ({
+        url: `admin/home/homeScreen/product-bottom-delete/${id}`,
+        method: "post",
+      }),
+    }),
+    deleteProductScrollBanner: builder.mutation({
+      query: (id) => ({
+        url: `admin/home/homeScreen/product-scroll-delete/${id}`,
         method: "post",
       }),
     }),
@@ -680,4 +740,14 @@ export const {
   useDeleteCategoryMiddleBannerMutation,
   useDeleteCategoryScrollBannerMutation,
   useDeleteCategorySideBannerMutation,
+  useGetProductTopBannerListQuery,
+  useGetProductBottomBannerListQuery,
+  useGetProductMiddleBannerListQuery,
+  useGetProductScrollBannerListQuery,
+  useGetProductSideBannerListQuery,
+  useDeleteProductBottomBannerMutation,
+  useDeleteProductMiddleBannerMutation,
+  useDeleteProductScrollBannerMutation,
+  useDeleteProductSideBannerMutation,
+  useDeleteProductTopBannerMutation,
 } = PostApi;
