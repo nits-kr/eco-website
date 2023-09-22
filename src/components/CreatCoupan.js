@@ -341,7 +341,7 @@ export default function CreatCoupan() {
                                 value={coupan.quantity}
                                 onChange={handleInputChange}
                                 required
-                                minLength="3"
+                                // minLength="3"
                               />
                             </div>
                             <div className="form-group col-4">
@@ -359,7 +359,7 @@ export default function CreatCoupan() {
                                 value={coupan.discountType}
                                 onChange={handleInputChange}
                                 required
-                                minLength="3"
+                                // minLength="3"
                               />
                             </div>
                             <div className="form-group col-4">

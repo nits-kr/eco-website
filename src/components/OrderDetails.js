@@ -53,7 +53,7 @@ function OrderDetails() {
   
   return (
     <>
-      <Sidebar />
+      <Sidebar Dash={"orders"}/>
       <div className="admin_main">
         <div className="admin_main_inner">
           <div className="admin_panel_data height_adjust">
@@ -240,7 +240,7 @@ function OrderDetails() {
                                       </span>
                                       <span>
                                         <i className="fal fa-sack-dollar me-2"></i>{" "}
-                                        Price: {details?.cartsTotal?.[0]?.[0]}
+                                        Price: {details?.cartsTotal}
                                       </span>
                                     </div>
                                   </div>

@@ -359,10 +359,7 @@ function AgentDetailsAll() {
                         <div className="col-12 design_outter_comman mb-4 shadow">
                           <div className="row comman_header justify-content-between">
                             <div className="col">
-                              <h2>
-                                {" "}
-                                 Address
-                              </h2>
+                              <h2> Address</h2>
                             </div>
                           </div>
                           <div className="row">
@@ -579,13 +576,59 @@ function AgentDetailsAll() {
                                         return (
                                           <tr key={ind}>
                                             <td> {item?._id} </td>
+                                            <td>{item?.cartsTotal}</td>
                                             <td>
-                                              {
-                                                item?.cartsTotal[0][0]
-                                                  ?.totalAfterDiscount[0]
-                                              }
+                                              {" "}
+                                              <div
+                                                className={
+                                                  item?.orderStatus ===
+                                                  "Cancelled"
+                                                    ? "text-danger"
+                                                    : item?.orderStatus ===
+                                                      "Pending"
+                                                    ? "text-warning"
+                                                    : item?.orderStatus ===
+                                                      "Packed"
+                                                    ? "text-info"
+                                                    : item?.orderStatus ===
+                                                      "Approved"
+                                                    ? "text-success"
+                                                    : item?.orderStatus ===
+                                                      "Inprogress"
+                                                    ? "text-primary"
+                                                    : item?.orderStatus ===
+                                                      "Delivered"
+                                                    ? "text-secondary"
+                                                    : "text-default"
+                                                }
+                                                style={{
+                                                  background:
+                                                    item?.orderStatus ===
+                                                    "Cancelled"
+                                                      ? "#ffe5e5"
+                                                      : item?.orderStatus ===
+                                                        "Pending"
+                                                      ? "#fff6e5"
+                                                      : item?.orderStatus ===
+                                                        "Packed"
+                                                      ? "#e5f0ff"
+                                                      : item?.orderStatus ===
+                                                        "Approved"
+                                                      ? "#e5ffe5"
+                                                      : item?.orderStatus ===
+                                                        "Inprogress"
+                                                      ? "#e5e5ff"
+                                                      : item?.orderStatus ===
+                                                        "Delivered"
+                                                      ? "#f3f3f3"
+                                                      : "#f9f9f9",
+                                                  borderRadius: "5px",
+                                                  padding: "2px 5px",
+                                                }}
+                                              >
+                                                {item?.orderStatus}
+                                              </div>{" "}
                                             </td>
-                                            <td> {item?.orderStatus} </td>
                                             <td>
                                               {item?.createdAt?.slice(0, 10)}{" "}
                                             </td>

@@ -404,7 +404,7 @@ function Banners(props) {
     setBottomBannerToShow(item?.bottomBanner[0] || null);
   };
   const handleUpdateMiddle = (item) => {
-    setMiddleBannerToShow(item?.sideBanner[0] || null);
+    setMiddleBannerToShow(item?.middleBanner[0] || null);
   };
   const handleUpdateScroll = (item) => {
     setScrollBannerToShow(item?.scrollBanner[0] || null);
@@ -750,7 +750,7 @@ function Banners(props) {
                                         <td>
                                           <img
                                             className="table_img"
-                                            src={item?.sideBanner[0]}
+                                            src={item?.middleBanner[0]}
                                             alt={
                                               item?.category_Id?.categoryName_en
                                             }

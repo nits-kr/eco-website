@@ -152,14 +152,14 @@ function ProductBanner(props) {
     // event.preventDefault();
     try {
       const data = new FormData();
-      if (subCategory.subCategoryId) {
-        data.append("subSubCategory_Id", subCategory.categoryId2);
+      if (subCategory.categoryId2) {
+        data.append("product_Id", subCategory.categoryId2);
       }
       if (subCategory.categoryId1) {
         data.append("subCategory_Id", subCategory.categoryId1);
       }
       data.append("category_Id", subCategory.categoryId);
-      data.append("categoryBanner", formData.bannerPic);
+      data.append("productBanner", formData.bannerPic);
 
       const response = await axios.post(
         "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/home/homeScreen/product-banner",
@@ -191,8 +191,8 @@ function ProductBanner(props) {
     // event.preventDefault();
     try {
       const data = new FormData();
-      if (subCategory.subCategoryId) {
-        data.append("subSubCategory_Id", subCategory.categoryId2);
+      if (subCategory.categoryId2) {
+        data.append("product_Id", subCategory.categoryId2);
       }
       if (subCategory.categoryId1) {
         data.append("subCategory_Id", subCategory.categoryId1);
@@ -218,9 +218,9 @@ function ProductBanner(props) {
         //   subCategoryPic: null,
         // });
         // subCategoryManagementList();
-        // setTimeout(() => {
-        //   window?.location?.reload();
-        // }, 500);
+        setTimeout(() => {
+          window?.location?.reload();
+        }, 500);
       }
     } catch (error) {
       console.error(error);
@@ -230,8 +230,8 @@ function ProductBanner(props) {
     // event.preventDefault();
     try {
       const data = new FormData();
-      if (subCategory.subCategoryId) {
-        data.append("subSubCategory_Id", subCategory.categoryId2);
+      if (subCategory.categoryId2) {
+        data.append("product_Id", subCategory.categoryId2);
       }
       if (subCategory.categoryId1) {
         data.append("subCategory_Id", subCategory.categoryId1);
@@ -269,8 +269,8 @@ function ProductBanner(props) {
     // event.preventDefault();
     try {
       const data = new FormData();
-      if (subCategory.subCategoryId) {
-        data.append("subSubCategory_Id", subCategory.categoryId2);
+      if (subCategory.categoryId2) {
+        data.append("product_Id", subCategory.categoryId2);
       }
       if (subCategory.categoryId1) {
         data.append("subCategory_Id", subCategory.categoryId1);
@@ -308,8 +308,8 @@ function ProductBanner(props) {
     // event.preventDefault();
     try {
       const data = new FormData();
-      if (subCategory.subCategoryId) {
-        data.append("subSubCategory_Id", subCategory.categoryId2);
+      if (subCategory.categoryId2) {
+        data.append("product_Id", subCategory.categoryId2);
       }
       if (subCategory.categoryId1) {
         data.append("subCategory_Id", subCategory.categoryId1);
@@ -379,23 +379,23 @@ function ProductBanner(props) {
     const fetchData = async () => {
       try {
         const response = await axios.post(
-          `http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/subSubCategory/selectSubCategory/${subCategory.categoryId1}`
+          `http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/home/homeScreen/category-product/${subCategory.categoryId}`
         );
-        setSubSubCategories(response.data.results.subCategoryData);
+        setSubSubCategories(response?.data?.results?.product);
         console.log(response.data);
       } catch (error) {
         console.error(error);
       }
     };
     fetchData();
-  }, [subCategory.categoryId1]);
+  }, [subCategory.categoryId]);
 
   const handleTypes = () => {
     setAddBanner(false);
   };
 
   const handleUpdate = (item) => {
-    setBannerToShow(item?.categoryBanner[0] || null);
+    setBannerToShow(item?.productBanner[0] || null);
   };
   const handleUpdateSide = (item) => {
     setSideBannerToShow(item?.sideBanner[0] || null);
@@ -550,7 +550,7 @@ function ProductBanner(props) {
                                     <td>
                                       <img
                                         className="table_img"
-                                        src={item?.categoryBanner[0]}
+                                        src={item?.productBanner[0]}
                                         alt=""
                                       />
                                     </td>
@@ -1199,7 +1199,7 @@ function ProductBanner(props) {
                   {subSubCategories?.length > 0 ? (
                     <div className="form-group col-12 mt-2">
                       <label htmlFor="" className="ms-1">
-                        Sub Sub Category
+                        Product
                       </label>
                       <select
                         className="select form-control mt-1"
@@ -1209,14 +1209,14 @@ function ProductBanner(props) {
                         value={subCategory.categoryId2}
                         onChange={handleInputChange}
                       >
-                        <option value="">Select Sub Sub Category</option>
+                        <option value="">Select Product</option>
                         {Array.isArray(subSubCategories) &&
                           subSubCategories.map((subSubCategory) => (
                             <option
                               key={subSubCategory._id}
                               value={subSubCategory._id}
                             >
-                              {subSubCategory.subSubCategoryName_en}
+                              {subSubCategory.productName_en}
                             </option>
                           ))}
                       </select>
@@ -1247,13 +1247,13 @@ function ProductBanner(props) {
                       >
                         Save
                       </button>
-                      <button
+                      {/* <button
                         type="button"
                         className="comman_btn2 table_viewbtn ms-1"
                         style={{ fontSize: "15px" }}
                       >
                         Close
-                      </button>
+                      </button> */}
                     </div>
                   </div>
                 </div>
