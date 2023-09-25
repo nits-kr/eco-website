@@ -94,7 +94,7 @@ function DashboardNew(props) {
         const totalOrderMonth = orderMonthData.reduce((sum, order) => {
           return (sum += order.cartsTotal);
         }, 0); // Initialize sum to 0
-        setMonthPrice(totalOrderMonth);
+        setMonthPrice(totalOrderMonth?.toFixed(2));
         const salesData = response?.data?.results?.salesDAy || [];
         let totalCartsTotal = 0;
         orderyearData.forEach((order) => {
