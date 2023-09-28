@@ -190,7 +190,7 @@ function Sidebar({ Dash }) {
                     Management
                   </Link>
                 </li> */}
-                {/* <li
+                <li
                   className={
                     Dash === "Home-Screen-banners"
                       ? "nav-link active"
@@ -199,10 +199,11 @@ function Sidebar({ Dash }) {
                 >
                   <Link className="" to="/Home-Screen-banners">
                     <i className="fal fa-sign-in-alt"></i>Home Screen Banners
-                    Management
+                    
                   </Link>
-                </li> */}
-                <li
+                </li>
+
+                {/* <li
                   className={
                     Dash === "Home-Screen-banners"
                       ? "nav-link active"
@@ -251,7 +252,7 @@ function Sidebar({ Dash }) {
                       </li>
                     </ul>
                   </div>
-                </li>
+                </li> */}
                 <li
                   className={
                     Dash === "notification-management"
