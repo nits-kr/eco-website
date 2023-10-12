@@ -46,29 +46,6 @@ function OrderManagement() {
     });
   };
 
-  // const handleOrderAssign = async (e, itemId, brandIds) => {
-  //   e.preventDefault();
-  //   console.log("handleSaveChanges1", itemId);
-  //   const editOffer = {
-  //     id: itemId,
-  //     deliverdBy: brandIds,
-  //   };
-  //   try {
-  //     await assignOrder(editOffer);
-  //     Swal.fire({
-  //       title: "Changes Saved",
-  //       text: "The offer has been updated successfully.",
-  //       icon: "success",
-  //       confirmButtonText: "OK",
-  //     }).then((result) => {
-  //       if (result.isConfirmed) {
-  //         window.location.reload();
-  //       }
-  //     });
-  //   } catch (error) {
-  //     // Handle error here
-  //   }
-  // };
   const handleSelectChange = async (e, itemId, index) => {
     e.preventDefault();
     handleInputChange1(e, index);
@@ -101,7 +78,7 @@ function OrderManagement() {
     const fetchData2 = async () => {
       try {
         const response = await axios.post(
-          "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/agent/agent/user-List"
+          `${process.env.REACT_APP_APIENDPOINT}admin/agent/agent/user-List`
         );
         setBrands(response?.data?.results?.list);
         console.log(response.data);
@@ -112,10 +89,8 @@ function OrderManagement() {
     fetchData2();
   }, []);
 
-  const url =
-    "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/order/order/list";
-  const url2 =
-    "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/order/order/search";
+  const url = `${process.env.REACT_APP_APIENDPOINT}admin/order/order/list`;
+  const url2 = `${process.env.REACT_APP_APIENDPOINT}admin/order/order/search`;
   useEffect(() => {
     subOrderList();
   }, []);

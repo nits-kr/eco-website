@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-//import { Link } from "react-router-dom"
 import axios from "axios";
 import { Link } from "react-router-dom";
 import ProductReports from "./ProductReports";
@@ -21,9 +20,9 @@ function ReportManagement() {
   const fetchStaffList = async () => {
     try {
       const response = await axios.post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/reporter/reporter/list"
+        `${process.env.REACT_APP_APIENDPOINT}admin/reporter/reporter/list`
       );
-      console.log("API Response:", response.data); // Log the response
+      console.log("API Response:", response.data);
       if (response.data.error === false) {
         setProductList(response.data.results.list);
       } else {
@@ -42,7 +41,7 @@ function ReportManagement() {
   const fetchStaffList2 = async () => {
     try {
       const response = await axios.post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/user/user/user/user-reports-list"
+        `${process.env.REACT_APP_APIENDPOINT}user/user/user/user-reports-list`
       );
       setCustomerList(response?.data?.results?.reportsList?.reverse());
     } catch (error) {
@@ -56,7 +55,7 @@ function ReportManagement() {
   const fetchStaffList3 = async () => {
     try {
       const response = await axios.post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/user/user/user/order-reports-list"
+        `${process.env.REACT_APP_APIENDPOINT}user/user/user/order-reports-list`
       );
       setOrderList(response?.data?.results?.reportsList?.reverse());
     } catch (error) {

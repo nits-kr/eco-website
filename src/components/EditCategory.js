@@ -31,13 +31,8 @@ function EditCategory(props) {
     formData.append("categoryPic", category.uploadImage);
     axios
       .patch(
-        `http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/category/update/${props.newCategory.id}`,
+        `${process.env.REACT_APP_APIENDPOINT}admin/category/category/update/${props.newCategory.id}`,
         formData
-        // {
-        //   categoryName_en: category.nameEn,
-        //   categoryName_ar: category.nameAr
-
-        // }
       )
       .then((response) => {
         console.log(response);

@@ -4,7 +4,6 @@ import Swal from "sweetalert2";
 import Sidebar from "./Sidebar";
 
 export default function HelpQuestion() {
-  // const [questions, setQuestions] = useState([]);
   const [questions, setQuestions] = useState({
     question: "",
     question1: "",
@@ -19,7 +18,7 @@ export default function HelpQuestion() {
     event.preventDefault();
     axios
       .post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/help/help/createQuestion",
+        `${process.env.REACT_APP_APIENDPOINT}admin/help/help/createQuestion`,
         {
           Question: questions.question,
           Answer: questions.message,

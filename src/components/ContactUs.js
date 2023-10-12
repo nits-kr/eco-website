@@ -23,17 +23,15 @@ function ContactUs() {
   const [viewContact, setViewContact] = useState("");
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
-  const url =
-    "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/contact/contact/contactList";
-  const url2 =
-    "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/order/order/search";
+  const url = `${process.env.REACT_APP_APIENDPOINT}admin/contact/contact/contactList`;
+  const url2 = `${process.env.REACT_APP_APIENDPOINT}admin/order/order/search`;
   useEffect(() => {
     handleView();
   }, [itemId]);
 
   const handleView = async (e) => {
     const { data } = await axios.post(
-      `http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/contact/contact/contactView/${itemId}`
+      `${process.env.REACT_APP_APIENDPOINT}admin/contact/contact/contactView/${itemId}`
     );
     setViewContact(data?.results?.contactData);
   };

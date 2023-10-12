@@ -33,7 +33,7 @@ function EditAttribute(props) {
     event.preventDefault();
     await axios
       .patch(
-        `http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/attribute/attributeUpdate/${props.newCategory.id}`,
+        `${process.env.REACT_APP_APIENDPOINT}admin/category/attribute/attributeUpdate/${props.newCategory.id}`,
         {
           attributeName_en: editAttributes.nameEn,
           attributeName_ar: editAttributes.nameAr,
@@ -66,7 +66,7 @@ function EditAttribute(props) {
     const fetchData = async () => {
       try {
         const response = await axios.post(
-          "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/category/list"
+          `${process.env.REACT_APP_APIENDPOINT}admin/category/category/list`
         );
         setCategories(response.data.results.list);
         console.log(response.data);
@@ -80,7 +80,7 @@ function EditAttribute(props) {
     const fetchData = async () => {
       try {
         const response = await axios.post(
-          `http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/subCategory/selectCategory/${editAttributes.categoryId}`
+          `${process.env.REACT_APP_APIENDPOINT}admin/category/subCategory/selectCategory/${editAttributes.categoryId}`
         );
         setSubCategories(response.data.results.categoryData);
         console.log(response.data);
@@ -95,7 +95,7 @@ function EditAttribute(props) {
     const fetchData = async () => {
       try {
         const response = await axios.post(
-          `http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/subSubCategory/selectSubCategory/${editAttributes.categoryId1}`
+          `${process.env.REACT_APP_APIENDPOINT}admin/category/subSubCategory/selectSubCategory/${editAttributes.categoryId1}`
         );
         setSubSubCategories(response.data.results.subCategoryData);
         console.log(response.data);

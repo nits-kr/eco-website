@@ -24,10 +24,8 @@ function Attribute() {
     categoryId1: "",
     categoryId2: "",
   });
-  const url =
-    "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/attribute/attributeList";
-  const url2 =
-    "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/attribute/attributeSearch";
+  const url = `${process.env.REACT_APP_APIENDPOINT}admin/category/attribute/attributeList`;
+  const url2 = `${process.env.REACT_APP_APIENDPOINT}admin/category/attribute/attributeSearch`;
 
   useEffect(() => {
     subAttributeManagementList();
@@ -175,7 +173,7 @@ function Attribute() {
       }
 
       const response = await axios.post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/attribute/createAttribute",
+        `${process.env.REACT_APP_APIENDPOINT}admin/category/attribute/createAttribute`,
         postData
       );
 
@@ -210,7 +208,7 @@ function Attribute() {
     const fetchData = async () => {
       try {
         const response = await axios.post(
-          "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/category/list"
+          `${process.env.REACT_APP_APIENDPOINT}admin/category/category/list`
         );
         setCategories(response.data.results.list);
         console.log(response.data);
@@ -225,7 +223,7 @@ function Attribute() {
     const fetchData = async () => {
       try {
         const response = await axios.post(
-          `http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/subCategory/selectCategory/${attributes.categoryId}`
+          `${process.env.REACT_APP_APIENDPOINT}admin/category/subCategory/selectCategory/${attributes.categoryId}`
         );
         setSubCategories(response.data.results.categoryData);
         console.log(response.data);
@@ -240,7 +238,7 @@ function Attribute() {
     const fetchData = async () => {
       try {
         const response = await axios.post(
-          `http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/subSubCategory/selectSubCategory/${attributes.categoryId1}`
+          `${process.env.REACT_APP_APIENDPOINT}admin/category/subSubCategory/selectSubCategory/${attributes.categoryId1}`
         );
         setSubSubCategories(response.data.results.subCategoryData);
         console.log(response.data.results.subCategoryData);
@@ -254,7 +252,7 @@ function Attribute() {
   const handleSave = async () => {
     await axios
       .post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/attribute/attributeList"
+        `${process.env.REACT_APP_APIENDPOINT}admin/category/attribute/attributeList`
       )
       .then((response) => {
         setAttributesList(response?.data?.results?.list.reverse());

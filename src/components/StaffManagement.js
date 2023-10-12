@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import EditStaffMember from "./EditStaffMember";
 import axios from "axios";
 import Swal from "sweetalert2";
 import Sidebar from "./Sidebar";
@@ -8,7 +7,6 @@ import { useUpdateStaffMutation } from "../services/Post";
 import { useGetStaffListQuery } from "../services/Post";
 
 function StaffManagement() {
-  const StaffListItems = useGetStaffListQuery();
   const [updateStaff] = useUpdateStaffMutation();
   const [staffList, setStaffList] = useState([]);
   const [startDate, setStartDate] = useState("");
@@ -20,13 +18,10 @@ function StaffManagement() {
   const [staffName2, setStaffName2] = useState("");
   const [module2, setModule2] = useState("");
   const [email2, setEmail2] = useState("");
-  const [password2, setPassword2] = useState("");
-  const [confirmPassword2, setConfirmPassword2] = useState("");
+
   const [staffName, setStaffName] = useState("");
   const [module, setModule] = useState("");
-  // const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+
   const [staff, setStaff] = useState({
     nameEn: "",
     email: "",
@@ -38,10 +33,8 @@ function StaffManagement() {
 
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
-  const url =
-    "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/staff/staff/list";
-  const url2 =
-    "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/staff/staff/staffSearch";
+  const url = `${process.env.REACT_APP_APIENDPOINT}admin/staff/staff/list`;
+  const url2 = `${process.env.REACT_APP_APIENDPOINT}admin/staff/staff/staffSearch`;
   useEffect(() => {
     subStaffList();
   }, []);
@@ -126,7 +119,6 @@ function StaffManagement() {
               setStaffList(list);
             }
           });
-          // setStaffList(list);
         } else {
           setStaffList([]);
           Swal.fire({
@@ -161,7 +153,6 @@ function StaffManagement() {
         setStaffList([]);
         Swal.fire({
           title: "Error!",
-          // text: error.response.data,
           text: "Error searching for products. Data is not found",
           icon: "error",
           confirmButtonText: "OK",
@@ -170,7 +161,6 @@ function StaffManagement() {
             subStaffList();
           }
         });
-        // throw new Error("Error searching for products. Data is not found.");
       } else {
         setStaffList(
           searchQuery !== "" ? results?.staffData : results?.list?.reverse()
@@ -211,7 +201,7 @@ function StaffManagement() {
     event.preventDefault();
     try {
       const response = await axios.post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/staff/staff/createStaff",
+        `${process.env.REACT_APP_APIENDPOINT}admin/staff/staff/createStaff`,
         {
           staffName: staff.nameEn,
           userEmail: staff.email,
@@ -268,8 +258,6 @@ function StaffManagement() {
     setStaffName2(item?.staffName || "");
     setModule2(item?.modules[0] || "");
     setEmail2(item?.userEmail || "");
-    setPassword2(item?.password || "");
-    setConfirmPassword2(item?.confirm_password || "");
   };
 
   return (

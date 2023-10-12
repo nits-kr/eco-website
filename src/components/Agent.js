@@ -25,10 +25,8 @@ function Agent(props) {
   const [startDate, setStartDate] = useState("");
   const [startDate1, setStartDate1] = useState("");
   const [endDate, setEndDate] = useState("");
-  const url =
-    "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/agent/agent/user-List";
-  const url2 =
-    "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/agent/agent/search-user";
+  const url = `${process.env.REACT_APP_APIENDPOINT}admin/agent/agent/user-List`;
+  const url2 = `${process.env.REACT_APP_APIENDPOINT}admin/agent/agent/search-user`;
   useEffect(() => {
     agentManagementList();
   }, []);
@@ -144,101 +142,101 @@ function Agent(props) {
       <div className="admin_main">
         <div className="admin_main_inner">
           <div className="admin_panel_data height_adjust">
-              <div className="row dashboard_part justify-content-center">
-                <div className="col-12">
-                  <div className="col-9 mb-4">
-                    <div className="main_head">
-                      {" "}
-                      <strong>Agent List</strong>{" "}
-                    </div>
+            <div className="row dashboard_part justify-content-center">
+              <div className="col-12">
+                <div className="col-9 mb-4">
+                  <div className="main_head">
+                    {" "}
+                    <strong>Agent List</strong>{" "}
                   </div>
-                  <span
-                    className="col-auto d-flex "
-                    style={{
-                      justifyContent: "flex-end",
-                      marginTop: "-55px",
-                      marginBottom: "15px",
-                    }}
+                </div>
+                <span
+                  className="col-auto d-flex "
+                  style={{
+                    justifyContent: "flex-end",
+                    marginTop: "-55px",
+                    marginBottom: "15px",
+                  }}
+                >
+                  <Link
+                    to="#"
+                    className="btn btn-secondary "
+                    style={{ marginRight: "10px" }}
                   >
-                    <Link
-                      to="#"
-                      className="btn btn-secondary "
-                      style={{ marginRight: "10px" }}
-                    >
-                      <FontAwesomeIcon icon={faDownload} /> Import
-                    </Link>
-                    <Link
-                      to="#"
-                      className="btn btn-secondary "
-                      style={{ marginRight: "10px" }}
-                    >
-                      <FontAwesomeIcon icon={faFileExport} /> Export
-                    </Link>
-                    <Link
-                      to="/agents-details"
-                      className="btn btn-primary"
-                      style={{ marginRight: "24px" }}
-                    >
-                      + Add New Agent
-                    </Link>
-                  </span>
-                  <div className="row mx-0">
-                    <div className="col-12 design_outter_comman shadow">
-                      <div className="row comman_header justify-content-between">
-                        <div className="col">
-                          {/* <h2>Product List</h2> */}
-                          <div className="row-md-2 d-flex">
-                            <div
-                              className="dataTables_length "
-                              id="myDataTable_length"
+                    <FontAwesomeIcon icon={faDownload} /> Import
+                  </Link>
+                  <Link
+                    to="#"
+                    className="btn btn-secondary "
+                    style={{ marginRight: "10px" }}
+                  >
+                    <FontAwesomeIcon icon={faFileExport} /> Export
+                  </Link>
+                  <Link
+                    to="/agents-details"
+                    className="btn btn-primary"
+                    style={{ marginRight: "24px" }}
+                  >
+                    + Add New Agent
+                  </Link>
+                </span>
+                <div className="row mx-0">
+                  <div className="col-12 design_outter_comman shadow">
+                    <div className="row comman_header justify-content-between">
+                      <div className="col">
+                        {/* <h2>Product List</h2> */}
+                        <div className="row-md-2 d-flex">
+                          <div
+                            className="dataTables_length "
+                            id="myDataTable_length"
+                          >
+                            <label
+                              htmlFor="myDataTable_length"
+                              style={{ marginRight: "5px", color: "white" }}
                             >
-                              <label
-                                htmlFor="myDataTable_length"
-                                style={{ marginRight: "5px", color: "white" }}
+                              <strong>Filter By: </strong>
+                            </label>
+                            <div style={{ display: "inline-block" }}>
+                              <select
+                                name="myDataTable_length"
+                                aria-controls="myDataTable"
+                                className="form-select form-select-sm"
+                                fdprocessedid="lqxz4"
+                                style={{ width: "auto", height: "38px" }}
                               >
-                                <strong>Filter By: </strong>
-                              </label>
-                              <div style={{ display: "inline-block" }}>
-                                <select
-                                  name="myDataTable_length"
-                                  aria-controls="myDataTable"
-                                  className="form-select form-select-sm"
-                                  fdprocessedid="lqxz4"
-                                  style={{ width: "auto", height: "38px" }}
-                                >
-                                  <option value={10}>All</option>
-                                  <option value={25}>Action</option>
-                                  <option value={50}>Another Action</option>
-                                  <option value={100}>Something else</option>
-                                </select>
-                              </div>
+                                <option value={10}>All</option>
+                                <option value={25}>Action</option>
+                                <option value={50}>Another Action</option>
+                                <option value={100}>Something else</option>
+                              </select>
                             </div>
                           </div>
                         </div>
-                        <div className="col-3">
-                          <form
-                            className="form-design"
-                            action=""
-                            onSubmit={handleSearch}
-                          >
-                            <div className="form-group mb-0 position-relative icons_set">
-                              <input
-                                type="text"
-                                className="form-control"
-                                placeholder="Search"
-                                name="name"
-                                id="name"
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                              />
-                              <i
-                                className="fa fa-search"
-                                onClick={handleSearch1}
-                              ></i>
-                            </div>
-                          </form>
-                        </div>
-                        {/* <div className="col-auto">
+                      </div>
+                      <div className="col-3">
+                        <form
+                          className="form-design"
+                          action=""
+                          onSubmit={handleSearch}
+                        >
+                          <div className="form-group mb-0 position-relative icons_set">
+                            <input
+                              type="text"
+                              className="form-control"
+                              placeholder="Search"
+                              name="name"
+                              id="name"
+                              value={searchQuery}
+                              onChange={(e) => setSearchQuery(e.target.value)}
+                            />
+                            <i
+                              className="fa fa-search"
+                              onClick={handleSearch1}
+                            ></i>
+                          </div>
+                        </form>
+                      </div>
+                      {/* <div className="col-auto">
                         <input
                           type="date"
                           className="custom_date"
@@ -246,119 +244,116 @@ function Agent(props) {
                           onChange={(e) => setStartDate1(e.target.value)}
                         />
                       </div> */}
+                    </div>
+                    <form
+                      className="form-design py-4 px-3 help-support-form row align-items-end justify-content-between"
+                      action=""
+                      onSubmit={handleSearch}
+                    >
+                      <div className="form-group mb-0 col-5">
+                        <label htmlFor="">From</label>
+                        <input
+                          type="date"
+                          className="form-control"
+                          id="startDate"
+                          value={startDate}
+                          onChange={(e) => setStartDate(e.target.value)}
+                        />
                       </div>
-                      <form
-                        className="form-design py-4 px-3 help-support-form row align-items-end justify-content-between"
-                        action=""
-                        onSubmit={handleSearch}
-                      >
-                        <div className="form-group mb-0 col-5">
-                          <label htmlFor="">From</label>
-                          <input
-                            type="date"
-                            className="form-control"
-                            id="startDate"
-                            value={startDate}
-                            onChange={(e) => setStartDate(e.target.value)}
-                          />
-                        </div>
-                        <div className="form-group mb-0 col-5">
-                          <label htmlFor="">To</label>
-                          <input
-                            type="date"
-                            className="form-control"
-                            id="endDate"
-                            value={endDate}
-                            onChange={(e) => setEndDate(e.target.value)}
-                          />
-                        </div>
-                        <div className="form-group mb-0 col-auto">
-                          <button
-                            className="comman_btn2"
-                            disabled={startDate > endDate}
-                          >
-                            Search
-                          </button>
-                        </div>
-                      </form>
-                      {loading ? (
-                        <Spinner />
-                      ) : (
-                        <div className="row">
-                          <div className="col-12 comman_table_design px-0">
-                            <div className="table-responsive">
-                              <table className="table mb-0">
-                                <thead>
-                                  <tr>
-                                    <th>Name</th>
-                                    <th>Email</th>
-                                    <th>Mobile Number</th>
-                                    <th>Status</th>
-                                    <th>Online Status</th>
-                                    <th>Registered At</th>
-                                    <th>Action</th>
+                      <div className="form-group mb-0 col-5">
+                        <label htmlFor="">To</label>
+                        <input
+                          type="date"
+                          className="form-control"
+                          id="endDate"
+                          value={endDate}
+                          onChange={(e) => setEndDate(e.target.value)}
+                        />
+                      </div>
+                      <div className="form-group mb-0 col-auto">
+                        <button
+                          className="comman_btn2"
+                          disabled={startDate > endDate}
+                        >
+                          Search
+                        </button>
+                      </div>
+                    </form>
+                    {loading ? (
+                      <Spinner />
+                    ) : (
+                      <div className="row">
+                        <div className="col-12 comman_table_design px-0">
+                          <div className="table-responsive">
+                            <table className="table mb-0">
+                              <thead>
+                                <tr>
+                                  <th>Name</th>
+                                  <th>Email</th>
+                                  <th>Mobile Number</th>
+                                  <th>Status</th>
+                                  <th>Online Status</th>
+                                  <th>Registered At</th>
+                                  <th>Action</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {(agentList || [])?.map((agent, index) => (
+                                  <tr key={index}>
+                                    <td> {agent.name}</td>
+                                    <td> {agent.Email} </td>
+                                    {/* <td> {order?.createdAt.slice(0,10)} </td> */}
+                                    <td>{agent.mobileNumber}</td>
+                                    <td> {agent.status} </td>
+                                    <td> {agent.onlineStatus} </td>
+                                    <td> {agent?.createdAt?.slice(0, 10)} </td>
+                                    <td>
+                                      <Link
+                                        className="comman_btn table_viewbtn"
+                                        to={`/agents-information/${agent._id}`}
+                                        onClick={() => viewAgent(agent._id)}
+                                      >
+                                        <FontAwesomeIcon icon={faEye} />
+                                      </Link>
+                                      <Link
+                                        className="comman_btn2 table_viewbtn ms-2"
+                                        to="#"
+                                        onClick={() => {
+                                          Swal.fire({
+                                            title: "Are you sure?",
+                                            text: "You won't be able to revert this!",
+                                            icon: "warning",
+                                            showCancelButton: true,
+                                            confirmButtonColor: "#3085d6",
+                                            cancelButtonColor: "#d33",
+                                            confirmButtonText:
+                                              "Yes, delete it!",
+                                          }).then((result) => {
+                                            if (result.isConfirmed) {
+                                              deleteAgent(agent?._id);
+                                              Swal.fire(
+                                                "Deleted!",
+                                                `${agent?.name}  item has been deleted.`,
+                                                "success"
+                                              ).then(() => {
+                                                agentManagementList();
+                                              });
+                                            }
+                                          });
+                                        }}
+                                      >
+                                        <FontAwesomeIcon icon={faTrash} />
+                                      </Link>
+                                    </td>
                                   </tr>
-                                </thead>
-                                <tbody>
-                                  {(agentList || [])?.map((agent, index) => (
-                                    <tr key={index}>
-                                      <td> {agent.name}</td>
-                                      <td> {agent.Email} </td>
-                                      {/* <td> {order?.createdAt.slice(0,10)} </td> */}
-                                      <td>{agent.mobileNumber}</td>
-                                      <td> {agent.status} </td>
-                                      <td> {agent.onlineStatus} </td>
-                                      <td>
-                                        {" "}
-                                        {agent?.createdAt?.slice(0, 10)}{" "}
-                                      </td>
-                                      <td>
-                                        <Link
-                                          className="comman_btn table_viewbtn"
-                                          to={`/agents-information/${agent._id}`}
-                                          onClick={() => viewAgent(agent._id)}
-                                        >
-                                          <FontAwesomeIcon icon={faEye} />
-                                        </Link>
-                                        <Link
-                                          className="comman_btn2 table_viewbtn ms-2"
-                                          to="#"
-                                          onClick={() => {
-                                            Swal.fire({
-                                              title: "Are you sure?",
-                                              text: "You won't be able to revert this!",
-                                              icon: "warning",
-                                              showCancelButton: true,
-                                              confirmButtonColor: "#3085d6",
-                                              cancelButtonColor: "#d33",
-                                              confirmButtonText:
-                                                "Yes, delete it!",
-                                            }).then((result) => {
-                                              if (result.isConfirmed) {
-                                                deleteAgent(agent?._id);
-                                                Swal.fire(
-                                                  "Deleted!",
-                                                  `${agent?.name}  item has been deleted.`,
-                                                  "success"
-                                                ).then(() => {
-                                                  agentManagementList();
-                                                });
-                                              }
-                                            });
-                                          }}
-                                        >
-                                          <FontAwesomeIcon icon={faTrash} />
-                                        </Link>
-                                      </td>
-                                    </tr>
-                                  ))}
-                                </tbody>
-                              </table>
-                            </div>
+                                ))}
+                              </tbody>
+                            </table>
                           </div>
                         </div>
-                      )}
-                      {/* <div className="row d-flex mt-2">
+                      </div>
+                    )}
+                    {/* <div className="row d-flex mt-2">
                         <div className="col-sm-12 col-md-3">
                           <div
                             className="dataTables_info"
@@ -421,10 +416,10 @@ function Agent(props) {
                           </div>
                         </div>
                       </div> */}
-                    </div>
                   </div>
                 </div>
               </div>
+            </div>
           </div>
         </div>
       </div>

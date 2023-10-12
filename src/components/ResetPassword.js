@@ -32,13 +32,10 @@ function ResetPassword() {
       event.target[2].value +
       event.target[3].value;
     axios
-      .post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/user/verifyOtp",
-        {
-          userEmail: userEmail,
-          otp: otp,
-        }
-      )
+      .post(`${process.env.REACT_APP_APIENDPOINT}admin/user/verifyOtp`, {
+        userEmail: userEmail,
+        otp: otp,
+      })
       .then((response) => {
         console.log(response.data);
         Swal.fire({
@@ -89,7 +86,7 @@ function ResetPassword() {
     event.preventDefault();
     try {
       await axios.post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/user/reset-password",
+        `${process.env.REACT_APP_APIENDPOINT}admin/user/reset-password`,
         {
           password: password,
           confirmPassword: confirmPassword,

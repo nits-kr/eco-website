@@ -34,9 +34,7 @@ function ProductManagementEdit(props) {
 
   useEffect(() => {
     axios
-      .post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/product/productList"
-      )
+      .post(`${process.env.REACT_APP_APIENDPOINT}admin/product/productList`)
       .then((response) => {
         const products = response?.data?.results?.list.reverse();
         setProductList(products);
@@ -58,7 +56,7 @@ function ProductManagementEdit(props) {
     const fetchData = async () => {
       try {
         const response = await axios.post(
-          "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/subSubCategory/selectCategory"
+          `${process.env.REACT_APP_APIENDPOINT}admin/category/subSubCategory/selectCategory`
         );
         setCategories(response.data.results.categoryData);
         console.log(response.data);
@@ -72,7 +70,7 @@ function ProductManagementEdit(props) {
     const fetchData = async () => {
       try {
         const response = await axios.post(
-          "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/subSubCategory/selectSubCategory"
+          `${process.env.REACT_APP_APIENDPOINT}admin/category/subSubCategory/selectSubCategory`
         );
         setSubCategories(response.data.results.subCategoryData);
         console.log(response.data);
@@ -86,7 +84,7 @@ function ProductManagementEdit(props) {
     const fetchData2 = async () => {
       try {
         const response = await axios.post(
-          "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/product/brand-list"
+          `${process.env.REACT_APP_APIENDPOINT}admin/product/brand-list`
         );
         setBrands(response.data.results.list);
         console.log(response.data);
@@ -115,7 +113,6 @@ function ProductManagementEdit(props) {
     const data = new FormData();
     data.append("productName_en", formData.productNameEn);
     data.append("productName_ar", formData.productNameAr);
-    // data.append("slug", formData.slug);
     data.append("Description", formData.DescriptionEn);
     data.append("Description_ar", formData.DescriptionAr);
     data.append("weight", formData.weight);
@@ -141,7 +138,6 @@ function ProductManagementEdit(props) {
     data.append("Tags_ar", formData.TagsAr);
     data.append("category_Id", subSubCategory.categoryId);
     data.append("Subcategory_Id", subSubCategory.categoryId1);
-    // data.append("brand_Id", subSubCategory.brandId1);
     if (subSubCategory.brandId1) {
       data.append("brand_Id", subSubCategory.brandId1);
     }
@@ -150,7 +146,7 @@ function ProductManagementEdit(props) {
     });
     axios
       .patch(
-        `http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/product/updateProduct/${id}`,
+        `${process.env.REACT_APP_APIENDPOINT}admin/product/updateProduct/${id}`,
         data
       )
       .then((response) => {

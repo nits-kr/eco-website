@@ -50,10 +50,10 @@ function OrderDetails() {
       link.click();
     }
   };
-  
+
   return (
     <>
-      <Sidebar Dash={"orders"}/>
+      <Sidebar Dash={"orders"} />
       <div className="admin_main">
         <div className="admin_main_inner">
           <div className="admin_panel_data height_adjust">
@@ -271,9 +271,7 @@ function OrderDetails() {
                               className="form-control"
                               name="productName"
                               id="productName"
-                              defaultValue={
-                                details?.address_Id?.fullName
-                              }
+                              defaultValue={details?.address_Id?.fullName}
                               // defaultValue={
                               //   details?.cartsTotal?.[0]?.[0]?.userName
                               // }

@@ -35,7 +35,7 @@ function Informations(props) {
     props.setProgress(10);
     setLoading(true);
     const { data } = await axios.post(
-      "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/information/info/list"
+      `${process.env.REACT_APP_APIENDPOINT}admin/information/info/list`
     );
     setInformationListItems(data.results.list.reverse());
     setTitle(data?.results?.list[0]?.title);
@@ -48,16 +48,13 @@ function Informations(props) {
   console.log("dscription", description);
 
   const handleUpdate = async (e) => {
-    // alert(itemId);
     e.preventDefault();
     await axios
       .patch(
-        `http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/information/info/update/${itemId}`,
+        `${process.env.REACT_APP_APIENDPOINT}admin/information/info/update/${itemId}`,
         {
           title_en: titleEn,
           Description_en: descriptionEn,
-          // title_ar: titleAr,
-          // Description_ar: descriptionAr,
         }
       )
       .then((response) => {
@@ -81,14 +78,11 @@ function Informations(props) {
       });
   };
   const handleUpdate1 = async (e) => {
-    // alert(itemId);
     e.preventDefault();
     await axios
       .patch(
-        `http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/information/info/update/${itemId}`,
+        `${process.env.REACT_APP_APIENDPOINT}admin/information/info/update/${itemId}`,
         {
-          // title_en: titleEn,
-          // Description_en: descriptionEn,
           title_ar: titleAr,
           Description_ar: descriptionAr,
         }
@@ -155,7 +149,7 @@ function Informations(props) {
                   data-bs-toggle="modal"
                   data-bs-target="#staticBackdrop5"
                 >
-                 + {" "} Create Information
+                  + Create Information
                 </Link>
               </div>
               {loading ? (

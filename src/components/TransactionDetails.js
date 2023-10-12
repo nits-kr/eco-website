@@ -1,14 +1,14 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 // import { useGetTransactionListDetailsQuery } from "../services/Post";
 import { useGetTransactionListDetailsMutation } from "../services/Post";
 import Sidebar from "./Sidebar";
 function TransactionDetails() {
-    const transactionDetail = useGetTransactionListDetailsMutation();
-    console.log("transactionDetail", transactionDetail);
+  const transactionDetail = useGetTransactionListDetailsMutation();
+  console.log("transactionDetail", transactionDetail);
   return (
     <>
-    <Sidebar/>
+      <Sidebar />
       <div className="admin_main">
         <div className="admin_main_inner">
           <div className="admin_panel_data height_adjust">

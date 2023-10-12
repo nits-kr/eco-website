@@ -80,9 +80,7 @@ function ProductList2(props) {
     props.setProgress(10);
     setLoading(true);
     axios
-      .post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/product/productList"
-      )
+      .post(`${process.env.REACT_APP_APIENDPOINT}admin/product/productList`)
       .then((response) => {
         setProductList(response?.data?.results?.list.reverse());
         console.log(response.data);
@@ -92,9 +90,7 @@ function ProductList2(props) {
   }, []);
   const fetchProductList = () => {
     axios
-      .post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/product/productList"
-      )
+      .post(`${process.env.REACT_APP_APIENDPOINT}admin/product/productList`)
       .then((response) => {
         setProductList(response?.data?.results?.list.reverse());
         console.log(response.data);
@@ -103,9 +99,6 @@ function ProductList2(props) {
 
   const handleItem = (item) => {
     setProductName2(item?.productName || "");
-    // setTitle2(item?.title || "");
-    // setCode2(item?.code || "");
-    // setDiscount2(item?.Discount || "");
   };
   const handleSaveChanges1 = async (e) => {
     e.preventDefault();
@@ -116,8 +109,6 @@ function ProductList2(props) {
     };
     try {
       await editProductList(editOffer);
-      // setProductList.refetch();
-      // window.location.reload();
       Swal.fire({
         title: "Changes Saved",
         text: "The offer has been updated successfully.",
@@ -136,7 +127,7 @@ function ProductList2(props) {
     if (!startDate1) return;
     try {
       const { data } = await axios.post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/product/productList",
+        `${process.env.REACT_APP_APIENDPOINT}admin/product/productList`,
         {
           startDate1,
         }
@@ -167,13 +158,10 @@ function ProductList2(props) {
   const handleSearch = (e) => {
     e.preventDefault();
     axios
-      .post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/product/productList",
-        {
-          startDate,
-          endDate,
-        }
-      )
+      .post(`${process.env.REACT_APP_APIENDPOINT}admin/product/productList`, {
+        startDate,
+        endDate,
+      })
       .then((response) => {
         const filteredData = response?.data?.results?.list?.filter(
           (data) =>

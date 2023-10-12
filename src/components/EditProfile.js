@@ -35,7 +35,7 @@ function EditProfile() {
     data.append("profile_Pic", formData.uploadImage);
     axios
       .post(
-        `http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/user/editProfile/${storedId}`,
+        `${process.env.REACT_APP_APIENDPOINT}admin/user/editProfile/${storedId}`,
         data
       )
       .then((response) => {
@@ -158,7 +158,10 @@ function EditProfile() {
                             ) : storedPic ? (
                               <img src={storedPic} alt="" />
                             ) : (
-                              <img src="../assets/img/profile_img1.jpg" alt="" />
+                              <img
+                                src="../assets/img/profile_img1.jpg"
+                                alt=""
+                              />
                             )}
                           </div>
                           <div className="p-image">

@@ -50,10 +50,8 @@ function SubCategory(props) {
   const handleFileChange1 = (e, key) => {
     setCategory({ ...category, uploadImage: e.target.files[0] });
   };
-  const url =
-    "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/subCategory/SubCategoryList";
-  const url2 =
-    "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/subCategory/subCategorySearch";
+  const url = `${process.env.REACT_APP_APIENDPOINT}admin/category/subCategory/SubCategoryList`;
+  const url2 = `${process.env.REACT_APP_APIENDPOINT}admin/category/subCategory/subCategorySearch`;
   useEffect(() => {
     subCategoryManagementList();
   }, []);
@@ -184,7 +182,7 @@ function SubCategory(props) {
       data.append("subCategoryPic", subCategory.subCategoryPic);
 
       const response = await axios.post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/subCategory/createSubCategory",
+        `${process.env.REACT_APP_APIENDPOINT}admin/category/subCategory/createSubCategory`,
         data
       );
 
@@ -217,7 +215,7 @@ function SubCategory(props) {
   const fetchData = async () => {
     try {
       const response = await axios.post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/category/list"
+        `${process.env.REACT_APP_APIENDPOINT}admin/category/category/list`
       );
       setCategories(response?.data?.results?.list);
       console.log(response?.data?.results?.list);
@@ -229,28 +227,21 @@ function SubCategory(props) {
   const handleSaveChanges1 = (event) => {
     event.preventDefault();
     const formData = new FormData();
-    // formData.append("subCategoryName_en", category.nameEn);
-    // formData.append("subCategoryName_ar", category.nameAr);
-    // formData.append("subCategoryPic", category.uploadImage);
-    // formData.append("category_Id", category.categoryId1);
     if (category.nameEn) {
       formData.append("subCategoryName_en", category.nameEn);
     }
-
     if (category.nameAr) {
       formData.append("subCategoryName_ar", category.nameAr);
     }
-
     if (category.uploadImage) {
       formData.append("subCategoryPic", category.uploadImage);
     }
-
     if (category.categoryId1) {
       formData.append("category_Id", category.categoryId1);
     }
     axios
       .patch(
-        `http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/subCategory/subCategoryUpdate/${itemId}`,
+        `${process.env.REACT_APP_APIENDPOINT}admin/category/subCategory/subCategoryUpdate/${itemId}`,
         formData
       )
       .then((response) => {

@@ -22,7 +22,7 @@ function EditValues(props) {
     event.preventDefault();
     await axios
       .post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/attribute/createAttribute",
+        `${process.env.REACT_APP_APIENDPOINT}admin/category/attribute/createAttribute`,
         { name: category }
       )
       .then((response) => {
@@ -39,7 +39,7 @@ function EditValues(props) {
   const fetchData = async () => {
     try {
       const response = await axios.post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/attribute/selectCategory"
+        `${process.env.REACT_APP_APIENDPOINT}admin/category/attribute/selectCategory`
       );
       setCategories(response.data.results.categoryData);
       console.log(response.data);
@@ -52,7 +52,7 @@ function EditValues(props) {
     const fetchData = async () => {
       try {
         const response = await axios.post(
-          "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/attribute/selectSubcategory"
+          `${process.env.REACT_APP_APIENDPOINT}admin/category/attribute/selectSubcategory`
         );
         setSubCategories(response.data.results.subCategoryData);
         console.log(response.data);
@@ -67,7 +67,7 @@ function EditValues(props) {
     const fetchData = async () => {
       try {
         const response = await axios.post(
-          "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/attribute/selectSubSubCategory"
+          `${process.env.REACT_APP_APIENDPOINT}admin/category/attribute/selectSubSubCategory`
         );
         setSubSubCategories(response.data.results.subSubCategoryData);
         console.log(response.data);
@@ -82,7 +82,7 @@ function EditValues(props) {
     const fetchData = async () => {
       try {
         const response = await axios.post(
-          "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/values/selectAttribute"
+          `${process.env.REACT_APP_APIENDPOINT}admin/category/values/selectAttribute`
         );
         setAttributes(response.data.results.attributeCategoryData);
         console.log(response.data);
@@ -100,7 +100,7 @@ function EditValues(props) {
 
     axios
       .patch(
-        `http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/subCategory/subCategoryUpdate/${props.newCategory.id}`,
+        `${process.env.REACT_APP_APIENDPOINT}admin/category/subCategory/subCategoryUpdate/${props.newCategory.id}`,
         {
           subCategoryName: category.nameEn,
         }

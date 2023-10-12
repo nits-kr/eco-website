@@ -1,15 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import SubCategory from "../SubCategory";
-import SubSubCategory from "../SubSubCategory";
-import Attribute from "../Attribute";
-//import EditValues from "./EditValues";
-import EditCategory from "../EditCategory";
-import Value from "../Value";
-import EditSubCategory from "../EditSubCategory";
-//import EditSubSubCategory from "./EditSubSubCategory";
-import EditAttribute from "../EditAttribute";
 import Swal from "sweetalert2";
 import Sidebar from "../Sidebar";
 import Spinner from "../Spinner";
@@ -22,8 +13,6 @@ function BrandManagement(props) {
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
   const [updateStatus] = useCatogaryStatusMutation();
-  const [deleteCategory, response] = useDeleteCategoryListMutation();
-  const [editBrand] = useUpdateBrandMutation();
   const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [startDate1, setStartDate1] = useState("");
@@ -71,7 +60,7 @@ function BrandManagement(props) {
     formData.append("brandPic", category?.uploadImage1);
     axios
       .post(
-        `http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/product/edit-brand/${id1}`,
+        `${process.env.REACT_APP_APIENDPOINT}admin/product/edit-brand/${id1}`,
         formData
       )
       .then((response) => {
@@ -95,25 +84,8 @@ function BrandManagement(props) {
       });
   };
 
-  // const handleUpdate1 = async (e) => {
-  //   e.preventDefault();
-  //   const formData = new FormData();
-  //   formData.append('brandName_en', category?.nameEn1);
-  //   formData.append('brandName_ar', category?.nameAr1);
-  //   formData.append('brandPic', category?.uploadImage1);
-
-  //   try {
-  //     const response = await editBrand(id1, formData);
-  //     console.log(response);
-  //   } catch (error) {
-  //     console.error('An error occurred:', error);
-  //   }
-  // };
-
-  const url =
-    "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/product/brand-list";
-  const url2 =
-    "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/product/search-brand";
+  const url = `${process.env.REACT_APP_APIENDPOINT}admin/product/brand-list`;
+  const url2 = `${process.env.REACT_APP_APIENDPOINT}admin/product/search-brand`;
   useEffect(() => {
     categoryManagementList();
   }, []);
@@ -246,7 +218,7 @@ function BrandManagement(props) {
   const fetchData = async () => {
     try {
       const response = await axios.post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/category/list"
+        `${process.env.REACT_APP_APIENDPOINT}admin/category/category/list`
       );
       setCategories(response?.data?.results?.list);
       console.log(response?.data?.results?.list);
@@ -271,7 +243,7 @@ function BrandManagement(props) {
       data.append("brandName_ar", formData.nameAr);
       data.append("brandPic", formData.categoryPic);
       const response = await axios.post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/product/addBrand",
+        `${process.env.REACT_APP_APIENDPOINT}admin/product/addBrand`,
         data,
         {
           headers: {
@@ -303,7 +275,7 @@ function BrandManagement(props) {
   const handleSave = async () => {
     try {
       const response = await axios.post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/product/brand-list",
+        `${process.env.REACT_APP_APIENDPOINT}admin/product/brand-list`,
         null,
         {
           headers: {
@@ -327,41 +299,6 @@ function BrandManagement(props) {
     setNameAr1(item?.brandName_ar);
     setPic1(item?.brandPic);
     // setId1(item?._id);
-  };
-
-  const handleCheckboxChange = async (e, categoryId) => {
-    e.preventDefault();
-    console.log("handleSaveChanges1", categoryId);
-    const newStatus = e.target.checked;
-
-    const confirmationResult = await Swal.fire({
-      title: "Confirm Status Change",
-      text: "Do you want to change the status?",
-      icon: "question",
-      showCancelButton: true,
-      confirmButtonText: "Yes",
-      cancelButtonText: "No",
-    });
-
-    if (confirmationResult.isConfirmed) {
-      const editStatus = {
-        id: categoryId,
-        status: newStatus,
-      };
-      try {
-        await updateStatus(editStatus);
-        Swal.fire({
-          title: "Changes Saved",
-          text: "The Status has been updated successfully.",
-          icon: "success",
-          confirmButtonText: "OK",
-        }).then((result) => {
-          if (result.isConfirmed) {
-            window.location.reload();
-          }
-        });
-      } catch (error) {}
-    }
   };
 
   return (
@@ -580,7 +517,13 @@ function BrandManagement(props) {
                                                   <td>
                                                     {category?.brandName_ar}
                                                   </td>
-                                                  <td> {category?.category_Id?.categoryName_en} </td>
+                                                  <td>
+                                                    {" "}
+                                                    {
+                                                      category?.category_Id
+                                                        ?.categoryName_en
+                                                    }{" "}
+                                                  </td>
                                                   <td>
                                                     <img
                                                       className="table_img"
@@ -588,7 +531,7 @@ function BrandManagement(props) {
                                                       alt=""
                                                     />
                                                   </td>
-                                                  
+
                                                   {/* <td>
                                                     <form className="table_btns d-flex align-items-center">
                                                       <div className="check_toggle">

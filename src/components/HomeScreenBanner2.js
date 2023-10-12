@@ -272,7 +272,7 @@ function HomeScreenBanner2() {
   }, []);
   const banner1 = async () => {
     const response = await axios.get(
-      `http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/home/homeScreen/display/64f07c6b3728c32b0996ffbe`
+      `${process.env.REACT_APP_APIENDPOINT}admin/home/homeScreen/display/64f07c6b3728c32b0996ffbe`
     );
     console.log(
       "banner1 response",
@@ -325,44 +325,6 @@ function HomeScreenBanner2() {
       });
     } catch (error) {}
   };
-  // const handleSaveChanges1 = async (e, confirmed) => {
-  //   console.log("handleSaveChanges1", itemId);
-  //   const status = confirmed ? true : false;
-
-  //   const editOffer = {
-  //     id: itemId,
-  //     status: status,
-  //   };
-  //   try {
-  //     await homeScreen(editOffer);
-  //     Swal.fire({
-  //       title: "Changes Saved",
-  //       text: "The Order Status has been updated successfully.",
-  //       icon: "success",
-  //       confirmButtonText: "OK",
-  //     }).then((result) => {
-  //       if (result.isConfirmed) {
-  //         window.location.reload();
-  //       }
-  //     });
-  //   } catch (error) {}
-  // };
-  // const handleToggleClick = () => {
-  //   Swal.fire({
-  //     title: "Are you sure?",
-  //     text: "Do you want to save the changes?",
-  //     icon: "warning",
-  //     showCancelButton: true,
-  //     confirmButtonText: "Yes",
-  //     cancelButtonText: "No",
-  //   }).then((result) => {
-  //     if (result.isConfirmed) {
-  //       handleSaveChanges1(null, true);
-  //     } else {
-  //       handleSaveChanges1(null, false);
-  //     }
-  //   });
-  // };
 
   return (
     <>

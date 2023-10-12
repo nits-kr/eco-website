@@ -24,10 +24,8 @@ function Help() {
   const [endDate, setEndDate] = useState("");
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
-  const url =
-    "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/help/help/list";
-  const url2 =
-    "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/help/help/helpSearch";
+  const url = `${process.env.REACT_APP_APIENDPOINT}admin/help/help/list`;
+  const url2 = `${process.env.REACT_APP_APIENDPOINT}admin/help/help/helpSearch`;
   useEffect(() => {
     fetchHelpList();
   }, []);
@@ -189,7 +187,7 @@ function Help() {
     event.preventDefault();
     try {
       const response = await axios.post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/help/help/createHelp",
+        `${process.env.REACT_APP_APIENDPOINT}admin/help/help/createHelp`,
         {
           categoryName: category.categoryNameEn,
           subCategoryName: subCategory.nameEn,
@@ -209,7 +207,7 @@ function Help() {
   const handleSave = async () => {
     try {
       const response = await axios.post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/help/help/list"
+        `${process.env.REACT_APP_APIENDPOINT}admin/help/help/list`
       );
       setHelpList(response.data.results.list.reverse());
       console.log(response.data);

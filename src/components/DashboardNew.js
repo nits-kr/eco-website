@@ -1,73 +1,33 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import Sidebar from "./Sidebar";
 import { Link, useNavigate } from "react-router-dom";
-// import { getDatabase } from "firebase/database";
-import { getDatabase, ref, push, set } from "firebase/database";
+
 import axios from "axios";
 import Swal from "sweetalert2";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faEye,
-  faPencil,
-  faTrashCan,
-  faEllipsis,
-} from "@fortawesome/free-solid-svg-icons";
 import DashboardConvaschart from "./chart/DashboardConvaschart";
 import DashboardDougnetChart from "./chart/DashboardDougnetChart";
 import Barchart from "./chart/Barchart";
 import DashboardDiscountedChart from "./chart/DashboardDiscountedChart";
-import { useGetDashboardCountQuery, useGetFileQuery } from "../services/Post";
-import { useEditOrderListMutation } from "../services/Post";
-import { useDeleteOrderListMutation } from "../services/Post";
-import { useOrderAssignMutation } from "../services/Post";
-import {
-  Chart as ChartJS,
-  BarElement,
-  CategoryScale,
-  LinearScale,
-  Tooltip,
-  Legend,
-} from "chart.js/auto";
-import { Radar, Bar, getElementsAtEvent } from "react-chartjs-2";
+import { useGetDashboardCountQuery } from "../services/Post";
+import { useDispatch } from "react-redux";
+import { getAllData } from "../app/chartSlice";
 
 function DashboardNew(props) {
-  const db = getDatabase();
-  const postListRef = ref(db, "posts");
-  const newPostRef = push(postListRef);
-  set(newPostRef, {
-    // ...
-  });
   const [loading, setLoading] = useState(false);
-  const { data, isLoading, isError } = useGetFileQuery("file-id");
   const dashboard = useGetDashboardCountQuery();
-  console.log("dashboard", dashboard);
-  const [updateOrder] = useEditOrderListMutation();
-  const [assignOrder] = useOrderAssignMutation();
-  // console.log("down load data", data);
   const [orderList, setOrderList] = useState([]);
-  console.log("order new list", orderList);
-  const [startDate1, setStartDate1] = useState("");
-  const [itemId3, setItemId3] = useState("");
-  console.log("item id 3", itemId3);
-  const [brands, setBrands] = useState([]);
-  const [selectedBrandIds, setSelectedBrandIds] = useState([]);
   const [productList, setProductList] = useState([]);
   const [monthPrice, setMonthPrice] = useState([]);
   const [totalStockQuantity, setTotalStockQuantity] = useState(0);
   const [usersList, setUsersList] = useState([]);
-  console.log("userlist", usersList);
   const [salesList, setSalesList] = useState([]);
-  console.log("salesList", salesList);
-  const [expectedEarnings, setExpectedEarnings] = useState(0);
   const [totalCartsTotal, setTotalCartsTotal] = useState(0);
-  console.log("totalCartsTotal", totalCartsTotal);
-  console.log("selectedBrandIds", selectedBrandIds);
-  console.log("totalStockQuantity", totalStockQuantity);
 
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const reloadUsersPage = () => {
     navigate("/users");
@@ -75,25 +35,23 @@ function DashboardNew(props) {
       window?.location?.reload();
     }, 500);
   };
-  // Initialize a variable to keep track of the total delivered items
-  const url1 =
-    "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/dashboards/count/order-dashboards";
+  const url1 = `${process.env.REACT_APP_APIENDPOINT}admin/dashboards/count/order-dashboards`;
   useEffect(() => {
     userManagementList();
   }, []);
-  const userManagementList = () => {
+  const userManagementList = async () => {
     props.setProgress(10);
     setLoading(true);
-    axios
+    await axios
       .post(url1)
       .then((response) => {
         setUsersList(response?.data?.results?.customerMonth || []);
+        dispatch(getAllData(response?.data?.results));
         const orderyearData = response?.data?.results?.orderyear || [];
-        const customerMonthData = response?.data?.results?.customerMonth || [];
         const orderMonthData = response?.data?.results?.OrderMonth || [];
         const totalOrderMonth = orderMonthData.reduce((sum, order) => {
           return (sum += order.cartsTotal);
-        }, 0); // Initialize sum to 0
+        }, 0);
         setMonthPrice(totalOrderMonth?.toFixed(2));
         const salesData = response?.data?.results?.salesDAy || [];
         let totalCartsTotal = 0;
@@ -107,15 +65,6 @@ function DashboardNew(props) {
         }, 0);
 
         setSalesList(totalSalesCartsTotal.toFixed(2));
-        const totalDiscountSum = customerMonthData.reduce((sum, customer) => {
-          if (
-            Array.isArray(customer.totalAfterDiscount) &&
-            customer.totalAfterDiscount.length > 0
-          ) {
-            sum += customer.totalAfterDiscount[0];
-          }
-          return sum;
-        }, 0);
         props.setProgress(100);
         setLoading(false);
       })
@@ -124,17 +73,6 @@ function DashboardNew(props) {
       });
   };
 
-  const calculateTotalAfterDiscount = () => {
-    let total = 0;
-    for (const user of usersList) {
-      if (user.totalAfterDiscount && user.totalAfterDiscount.length > 0) {
-        total += user.totalAfterDiscount[0];
-      }
-    }
-    return total.toFixed(2);
-  };
-
-  const totalAfterDiscount = calculateTotalAfterDiscount();
   let totalDeliveredItems = 0;
   orderList.forEach((data) => {
     if (data.orderStatus === "Shipped") {
@@ -142,22 +80,11 @@ function DashboardNew(props) {
     }
   });
 
-  const handleInputChange1 = (event, index) => {
-    const { value } = event.target;
-    setSelectedBrandIds((prevSelectedBrandIds) => {
-      const updatedSelectedBrandIds = [...prevSelectedBrandIds];
-      updatedSelectedBrandIds[index] = value;
-      return updatedSelectedBrandIds;
-    });
-  };
-
   useEffect(() => {
     props.setProgress(10);
     setLoading(true);
     axios
-      .post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/product/productList"
-      )
+      .post(`${process.env.REACT_APP_APIENDPOINT}admin/product/productList`)
       .then((response) => {
         setProductList(response?.data?.results?.list.reverse());
         console.log(response.data);
@@ -166,7 +93,6 @@ function DashboardNew(props) {
       });
   }, []);
   useEffect(() => {
-    // Calculate the total stockQuantity from all variants
     const totalStock = productList.reduce((total, product) => {
       const variants = product?.addVarient || [];
       const stockQuantity = variants.reduce(
@@ -175,33 +101,10 @@ function DashboardNew(props) {
       );
       return total + stockQuantity;
     }, 0);
-
-    // Set the total stockQuantity to state
     setTotalStockQuantity(totalStock);
-
-    // Display the total stockQuantity in the console
-    console.log("Total Stock Quantity:", totalStock);
   }, [productList]);
 
-  useEffect(() => {
-    const fetchData2 = async () => {
-      try {
-        const response = await axios.post(
-          "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/agent/agent/user-List"
-        );
-        setBrands(response?.data?.results?.list);
-        console.log(response.data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    fetchData2();
-  }, []);
-
-  const url =
-    "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/order/order/list";
-  const url2 =
-    "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/order/order/search";
+  const url = `${process.env.REACT_APP_APIENDPOINT}admin/order/order/list`;
   useEffect(() => {
     subOrderList();
   }, []);
@@ -231,86 +134,6 @@ function DashboardNew(props) {
     }
     setTotalCartsTotal(total);
   };
-  useEffect(() => {
-    // Calculate expected earnings when the orderList changes
-    const calculatedEarnings = calculateExpectedEarnings(orderList);
-    setExpectedEarnings(calculatedEarnings);
-  }, [orderList]);
-
-  // Function to calculate expected earnings
-  const calculateExpectedEarnings = (orders) => {
-    let totalEarnings = 0;
-
-    // orders.forEach((order) => {
-    //   order.products.forEach((product) => {
-    //     totalEarnings +=
-    //       product.quantity * product.product_Id.addVarient[0].Price;
-    //   });
-    // });
-
-    return totalEarnings;
-  };
-  const userList2 = async () => {
-    if (!startDate1) return;
-    try {
-      const { data } = await axios.post(url, {
-        startDate1,
-      });
-      const filteredUsers = data?.results?.list?.filter(
-        (user) =>
-          new Date(user?.createdAt?.slice(0, 10)).toISOString().slice(0, 10) ===
-          new Date(startDate1).toISOString().slice(0, 10)
-      );
-      if (filteredUsers.length === 0) {
-        setOrderList([]);
-        await Swal.fire({
-          title: "No List Found",
-          text: "No list is available for the selected date.",
-          icon: "warning",
-          confirmButtonText: "OK",
-        }).then((result) => {
-          if (result.isConfirmed) {
-            subOrderList();
-          }
-        });
-      } else if (filteredUsers.length > 0) {
-        await Swal.fire({
-          title: "List Found!",
-          text: "list is available for the selected date.",
-          icon: "success",
-          confirmButtonText: "OK",
-        }).then((result) => {
-          if (result.isConfirmed) {
-            setOrderList(filteredUsers);
-          }
-        });
-      }
-      setOrderList(filteredUsers);
-      console.log(data);
-    } catch (error) {
-      console.error("Error fetching user list:", error);
-    }
-  };
-  useEffect(() => {
-    userList2();
-  }, [startDate1]);
-
-  const handleDownload = () => {
-    if (data) {
-      const blob = new Blob([data]);
-      const downloadUrl = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = downloadUrl;
-      link.download = "file.xlsx";
-      link.click();
-    }
-  };
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-  if (isError) {
-    return <div>Error occurred while fetching the file.</div>;
-  }
 
   function formatTimeAgo(createdAt) {
     const currentDate = new Date();
@@ -360,13 +183,9 @@ function DashboardNew(props) {
   const averageDailySales = calculateAverageDailySales(orderList);
   console.log("Average Daily Sales:", averageDailySales);
 
-  // Define previousTotal and calculate percentageChange based on your logic
-  // const previousTotal = 100; // Replace with the actual previous total
-  // const totalCartsTotal1 = 120; // Replace with the actual current total
-  // const percentageChange = ((totalCartsTotal - previousTotal) / previousTotal) * 100;
-
   return (
     <>
+      {loading}
       <Sidebar Dash={"dashboard"} />
       <div className="admin_main">
         <div className="admin_main_inner">
@@ -377,11 +196,6 @@ function DashboardNew(props) {
                   <div className="col-md-3 d-flex align-items-stretch mb-4">
                     <div className="row mx-0 w-100">
                       <div className="col-12 design_outter_comman shadow">
-                        {/* <div className="row comman_header justify-content-between">
-                          <div className="col">
-                            <h2>Expected Earnings</h2>
-                          </div>
-                        </div> */}
                         <div className="row">
                           <div className="col-12 p-4">
                             <div className="canvas_top d-flex align-items-center">
@@ -394,41 +208,12 @@ function DashboardNew(props) {
                             <DashboardDougnetChart />
                           </div>
                         </div>
-                        {/* <div className="row">
-                          <div className="col-12 p-4">
-                            <div className="canvas_top d-flex align-items-center">
-                              <h3>
-                                <span>$</span>
-                                {totalCartsTotal.toFixed(2)}
-                              </h3>
-                              {totalCartsTotal > previousTotal ? (
-                                <div className="Percent_box ms-2 text-success">
-                                  <i className="fas fa-arrow-up"></i>{" "}
-                                  {percentageChange.toFixed(2)}%
-                                </div>
-                              ) : totalCartsTotal < previousTotal ? (
-                                <div className="Percent_box ms-2 text-danger">
-                                  <i className="fas fa-arrow-down"></i>{" "}
-                                  {percentageChange.toFixed(2)}%
-                                </div>
-                              ) : (
-                                <div className="Percent_box ms-2">0.00%</div>
-                              )}
-                            </div>
-                            <DashboardDougnetChart />
-                          </div>
-                        </div> */}
                       </div>
                     </div>
                   </div>
                   <div className="col-md-3 d-flex align-items-stretch mb-4">
                     <div className="row mx-0 w-100">
                       <div className="col-12 design_outter_comman shadow">
-                        {/* <div className="row comman_header justify-content-between">
-                          <div className="col">
-                            <h2>Expected Earnings</h2>
-                          </div>
-                        </div> */}
                         <div className="row">
                           <div className="col-12 p-4">
                             <div className="canvas_top d-flex align-items-center">
@@ -498,12 +283,6 @@ function DashboardNew(props) {
                         </div> */}
                         <div className="row">
                           <div className="col-12 p-4">
-                            {/* <div className="canvas_top d-flex align-items-center mb-5">
-                              <h3 className="p-0">
-                                {dashboard?.data?.results?.orderMonth[0]?.count}
-                              </h3>
-                              <div className="Percent_box ms-2">2.2%</div>
-                            </div> */}
                             <div className="order_this mt-5">
                               <div className="order_top">
                                 <strong>1,048 to Goal</strong>
@@ -567,10 +346,6 @@ function DashboardNew(props) {
                                             "assets/img/profile.png"
                                           }
                                           alt=""
-                                          // style={{
-                                          //   width: "50px",
-                                          //   height: "50px",
-                                          // }}
                                         />
                                       </Link>
                                     ))}
@@ -593,10 +368,6 @@ function DashboardNew(props) {
                                               "assets/img/profile.png"
                                             }
                                             alt=""
-                                            // style={{
-                                            //   width: "50px",
-                                            //   height: "50px",
-                                            // }}
                                           />
                                         </Link>
                                       ))}
@@ -696,7 +467,7 @@ function DashboardNew(props) {
                                     <th>ITEM</th>
                                     <th>QTY</th>
                                     <th>PRICE</th>
-                                    <th>TOTAL(discounted)</th>
+                                    <th>TOTAL</th>
                                   </tr>
                                 </thead>
                                 <tbody>
@@ -825,16 +596,7 @@ function DashboardNew(props) {
                                         {data?.cartsTotal
                                           ? data?.cartsTotal?.toFixed(2)
                                           : "N/A"}
-                                        {/* {typeof data.cartsTotal?.[0]?.[0] ===
-                                        "number"
-                                          ? `$${data.cartsTotal?.[0]?.[0].toFixed(
-                                              2
-                                            )}`
-                                          : "N/A"} */}
                                       </td>
-                                      {/* <td>
-                                        ${calculateProfit(data.cartsTotal[0])}
-                                      </td> */}
                                       <td>
                                         <div
                                           className={
@@ -942,22 +704,6 @@ function DashboardNew(props) {
                                             </a>
                                             {/* <span>{data?._id}</span> */}
                                           </div>
-                                          {/* <div
-                                            style={{
-                                              display: "flex",
-                                              alignItems: "flex-end",
-                                              marginLeft: "207px",
-                                              marginBottom: "20px",
-                                              backgroundColor:
-                                                "rgb(243, 243, 243);",
-                                            }}
-                                          >
-                                            <button style={{ border: "none" }}>
-                                              <FontAwesomeIcon
-                                                icon={faEllipsis}
-                                              />
-                                            </button>
-                                          </div> */}
                                         </div>
                                         <div
                                           style={{
@@ -974,47 +720,6 @@ function DashboardNew(props) {
                                               {data?.user_Id?.userName}
                                             </strong>
                                           </div>
-                                          {/* <div
-                                            className={
-                                              data?.orderStatus === "Cancelled"
-                                                ? "text-danger"
-                                                : data?.orderStatus ===
-                                                  "Pending"
-                                                ? "text-warning"
-                                                : data?.orderStatus === "Packed"
-                                                ? "text-info"
-                                                : data?.orderStatus ===
-                                                  "Approved"
-                                                ? "text-success"
-                                                : data?.orderStatus ===
-                                                  "Inprogress"
-                                                ? "text-primary"
-                                                : "text-secondary"
-                                            }
-                                            style={{
-                                              background:
-                                                data?.orderStatus ===
-                                                "Cancelled"
-                                                  ? "#ffe5e5"
-                                                  : data?.orderStatus ===
-                                                    "Pending"
-                                                  ? "#fff6e5"
-                                                  : data?.orderStatus ===
-                                                    "Packed"
-                                                  ? "#e5f0ff"
-                                                  : data?.orderStatus ===
-                                                    "Approved"
-                                                  ? "#e5ffe5"
-                                                  : data?.orderStatus ===
-                                                    "Inprogress"
-                                                  ? "#e5e5ff"
-                                                  : "#f3f3f3",
-                                              borderRadius: "5px",
-                                              padding: "2px 5px",
-                                            }}
-                                          >
-                                            {data?.orderStatus}
-                                          </div> */}
                                           <div
                                             className={
                                               data?.orderStatus === "Cancelled"
@@ -1033,7 +738,7 @@ function DashboardNew(props) {
                                                 : data?.orderStatus ===
                                                   "Delivered"
                                                 ? "text-secondary"
-                                                : "text-default" // Add a default class for unrecognized statuses
+                                                : "text-default"
                                             }
                                             style={{
                                               background:
@@ -1055,7 +760,7 @@ function DashboardNew(props) {
                                                   : data?.orderStatus ===
                                                     "Delivered"
                                                   ? "#f3f3f3"
-                                                  : "#f9f9f9", // Add a default background color for unrecognized statuses
+                                                  : "#f9f9f9",
                                               borderRadius: "5px",
                                               padding: "2px 5px",
                                             }}
@@ -1135,11 +840,9 @@ function DashboardNew(props) {
                                           <div
                                             style={{
                                               background:
-                                                data.addVarient[0]
-                                                  ?.stockQuantity > 10
+                                                totalStockQuantity > 10
                                                   ? "#c8e6c9" // Green background for "In Stock"
-                                                  : data.addVarient[0]
-                                                      ?.stockQuantity === 0
+                                                  : totalStockQuantity === 0
                                                   ? "#ffcdd2" // Red background for "Out of Stock"
                                                   : "#fff9c4", // Yellow background for "Low Stock"
                                               display: "flex",
@@ -1148,21 +851,17 @@ function DashboardNew(props) {
                                               padding: "4px", // Optional padding for spacing
                                               borderRadius: "5px",
                                               color:
-                                                data.addVarient[0]
-                                                  ?.stockQuantity > 10
+                                                totalStockQuantity > 10
                                                   ? "#005a02" // Dark green text for "In Stock"
-                                                  : data.addVarient[0]
-                                                      ?.stockQuantity === 0
+                                                  : totalStockQuantity === 0
                                                   ? "#e60000" // Dark red text for "Out of Stock"
                                                   : "#9e7800", // Dark yellow text for "Low Stock"
                                             }}
                                           >
                                             <strong>
-                                              {data.addVarient[0]
-                                                ?.stockQuantity > 10
+                                              {totalStockQuantity > 10
                                                 ? "In Stock"
-                                                : data.addVarient[0]
-                                                    ?.stockQuantity === 0
+                                                : totalStockQuantity === 0
                                                 ? "Out of Stock"
                                                 : "Low Stock"}
                                             </strong>

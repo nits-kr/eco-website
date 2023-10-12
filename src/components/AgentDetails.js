@@ -91,7 +91,7 @@ function AgentDetails() {
       data.append("accountName", formData.accountName);
       data.append("routingNumber", formData.routing);
       const response = await axios.post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/agent/agent/addUser",
+        `${process.env.REACT_APP_APIENDPOINT}admin/agent/agent/addUser`,
         data
       );
       console.log(response.data.results.saveUser);
@@ -114,7 +114,7 @@ function AgentDetails() {
   };
   return (
     <>
-      <Sidebar Dash={"agents"}/>
+      <Sidebar Dash={"agents"} />
       <div className="admin_main">
         <div className="admin_main_inner">
           <div className="admin_panel_data height_adjust">
@@ -282,22 +282,6 @@ function AgentDetails() {
                                 </label>
                               </span>
                             </div>
-                            {/* <div className="form-check1 form-switch ms-4">
-                              <input
-                                className="form-check-input fs-4"
-                                type="checkbox"
-                                role="switch"
-                                id="flexSwitchCheckDefault"
-                                checked={formData.global}
-                                onChange={handleInputChange1}
-                              />
-                              <label
-                                className="form-check-label text-danger fs-4"
-                                htmlFor="flexSwitchCheckDefault"
-                              >
-                                <strong>Global</strong>
-                              </label>
-                            </div> */}
                           </div>
                         </div>
                       </div>
@@ -453,12 +437,23 @@ function AgentDetails() {
                             {/* <div className="col-4">
                               <label htmlFor="status">Status</label>
                             </div> */}
-                            <div className="col-6" style={{
-                              display: "flex",
-                              justifyContent: "left",
-                              marginTop:"8px"
-                            }}>
-                              <label htmlFor="status" style={{marginRight:"10px", marginTop:"8px"}}>Status: {" "}</label>
+                            <div
+                              className="col-6"
+                              style={{
+                                display: "flex",
+                                justifyContent: "left",
+                                marginTop: "8px",
+                              }}
+                            >
+                              <label
+                                htmlFor="status"
+                                style={{
+                                  marginRight: "10px",
+                                  marginTop: "8px",
+                                }}
+                              >
+                                Status:{" "}
+                              </label>
                               <span>
                                 <button
                                   type="button"

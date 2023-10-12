@@ -17,7 +17,7 @@ const HelpEditModelEn = (props) => {
     event.preventDefault();
     try {
       const response = await axios.patch(
-        `http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/help/help/updateQuestion/${selectedQuestionId}`,
+        `${process.env.REACT_APP_APIENDPOINT}admin/help/help/updateQuestion/${selectedQuestionId}`,
         {
           Question: formData.questions,
           Answer: formData.answers,

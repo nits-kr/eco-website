@@ -9,7 +9,7 @@ import Sidebar from "./Sidebar";
 
 function HelpView() {
   const [helpViewList, setHelpViewList] = useState("");
-  const [selectedQuestionId, setSelectedQuestionId] = useState(null); // Add selectedQuestionId state
+  const [selectedQuestionId, setSelectedQuestionId] = useState(null);
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
   useEffect(() => {
@@ -18,7 +18,7 @@ function HelpView() {
 
   const userList = async () => {
     const { data } = await axios.post(
-      "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/help/help/questionList"
+      `${process.env.REACT_APP_APIENDPOINT}admin/help/help/questionList`
     );
     setHelpViewList(data.results.listData.reverse());
     console.log(data);
@@ -30,7 +30,7 @@ function HelpView() {
 
   const handleEdit = (_id) => {
     const selectedQuestion = helpViewList.find((data) => data._id === _id);
-    setSelectedQuestionId(selectedQuestion?._id); // Update selectedQuestionId state
+    setSelectedQuestionId(selectedQuestion?._id);
     setFormData({
       questions: selectedQuestion?.Question || "",
       answers: selectedQuestion?.Answer || "",

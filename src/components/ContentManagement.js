@@ -34,11 +34,6 @@ function ContentManagement() {
     setContentList(reversedList);
     // subContent();
   }, [contentListItems]);
-  // const subContent = () => {
-  //   const reversedList =
-  //     contentListItems?.data?.results?.list?.slice().reverse() ?? [];
-  //   setContentList(reversedList);
-  // };
 
   const handleSaveChanges1 = async (e) => {
     e.preventDefault();

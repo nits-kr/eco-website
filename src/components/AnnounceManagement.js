@@ -28,10 +28,8 @@ function AnnounceManagement() {
   });
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
-  const url =
-    "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/announcement/announcement/list";
-  const url2 =
-    "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/announcement/announcement/search";
+  const url = `${process.env.REACT_APP_APIENDPOINT}admin/announcement/announcement/list`;
+  const url2 = `${process.env.REACT_APP_APIENDPOINT}admin/announcement/announcement/search`;
   useEffect(() => {
     userList();
   }, []);

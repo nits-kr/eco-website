@@ -39,7 +39,7 @@ function UserDetails2() {
   }, []);
   const userDetails = async () => {
     const { data } = await axios.post(
-      `http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/user/details/${id}`
+      `${process.env.REACT_APP_APIENDPOINT}admin/user/details/${id}`
     );
     setUserListDetails(data?.results);
     setOrderList(data?.results?.order);

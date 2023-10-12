@@ -4,14 +4,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import Sidebar from "./Sidebar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faEye,
-  faTrash,
-  faDollarSign,
-  faMoneyBill1Wave,
-  faDownload,
-  faFileExport,
-} from "@fortawesome/free-solid-svg-icons";
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { useDeleteNotificationListMutation } from "../services/Post";
 
 function NotificationManagement() {
@@ -31,10 +24,8 @@ function NotificationManagement() {
   });
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
-  const url =
-    "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/notification/notification/list";
-  const url2 =
-    " http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/notification/notification/search-notification";
+  const url = `${process.env.REACT_APP_APIENDPOINT}admin/notification/notification/list`;
+  const url2 = `${process.env.REACT_APP_APIENDPOINT}admin/notification/notification/search-notification`;
   useEffect(() => {
     subNotificationList();
   }, []);
@@ -53,36 +44,6 @@ function NotificationManagement() {
         });
       });
   };
-
-  // const handleSearch = (e) => {
-  //   e.preventDefault();
-  //   axios
-  //     .post(url, {
-  //       from: startDate,
-  //       to: endDate,
-  //     })
-  //     .then((response) => {
-  //       const list = response?.data?.results?.list?.reverse();
-  //       if (list && list.length > 0) {
-  //         setNotificationList(list);
-  //       } else {
-  //         setNotificationList([]);
-  //         Swal.fire({
-  //           icon: "warning",
-  //           title: "No data found!",
-  //           text: "There is no list between the selected dates.",
-  //           confirmButtonText: "OK",
-  //         }).then((result) => {
-  //           if (result.isConfirmed) {
-  //             subOrderList();
-  //           }
-  //         });
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       console.log(error.response.data);
-  //     });
-  // };
 
   const userList2 = async () => {
     if (!startDate1) return;

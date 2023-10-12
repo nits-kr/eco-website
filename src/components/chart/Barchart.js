@@ -1,9 +1,11 @@
 import React from "react";
 import CanvasJSReact from "@canvasjs/react-charts";
+import { useSelector } from "react-redux";
 
 const CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
 const Barchart = () => {
+  const selector = useSelector((state) => state?.charts?.charts);
   const options = {
     title: {
       text: " Daily Sales",
@@ -12,7 +14,6 @@ const Barchart = () => {
     dataPointWidth: 10,
     data: [
       {
-        // Change type to "doughnut", "line", "splineArea", etc.
         type: "column",
         dataPoints: [
           { label: "Apple", y: 10 },

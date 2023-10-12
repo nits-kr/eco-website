@@ -3,7 +3,6 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import Sidebar from "./Sidebar";
 import { Link, useParams } from "react-router-dom";
-
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faEdit,
@@ -23,15 +22,7 @@ function UserDetailsAll() {
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
   const { id: routeId } = useParams();
-  const [
-    userDetails,
-    isError,
-    isLoading,
-    isSuccess,
-    isUninitialized,
-    originalArgs,
-    error,
-  ] = useUserDetailsAllMutation(routeId);
+  const [userDetails, isLoading] = useUserDetailsAllMutation(routeId);
   const [deleteOrder] = useDeleteOrderMutation();
   const [blockUser, res] = useBlockUserMutation();
   const [address, setAddress] = useState([]);

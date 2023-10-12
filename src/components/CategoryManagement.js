@@ -7,7 +7,7 @@ import Attribute from "./Attribute";
 //import EditValues from "./EditValues";
 import EditCategory from "./EditCategory";
 import Value from "./Value";
-import EditSubCategory from "./EditSubCategory";
+// import EditSubCategory from "./EditSubCategory";
 //import EditSubSubCategory from "./EditSubSubCategory";
 import EditAttribute from "./EditAttribute";
 import Swal from "sweetalert2";
@@ -32,10 +32,8 @@ function CategoryManagement(props) {
   });
   const [newCategory, setNewCategory] = useState([]);
 
-  const url =
-    "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/category/list";
-  const url2 =
-    "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/category/search-category";
+  const url = `${process.env.REACT_APP_APIENDPOINT}admin/category/category/list`;
+  const url2 = `${process.env.REACT_APP_APIENDPOINT}admin/category/category/search-category`;
   useEffect(() => {
     categoryManagementList();
   }, []);
@@ -174,7 +172,7 @@ function CategoryManagement(props) {
       data.append("categoryName_ar", formData.nameAr);
       data.append("categoryPic", formData.categoryPic);
       const response = await axios.post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/category/create",
+        `${process.env.REACT_APP_APIENDPOINT}admin/category/category/create`,
         data,
         {
           headers: {
@@ -205,7 +203,7 @@ function CategoryManagement(props) {
     setLoading(true);
     try {
       const response = await axios.post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/category/list",
+        `${process.env.REACT_APP_APIENDPOINT}admin/category/category/list`,
         null,
         {
           headers: {
@@ -737,7 +735,7 @@ function CategoryManagement(props) {
       {/* <!-- Modal --> */}
       <EditCategory newCategory={newCategory} />
       {/* <!-- Modal --> */}
-      <EditSubCategory />
+      {/* <EditSubCategory /> */}
       {/* <!-- Modal --> */}
       {/* <EditSubSubCategory /> */}
       {/* <!-- Modal --> */}

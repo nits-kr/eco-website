@@ -29,10 +29,8 @@ function CoupanList() {
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
 
-  const url =
-    "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/coupan/coupan/list";
-  const url2 =
-    "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/coupan/coupan/search-coupan";
+  const url = `${process.env.REACT_APP_APIENDPOINT}admin/coupan/coupan/list`;
+  const url2 = `${process.env.REACT_APP_APIENDPOINT}admin/coupan/coupan/search-coupan`;
 
   const fetchCoupanList = async () => {
     try {
@@ -84,10 +82,6 @@ function CoupanList() {
       .catch((error) => {
         console.log(error.response.data);
       });
-  };
-  const handleInputChange = (event) => {
-    const { name, value } = event.target;
-    setCoupan({ ...coupan, [name]: value });
   };
 
   useEffect(() => {
@@ -148,7 +142,7 @@ function CoupanList() {
 
   const deleteConfirm = (_id) => {
     const data = axios.delete(
-      `http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/coupan/coupan/delete/${_id}`
+      `${process.env.REACT_APP_APIENDPOINT}admin/coupan/coupan/delete/${_id}`
     );
     console.log("deleted coupan list item", data?.results?.deleteData);
     setCoupanList([]);
@@ -184,7 +178,7 @@ function CoupanList() {
       });
     }
   };
-  
+
   const handleItem = (item) => {
     setCoupanStatus2(item?.status || "");
     setCoupanTitleEn2(item?.coupanTitle_en || "");
@@ -318,7 +312,7 @@ function CoupanList() {
                               <td>{item?.coupanCode}</td>
                               <td>{item?.DiscountType}</td>
                               <td>{item?.status}</td>
-                              <td> {item?.enddate?.slice(0,10)} </td>
+                              <td> {item?.enddate?.slice(0, 10)} </td>
                               <td>
                                 <Link
                                   className="comman_btn table_viewbtn mx-2"

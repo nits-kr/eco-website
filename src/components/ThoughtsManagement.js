@@ -74,10 +74,8 @@ function ThoughtsManagement() {
       });
     }
   };
-  const url =
-    "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/thougth/thougth/list";
-  const url2 =
-    "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/thougth/thougth/thougthSearch";
+  const url = `${process.env.REACT_APP_APIENDPOINT}admin/thougth/thougth/list`;
+  const url2 = `${process.env.REACT_APP_APIENDPOINT}admin/thougth/thougth/thougthSearch`;
 
   useEffect(() => {
     userList();
@@ -203,33 +201,6 @@ function ThoughtsManagement() {
                       <div className="col-auto">
                         <h2>Thought Management</h2>
                       </div>
-                      {/* <div className="col-auto text-white fw-bold d-flex align-items-center">
-                        <strong className="me-2 d-inline">Edit :</strong>
-                        <button className="edit_buton" onClick="markUp('bold')">
-                          <strong>B</strong>
-                        </button>
-                        <button
-                          className="edit_buton"
-                          onClick="markUp('italic')"
-                        >
-                          <em>I</em>
-                        </button>
-                        <button
-                          className="edit_buton"
-                          onClick="markUp('italic')"
-                        >
-                          <em>A</em>
-                        </button>
-                        <button
-                          className="edit_buton"
-                          onClick="markUp('italic')"
-                        >
-                          <em>a</em>
-                        </button>
-                        <button className="edit_buton" id="underline">
-                          <u>U</u>
-                        </button>
-                      </div> */}
                     </div>
                     <form
                       className="form-design help-support-form py-4 px-3 row align-items-start justify-content-center"
@@ -312,19 +283,7 @@ function ThoughtsManagement() {
                           required
                         ></textarea>
                       </div>
-                      {/* <div className="form-group col-auto mt-2 text-center">
-                        <div className="check_radio">
-                          <input
-                            type="checkbox"
-                            name="table1"
-                            id="table1"
-                            className="d-none"
-                          />
-                          <label htmlFor="table1">
-                            Set as home screen banner
-                          </label>
-                        </div>
-                      </div> */}
+
                       <div className="form-group col-12 text-center">
                         <button className="comman_btn2 mt-4">Create</button>
                       </div>

@@ -4,8 +4,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEye, faPencil, faTrashCan } from "@fortawesome/free-solid-svg-icons";
+
 import Sidebar from "./Sidebar";
 import Spinner from "./Spinner";
 
@@ -47,7 +46,6 @@ function ProductManagementEdit2(props) {
   const [imageUrl3, setImageUrl3] = useState("");
   const [selectedImage4, setSelectedImage4] = useState(null);
   const [imageUrl4, setImageUrl4] = useState("");
-  // const [selectedImage5, setSelectedImage5] = useState(null);
   const [imageUrl5, setImageUrl5] = useState("");
   const [formData1, setFormData1] = useState({
     bannerPic1: null,
@@ -58,7 +56,7 @@ function ProductManagementEdit2(props) {
   });
   const categoryNameNew = categoryName.replace(/\s+/g, "");
   const subCategoryNameNew = subCategoryName.replace(/\s+/g, "");
-  // const slug = `www.ecommerce.com/${categoryNameNew}/${subCategoryNameNew}`;
+
   let slug;
 
   if (categoryNameNew && subCategoryNameNew) {
@@ -160,7 +158,7 @@ function ProductManagementEdit2(props) {
     const fetchData = async () => {
       try {
         const response = await axios.post(
-          "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/category/list"
+          "${process.env.REACT_APP_APIENDPOINT}admin/category/category/list"
         );
         setCategories(response.data.results.list);
         console.log(response.data);
@@ -174,7 +172,7 @@ function ProductManagementEdit2(props) {
     const fetchData = async () => {
       try {
         const response = await axios.post(
-          `http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/subCategory/selectCategory/${subSubCategory.categoryId}`
+          `${process.env.REACT_APP_APIENDPOINT}admin/category/subCategory/selectCategory/${subSubCategory.categoryId}`
         );
         setSubCategories(response.data.results.categoryData);
         console.log(response.data);
@@ -188,7 +186,7 @@ function ProductManagementEdit2(props) {
     const fetchData = async () => {
       try {
         const response = await axios.post(
-          `http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/subSubCategory/selectSubCategory/${subSubCategory.categoryId1}`
+          `${process.env.REACT_APP_APIENDPOINT}admin/category/subSubCategory/selectSubCategory/${subSubCategory.categoryId1}`
         );
         setSubSubCategories(response.data.results.subCategoryData);
         console.log(response.data);
@@ -202,7 +200,7 @@ function ProductManagementEdit2(props) {
     const fetchData2 = async () => {
       try {
         const response = await axios.post(
-          `http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/product/select-brand/${productListItems[0]?.category_Id?._id}`
+          `${process.env.REACT_APP_APIENDPOINT}admin/product/select-brand/${productListItems[0]?.category_Id?._id}`
         );
         setBrands(response.data.results.selectBrand);
         console.log(response.data);
@@ -216,7 +214,7 @@ function ProductManagementEdit2(props) {
     const fetchData = async () => {
       try {
         const response = await axios.post(
-          `http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/attribute/selectSubSubCategory/${productListItems[0]?.category_Id?._id}`
+          `${process.env.REACT_APP_APIENDPOINT}admin/category/attribute/selectSubSubCategory/${productListItems[0]?.category_Id?._id}`
         );
         setAttribute(response.data.results.subSubCategoryData);
         console.log(response.data);
@@ -230,7 +228,7 @@ function ProductManagementEdit2(props) {
     const fetchData = async () => {
       try {
         const response = await axios.post(
-          `http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/values/selectAttribute/${subSubCategory.attributeId}`
+          `${process.env.REACT_APP_APIENDPOINT}admin/category/values/selectAttribute/${subSubCategory.attributeId}`
         );
         setValue(response.data.results.attributeCategoryData);
         console.log(response.data);
@@ -261,18 +259,8 @@ function ProductManagementEdit2(props) {
     data.append("slug", slug);
     data.append("Description", formData.DescriptionEn);
     data.append("Description_ar", formData.DescriptionAr);
-    // data.append("weight", formData.weight);
-    // data.append("weight_ar", formData.weightAr);
-    // data.append("productColor", formData.color);
-    // data.append("productColor_ar", formData.colorAr);
     data.append("careInstuctions", formData.shortDescriptionEn);
     data.append("careInstuctions_ar", formData.shortDescriptionAr);
-    // data.append("Price", formData.Price);
-    // data.append("oldPrice", formData.oldPrice);
-    // data.append("dollarPrice", formData.dollar);
-    // data.append("SKU", formData.SKUEn);
-    // data.append("SKU_ar", formData.SKUAr);
-    // data.append("stockQuantity", formData.stockQuantity);
     if (formData.pageTitleEn) {
       data.append("pageTitle", formData.pageTitleEn);
     }
@@ -291,8 +279,7 @@ function ProductManagementEdit2(props) {
       "publishDate",
       formData.datepicker || new Date().toISOString().split("T")[0]
     );
-    // data.append("Tags", formData.Tags);
-    // data.append("Tags_ar", formData.TagsAr);
+
     data.append(
       "category_Id",
       subSubCategory.categoryId
@@ -334,7 +321,7 @@ function ProductManagementEdit2(props) {
     }
     axios
       .post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/product/createProduct",
+        `${process.env.REACT_APP_APIENDPOINT}admin/product/createProduct`,
         data
       )
       .then((response) => {
@@ -364,17 +351,6 @@ function ProductManagementEdit2(props) {
   const handleOnSave1 = (e) => {
     e.preventDefault();
     const data = new FormData();
-    // data.append("productName_en", formData.productNameEn);
-    // data.append("productName_ar", formData.productNameAr);
-    // data.append("slug", slug);
-    // data.append("Description", formData.DescriptionEn);
-    // data.append("Description_ar", formData.DescriptionAr);
-    // data.append("weight", formData.weight);
-    // data.append("weight_ar", formData.weightAr);
-    // data.append("productColor", formData.color);
-    // data.append("productColor_ar", formData.colorAr);
-    // data.append("careInstuctions", formData.shortDescriptionEn);
-    // data.append("careInstuctions_ar", formData.shortDescriptionAr);
     data.append("Price", formData.Price);
     data.append("oldPrice", formData.oldPrice);
     data.append("dollarPrice", formData.dollar);
@@ -393,16 +369,6 @@ function ProductManagementEdit2(props) {
     if (formData.metaDescriptionAr) {
       data.append("metaDescription_ar", formData.metaDescriptionAr);
     }
-    // data.append("visibility", formData.visibility || "published");
-    // data.append("visibility_ar", formData.visibilityAr || "نشرت");
-    // data.append(
-    //   "publishDate",
-    //   formData.datepicker || new Date().toISOString().split("T")[0]
-    // );
-    // data.append("Tags", formData.Tags);
-    // data.append("Tags_ar", formData.TagsAr);
-    // data.append("category_Id", subSubCategory.categoryId);
-    // data.append("Subcategory_Id", subSubCategory.categoryId1);
     if (subSubCategory.categoryId3) {
       data.append("subSubcategory_Id", subSubCategory.categoryId3);
     }
@@ -435,7 +401,7 @@ function ProductManagementEdit2(props) {
     }
     axios
       .post(
-        `http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/product/new-varient/${id}`,
+        `${process.env.REACT_APP_APIENDPOINT}admin/product/new-varient/${id}`,
         data
       )
       .then((response) => {
@@ -488,9 +454,7 @@ function ProductManagementEdit2(props) {
     props.setProgress(10);
     setLoading(true);
     axios
-      .post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/product/productList"
-      )
+      .post("${process.env.REACT_APP_APIENDPOINT}admin/product/productList")
       .then((response) => {
         setProductList(response?.data?.results?.list?.reverse());
         console.log(response.data);
@@ -501,9 +465,7 @@ function ProductManagementEdit2(props) {
 
   const fetchProductList = () => {
     axios
-      .post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/product/productList"
-      )
+      .post("${process.env.REACT_APP_APIENDPOINT}admin/product/productList")
       .then((response) => {
         setProductList(response?.data?.results?.list.reverse());
         console.log(response.data);
@@ -512,9 +474,7 @@ function ProductManagementEdit2(props) {
 
   useEffect(() => {
     axios
-      .post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/product/productList"
-      )
+      .post("${process.env.REACT_APP_APIENDPOINT}admin/product/productList")
       .then((response) => {
         const products = response?.data?.results?.list.reverse();
         setProductList(products);
@@ -529,9 +489,7 @@ function ProductManagementEdit2(props) {
   }, [id]);
   const fetchProductList2 = () => {
     axios
-      .post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/product/productList"
-      )
+      .post("${process.env.REACT_APP_APIENDPOINT}admin/product/productList")
       .then((response) => {
         const products = response?.data?.results?.list.reverse();
         setProductList(products);

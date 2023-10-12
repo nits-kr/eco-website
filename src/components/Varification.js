@@ -72,7 +72,6 @@ function Varification() {
   }, []);
   return (
     <>
-      <Sidebar />
       <section className="login_page">
         <div className="container-fluid px-0">
           <div className="row justify-content-start">

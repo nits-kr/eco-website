@@ -27,10 +27,8 @@ function TransactionManagement() {
       transactionList?.data?.results?.statusData?.slice().reverse() ?? [];
     setCategoryListData(reversedList);
   }, [transactionList]);
-  const url =
-    "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/transacation/list";
-  const url2 =
-    "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/order/order/search";
+  const url = `${process.env.REACT_APP_APIENDPOINT}admin/transacation/list`;
+  const url2 = `${process.env.REACT_APP_APIENDPOINT}admin/order/order/search`;
   useEffect(() => {
     subTransactionList();
   }, []);
@@ -49,20 +47,7 @@ function TransactionManagement() {
         });
       });
   };
-  // const handleTransactionDetails = (id) => {
-  //     alert(id)
-  //     console.log("getTransactionDetails", id);
-  //     getTransactionDetails(id);
-  //   };
-  // const handleDownload = () => {
-  //   if (data && data.results && data.results.file) {
-  //     const downloadUrl = data.results.file;
-  //     const link = document.createElement("a");
-  //     link.href = downloadUrl;
-  //     link.download = "file.xlsx";
-  //     link.click();
-  //   }
-  // };
+
   const handleDownload = () => {
     if (data) {
       const blob = new Blob([data]);

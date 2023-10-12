@@ -70,7 +70,7 @@ export default function CreatCoupan() {
     event.preventDefault();
     try {
       const response = await axios.post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/coupan/coupan/create",
+        `${process.env.REACT_APP_APIENDPOINT}admin/coupan/coupan/create`,
         {
           coupanTitle_en: coupan.coupanTitle,
           coupanCode: coupan.coupanCode,
@@ -101,9 +101,7 @@ export default function CreatCoupan() {
   };
   useEffect(() => {
     axios
-      .post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/product/productList"
-      )
+      .post(`${process.env.REACT_APP_APIENDPOINT}admin/product/productList`)
       .then((response) => {
         setCategories(response?.data?.results?.list.reverse());
         console.log(response.data);
@@ -113,7 +111,7 @@ export default function CreatCoupan() {
     const fetchData = async () => {
       try {
         const response = await axios.post(
-          "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/subSubCategory/selectCategory"
+          `${process.env.REACT_APP_APIENDPOINT}admin/category/subSubCategory/selectCategory`
         );
         setCategories2(response.data.results.categoryData);
         console.log(response.data);
@@ -127,7 +125,7 @@ export default function CreatCoupan() {
     event.preventDefault();
     try {
       const response = await axios.post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/coupan/coupan/restriction",
+        `${process.env.REACT_APP_APIENDPOINT}admin/coupan/coupan/restriction`,
         {
           product_Id: subCategory.categoryId,
           category_Id: subSubCategory.categoryId1,
@@ -157,7 +155,7 @@ export default function CreatCoupan() {
     event.preventDefault();
     try {
       const response = await axios.post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/coupan/coupan/coupanUsage",
+        `${process.env.REACT_APP_APIENDPOINT}admin/coupan/coupan/coupanUsage`,
         {
           customer: usage.perCustomer,
           limited: usage.perLimited,
@@ -204,7 +202,7 @@ export default function CreatCoupan() {
                         role="tablist"
                       >
                         <button
-                          className="nav-link active"
+                          className="nav-link active w-100"
                           id="nav-home-tab"
                           data-bs-toggle="tab"
                           data-bs-target="#nav-home"
@@ -215,7 +213,7 @@ export default function CreatCoupan() {
                         >
                           General
                         </button>
-                        <button
+                        {/* <button
                           className="nav-link"
                           id="nav-profile-tab"
                           data-bs-toggle="tab"
@@ -238,7 +236,7 @@ export default function CreatCoupan() {
                           aria-selected="false"
                         >
                           Usage
-                        </button>
+                        </button> */}
                       </div>
                     </nav>
                     <div className="tab-content" id="nav-tabContent">

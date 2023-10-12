@@ -5,10 +5,8 @@ import { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import ResetPassword from "./components/ResetPassword";
 import ReportManagement from "./components/ReportManagement";
-import RecentOrderDetails from "./components/RecentOrderDetails";
+// import RecentOrderDetails from "./components/RecentOrderDetails";
 import OrderDetails from "./components/OrderDetails";
-import OfferManagementEnable from "./components/OfferManagementEnable";
-import OfferManagementDisable from "./components/OfferManagementDisable";
 import OfferManagement from "./components/OfferManagement";
 import OrderManagement from "./components/OrderManagement";
 import OfferDetails from "./components/OfferDetails";
@@ -16,18 +14,15 @@ import NotificationManagement from "./components/NotificationManagement";
 import Login from "./components/Login";
 import LanguageSelection from "./components/LanguageSelection";
 import Informations from "./components/Informations";
-import HomeScreenBanner from "./components/HomeScreenBanner";
 import HelpView from "./components/HelpView";
 import Help from "./components/Help";
 import ForgetPassword from "./components/ForgetPassword";
 import EditProfile from "./components/EditProfile";
-import Dashboard from "./components/Dashboard";
 import ContentManagement from "./components/ContentManagement";
 import ContactUs from "./components/ContactUs";
-import ChangePassword from "./components/ChangePassword";
 import CategoryManagement from "./components/CategoryManagement";
 import AnnounceManagement from "./components/AnnounceManagement";
-import ProductList from "./components/ProductList";
+// import ProductList from "./components/ProductList";
 import Varification from "./components/Varification";
 import UsersManagement from "./components/UsersManagement";
 import UserDetails2 from "./components/UserDetails2";
@@ -41,7 +36,6 @@ import CreatCoupan from "./components/CreatCoupan";
 import VerificationModal from "./components/VerificationModal";
 import Agent from "./components/Agent";
 import AgentDetails from "./components/AgentDetails";
-import AgentInformation from "./components/AgentInformation";
 import LoadingBar from "react-top-loading-bar";
 import SubCategory from "./components/SubCategory";
 import ProductManagement2 from "./components/ProductManagement2";
@@ -54,7 +48,6 @@ import UserOfferPOsted from "./components/UserOfferPOsted";
 import UserOfferPostedDetails from "./components/UserOfferPostedDetails";
 import UserDetailsAll from "./components/UserDetailsAll";
 import AgentDetailsAll from "./components/AgentDetailsAll";
-import Dashboard2 from "./components/Dashboard2";
 import ProductManagementEdit2 from "./components/ProductManagementEdit2";
 import DashboardNew from "./components/DashboardNew";
 import StoreSettings from "./components/configurations/StoreSettings";
@@ -84,14 +77,7 @@ function App() {
             path="/dashboard"
             element={<DashboardNew setProgress={setProgress} />}
           />
-          {/* <Route
-            exact
-            className="active"
-            path="/dashboard"
-            element={<Dashboard setProgress={setProgress} />}
-          /> */}
-          {/* <Dashboard2/> */}
-          {/* <DashboardNew/> */}
+
           <Route
             exact
             className="active"
@@ -217,13 +203,13 @@ function App() {
             exact
             className="active"
             path="/Home-Screen-banners"
-            element={<Banners setProgress={setProgress}/>}
+            element={<Banners setProgress={setProgress} />}
           />
           <Route
             exact
             className="active"
             path="/Home-Screen-banners-product"
-            element={<ProductBanner setProgress={setProgress}/>}
+            element={<ProductBanner setProgress={setProgress} />}
           />
 
           {/* <Route
@@ -278,12 +264,12 @@ function App() {
             path="/reset"
             element={<ResetPassword />}
           />
-          <Route
+          {/* <Route
             exact
             className="active"
             path="/recent-order"
             element={<RecentOrderDetails />}
-          />
+          /> */}
           <Route
             exact
             className="active"
@@ -305,18 +291,6 @@ function App() {
           <Route
             exact
             className="active"
-            path="/offerManagementEnable"
-            element={<OfferManagementEnable />}
-          />
-          <Route
-            exact
-            className="active"
-            path="/offerManagementDisable"
-            element={<OfferManagementDisable />}
-          />
-          <Route
-            exact
-            className="active"
             path="/languageSelection"
             element={<LanguageSelection />}
           />
@@ -326,12 +300,12 @@ function App() {
             path="/editProfile"
             element={<EditProfile />}
           />
-          <Route
+          {/* <Route
             exact
             className="active"
             path="/changePassword"
             element={<ChangePassword />}
-          />
+          /> */}
           <Route
             exact
             className="active"

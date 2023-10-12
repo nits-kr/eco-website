@@ -12,25 +12,13 @@ function ForgetPassword() {
   const handleSubmit = (event) => {
     event.preventDefault();
     axios
-      .post("http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/user/sendmail", {
+      .post(`${process.env.REACT_APP_APIENDPOINT}admin/user/sendmail`, {
         userEmail: email,
       })
       .then((response) => {
         console.log(response.data.results);
         if (response.data.results.userEmail) {
           setEmail(response.data.results.userEmail);
-          //console.log("Swal.fire() should be executed here");
-          // Swal.fire({
-          //   title: "OTP sent!",
-          //   text: "Your OTP have been send successfully.",
-          //   icon: "success",
-          //   confirmButtonColor: "#3085d6",
-          //   confirmButtonText: "OK",
-          // }).then((result) => {
-          //   if (result.isConfirmed) {
-          //     window.location.href = "/varification";
-          //   }
-          // });
         }
       })
       .catch((error) => {
@@ -43,7 +31,6 @@ function ForgetPassword() {
 
   return (
     <>
-    <Sidebar/>
       <section className="login_page">
         <div className="container-fluid px-0">
           <div className="row justify-content-start">
@@ -56,8 +43,8 @@ function ForgetPassword() {
                     </div>
                     <h1>Forgot Password</h1>
                     <p>
-                      Please enter your registered Email Address to receive
-                      the OTP
+                      Please enter your registered Email Address to receive the
+                      OTP
                     </p>
                   </div>
                   <div className="col-12">
@@ -75,8 +62,11 @@ function ForgetPassword() {
                         />
                       </div>
                       <div className="form-group col-12">
-
-                        <Link to="/varification"><button className="comman_btn" type="submit">Submit</button></Link>
+                        <Link to="/varification" onClick={handleSubmit}>
+                          <button className="comman_btn" type="submit">
+                            Submit
+                          </button>
+                        </Link>
                       </div>
                     </form>
                   </div>

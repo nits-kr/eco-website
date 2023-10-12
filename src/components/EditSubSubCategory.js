@@ -23,7 +23,7 @@ function EditSubSubCategory(props) {
     event.preventDefault();
     await axios
       .post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/attribute/createAttribute",
+        `${process.env.REACT_APP_APIENDPOINT}admin/category/attribute/createAttribute`,
         { name: category }
       )
       .then((response) => {
@@ -40,7 +40,7 @@ function EditSubSubCategory(props) {
   const fetchData = async () => {
     try {
       const response = await axios.post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/category/list"
+        `${process.env.REACT_APP_APIENDPOINT}admin/category/category/list`
       );
       setCategories(response.data.results.list);
       console.log(response.data);
@@ -53,7 +53,7 @@ function EditSubSubCategory(props) {
     const fetchData = async () => {
       try {
         const response = await axios.post(
-          `http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/subCategory/selectCategory/${category.categoryId}`
+          `${process.env.REACT_APP_APIENDPOINT}admin/category/subCategory/selectCategory/${category.categoryId}`
         );
         setSubCategories(response.data.results.categoryData);
         console.log(response.data);
@@ -100,7 +100,7 @@ function EditSubSubCategory(props) {
       localStorage.getItem("token");
     axios
       .patch(
-        `http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/subSubCategory/subSubCategoryUpdate/${props.newCategory.id}`,
+        `${process.env.REACT_APP_APIENDPOINT}admin/category/subSubCategory/subSubCategoryUpdate/${props.newCategory.id}`,
         {
           subSubCategoryName_en: category.nameEn,
           subSubCategoryName_ar: category.nameAr,
@@ -198,45 +198,7 @@ function EditSubSubCategory(props) {
                       ))}
                   </select>
                 </div>
-                {/* <div className="form-group col-6">
-                  <label htmlFor="">Select Sub Sub Category</label>
-                  <select
-                    className="select form-control"
-                    size={15}
-                    name="categoryId2"
-                    id="selectSubSubCategory"
-                    value={category.categoryId2}
-                    onChange={handleInputChange}
-                  >
-                    {Array.isArray(subSubCategories) &&
-                      subSubCategories.map((subSubCategory) => (
-                        <option
-                          key={subSubCategory._id}
-                          value={subSubCategory._id}
-                        >
-                          {subSubCategory.subSubCategoryName}
-                        </option>
-                      ))}
-                  </select>
-                </div>
-                <div className="form-group col-6">
-                  <label htmlFor="">Select Attribute</label>
-                  <select
-                    className="select form-control"
-                    size={15}
-                    name="categoryId3"
-                    id="selectAttribute"
-                    value={category.categoryId3}
-                    onChange={handleInputChange}
-                  >
-                    {Array.isArray(attributes) &&
-                      attributes.map((attribute) => (
-                        <option key={attribute._id} value={attribute._id}>
-                          {attribute.attributeName}
-                        </option>
-                      ))}
-                  </select>
-                </div> */}
+
                 <div className="form-group col-6">
                   <label htmlFor="">Value Name (En)</label>
                   <input

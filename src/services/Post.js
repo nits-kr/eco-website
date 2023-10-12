@@ -13,7 +13,7 @@ export const PostApi = createApi({
   //   return headers;
   // },
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/",
+    baseUrl: "https://euser.techgropsedev.com:2087/",
     headers: {
       "x-auth-token-user": localStorage.getItem("token"),
     },

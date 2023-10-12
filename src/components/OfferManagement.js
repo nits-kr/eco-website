@@ -10,6 +10,7 @@ import { useSearchOfferMutation } from "../services/Post";
 import { increment } from "../app/Slice";
 import Sidebar from "./Sidebar";
 import { useSelector, useDispatch } from "react-redux";
+import MultilevelDropdown from "./MultilevelDropdown";
 function OfferManagement() {
   const dispatch = useDispatch();
   const count = useSelector((state) => state?.user?.value);
@@ -52,10 +53,8 @@ function OfferManagement() {
   const [deleteOffer, response] = useDeleteOfferMutation();
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
-  const url =
-    "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/offer/offer-list";
-  const url2 =
-    "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/offer/search-offer";
+  const url = `${process.env.REACT_APP_APIENDPOINT}admin/offer/offer-list`;
+  const url2 = `${process.env.REACT_APP_APIENDPOINT}admin/offer/search-offer`;
 
   const getReversedList = (list) => {
     return list?.data?.results?.list?.slice()?.reverse() ?? [];
@@ -209,9 +208,7 @@ function OfferManagement() {
 
   useEffect(() => {
     axios
-      .post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/product/productList"
-      )
+      .post(`${process.env.REACT_APP_APIENDPOINT}admin/product/productList`)
       .then((response) => {
         setCategories(response?.data?.results?.list.reverse());
         console.log(response.data);
@@ -220,13 +217,10 @@ function OfferManagement() {
   const handleSearch = (e) => {
     e.preventDefault();
     axios
-      .post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/offer/offer-list",
-        {
-          from: startDate,
-          to: endDate,
-        }
-      )
+      .post(`${process.env.REACT_APP_APIENDPOINT}admin/offer/offer-list`, {
+        from: startDate,
+        to: endDate,
+      })
       .then((response) => {
         const list = response?.data?.results?.list?.reverse();
         if (list && list.length > 0) {
@@ -276,6 +270,7 @@ function OfferManagement() {
                         <h2>Add New Offer</h2>
                       </div>
                     </div>
+                    <MultilevelDropdown />
                     <form
                       className="form-design py-4 px-3 help-support-form row align-items-end justify-content-between"
                       action=""
@@ -286,22 +281,30 @@ function OfferManagement() {
                           Select Product
                           <span className="required-field text-danger">*</span>
                         </label>
-                        <select
-                          className="select form-control"
-                          multiple=""
-                          name="categoryId"
-                          id="selectCategory"
-                          onChange={handleInputChange}
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                          }}
                         >
-                          <option value="">Select Product</option>
-                          <option value="selectAll">All Products</option>
-                          {Array.isArray(categories) &&
-                            categories.map((category) => (
-                              <option key={category._id} value={category._id}>
-                                {category.productName_en}
-                              </option>
-                            ))}
-                        </select>
+                          <select
+                            className="select form-control"
+                            multiple=""
+                            name="categoryId"
+                            id="selectCategory"
+                            onChange={handleInputChange}
+                          >
+                            <option value="">Select Product</option>
+                            <option value="selectAll">All Products</option>
+                            {Array.isArray(categories) &&
+                              categories.map((category) => (
+                                <option key={category._id} value={category._id}>
+                                  {category.productName_en}
+                                </option>
+                              ))}
+                          </select>
+                        </div>
                       </div>
                       <div className="form-group col-6">
                         <label htmlFor="">
@@ -475,10 +478,6 @@ function OfferManagement() {
                                   <tr key={index}>
                                     <td> {index + 1} </td>
                                     <td>
-                                      {/* {
-                                        item?.products[0]?.product_Id
-                                          ?.productName_en
-                                      } */}
                                       {item?.products?.length === 1
                                         ? item?.products[0]?.product_Id
                                             ?.productName_en
@@ -487,22 +486,6 @@ function OfferManagement() {
                                     <td> {item?.title} </td>
                                     <td> {item?.code} </td>
                                     <td> {item?.Discount} </td>
-                                    {/* <td>
-                                        <form className="table_btns d-flex align-items-center">
-                                          <div className="check_toggle">
-                                            <input
-                                              data-bs-toggle="modal"
-                                              data-bs-target="#staticBackdrop"
-                                              type="checkbox"
-                                              defaultChecked=""
-                                              name="check1"
-                                              id="check1"
-                                              className="d-none"
-                                            />
-                                            <label htmlFor="check1" />
-                                          </div>
-                                        </form>
-                                      </td> */}
                                     <td> {item?.endDate?.slice(0, 10)} </td>
                                     <td>
                                       <Link
@@ -631,18 +614,6 @@ function OfferManagement() {
                 action=""
                 onSubmit={handleSaveChanges1}
               >
-                {/* <div className="form-group col-6">
-                  <label htmlFor="">Product Name</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    // value={productName}
-                    defaultValue={productName2}
-                    onChange={(e) => setProductName(e.target.value)}
-                    name="name"
-                    id="name"
-                  />
-                </div> */}
                 <div className="form-group col-12">
                   <label htmlFor="">Title</label>
                   <input

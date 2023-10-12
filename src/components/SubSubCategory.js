@@ -23,10 +23,8 @@ function SubSubCategory() {
   const [newCategory, setNewCategory] = useState([]);
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
-  const url =
-    "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/subSubCategory/subSubCategoryList";
-  const url2 =
-    "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/subSubCategory/subSubCategorySearch";
+  const url = `${process.env.REACT_APP_APIENDPOINT}admin/category/subSubCategory/subSubCategoryList`;
+  const url2 = `${process.env.REACT_APP_APIENDPOINT}admin/category/subSubCategory/subSubCategorySearch`;
   useEffect(() => {
     subSubCategoryManagementList();
   }, []);
@@ -155,7 +153,7 @@ function SubSubCategory() {
     event.preventDefault();
     await axios
       .post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/subSubCategory/createSubSubCategory",
+        `${process.env.REACT_APP_APIENDPOINT}admin/category/subSubCategory/createSubSubCategory`,
         {
           subSubCategoryName_en: subSubCategory.nameEn,
           subSubCategoryName_ar: subSubCategory.nameAr,
@@ -188,7 +186,7 @@ function SubSubCategory() {
     const fetchData = async () => {
       try {
         const response = await axios.post(
-          "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/category/list"
+          `${process.env.REACT_APP_APIENDPOINT}admin/category/category/list`
         );
         setCategories(response.data.results.list);
         console.log(response.data);
@@ -202,7 +200,7 @@ function SubSubCategory() {
     const fetchData = async () => {
       try {
         const response = await axios.post(
-          `http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/subCategory/selectCategory/${subSubCategory.categoryId}`
+          `${process.env.REACT_APP_APIENDPOINT}admin/category/subCategory/selectCategory/${subSubCategory.categoryId}`
         );
         setSubCategories(response.data.results.categoryData);
         console.log(response.data);
@@ -215,7 +213,7 @@ function SubSubCategory() {
   const handleSave = async () => {
     try {
       const response = await axios.post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/subSubCategory/subSubCategoryList"
+        `${process.env.REACT_APP_APIENDPOINT}admin/category/subSubCategory/subSubCategoryList`
       );
 
       setSubSubCategoryList(response?.data?.results?.list.reverse());
