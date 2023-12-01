@@ -225,7 +225,6 @@ function CategoryManagement(props) {
   }, []);
 
   const handleUpdate = (item) => {
-    // console.log("category update data", nameEn, nameAr, categoryPic, id);
     setNewCategory({
       nameEn: item?.categoryName_en,
       nameAr: item?.categoryName_ar,
