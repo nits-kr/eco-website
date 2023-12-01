@@ -68,7 +68,7 @@ function EditSubSubCategory(props) {
     const fetchData = async () => {
       try {
         const response = await axios.post(
-          "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/attribute/selectSubSubCategory"
+          `${process.env.REACT_APP_APIENDPOINT}admin/category/attribute/selectSubSubCategory`
         );
         setSubSubCategories(response.data.results.subSubCategoryData);
         console.log(response.data);
@@ -83,7 +83,7 @@ function EditSubSubCategory(props) {
     const fetchData = async () => {
       try {
         const response = await axios.post(
-          "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/values/selectAttribute"
+          `${process.env.REACT_APP_APIENDPOINT}admin/category/values/selectAttribute`
         );
         setAttributes(response.data.results.attributeCategoryData);
         console.log(response.data);

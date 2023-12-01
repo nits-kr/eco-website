@@ -27,10 +27,8 @@ function Value() {
     categoryId2: "",
     categoryId3: "",
   });
-  const url =
-    "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/values/valuesList";
-  const url2 =
-    "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/values/valuesSearch";
+  const url = `${process.env.REACT_APP_APIENDPOINT}admin/category/values/valuesList`;
+  const url2 = `${process.env.REACT_APP_APIENDPOINT}admin/category/values/valuesSearch`;
   useEffect(() => {
     subValueManagementList();
   }, []);
@@ -172,7 +170,7 @@ function Value() {
       }
 
       const response = await axios.post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/values/createvalues",
+        `${process.env.REACT_APP_APIENDPOINT}admin/category/values/createvalues`,
         requestBody
       );
 
@@ -196,7 +194,7 @@ function Value() {
   const handleSave = async () => {
     try {
       const response = await axios.post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/values/valuesList"
+        `${process.env.REACT_APP_APIENDPOINT}admin/category/values/valuesList`
       );
       setValueList(response.data.results.list.reverse());
       console.log(response.data);
@@ -211,7 +209,7 @@ function Value() {
     const fetchData = async () => {
       try {
         const response = await axios.post(
-          "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/category/list"
+          `${process.env.REACT_APP_APIENDPOINT}admin/category/category/list`
         );
         setCategories(response.data.results.list);
         console.log(response.data);
@@ -225,7 +223,7 @@ function Value() {
     const fetchData = async () => {
       try {
         const response = await axios.post(
-          `http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/subCategory/selectCategory/${values.categoryId}`
+          `${process.env.REACT_APP_APIENDPOINT}admin/category/subCategory/selectCategory/${values.categoryId}`
         );
         setSubCategories(response.data.results.categoryData);
         console.log(response.data);
@@ -239,7 +237,7 @@ function Value() {
     const fetchData = async () => {
       try {
         const response = await axios.post(
-          `http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/subSubCategory/selectSubCategory/${values.categoryId1}`
+          `${process.env.REACT_APP_APIENDPOINT}admin/category/subSubCategory/selectSubCategory/${values.categoryId1}`
         );
         setSubSubCategories(response.data.results.subCategoryData);
         console.log(response.data);
@@ -254,7 +252,7 @@ function Value() {
     const fetchData = async () => {
       try {
         const response = await axios.post(
-          `http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/attribute/selectSubSubCategory/${values.categoryId}`
+          `${process.env.REACT_APP_APIENDPOINT}admin/category/attribute/selectSubSubCategory/${values.categoryId}`
         );
         setAttributes(response.data.results.subSubCategoryData);
         console.log(response.data);

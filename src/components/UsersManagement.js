@@ -22,10 +22,8 @@ function UsersManagement(props) {
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
   const handleId = (id) => {};
-  const url =
-    "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/user/userList";
-  const url2 =
-    "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/user/user-search";
+  const url = `${process.env.REACT_APP_APIENDPOINT}admin/user/userList`;
+  const url2 = `${process.env.REACT_APP_APIENDPOINT}admin/user/user-search`;
   useEffect(() => {
     userManagementList();
   }, []);
