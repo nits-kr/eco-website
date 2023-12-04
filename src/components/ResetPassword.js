@@ -81,6 +81,7 @@ function ResetPassword() {
   }, []);
 
   const storedUserEmail = localStorage.getItem("userLoginEmail");
+  const emailduringotp = localStorage?.getItem("emailduringotp");
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -90,7 +91,7 @@ function ResetPassword() {
         {
           password: password,
           confirmPassword: confirmPassword,
-          userEmail: storedUserEmail,
+          userEmail: emailduringotp,
         }
       );
       setErrorMessage("");
@@ -103,6 +104,7 @@ function ResetPassword() {
       }).then((result) => {
         if (result.isConfirmed) {
           // window.location.href = "/";
+          navigate("/");
         }
       });
     } catch (error) {
@@ -175,8 +177,8 @@ function ResetPassword() {
                         <button
                           type="submit"
                           className="comman_btn"
-                          data-bs-toggle="modal"
-                          data-bs-target="#staticBackdrop"
+                          // data-bs-toggle="modal"
+                          // data-bs-target="#staticBackdrop"
                         >
                           Save
                         </button>

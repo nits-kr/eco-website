@@ -49,7 +49,7 @@ function ProductList2(props) {
     if (searchQuery) {
       try {
         const response = await axios.post(
-          "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/product/productSearch",
+          `${process.env.REACT_APP_APIENDPOINT}admin/product/productSearch`,
           {
             productName_en: searchQuery,
           }

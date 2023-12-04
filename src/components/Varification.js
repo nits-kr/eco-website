@@ -12,6 +12,8 @@ function Varification() {
   const [intervalId, setIntervalId] = useState(null);
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
+
+  const emailduringotp = localStorage?.getItem("emailduringotp");
   const handleSubmit = (event) => {
     event.preventDefault();
     const otp =
@@ -20,13 +22,10 @@ function Varification() {
       event.target[2].value +
       event.target[3].value;
     axios
-      .post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/user/verifyOtp",
-        {
-          userEmail: "ankita2@gmail.com",
-          otp: otp,
-        }
-      )
+      .post(`${process.env.REACT_APP_APIENDPOINT}admin/user/verifyOtp`, {
+        userEmail: emailduringotp,
+        otp: otp,
+      })
       .then((response) => {
         console.log(response.data);
         Swal.fire({

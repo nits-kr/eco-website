@@ -454,7 +454,7 @@ function ProductManagementEdit2(props) {
     props.setProgress(10);
     setLoading(true);
     axios
-      .post("${process.env.REACT_APP_APIENDPOINT}admin/product/productList")
+      .post(`${process.env.REACT_APP_APIENDPOINT}admin/product/productList`)
       .then((response) => {
         setProductList(response?.data?.results?.list?.reverse());
         console.log(response.data);
@@ -465,7 +465,7 @@ function ProductManagementEdit2(props) {
 
   const fetchProductList = () => {
     axios
-      .post("${process.env.REACT_APP_APIENDPOINT}admin/product/productList")
+      .post(`${process.env.REACT_APP_APIENDPOINT}admin/product/productList`)
       .then((response) => {
         setProductList(response?.data?.results?.list.reverse());
         console.log(response.data);
@@ -474,7 +474,7 @@ function ProductManagementEdit2(props) {
 
   useEffect(() => {
     axios
-      .post("${process.env.REACT_APP_APIENDPOINT}admin/product/productList")
+      .post(`${process.env.REACT_APP_APIENDPOINT}admin/product/productList`)
       .then((response) => {
         const products = response?.data?.results?.list.reverse();
         setProductList(products);
@@ -489,7 +489,7 @@ function ProductManagementEdit2(props) {
   }, [id]);
   const fetchProductList2 = () => {
     axios
-      .post("${process.env.REACT_APP_APIENDPOINT}admin/product/productList")
+      .post(`${process.env.REACT_APP_APIENDPOINT}admin/product/productList`)
       .then((response) => {
         const products = response?.data?.results?.list.reverse();
         setProductList(products);

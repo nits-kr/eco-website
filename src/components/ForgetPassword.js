@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 //import Swal from "sweetalert2";
 import axios from "axios";
 import Sidebar from "./Sidebar";
@@ -9,6 +9,10 @@ function ForgetPassword() {
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
 
+  localStorage?.setItem("emailduringotp", email);
+
+  const navigate = useNavigate();
+
   const handleSubmit = (event) => {
     event.preventDefault();
     axios
@@ -17,6 +21,7 @@ function ForgetPassword() {
       })
       .then((response) => {
         console.log(response.data.results);
+        navigate("/varification");
         if (response.data.results.userEmail) {
           setEmail(response.data.results.userEmail);
         }
@@ -48,7 +53,7 @@ function ForgetPassword() {
                     </p>
                   </div>
                   <div className="col-12">
-                    <form className="row form-design" onSubmit={handleSubmit}>
+                    <form className="row form-design">
                       <div className="form-group col-12">
                         <label htmlFor="">Email Address</label>
                         <input

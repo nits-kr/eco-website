@@ -86,7 +86,7 @@ function Login() {
                   <div className="col-12">
                     <form className="row form-design">
                       <div className="form-group col-12">
-                        <label htmlFor="userEmail">User Name</label>
+                        <label htmlFor="userEmail">User Email</label>
                         <input
                           type="text"
                           className="form-control"
