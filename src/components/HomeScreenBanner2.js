@@ -96,7 +96,7 @@ function HomeScreenBanner2() {
       const data = new FormData();
       data.append("homeScreenOne", formData.bannerPic1);
       const response = await axios.post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/home/homeScreen/ScreenOne",
+        `${process.env.REACT_APP_APIENDPOINT}admin/home/homeScreen/ScreenOne`,
         data
       );
       console.log(response?.data?.results?.bannersData);
@@ -133,7 +133,7 @@ function HomeScreenBanner2() {
       const data = new FormData();
       data.append("homeScreenTwo", formData.bannerPic2);
       const response = await axios.post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/home/homeScreen/ScreenTwo",
+        `${process.env.REACT_APP_APIENDPOINT}admin/home/homeScreen/ScreenTwo`,
         data
       );
       console.log(response?.data?.results?.bannersData);
@@ -168,7 +168,7 @@ function HomeScreenBanner2() {
       const data = new FormData();
       data.append("homeScreenThree", formData.bannerPic3);
       const response = await axios.post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/home/homeScreen/ScreenThree",
+        `${process.env.REACT_APP_APIENDPOINT}admin/home/homeScreen/ScreenThree`,
         data
       );
       console.log(response?.data?.results?.bannersData);
@@ -203,7 +203,7 @@ function HomeScreenBanner2() {
       const data = new FormData();
       data.append("homeScreenFour", formData.bannerPic4);
       const response = await axios.post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/home/homeScreen/ScreenFour",
+        `${process.env.REACT_APP_APIENDPOINT}admin/home/homeScreen/ScreenFour`,
         data
       );
       console.log(response?.data?.results?.bannersData);
@@ -238,7 +238,7 @@ function HomeScreenBanner2() {
       const data = new FormData();
       data.append("homeScreenFive", formData.bannerPic5);
       const response = await axios.post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/home/homeScreen/ScreenFive",
+        `${process.env.REACT_APP_APIENDPOINT}admin/home/homeScreen/ScreenFive`,
         data
       );
       console.log(response?.data?.results?.bannersData);
