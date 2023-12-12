@@ -162,7 +162,7 @@ function Banners(props) {
       data.append("categoryBanner", formData.bannerPic);
 
       const response = await axios.post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/home/homeScreen/category-banner",
+        `${process.env.REACT_APP_APIENDPOINT}admin/home/homeScreen/category-banner`,
         data
       );
 
@@ -201,7 +201,7 @@ function Banners(props) {
       data.append("bottomBanner", formData.bannerPic);
 
       const response = await axios.post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/home/homeScreen/bottom-banner",
+        `${process.env.REACT_APP_APIENDPOINT}admin/home/homeScreen/bottom-banner`,
         data
       );
 
@@ -240,7 +240,7 @@ function Banners(props) {
       data.append("sideBanner", formData.bannerPic);
 
       const response = await axios.post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/home/homeScreen/side-banner",
+        `${process.env.REACT_APP_APIENDPOINT}admin/home/homeScreen/side-banner`,
         data
       );
 
@@ -279,7 +279,7 @@ function Banners(props) {
       data.append("middleBanner", formData.bannerPic);
 
       const response = await axios.post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/home/homeScreen/middle-banner",
+        `${process.env.REACT_APP_APIENDPOINT}admin/home/homeScreen/middle-banner`,
         data
       );
 
@@ -318,7 +318,7 @@ function Banners(props) {
       data.append("scrollBanner", formData.bannerPic);
 
       const response = await axios.post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/home/homeScreen/scroll-banner",
+        `${process.env.REACT_APP_APIENDPOINT}admin/home/homeScreen/scroll-banner`,
         data
       );
 
@@ -351,7 +351,7 @@ function Banners(props) {
   const fetchData = async () => {
     try {
       const response = await axios.post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/category/list"
+        `${process.env.REACT_APP_APIENDPOINT}admin/category/category/list`
       );
       setCategories(response?.data?.results?.list);
       console.log(response?.data?.results?.list);
@@ -364,7 +364,7 @@ function Banners(props) {
     const fetchData = async () => {
       try {
         const response = await axios.post(
-          `http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/subCategory/selectCategory/${subCategory.categoryId}`
+          `${process.env.REACT_APP_APIENDPOINT}admin/category/subCategory/selectCategory/${subCategory.categoryId}`
         );
         setSubCategories(response.data.results.categoryData);
         console.log(response.data);
@@ -379,7 +379,7 @@ function Banners(props) {
     const fetchData = async () => {
       try {
         const response = await axios.post(
-          `http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/category/subSubCategory/selectSubCategory/${subCategory.categoryId1}`
+          `${process.env.REACT_APP_APIENDPOINT}admin/category/subSubCategory/selectSubCategory/${subCategory.categoryId1}`
         );
         setSubSubCategories(response.data.results.subCategoryData);
         console.log(response.data);
