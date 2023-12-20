@@ -2685,7 +2685,7 @@ function ProductManagementEdit2(props) {
                                 <th>Attribute</th>
                                 <th>Value</th>
 
-                                <th>Action</th>
+                                {/* <th>Action</th> */}
                               </tr>
                             </thead>
                             <tbody>
@@ -2751,7 +2751,7 @@ function ProductManagementEdit2(props) {
                                               ?.valuesName_en || "N/A"}
                                           </td>
 
-                                          <td>
+                                          {/* <td>
                                             <Link
                                               className="comman_btn2 table_viewbtn"
                                               to={item.slug}
@@ -2760,7 +2760,7 @@ function ProductManagementEdit2(props) {
                                             >
                                               View
                                             </Link>
-                                          </td>
+                                          </td> */}
                                         </tr>
                                       )
                                     )}
