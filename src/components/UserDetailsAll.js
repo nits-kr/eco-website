@@ -22,6 +22,7 @@ function UserDetailsAll() {
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
   const { id: routeId } = useParams();
+  const [loading, setLoading] = useState(false);
   const [userDetails, isLoading] = useUserDetailsAllMutation(routeId);
   const [deleteOrder] = useDeleteOrderMutation();
   const [blockUser, res] = useBlockUserMutation();
@@ -125,7 +126,7 @@ function UserDetailsAll() {
   return (
     <>
       <Sidebar Dash={"users"} />
-      {isLoading ? (
+      {loading ? (
         <div>Loading! Please wait...</div>
       ) : (
         <div className="admin_main">
