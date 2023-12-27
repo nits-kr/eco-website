@@ -12,7 +12,6 @@ import {
   faChartLine,
   faArrowRight,
   faCreditCard,
-  faStar,
 } from "@fortawesome/free-solid-svg-icons";
 import { useUserDetailsAllMutation } from "../services/Post";
 import { useDeleteOrderMutation } from "../services/Post";
