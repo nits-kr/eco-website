@@ -156,11 +156,24 @@ function EditProfile() {
                                 style={{ height: "150px" }}
                               />
                             ) : storedPic ? (
-                              <img src={storedPic} alt="" />
+                              <img
+                                src={storedPic}
+                                alt=""
+                                style={{
+                                  height: "100px",
+                                  width: "100px",
+                                  borderRadius: "50%",
+                                }}
+                              />
                             ) : (
                               <img
                                 src="../assets/img/profile_img1.jpg"
                                 alt=""
+                                style={{
+                                  height: "100px",
+                                  width: "100px",
+                                  borderRadius: "50%",
+                                }}
                               />
                             )}
                           </div>
