@@ -152,23 +152,6 @@ function OrderDetails() {
                                           {details?.address_Id?.fullName}{" "}
                                         </strong>
                                       </Link>
-                                      {/* <div className="rating_box">
-                                        <Link to="">
-                                          <i className="fas fa-star"></i>
-                                        </Link>
-                                        <Link to="">
-                                          <i className="fas fa-star"></i>
-                                        </Link>
-                                        <Link to="">
-                                          <i className="fas fa-star"></i>
-                                        </Link>
-                                        <Link to="">
-                                          <i className="fas fa-star"></i>
-                                        </Link>
-                                        <Link to="">
-                                          <i className="far fa-star"></i>
-                                        </Link>
-                                      </div> */}
                                     </div>
                                   </div>
                                 </div>
