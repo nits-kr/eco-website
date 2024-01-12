@@ -13,7 +13,7 @@ function UsersManagement(props) {
   const [createMap, res] = useCreateMapMutation();
   const { data, isLoading, isError } = useGetFileQuery("file-id");
   const [loading, setLoading] = useState(false);
-  console.log("down load data of user management", data);
+
   const [usersList, setUsersList] = useState([]);
   const [startDate, setStartDate] = useState("");
   const [startDate1, setStartDate1] = useState("");
@@ -125,39 +125,7 @@ function UsersManagement(props) {
         console.log(error.response.data);
       });
   };
-  // console.log("search query", searchQuery);
-  // useEffect(() => {
-  //   handleSearch1();
-  // }, [searchQuery]);
-  // const handleSearch1 = async (e) => {
-  //   // e.preventDefault();
-  //   if (searchQuery) {
-  //     try {
-  //       const response = await axios.post(
-  //         "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/user/user-search",
-  //         {
-  //           userName: searchQuery,
-  //         }
-  //       );
-  //       const { error, results } = response?.data;
-  //       if (error) {
-  //         throw new Error("Error searching for products. Data are Not Found");
-  //       } else {
-  //         setUsersList(results?.userData);
-  //       }
-  //     } catch (error) {
-  //       Swal.fire({
-  //         title: "Error!",
-  //         text: error.message,
-  //         icon: "error",
-  //         confirmButtonText: "OK",
-  //       });
-  //       setUsersList([]); // Set usersList to empty when there is an error in the search
-  //     }
-  //   } else {
-  //     setUsersList([]); // Set usersList to empty when searchQuery is empty
-  //   }
-  // };
+
   useEffect(() => {
     handleSearch1();
   }, [searchQuery]);

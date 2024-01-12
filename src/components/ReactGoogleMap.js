@@ -9,79 +9,97 @@ const containerStyle = {
 };
 
 function ReactGoogleMap() {
-  const userLocationQuery = useGetLatLongitudeQuery();
+  const { data: userLocationQuery } = useGetLatLongitudeQuery();
   const [location, setLocation] = useState([]);
   console.log(location);
 
+  const [markers, setMarkers] = useState([]);
+  const [center, setCenter] = useState({
+    lat: 24.914426666666667,
+    lng: 86.63796166666667,
+  });
+  const [zoom, setZoom] = useState(2);
+  const [map, setMap] = React.useState(null);
+
   useEffect(() => {
-    const reversedList =
-      userLocationQuery?.data?.results?.allData?.slice().reverse() ?? [];
+    const reversedList = userLocationQuery?.results?.allData;
     setLocation(reversedList);
   }, [userLocationQuery]);
+
+  useEffect(() => {
+    if (userLocationQuery) {
+      getCordinates();
+    }
+  }, [userLocationQuery]);
+
+  const getCordinates = () => {
+    const locationcoordinate = userLocationQuery?.results?.allData;
+
+    const newRows = [];
+    if (locationcoordinate) {
+      (locationcoordinate || [])?.map((item, index) => {
+        const returnData = {};
+
+        returnData.lat = +item?.latitude;
+        returnData.lng = +item?.longitude;
+
+        if (returnData.lat && returnData.lng) {
+          newRows.push(returnData);
+        }
+      });
+    }
+
+    setMarkers(newRows);
+  };
 
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
     googleMapsApiKey: "AIzaSyDcanuAHLnXyDw1QtBH2aMdAPb_cRGweWA",
   });
 
-  const center = {
-    lat: location.length > 0 ? parseFloat(location[0]?.latitude) : 37.7749,
-    lng: location.length > 0 ? parseFloat(location[0]?.longitude) : -122.4194,
-  };
+  const onLoad = React.useCallback(
+    function callback(map) {
+      const bounds = new window.google.maps.LatLngBounds();
 
-  const onLoad = (map) => {
-    const bounds = new window.google.maps.LatLngBounds();
-    location.forEach((loc, index) => {
-      const latitude = parseFloat(loc.latitude);
-      const longitude = parseFloat(loc.longitude);
+      markers.forEach((marker) => {
+        bounds.extend(marker);
+      });
 
-      if (!isNaN(latitude) && !isNaN(longitude)) {
-        bounds.extend({ lat: latitude, lng: longitude });
+      if (markers.length === 0) {
+        setCenter({
+          lat: 24.914426666666667,
+          lng: 86.63796166666667,
+        });
+        setZoom(12);
       } else {
-        console.warn(
-          "Invalid latitude or longitude for location at index",
-          index,
-          loc
-        );
+        setCenter({
+          lat: bounds.getCenter().lat(),
+          lng: bounds.getCenter().lng(),
+        });
+        setZoom(map.getZoom());
       }
-    });
-    map.fitBounds(bounds);
-  };
 
-  const onUnmount = () => {
-  };
+      setMap(map);
+    },
+    [markers, setZoom]
+  );
+
+  const onUnmount = () => {};
 
   return isLoaded ? (
     <GoogleMap
       mapContainerStyle={containerStyle}
       center={center}
-      zoom={10}
+      // zoom={8}
+      zoom={zoom}
       onLoad={onLoad}
-      onUnmount={onUnmount}
+      // onUnmount={onUnmount}
     >
-      {location.map((loc, index) => {
-        const latitude = parseFloat(loc?.latitude);
-        const longitude = parseFloat(loc?.longitude);
-
-        if (!isNaN(latitude) && !isNaN(longitude)) {
-          console.log(
-            "Marker latitude:",
-            latitude,
-            "Marker longitude:",
-            longitude
-          );
-          return (
-            <Marker key={index} position={{ lat: latitude, lng: longitude }} />
-          );
-        } else {
-          console.warn(
-            "Invalid latitude or longitude for location at index",
-            index,
-            loc
-          );
-          return null;
-        }
-      })}
+      <>
+        {(markers || [])?.map((marker, index) => (
+          <Marker key={index} position={marker} />
+        ))}
+      </>
     </GoogleMap>
   ) : (
     <div>Loading map...</div>
