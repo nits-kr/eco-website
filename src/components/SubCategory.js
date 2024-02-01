@@ -32,6 +32,9 @@ function SubCategory(props) {
   });
   const [searchQuery, setSearchQuery] = useState("");
   const [startDate1, setStartDate1] = useState("");
+  const [item, setItem] = useState("");
+
+  console.log("item", item);
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -228,16 +231,27 @@ function SubCategory(props) {
     event.preventDefault();
     const formData = new FormData();
     if (category.nameEn) {
-      formData.append("subCategoryName_en", category.nameEn);
+      formData.append(
+        "subCategoryName_en",
+        category.nameEn !== "" ? category.nameEn : subCategoryNameEn2
+      );
     }
     if (category.nameAr) {
-      formData.append("subCategoryName_ar", category.nameAr);
+      formData.append(
+        "subCategoryName_ar",
+        category.nameAr !== "" ? category.nameAr : subCategoryNameAr2
+      );
     }
     if (category.uploadImage) {
       formData.append("subCategoryPic", category.uploadImage);
     }
     if (category.categoryId1) {
-      formData.append("category_Id", category.categoryId1);
+      formData.append(
+        "category_Id",
+        category.categoryId1 !== ""
+          ? category.categoryId1
+          : item?.category_Id?._id
+      );
     }
     axios
       .patch(
@@ -268,6 +282,7 @@ function SubCategory(props) {
     setSubCategoryNameEn2(item?.subCategoryName_en || "");
     setSubCategoryNameAr2(item?.subCategoryName_ar || "");
     setImage2(item?.category_Id?.categoryPic || "");
+    setItem(item);
   };
   return (
     <>
@@ -558,8 +573,11 @@ function SubCategory(props) {
                     // value={subCategory.categoryId}
                     onChange={handleInputChange1}
                     // onChange={(e) => setCategoryNew(e.target.value)}
+                    // defaultValue={item?.category_Id?.categoryName_en}
                   >
-                    <option value="">Select Category</option>
+                    <option value="" disabled>
+                      Select Category
+                    </option>
                     {categories.map((category) => (
                       <option key={category._id} value={category?._id}>
                         {category?.categoryName_en}

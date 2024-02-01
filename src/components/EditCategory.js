@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 function EditCategory(props) {
+  console.log("props category", props);
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
   console.log(
@@ -26,8 +27,14 @@ function EditCategory(props) {
   const handleUpdate = (itemId, event) => {
     event.preventDefault();
     const formData = new FormData();
-    formData.append("categoryName_en", category.nameEn);
-    formData.append("categoryName_ar", category.nameAr);
+    formData.append(
+      "categoryName_en",
+      category.nameEn !== "" ? category.nameEn : props.newCategory.nameEn
+    );
+    formData.append(
+      "categoryName_ar",
+      category.nameAr !== "" ? category.nameAr : props.newCategory.nameAr
+    );
     formData.append("categoryPic", category.uploadImage);
     axios
       .patch(

@@ -4,6 +4,7 @@ import Swal from "sweetalert2";
 import Sidebar from "./Sidebar";
 //import { Link } from "react-router-dom";
 function EditSubSubCategory(props) {
+  console.log("props edit sub sub", props);
   const [categories, setCategories] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
   const [subSubCategories, setSubSubCategories] = useState([]);
@@ -102,10 +103,18 @@ function EditSubSubCategory(props) {
       .patch(
         `${process.env.REACT_APP_APIENDPOINT}admin/category/subSubCategory/subSubCategoryUpdate/${props.newCategory.id}`,
         {
-          subSubCategoryName_en: category.nameEn,
-          subSubCategoryName_ar: category.nameAr,
-          category_Id: category.categoryId,
-          subCategory_Id: category.categoryId1,
+          subSubCategoryName_en:
+            category.nameEn !== "" ? category.nameEn : props.newCategory.nameEn,
+          subSubCategoryName_ar:
+            category.nameAr !== "" ? category.nameAr : props.newCategory.nameAr,
+          category_Id:
+            category.categoryId !== ""
+              ? category.categoryId
+              : props.newCategory.id1?._id,
+          subCategory_Id:
+            category.categoryId1 !== ""
+              ? category.categoryId1
+              : props.newCategory.id2?._id,
         }
       )
       .then((response) => {

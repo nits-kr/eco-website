@@ -203,7 +203,7 @@ function ProductList2(props) {
     }
   };
   const displaySlug = (slug) => {
-    return slug.length > 10 ? `${slug.slice(0, 10)}...` : slug;
+    return slug?.length > 10 ? `${slug.slice(0, 10)}...` : slug;
   };
 
   const handleCheckboxChange = (productId) => {
