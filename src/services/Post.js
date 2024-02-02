@@ -4,13 +4,7 @@ const brandId = localStorage?.getItem("brandId");
 
 export const PostApi = createApi({
   reducerPath: "PostApi",
-  // headers: {
-  //   "x-auth-token-user": getAuthToken(),
-  // },
-  // prepareHeaders: (headers) => {
-  //   headers.set("Authorization", `Bearer ${getAuthToken()}`);
-  //   return headers;
-  // },
+
   baseQuery: fetchBaseQuery({
     baseUrl: "https://euser.techgropsedev.com:2087/",
     headers: {
@@ -415,17 +409,24 @@ export const PostApi = createApi({
       },
     }),
     editProductList: builder.mutation({
-      query: (body) => {
-        console.log("update category", body);
-        const { id, ...data } = body;
-        console.log("update offer body data", data);
-        return {
-          url: `/admin/product/updateProduct/${id}`,
-          method: "PATCH",
-          body: data,
-        };
-      },
+      query: ({ id, data }) => ({
+        url: `admin/product/updateProduct/${id}`,
+        method: "PATCH",
+        body: data,
+      }),
     }),
+    // editProductList: builder.mutation({
+    //   query: (body) => {
+    //     console.log("update product", body);
+    //     const { id, ...data } = body;
+    //     console.log("update offer body data", data);
+    //     return {
+    //       url: `admin/product/updateProduct/${id}`,
+    //       method: "PATCH",
+    //       body: data,
+    //     };
+    //   },
+    // }),
     editOrderList: builder.mutation({
       query: (body) => {
         console.log("update category", body);

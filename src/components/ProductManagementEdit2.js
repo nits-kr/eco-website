@@ -7,12 +7,14 @@ import { toast } from "react-toastify";
 
 import Sidebar from "./Sidebar";
 import Spinner from "./Spinner";
+import { useEditProductListMutation } from "../services/Post";
 
 function ProductManagementEdit2(props) {
   const [loading, setLoading] = useState(false);
   const [selectedImage, setSelectedImage] = useState([]);
   const [formData, setFormData] = useState([]);
   const [count, setCount] = useState(0);
+  const [updateProduct] = useEditProductListMutation();
   console.log("count", count);
   const [showAddButton, setShowAddButton] = useState(true);
   const [showAddButton2, setShowAddButton2] = useState(false);
@@ -251,16 +253,46 @@ function ProductManagementEdit2(props) {
     console.log("img", img);
     setSelectedImage(img);
   };
-  const handleOnSave = (e) => {
+  const handleOnSave = async (e) => {
     e.preventDefault();
     const data = new FormData();
-    data.append("productName_en", formData.productNameEn);
-    data.append("productName_ar", formData.productNameAr);
+    data.append(
+      "productName_en",
+      formData.productNameEn
+        ? formData.productNameEn
+        : productListItems[0].productName_en
+    );
+    data.append(
+      "productName_ar",
+      formData.productNameAr
+        ? formData.productNameAr
+        : productListItems[0].productName_ar
+    );
     data.append("slug", slug);
-    data.append("Description", formData.DescriptionEn);
-    data.append("Description_ar", formData.DescriptionAr);
-    data.append("careInstuctions", formData.shortDescriptionEn);
-    data.append("careInstuctions_ar", formData.shortDescriptionAr);
+    data.append(
+      "Description",
+      formData.DescriptionEn
+        ? formData.DescriptionEn
+        : productListItems[0].Description
+    );
+    data.append(
+      "Description_ar",
+      formData.DescriptionAr
+        ? formData.DescriptionAr
+        : productListItems[0].Description_ar
+    );
+    data.append(
+      "careInstuctions",
+      formData.shortDescriptionEn
+        ? formData.shortDescriptionEn
+        : productListItems[0].careInstuctions
+    );
+    data.append(
+      "careInstuctions_ar",
+      formData.shortDescriptionAr
+        ? formData.shortDescriptionAr
+        : productListItems[0].careInstuctions_ar
+    );
     if (formData.pageTitleEn) {
       data.append("pageTitle", formData.pageTitleEn);
     }
@@ -306,6 +338,7 @@ function ProductManagementEdit2(props) {
     if (subSubCategory.attributeId) {
       data.append("attribute_Id", subSubCategory.attributeId);
     }
+
     if (subSubCategory.brandId1 || productListItems[0]?.brand_Id?._id) {
       data.append(
         "brand_Id",
@@ -319,33 +352,47 @@ function ProductManagementEdit2(props) {
         data.append(`product_Pic`, item);
       });
     }
-    axios
-      .post(
-        `${process.env.REACT_APP_APIENDPOINT}admin/product/createProduct`,
-        data
-      )
-      .then((response) => {
-        setFormData(response.data.results.saveProduct);
-        console.log(response.data.results.saveProduct);
-        localStorage?.setItem(
-          "productId",
-          response?.data?.results?.saveProduct?._id
-        );
-        Swal.fire({
-          title: "Product Created!",
-          text: "Your new product has been created successfully.",
-          icon: "success",
-          confirmButtonColor: "#3085d6",
-          confirmButtonText: "OK",
-        }).then((result) => {
-          if (result.isConfirmed) {
-            // navigate("/products");
-          }
-        });
-      })
-      .catch((error) => {
-        console.log(error.response.data);
-      });
+    const res = id
+      ? await updateProduct({ data, id }).then((res) => {
+          Swal.fire({
+            title: "Product Updated!",
+            text: "Your  product has been Updated successfully.",
+            icon: "success",
+            confirmButtonColor: "#3085d6",
+            confirmButtonText: "OK",
+          }).then((result) => {
+            if (result.isConfirmed) {
+              window?.location?.reload();
+            }
+          });
+        })
+      : axios
+          .post(
+            `${process.env.REACT_APP_APIENDPOINT}admin/product/createProduct`,
+            data
+          )
+          .then((response) => {
+            setFormData(response.data.results.saveProduct);
+            console.log(response.data.results.saveProduct);
+            localStorage?.setItem(
+              "productId",
+              response?.data?.results?.saveProduct?._id
+            );
+            Swal.fire({
+              title: "Product Created!",
+              text: "Your new product has been created successfully.",
+              icon: "success",
+              confirmButtonColor: "#3085d6",
+              confirmButtonText: "OK",
+            }).then((result) => {
+              if (result.isConfirmed) {
+                // navigate("/products");
+              }
+            });
+          })
+          .catch((error) => {
+            console.log(error.response.data);
+          });
   };
   const productId = localStorage?.getItem("productId");
   const handleOnSave1 = (e) => {
@@ -1003,798 +1050,11 @@ function ProductManagementEdit2(props) {
                                 handleOnSave(e);
                               }}
                             >
-                              Save
+                              {id ? "Update" : "Save"}
                             </button>
                           </div>
                         </div>
                       </div>
-
-                      {/* {Array.from({ length: variantCount }).map((_, index) => (
-                        <div
-                          className="col-12 design_outter_comman mb-4 shadow"
-                          key={index}
-                        >
-                          <div className="row comman_header justify-content-between">
-                            <div className="col">
-                              <h2>Pricing</h2>
-                            </div>
-                          </div>
-                          <div className="col-12 design_outter_comman mb-4 ">
-                            <div
-                              className="form-design pt-3 px-2 help-support-form row align-items-end justify-content-between"
-                              action=""
-                            >
-                              <div className="form-group col-6">
-                                <label htmlFor="">Select Attribute</label>
-                                <select
-                                  className="select form-control"
-                                  multiple=""
-                                  name="attributeId"
-                                  id="attributeId"
-                                  value={subSubCategory.attributeId}
-                                  onChange={handleInputChange3}
-                                >
-                                  <option value="">Select Attribute</option>
-                                  {Array.isArray(attribute) &&
-                                    attribute.map((subCategory) => (
-                                      <option
-                                        key={subCategory._id}
-                                        value={subCategory._id}
-                                      >
-                                        {subCategory.attributeName_en}
-                                      </option>
-                                    ))}
-                                </select>
-                              </div>
-                              <div className="form-group col-6">
-                                <label htmlFor="">Select Values</label>
-                                <select
-                                  className="select form-control"
-                                  multiple=""
-                                  name="valueId"
-                                  id="valueId"
-                                  value={subSubCategory.valueId}
-                                  onChange={handleInputChange3}
-                                >
-                                  <option value="">Select Values</option>
-                                  {Array.isArray(value) &&
-                                    value.map((subCategory) => (
-                                      <option
-                                        key={subCategory._id}
-                                        value={subCategory._id}
-                                      >
-                                        {subCategory.valuesName_en}
-                                      </option>
-                                    ))}
-                                </select>
-                              </div>
-                            </div>
-                          </div>
-                          <div
-                            className="form-design px-3 help-support-form row align-items-end justify-content-between"
-                            action=""
-                          >
-                            <div className="form-group col-6">
-                              <label htmlFor="SKUEn">
-                                SKU(En)
-                                <span className="required-field text-danger">
-                                  *
-                                </span>
-                              </label>
-                              <input
-                                type="text"
-                                className="form-control"
-                                // defaultValue=""
-                                name="SKUEn"
-                                id="SKUEn"
-                                value={formData.SKUEn}
-                                onChange={handleInputChange}
-                                required
-                                minLength="3"
-                              />
-                            </div>
-                            <div className="form-group col-6">
-                              <label htmlFor="SKUAr">
-                                SKU(Ar)
-                                <span className="required-field text-danger">
-                                  *
-                                </span>
-                              </label>
-                              <input
-                                type="text"
-                                className="form-control"
-                                // defaultValue=""
-                                name="SKUAr"
-                                id="SKUAr"
-                                value={formData.SKUAr}
-                                onChange={handleInputChange}
-                                required
-                                minLength="3"
-                              />
-                            </div>
-                            <div className="form-group col-12">
-                              <label htmlFor="">
-                                Stock Quantity
-                                <span className="required-field text-danger">
-                                  *
-                                </span>
-                              </label>
-                              <input
-                                type="text"
-                                className="form-control"
-                                // defaultValue=""
-                                name="stockQuantity"
-                                id="stockQuantity"
-                                value={formData.stockQuantity}
-                                placeholder="40"
-                                onChange={handleInputChange}
-                                required
-                                // minLength="3"
-                              />
-                            </div>
-                          </div>
-                          <div
-                            className="form-design px-3 help-support-form row align-items-end justify-content-between mt-4"
-                            action=""
-                          >
-                            <div className="form-group col-4">
-                              <label htmlFor="Price">
-                                Price
-                                <span className="required-field text-danger">
-                                  *
-                                </span>
-                              </label>
-                              <input
-                                type="text"
-                                className="form-control"
-                                // defaultValue=""
-                                name="Price"
-                                id="Price"
-                                value={formData.Price}
-                                placeholder="1499"
-                                onChange={handleInputChange}
-                                required
-                                // minLength="3"
-                              />
-                            </div>
-                            <div className="form-group col-4">
-                              <label htmlFor="oldPrice">
-                                Old Price
-                                <span className="required-field text-danger">
-                                  *
-                                </span>
-                              </label>
-                              <input
-                                type="text"
-                                className="form-control"
-                                // defaultValue=""
-                                name="oldPrice"
-                                id="oldPrice"
-                                value={formData.oldPrice}
-                                onChange={handleInputChange}
-                                required
-                                // minLength="3"
-                              />
-                            </div>
-                            <div className="form-group col-4">
-                              <label htmlFor="dollar">
-                                Dollar Price
-                                <span className="required-field text-danger">
-                                  *
-                                </span>
-                              </label>
-                              <input
-                                type="text"
-                                className="form-control"
-                                // defaultValue=""
-                                name="dollar"
-                                id="dollar"
-                                value={formData.dollar}
-                                onChange={handleInputChange}
-                                required
-                              />
-                            </div>
-                          </div>
-                          <div
-                            className="form-design px-3 help-support-form row align-items-end justify-content-between mt-4"
-                            action=""
-                          >
-                            <div className="form-group col-12 new_radio_design">
-                              <input
-                                className="d-none"
-                                type="checkbox"
-                                id="Enable"
-                                name="returnable"
-                                value="true"
-                                checked={formData.returnable === "true"}
-                                onChange={handleInputChange}
-                              />
-                              <label htmlFor="Enable">Returnable </label>
-                            </div>
-                          </div>
-                          <div
-                            className="form-design py-4 px-3 help-support-form row align-items-end justify-content-between"
-                            action=""
-                          >
-                            <div className="form-group mb-0 col-3">
-                              <div className="banner-profile position-relative">
-                                <div
-                                  className="banner-Box bg-light"
-                                  style={{
-                                    display: "flex",
-                                    flexDirection: "column",
-                                    alignItems: "center",
-                                    justifyContent: "center",
-                                    height: "150px",
-                                  }}
-                                >
-                                  <img src="..." class="img-fluid" alt="..." />
-                                  <div>150 X 150</div>
-                                </div>
-                                <div className="p-image">
-                                  <label htmlFor="file1">
-                                    <i className="upload-button fas fa-camera" />
-                                  </label>
-                                  <input
-                                    className="form-control d-none"
-                                    type="file"
-                                    accept="image/*"
-                                    name="file1"
-                                    id="file1"
-                                    // onChange={(e) =>
-                                    //   handleImageUpload1(e, "file1")
-                                    // }
-                                  />
-                                </div>
-                              </div>
-                            </div>
-                            <div className="form-group mb-0 col-3">
-                              <div className="banner-profile position-relative">
-                                <div
-                                  className="banner-Box bg-light"
-                                  style={{
-                                    display: "flex",
-                                    flexDirection: "column",
-                                    alignItems: "center",
-                                    justifyContent: "center",
-                                    height: "150px",
-                                  }}
-                                >
-                                  <img src="..." class="img-fluid" alt="..." />
-                                  <div>150 X 150</div>
-                                </div>
-                                <div className="p-image">
-                                  <label htmlFor="file1">
-                                    <i className="upload-button fas fa-camera" />
-                                  </label>
-                                  <input
-                                    className="form-control d-none"
-                                    type="file"
-                                    accept="image/*"
-                                    name="file1"
-                                    id="file1"
-                                    // onChange={(e) =>
-                                    //   handleImageUpload1(e, "file1")
-                                    // }
-                                  />
-                                </div>
-                              </div>
-                            </div>
-                            <div className="form-group mb-0 col-3">
-                              <div className="banner-profile position-relative">
-                                <div
-                                  className="banner-Box bg-light"
-                                  style={{
-                                    display: "flex",
-                                    flexDirection: "column",
-                                    alignItems: "center",
-                                    justifyContent: "center",
-                                    height: "150px",
-                                  }}
-                                >
-                                  <img src="..." class="img-fluid" alt="..." />
-                                  <div>150 X 150</div>
-                                </div>
-                                <div className="p-image">
-                                  <label htmlFor="file1">
-                                    <i className="upload-button fas fa-camera" />
-                                  </label>
-                                  <input
-                                    className="form-control d-none"
-                                    type="file"
-                                    accept="image/*"
-                                    name="file1"
-                                    id="file1"
-                                    // onChange={(e) =>
-                                    //   handleImageUpload1(e, "file1")
-                                    // }
-                                  />
-                                </div>
-                              </div>
-                            </div>
-                            <div className="form-group mb-0 col-3">
-                              <div className="banner-profile position-relative">
-                                <div
-                                  className="banner-Box bg-light"
-                                  style={{
-                                    display: "flex",
-                                    flexDirection: "column",
-                                    alignItems: "center",
-                                    justifyContent: "center",
-                                    height: "150px",
-                                  }}
-                                >
-                                  <img src="..." class="img-fluid" alt="..." />
-                                  <div>150 X 150</div>
-                                </div>
-                                <div className="p-image">
-                                  <label htmlFor="file1">
-                                    <i className="upload-button fas fa-camera" />
-                                  </label>
-                                  <input
-                                    className="form-control d-none"
-                                    type="file"
-                                    accept="image/*"
-                                    name="file1"
-                                    id="file1"
-                                    // onChange={(e) =>
-                                    //   handleImageUpload1(e, "file1")
-                                    // }
-                                  />
-                                </div>
-                              </div>
-                            </div>
-
-                            <div className="form-group col-12 choose_file position-relative">
-                              <span>Upload Image</span>
-                              <label htmlFor="gallery_images">
-                                <i className="fal fa-camera me-1" />
-                                Choose File{" "}
-                              </label>
-                              <input
-                                type="file"
-                                className="form-control"
-                                defaultValue=""
-                                id="gallery_images"
-                                accept="image/*"
-                                name="gallery_images"
-                                onChange={(e) =>
-                                  handleFileChange(e, "gallery_images")
-                                }
-                                multiple
-                              />
-                            </div>
-                          </div>
-                        </div>
-                      ))} */}
-                      {/* <div className="col-12 design_outter_comman mb-4 shadow">
-                        <div className="row comman_header justify-content-between">
-                          <div className="col">
-                            <h2>Pricing</h2>
-                          </div>
-                        </div>
-                        <div className="col-12 design_outter_comman mb-4 ">
-                          <div
-                            className="form-design pt-3 px-2 help-support-form row align-items-end justify-content-between"
-                            action=""
-                          >
-                            <div className="form-group col-6">
-                              <label htmlFor="">Select Attribute</label>
-                              <select
-                                className="select form-control"
-                                multiple=""
-                                name="attributeId"
-                                id="attributeId"
-                                value={subSubCategory.attributeId}
-                                onChange={handleInputChange3}
-                              >
-                                <option value="">Select Attribute</option>
-                                {Array.isArray(attribute) &&
-                                  attribute.map((subCategory) => (
-                                    <option
-                                      key={subCategory._id}
-                                      value={subCategory._id}
-                                    >
-                                      {subCategory.attributeName_en}
-                                    </option>
-                                  ))}
-                              </select>
-                            </div>
-                            <div className="form-group col-6">
-                              <label htmlFor="">Select Values</label>
-                              <select
-                                className="select form-control"
-                                multiple=""
-                                name="valueId"
-                                id="valueId"
-                                value={subSubCategory.valueId}
-                                onChange={handleInputChange3}
-                              >
-                                <option value="">Select Values</option>
-                                {Array.isArray(value) &&
-                                  value.map((subCategory) => (
-                                    <option
-                                      key={subCategory._id}
-                                      value={subCategory._id}
-                                    >
-                                      {subCategory.valuesName_en}
-                                    </option>
-                                  ))}
-                              </select>
-                            </div>
-                          </div>
-                        </div>
-                        <div
-                          className="form-design px-3 help-support-form row align-items-end justify-content-between"
-                          action=""
-                        >
-                          <div className="form-group col-6">
-                            <label htmlFor="SKUEn">
-                              SKU(En)
-                              <span className="required-field text-danger">
-                                *
-                              </span>
-                            </label>
-                            <input
-                              type="text"
-                              className="form-control"
-                              // defaultValue=""
-                              name="SKUEn"
-                              id="SKUEn"
-                              value={formData.SKUEn}
-                              onChange={handleInputChange}
-                              required
-                              minLength="3"
-                            />
-                          </div>
-                          <div className="form-group col-6">
-                            <label htmlFor="SKUAr">
-                              SKU(Ar)
-                              <span className="required-field text-danger">
-                                *
-                              </span>
-                            </label>
-                            <input
-                              type="text"
-                              className="form-control"
-                              // defaultValue=""
-                              name="SKUAr"
-                              id="SKUAr"
-                              value={formData.SKUAr}
-                              onChange={handleInputChange}
-                              required
-                              minLength="3"
-                            />
-                          </div>
-                          <div className="form-group col-12">
-                            <label htmlFor="">
-                              Stock Quantity
-                              <span className="required-field text-danger">
-                                *
-                              </span>
-                            </label>
-                            <input
-                              type="text"
-                              className="form-control"
-                              // defaultValue=""
-                              name="stockQuantity"
-                              id="stockQuantity"
-                              value={formData.stockQuantity}
-                              placeholder="40"
-                              onChange={handleInputChange}
-                              required
-                              // minLength="3"
-                            />
-                          </div>
-                        </div>
-                        <div
-                          className="form-design px-3 help-support-form row align-items-end justify-content-between mt-4"
-                          action=""
-                        >
-                          <div className="form-group col-4">
-                            <label htmlFor="Price">
-                              Price
-                              <span className="required-field text-danger">
-                                *
-                              </span>
-                            </label>
-                            <input
-                              type="text"
-                              className="form-control"
-                              // defaultValue=""
-                              name="Price"
-                              id="Price"
-                              value={formData.Price}
-                              placeholder="1499"
-                              onChange={handleInputChange}
-                              required
-                              // minLength="3"
-                            />
-                          </div>
-                          <div className="form-group col-4">
-                            <label htmlFor="oldPrice">
-                              Old Price
-                              <span className="required-field text-danger">
-                                *
-                              </span>
-                            </label>
-                            <input
-                              type="text"
-                              className="form-control"
-                              // defaultValue=""
-                              name="oldPrice"
-                              id="oldPrice"
-                              value={formData.oldPrice}
-                              onChange={handleInputChange}
-                              required
-                              // minLength="3"
-                            />
-                          </div>
-                          <div className="form-group col-4">
-                            <label htmlFor="dollar">
-                              Dollar Price
-                              <span className="required-field text-danger">
-                                *
-                              </span>
-                            </label>
-                            <input
-                              type="text"
-                              className="form-control"
-                              // defaultValue=""
-                              name="dollar"
-                              id="dollar"
-                              value={formData.dollar}
-                              onChange={handleInputChange}
-                              required
-                            />
-                          </div>
-                        </div>
-                        <div
-                          className="form-design px-3 help-support-form row align-items-end justify-content-between mt-4"
-                          action=""
-                        >
-                          <div className="form-group col-12 new_radio_design">
-                            <input
-                              className="d-none"
-                              type="checkbox"
-                              id="Enable"
-                              name="returnable"
-                              value="true"
-                              checked={formData.returnable === "true"}
-                              onChange={handleInputChange}
-                            />
-                            <label htmlFor="Enable">Returnable </label>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="col-12 design_outter_comman mb-4 shadow">
-                        <div className="row comman_header justify-content-between">
-                          <div className="col">
-                            <h2>Images</h2>
-                          </div>
-                        </div>
-                        <div
-                          className="form-design py-4 px-3 help-support-form row align-items-end justify-content-between"
-                          action=""
-                        >
-                          <div className="form-group mb-0 col-3">
-                            <div className="banner-profile position-relative">
-                              <div
-                                className="banner-Box bg-light"
-                                style={{
-                                  display: "flex",
-                                  flexDirection: "column",
-                                  alignItems: "center",
-                                  justifyContent: "center",
-                                  height: "150px",
-                                }}
-                              >
-                                <img src="..." class="img-fluid" alt="..." />
-                                <div>150 X 150</div>
-                              </div>
-                              <div className="p-image">
-                                <label htmlFor="file1">
-                                  <i className="upload-button fas fa-camera" />
-                                </label>
-                                <input
-                                  className="form-control d-none"
-                                  type="file"
-                                  accept="image/*"
-                                  name="file1"
-                                  id="file1"
-                                  // onChange={(e) =>
-                                  //   handleImageUpload1(e, "file1")
-                                  // }
-                                />
-                              </div>
-                            </div>
-                          </div>
-                          <div className="form-group mb-0 col-3">
-                            <div className="banner-profile position-relative">
-                              <div
-                                className="banner-Box bg-light"
-                                style={{
-                                  display: "flex",
-                                  flexDirection: "column",
-                                  alignItems: "center",
-                                  justifyContent: "center",
-                                  height: "150px",
-                                }}
-                              >
-                                <img src="..." class="img-fluid" alt="..." />
-                                <div>150 X 150</div>
-                              </div>
-                              <div className="p-image">
-                                <label htmlFor="file1">
-                                  <i className="upload-button fas fa-camera" />
-                                </label>
-                                <input
-                                  className="form-control d-none"
-                                  type="file"
-                                  accept="image/*"
-                                  name="file1"
-                                  id="file1"
-                                  // onChange={(e) =>
-                                  //   handleImageUpload1(e, "file1")
-                                  // }
-                                />
-                              </div>
-                            </div>
-                          </div>
-                          <div className="form-group mb-0 col-3">
-                            <div className="banner-profile position-relative">
-                              <div
-                                className="banner-Box bg-light"
-                                style={{
-                                  display: "flex",
-                                  flexDirection: "column",
-                                  alignItems: "center",
-                                  justifyContent: "center",
-                                  height: "150px",
-                                }}
-                              >
-                                <img src="..." class="img-fluid" alt="..." />
-                                <div>150 X 150</div>
-                              </div>
-                              <div className="p-image">
-                                <label htmlFor="file1">
-                                  <i className="upload-button fas fa-camera" />
-                                </label>
-                                <input
-                                  className="form-control d-none"
-                                  type="file"
-                                  accept="image/*"
-                                  name="file1"
-                                  id="file1"
-                                  // onChange={(e) =>
-                                  //   handleImageUpload1(e, "file1")
-                                  // }
-                                />
-                              </div>
-                            </div>
-                          </div>
-                          <div className="form-group mb-0 col-3">
-                            <div className="banner-profile position-relative">
-                              <div
-                                className="banner-Box bg-light"
-                                style={{
-                                  display: "flex",
-                                  flexDirection: "column",
-                                  alignItems: "center",
-                                  justifyContent: "center",
-                                  height: "150px",
-                                }}
-                              >
-                                <img src="..." class="img-fluid" alt="..." />
-                                <div>150 X 150</div>
-                              </div>
-                              <div className="p-image">
-                                <label htmlFor="file1">
-                                  <i className="upload-button fas fa-camera" />
-                                </label>
-                                <input
-                                  className="form-control d-none"
-                                  type="file"
-                                  accept="image/*"
-                                  name="file1"
-                                  id="file1"
-                                  // onChange={(e) =>
-                                  //   handleImageUpload1(e, "file1")
-                                  // }
-                                />
-                              </div>
-                            </div>
-                          </div>
-
-                          <div className="form-group col-12 choose_file position-relative">
-                            <span>Upload Image</span>
-                            <label htmlFor="gallery_images">
-                              <i className="fal fa-camera me-1" />
-                              Choose File{" "}
-                            </label>
-                            <input
-                              type="file"
-                              className="form-control"
-                              defaultValue=""
-                              id="gallery_images"
-                              accept="image/*"
-                              name="gallery_images"
-                              onChange={(e) =>
-                                handleFileChange(e, "gallery_images")
-                              }
-                              multiple
-                            />
-                          </div>
-                        </div>
-                      </div> */}
-                      {/* <div className="col-12 design_outter_comman mb-4 shadow">
-                        <div className="row comman_header justify-content-between">
-                          <div className="col">
-                            <h2>Search Engine Optimization(optional) </h2>
-                          </div>
-                        </div>
-                        <div
-                          className="form-design py-4 px-3 help-support-form row align-items-end justify-content-between"
-                          action=""
-                        >
-                          <div className="Infor mb-4">
-                            Provide Informations that will help imporove the
-                            snippet and bring your product to the top of the
-                            Search Engine
-                          </div>
-                          <div className="form-group col-6">
-                            <label htmlFor="pageTitleEn">Page Title(En)</label>
-                            <input
-                              type="text"
-                              className="form-control"
-                              // defaultValue=""
-                              name="pageTitleEn"
-                              id="pageTitleEn"
-                              value={formData.pageTitleEn}
-                              onChange={handleInputChange}
-                            />
-                          </div>
-                          <div className="form-group col-6">
-                            <label htmlFor="pageTitleAr">Page Title(Ar)</label>
-                            <input
-                              type="text"
-                              className="form-control"
-                              // defaultValue=""
-                              name="pageTitleAr"
-                              id="pageTitleAr"
-                              value={formData.pageTitleAr}
-                              onChange={handleInputChange}
-                            />
-                          </div>
-                          <div className="form-group col-6">
-                            <label htmlFor="metaDescriptionEn">
-                              Meta Description(En)
-                            </label>
-                            <textarea
-                              name="metaDescriptionEn"
-                              className="form-control"
-                              id="metaDescriptionEn"
-                              style={{ height: 120 }}
-                              // defaultValue={""}
-                              value={formData.metaDescriptionEn}
-                              onChange={handleInputChange}
-                            />
-                          </div>
-                          <div className="form-group col-6">
-                            <label htmlFor="metaDescriptionAr">
-                              Meta Description(Ar)
-                            </label>
-                            <textarea
-                              name="metaDescriptionAr"
-                              className="form-control"
-                              id="metaDescriptionAr"
-                              style={{ height: 120 }}
-                              value={formData.metaDescriptionAr}
-                              onChange={handleInputChange}
-                            />
-                          </div>
-                        </div>
-                      </div> */}
                     </div>
                   </div>
                   <div className="col-3">
@@ -1923,108 +1183,7 @@ function ProductManagementEdit2(props) {
                           </div>
                         </div>
                       </div>
-                      {/* <div className="col-12 design_outter_comman mb-4 shadow">
-                        <div className="row comman_header justify-content-between">
-                          <div className="col">
-                            <h2>Category</h2>
-                          </div>
-                        </div>
-                        <div
-                          className="form-design py-3 px-2 help-support-form row align-items-end justify-content-between"
-                          action=""
-                        >
-                          <div className="form-group col-12">
-                            <label htmlFor=""> Select Category</label>
-                            <select
-                              className="select form-control"
-                              multiple=""
-                              name="categoryId"
-                              id="categoryId"
-                              value={subSubCategory.categoryId}
-                              onChange={handleInputChange1}
-                            >
-                              <option value="">Select Category</option>
-                              {Array.isArray(categories) &&
-                                categories.map((category) => (
-                                  <option
-                                    key={category._id}
-                                    value={category._id}
-                                  >
-                                    {category.categoryName_en}
-                                  </option>
-                                ))}
-                            </select>
-                          </div>
-                        </div>
-                      </div> */}
-                      {/* <div className="col-12 design_outter_comman mb-4 shadow">
-                        <div className="row comman_header justify-content-between">
-                          <div className="col">
-                            <h2>Sub Category</h2>
-                          </div>
-                        </div>
-                        <div
-                          className="form-design py-3 px-2 help-support-form row align-items-end justify-content-between"
-                          action=""
-                        >
-                          <div className="form-group col-12">
-                            <label htmlFor="">Select Sub-Category</label>
-                            <select
-                              className="select form-control"
-                              multiple=""
-                              name="categoryId1"
-                              id="categoryId1"
-                              value={subSubCategory.categoryId1}
-                              onChange={handleInputChange2}
-                            >
-                              <option value="">Select Sub Category</option>
-                              {Array.isArray(subCategories) &&
-                                subCategories.map((subCategory) => (
-                                  <option
-                                    key={subCategory._id}
-                                    value={subCategory._id}
-                                  >
-                                    {subCategory.subCategoryName_en}
-                                  </option>
-                                ))}
-                            </select>
-                          </div>
-                        </div>
-                      </div> */}
-                      {/* <div className="col-12 design_outter_comman mb-4 shadow">
-                        <div className="row comman_header justify-content-between">
-                          <div className="col">
-                            <h2>Brand</h2>
-                          </div>
-                        </div>
-                        <div
-                          className="form-design py-3 px-2 help-support-form row align-items-end justify-content-between"
-                          action=""
-                        >
-                          <div className="form-group col-12">
-                            <label htmlFor="">Select Brand</label>
-                            <select
-                              className="select form-control"
-                              multiple=""
-                              name="brandId1"
-                              id="brandId1"
-                              value={subSubCategory.brandId1}
-                              onChange={handleInputChange3}
-                            >
-                              <option value="">Select Brand</option>
-                              {Array.isArray(brands) &&
-                                brands.map((subCategory) => (
-                                  <option
-                                    key={subCategory._id}
-                                    value={subCategory._id}
-                                  >
-                                    {subCategory.brandName_en}
-                                  </option>
-                                ))}
-                            </select>
-                          </div>
-                        </div>
-                      </div> */}
+
                       <div className="col-12 design_outter_comman mb-4 shadow">
                         <div className="row comman_header justify-content-between">
                           <div className="col">
@@ -2047,11 +1206,6 @@ function ProductManagementEdit2(props) {
                               className="form-control"
                               id="slug"
                               name="slug"
-                              //   defaultValue={
-                              //     productListItems.length > 0
-                              //       ? productListItems[0].slug
-                              //       : ""
-                              //   }
                               value={slug}
                               placeholder="Create slug"
                               onClick={() => copyToClipboard(slug)}
@@ -2062,122 +1216,6 @@ function ProductManagementEdit2(props) {
                           </div>
                         </div>
                       </div>
-                      {/* <div className="col-12 design_outter_comman mb-4 shadow">
-                        <div className="row comman_header justify-content-between">
-                          <div className="col">
-                            <h2>Tags(En)</h2>
-                          </div>
-                        </div>
-                        <div
-                          className="form-design py-3 px-2 help-support-form row align-items-end justify-content-between"
-                          action=""
-                        >
-                          <div className="form-group col-12">
-                            <label htmlFor="Tags">
-                              Tags(En)
-                              <span className="required-field text-danger">
-                                *
-                              </span>
-                            </label>
-                            <input
-                              type="text"
-                              className="form-control"
-                              id="Tags"
-                              name="Tags"
-                              value={formData.Tags}
-                              placeholder="Enter tags"
-                              onChange={handleInputChange}
-                            />
-                          </div>
-                        </div>
-                      </div>
-                      <div className="col-12 design_outter_comman mb-4 shadow">
-                        <div className="row comman_header justify-content-between">
-                          <div className="col">
-                            <h2>Tags(Ar)</h2>
-                          </div>
-                        </div>
-                        <div
-                          className="form-design py-3 px-2 help-support-form row align-items-end justify-content-between"
-                          action=""
-                        >
-                          <div className="form-group col-12">
-                            <label htmlFor="">
-                              Tags(Ar)
-                              <span className="required-field text-danger">
-                                *
-                              </span>
-                            </label>
-                            <input
-                              type="text"
-                              className="form-control"
-                              id="TagsAr"
-                              name="TagsAr"
-                              value={formData.TagsAr}
-                              placeholder="أدخل العلامات"
-                              onChange={handleInputChange}
-                            />
-                          </div>
-                        </div>
-                      </div> */}
-                      {/* <div className="col-12 design_outter_comman mb-4 shadow">
-                        <div className="row comman_header justify-content-between">
-                          <div className="col">
-                            <h2>Product Color(En)</h2>
-                          </div>
-                        </div>
-                        <div
-                          className="form-design py-3 px-2 help-support-form row align-items-end justify-content-between"
-                          action=""
-                        >
-                          <div className="form-group col-12">
-                            <label htmlFor="">
-                              Product Color(En)
-                              <span className="required-field text-danger">
-                                *
-                              </span>
-                            </label>
-                            <input
-                              type="text"
-                              className="form-control"
-                              id="color"
-                              name="color"
-                              value={formData.color}
-                              onChange={handleInputChange}
-                              placeholder="Enter Color"
-                            />
-                          </div>
-                        </div>
-                      </div>
-                      <div className="col-12 design_outter_comman mb-4 shadow">
-                        <div className="row comman_header justify-content-between">
-                          <div className="col">
-                            <h2>Product Color(Ar)</h2>
-                          </div>
-                        </div>
-                        <div
-                          className="form-design py-3 px-2 help-support-form row align-items-end justify-content-between"
-                          action=""
-                        >
-                          <div className="form-group col-12">
-                            <label htmlFor="">
-                              Product Color(Ar)
-                              <span className="required-field text-danger">
-                                *
-                              </span>
-                            </label>
-                            <input
-                              type="text"
-                              id="colorAr"
-                              name="colorAr"
-                              className="form-control"
-                              value={formData.colorAr}
-                              onChange={handleInputChange}
-                              placeholder="أدخل اللون"
-                            />
-                          </div>
-                        </div>
-                      </div> */}
                     </div>
                   </div>
                 </div>
