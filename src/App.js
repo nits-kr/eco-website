@@ -53,6 +53,7 @@ import DashboardNew from "./components/DashboardNew";
 import StoreSettings from "./components/configurations/StoreSettings";
 import Banners from "./components/banners/Banners";
 import ProductBanner from "./components/banners/ProductBanner";
+import AddAgents from "./components/AddAgents";
 
 function App() {
   const [progress, setProgress] = useState(0);
@@ -103,6 +104,13 @@ function App() {
             path="/agents"
             element={<Agent setProgress={setProgress} />}
           />
+          <Route
+            exact
+            className="active"
+            path="/add-agents"
+            element={<AddAgents setProgress={setProgress} />}
+          />
+
           <Route
             exact
             className="active"

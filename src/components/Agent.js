@@ -161,21 +161,21 @@ function Agent(props) {
                   <Link
                     to="#"
                     className="btn btn-secondary "
-                    style={{ marginRight: "10px" }}
+                    style={{ marginRight: "10px", height: "40px" }}
                   >
                     <FontAwesomeIcon icon={faDownload} /> Import
                   </Link>
                   <Link
                     to="#"
                     className="btn btn-secondary "
-                    style={{ marginRight: "10px" }}
+                    style={{ marginRight: "10px", height: "40px" }}
                   >
                     <FontAwesomeIcon icon={faFileExport} /> Export
                   </Link>
                   <Link
                     to="/agents-details"
                     className="btn btn-primary"
-                    style={{ marginRight: "24px" }}
+                    style={{ height: "40px", width: "160px" }}
                   >
                     + Add New Agent
                   </Link>

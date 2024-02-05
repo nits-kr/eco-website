@@ -392,7 +392,7 @@ function BrandManagement(props) {
                                       value={formData.nameEn}
                                       onChange={handleInputChange}
                                       required
-                                      minLength="3"
+                                      minLength="2"
                                     />
                                   </div>
                                   <div className="form-group mb-0 mt-3 col">
@@ -410,7 +410,7 @@ function BrandManagement(props) {
                                       value={formData.nameAr}
                                       onChange={handleInputChange}
                                       required
-                                      minLength="3"
+                                      minLength="2"
                                     />
                                   </div>
                                   <div className="form-group mb-0 mt-3 col choose_file position-relative">

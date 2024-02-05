@@ -270,7 +270,7 @@ function OfferManagement() {
                         <h2>Add New Offer</h2>
                       </div>
                     </div>
-                    <MultilevelDropdown />
+                    {/* <MultilevelDropdown /> */}
                     <form
                       className="form-design py-4 px-3 help-support-form row align-items-end justify-content-between"
                       action=""
@@ -369,7 +369,7 @@ function OfferManagement() {
                           onChange={(e) => setCode(e.target.value)}
                           required
                           minLength="3"
-                          pattern="[0-9]+"
+                          // pattern="[0-9]+"
                           title="Please enter a numeric value"
                         />
                       </div>

@@ -720,12 +720,12 @@ div#google_translate_element {
   height: 100px;
   width: 100px;
   display: flex;
-  margin: 0 auto 17px;
+  /* margin: 0 auto 17px; */
   align-items: center;
   justify-content: center;
   background-color: #eef3ff;
-  border-radius: 50px;
-  box-shadow: 0 0 30px #0000002e;
+  border-radius: 50%;
+  border: 2px solid #144881;
 }
 
 .user_imgg img {
@@ -2532,9 +2532,9 @@ strong.box_tag_left {
 .inner:after {
   float: left;
   width: 50%;
-  height: 36px;
+  height: 50px;
   padding: 0;
-  line-height: 36px;
+  line-height: 50px;
   color: #fff;
   font-weight: bold;
   box-sizing: border-box;

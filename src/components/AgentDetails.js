@@ -45,36 +45,6 @@ function AgentDetails() {
     setFormData({ ...formData, profilePic: event.target.files[0] });
   };
 
-  // const handleSubmit = async (event) => {
-  //   event.preventDefault();
-  //   try {
-  //     const data = new FormData();
-  //     data.append("name", formData.fullName);
-  //     data.append("Email", formData.email);
-  //     data.append("accountNumber", formData.accountNumber);
-  //     data.append("bankName", formData.bankName);
-  //     data.append("password", formData.password);
-  //     data.append("commisionType", formData.commissionType);
-  //     data.append("profile_Pic", formData.profilePic);
-  //     data.append("mobileNumber", formData.mobileNumber);
-  //     data.append("address", formData.address);
-  //     data.append("accountName", formData.accountName);
-  //     data.append("routingNumber", formData.routing);
-  //     const response = await axios.post(
-  //       "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/agent/agent/addUser",
-  //       data
-  //     );
-  //     console.log(response.data.results.saveUser);
-
-  //     if (!response.data.error) {
-  //       alert("List saved!");
-  //       //handleSave();
-  //       setFormData(response.data.results.saveUser);
-  //     }
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // };
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {

@@ -51,6 +51,13 @@ function Sidebar({ Dash }) {
                   </Link>
                 </li>
                 <li
+                  className={Dash === "orders" ? "nav-link active" : "nav-link"}
+                >
+                  <Link className="" to="/orders">
+                    <i className="fal fa-box-full"></i>Order Management
+                  </Link>
+                </li>
+                <li
                   className={
                     Dash === "categories" ? "nav-link active" : "nav-link"
                   }
@@ -142,7 +149,6 @@ function Sidebar({ Dash }) {
                 >
                   <Link className="" to="/Home-Screen-banners">
                     <i className="fal fa-sign-in-alt"></i>Banner Management
-                    
                   </Link>
                 </li>
                 <li
@@ -162,13 +168,7 @@ function Sidebar({ Dash }) {
                     <i className="fad fa-gift-card"></i>Offers Management
                   </Link>
                 </li>
-                <li
-                  className={Dash === "orders" ? "nav-link active" : "nav-link"}
-                >
-                  <Link className="" to="/orders">
-                    <i className="fal fa-box-full"></i>Order Management
-                  </Link>
-                </li>
+
                 <li
                   className={Dash === "agents" ? "nav-link active" : "nav-link"}
                 >
@@ -202,7 +202,6 @@ function Sidebar({ Dash }) {
                     Management
                   </Link>
                 </li> */}
-                
 
                 {/* <li
                   className={

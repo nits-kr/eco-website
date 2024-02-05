@@ -298,7 +298,7 @@ function TransactionManagement() {
                                         <th>Cart Total</th>
                                         <th>Payment Intent</th>
                                         <th>Order Status</th>
-                                        <th>Action</th>
+                                        {/* <th>Action</th> */}
                                       </tr>
                                     </thead>
                                     <tbody>
@@ -312,16 +312,10 @@ function TransactionManagement() {
 
                                             <td> {item?._id} </td>
                                             <td> {item?.user_Id?.userName} </td>
-                                            <td>
-                                              {" "}
-                                              {
-                                                item?.user_Id
-                                                  ?.totalAfterDiscount[0]
-                                              }{" "}
-                                            </td>
+                                            <td> {item?.cartsTotal} </td>
                                             <td> {item?.paymentIntent} </td>
                                             <td> {item?.orderStatus} </td>
-                                            <td>
+                                            {/* <td>
                                               <Link
                                                 className="comman_btn2 table_viewbtn"
                                                 to="/transactionDetails"
@@ -333,7 +327,7 @@ function TransactionManagement() {
                                               >
                                                 View
                                               </Link>
-                                            </td>
+                                            </td> */}
                                           </tr>
                                         );
                                       })}

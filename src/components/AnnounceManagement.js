@@ -202,7 +202,7 @@ function AnnounceManagement() {
                       <div className="col-auto">
                         <h2>Announcement Management</h2>
                       </div>
-                      <div className="col-auto text-white fw-bold d-flex align-items-center">
+                      {/* <div className="col-auto text-white fw-bold d-flex align-items-center">
                         <strong className="me-2 d-inline">Edit :</strong>
                         <button className="edit_buton" onClick="markUp('bold')">
                           <strong>B</strong>
@@ -228,7 +228,7 @@ function AnnounceManagement() {
                         <button className="edit_buton" id="underline">
                           <u>U</u>
                         </button>
-                      </div>
+                      </div> */}
                     </div>
                     <form
                       className="form-design help-support-form py-4 px-3 row align-items-start justify-content-center"
