@@ -207,6 +207,7 @@ function ProductList2(props) {
   };
 
   const handleCheckboxChange = (productId) => {
+    console.log("handleCheckboxChange", productId);
     if (selectedProducts.includes(productId)) {
       setSelectedProducts(selectedProducts.filter((id) => id !== productId));
     } else {

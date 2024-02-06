@@ -305,6 +305,12 @@ function ProductManagementEdit2(props) {
     if (formData.metaDescriptionAr) {
       data.append("metaDescription_ar", formData.metaDescriptionAr);
     }
+    if (formData.additionalInfoEn) {
+      data.append("AdditionalInfo", formData.additionalInfoEn);
+    }
+    if (formData.additionalInfoAr) {
+      data.append("AdditionalInfo_ar", formData.additionalInfoAr);
+    }
     data.append("visibility", formData.visibility || "published");
     data.append("visibility_ar", formData.visibilityAr || "نشرت");
     data.append(
@@ -969,6 +975,53 @@ function ProductManagementEdit2(props) {
                               }
                               //   defaultValue={formData?.shortDescriptionAr}
                               placeholder="أدخل وصفًا موجزًا"
+                              onChange={handleInputChange}
+                              required
+                              minLength="3"
+                            />
+                          </div>
+                          <div className="form-group col-6">
+                            <label htmlFor="additionalInfoEn">
+                              Additional Info(En)
+                              <span className="required-field text-danger">
+                                *
+                              </span>
+                            </label>
+                            <textarea
+                              name="additionalInfoEn"
+                              className="form-control"
+                              id="additionalInfoEn"
+                              style={{ height: 120 }}
+                              defaultValue={
+                                productListItems.length > 0
+                                  ? productListItems[0].AdditionalInfo
+                                  : ""
+                              }
+                              placeholder="Enter Additional Informations..."
+                              onChange={handleInputChange}
+                              required
+                              minLength="3"
+                            />
+                          </div>
+                          <div className="form-group col-6">
+                            <label htmlFor="additionalInfoAr">
+                              Additional Info(Ar)
+                              <span className="required-field text-danger">
+                                *
+                              </span>
+                            </label>
+                            <textarea
+                              name="additionalInfoAr"
+                              className="form-control"
+                              id="additionalInfoAr"
+                              style={{ height: 120 }}
+                              // defaultValue={""}
+                              defaultValue={
+                                productListItems.length > 0
+                                  ? productListItems[0].AdditionalInfo_ar
+                                  : ""
+                              }
+                              placeholder="أدخل معلومات إضافية..."
                               onChange={handleInputChange}
                               required
                               minLength="3"

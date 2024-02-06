@@ -463,6 +463,16 @@ export const PostApi = createApi({
         };
       },
     }),
+    addAgents: builder.mutation({
+      query: ({ formData, ecoAdminToken }) => ({
+        url: `admin/agent/agent/addUser`,
+        method: "POST",
+        body: formData,
+        headers: {
+          "x-auth-token-user": ecoAdminToken,
+        },
+      }),
+    }),
     catogaryStatus: builder.mutation({
       query: (body) => {
         console.log("update category", body);
@@ -751,4 +761,5 @@ export const {
   useDeleteProductScrollBannerMutation,
   useDeleteProductSideBannerMutation,
   useDeleteProductTopBannerMutation,
+  useAddAgentsMutation,
 } = PostApi;

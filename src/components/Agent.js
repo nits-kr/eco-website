@@ -173,7 +173,7 @@ function Agent(props) {
                     <FontAwesomeIcon icon={faFileExport} /> Export
                   </Link>
                   <Link
-                    to="/agents-details"
+                    to="/add-agents"
                     className="btn btn-primary"
                     style={{ height: "40px", width: "160px" }}
                   >

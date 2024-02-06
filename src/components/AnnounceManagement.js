@@ -102,7 +102,7 @@ function AnnounceManagement() {
       data.append("text", formData.nameEnText);
       data.append("text_ar", formData.nameArText);
       const response = await axios.post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/announcement/announcement/create",
+        `${process.env.REACT_APP_APIENDPOINT}admin/announcement/announcement/create`,
         data
       );
 

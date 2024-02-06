@@ -25,7 +25,6 @@ import AnnounceManagement from "./components/AnnounceManagement";
 // import ProductList from "./components/ProductList";
 import Varification from "./components/Varification";
 import UsersManagement from "./components/UsersManagement";
-import UserDetails2 from "./components/UserDetails2";
 import TransactionManagement from "./components/TransactionManagement";
 import TransactionDetails from "./components/TransactionDetails";
 import ThoughtsManagement from "./components/ThoughtsManagement";
@@ -35,7 +34,6 @@ import CoupanList from "./components/CoupanList";
 import CreatCoupan from "./components/CreatCoupan";
 import VerificationModal from "./components/VerificationModal";
 import Agent from "./components/Agent";
-import AgentDetails from "./components/AgentDetails";
 import LoadingBar from "react-top-loading-bar";
 import SubCategory from "./components/SubCategory";
 import ProductManagement2 from "./components/ProductManagement2";
@@ -111,12 +109,6 @@ function App() {
             element={<AddAgents setProgress={setProgress} />}
           />
 
-          <Route
-            exact
-            className="active"
-            path="/agents-details"
-            element={<AgentDetails />}
-          />
           <Route
             exact
             className="active"

@@ -632,6 +632,7 @@ function UserDetailsAll() {
                                     {review?.map((item, index) => {
                                       return (
                                         <tr key={index}>
+                                          <td> {index + 1} </td>
                                           <td> {item?.product_Id} </td>
                                           <td> {item?.yourName} </td>
                                           <td> {item?.rating} </td>
