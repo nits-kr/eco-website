@@ -224,7 +224,7 @@ function Staff() {
     await getAllStaff({
       year: date,
       from: values.from,
-      till: values.to,
+      to: values.to,
       search: searchQuery,
     }).then((res) => {
       const newRows = [];
@@ -634,9 +634,12 @@ function Staff() {
                         />
                       </div>
                       <div className="form-group mb-0 col-auto">
-                        <a className="comman_btn2" onClick={() => getStaff()}>
+                        <Link
+                          className="comman_btn2"
+                          onClick={() => getStaff()}
+                        >
                           Search
-                        </a>
+                        </Link>
                       </div>
                     </form>
                     <div className="row">

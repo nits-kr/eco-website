@@ -2645,5 +2645,6 @@ strong.box_tag_left {
   border-style: solid;
   border-width: 1px;
   box-sizing: border-box;
-  height: 50px !important;
+  /* height: 50px !important; */
+  height: auto !important;
 }
