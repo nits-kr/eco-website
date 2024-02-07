@@ -10,7 +10,10 @@ import { faEye, faPencil, faCopy } from "@fortawesome/free-solid-svg-icons";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import { useEditProductListMutation } from "../services/Post";
+import {
+  useAddReccomdedMutation,
+  useEditProductListMutation,
+} from "../services/Post";
 import { useDeleteProductListMutation } from "../services/Post";
 
 function ProductList2(props) {
@@ -23,6 +26,7 @@ function ProductList2(props) {
   const [endDate, setEndDate] = useState("");
   //   const [searchQuery, setSearchQuery] = useState("");
   const [deleteProductList, response] = useDeleteProductListMutation();
+  const [addReccomded] = useAddReccomdedMutation();
   const [editProductList] = useEditProductListMutation();
   const [productName2, setProductName2] = useState("");
   //   const [loading, setLoading] = useState(false);
@@ -206,13 +210,9 @@ function ProductList2(props) {
     return slug?.length > 10 ? `${slug.slice(0, 10)}...` : slug;
   };
 
-  const handleCheckboxChange = (productId) => {
-    console.log("handleCheckboxChange", productId);
-    if (selectedProducts.includes(productId)) {
-      setSelectedProducts(selectedProducts.filter((id) => id !== productId));
-    } else {
-      setSelectedProducts([...selectedProducts, productId]);
-    }
+  const handleCheckboxChange = async (productId) => {
+    const res = await addReccomded(productId);
+    console.log("res reccomended", res);
   };
 
   return (
@@ -440,9 +440,11 @@ function ProductList2(props) {
                                           type="checkbox"
                                           name={`checkbox-${product.productName_en}`}
                                           id={product._id}
-                                          checked={selectedProducts.includes(
-                                            product._id
-                                          )}
+                                          defaultChecked={
+                                            product?.Recommended === true
+                                              ? "checked"
+                                              : ""
+                                          }
                                           onChange={() =>
                                             handleCheckboxChange(product._id)
                                           }

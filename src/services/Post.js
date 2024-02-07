@@ -178,6 +178,20 @@ export const PostApi = createApi({
         body,
       }),
     }),
+    createStaff: builder.mutation({
+      query: (body) => ({
+        url: `admin/staff/staff/createStaff`,
+        method: "post",
+        body,
+      }),
+    }),
+    getAllStaff: builder.mutation({
+      query: (body) => ({
+        url: `admin/staff/staff/list`,
+        method: "post",
+        body,
+      }),
+    }),
     addToCart: builder.mutation({
       query: (body) => ({
         url: `user/carts/carts/add-cart`,
@@ -521,6 +535,15 @@ export const PostApi = createApi({
         };
       },
     }),
+    addReccomded: builder.mutation({
+      query: (ecomUserId) => ({
+        url: `admin/product/addRecommendedProduct/${ecomUserId}`,
+        method: "post",
+        // headers: {
+        //   "x-auth-token-user": ecommercetoken,
+        // },
+      }),
+    }),
     valueStatus: builder.mutation({
       query: (body) => {
         console.log("update category", body);
@@ -653,6 +676,16 @@ export const PostApi = createApi({
         };
       },
     }),
+    staffDetails: builder.mutation({
+      query: (body) => {
+        console.log("taffDetails", body);
+        const { id } = body;
+        return {
+          url: `admin/staff/staff/StaffDetails/${body}`,
+          method: "post",
+        };
+      },
+    }),
     agentDetailsAll: builder.mutation({
       query: (body) => {
         console.log("update category", body);
@@ -762,4 +795,8 @@ export const {
   useDeleteProductSideBannerMutation,
   useDeleteProductTopBannerMutation,
   useAddAgentsMutation,
+  useAddReccomdedMutation,
+  useCreateStaffMutation,
+  useGetAllStaffMutation,
+  useStaffDetailsMutation,
 } = PostApi;

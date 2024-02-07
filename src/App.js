@@ -52,6 +52,7 @@ import StoreSettings from "./components/configurations/StoreSettings";
 import Banners from "./components/banners/Banners";
 import ProductBanner from "./components/banners/ProductBanner";
 import AddAgents from "./components/AddAgents";
+import Staff from "./components/staffs/Staff";
 
 function App() {
   const [progress, setProgress] = useState(0);
@@ -181,12 +182,14 @@ function App() {
             path="/orders"
             element={<OrderManagement />}
           />
-          <Route
+          <Route exact className="active" path="/staff" element={<Staff />} />
+          {/* <Route
             exact
             className="active"
             path="/staff"
             element={<StaffManagement />}
-          />
+          /> */}
+
           <Route
             exact
             className="active"
