@@ -385,12 +385,10 @@ export const PostApi = createApi({
     }),
     updateStaff: builder.mutation({
       query: (body) => {
-        console.log("update category", body);
-        const { id, ...data } = body;
-        console.log("update Sub category body data", data);
-        console.log("update Sub category body id", id);
+        const { ids, ...data } = body;
+
         return {
-          url: `admin/staff/staff/updateStaff/${id}`,
+          url: `admin/staff/staff/updateStaff/${ids}`,
           method: "PATCH",
           body: data,
         };

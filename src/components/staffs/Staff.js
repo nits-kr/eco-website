@@ -14,6 +14,7 @@ import {
   useCreateStaffMutation,
   useGetAllStaffMutation,
   useStaffDetailsMutation,
+  useUpdateStaffMutation,
 } from "../../services/Post";
 import Sidebar from "../Sidebar";
 
@@ -25,6 +26,7 @@ function Staff() {
   const [AddStaff] = useCreateStaffMutation();
   const [getAllStaff] = useGetAllStaffMutation();
   const [getStaffDetails] = useStaffDetailsMutation();
+  const [updateStaff] = useUpdateStaffMutation();
 
   const [info, setInfo] = useState([]);
   console.log("info", info);
@@ -185,10 +187,11 @@ function Staff() {
     console.log(data, selectOptions);
 
     const response = await AddStaff({
-      name: data?.name?.trim(),
-      email: data?.email?.trim(),
-      access: (selectOptions.optionSelected || [])?.map((item) => item?.value),
-      password: data?.ConfirmPassword,
+      staffName: data?.name?.trim(),
+      userEmail: data?.email?.trim(),
+      modules: (selectOptions.optionSelected || [])?.map((item) => item?.value),
+      password: data?.NewPassword,
+      confirm_password: data?.ConfirmPassword,
       type: "subAdmin",
     });
     console.log("response add staff", response);
@@ -250,13 +253,13 @@ function Staff() {
                   <li key={ind}>{li}</li>
                 ))}
               </ol>
-              {list?.access?.length > 3 && (
+              {list?.modules?.length > 3 && (
                 <button
                   type="button"
                   className="read-more-btn"
                   data-bs-toggle="modal"
                   data-bs-target="#staticBackdropreportmore"
-                  onClick={() => showMoreAccess(list?.access)}
+                  onClick={() => showMoreAccess(list?.modules)}
                   style={{ borderRadius: "5px" }}
                 >
                   Read more...
@@ -382,28 +385,29 @@ function Staff() {
     }
 
     const formData = {
-      name: data?.editName?.trim(),
-      email: data?.editEmail?.trim(),
+      staffName: data?.editName?.trim(),
+      userEmail: data?.editEmail?.trim(),
       password: data?.editPassword,
-      confirmPassword: data?.editConfirmPassword,
+      confirm_password: data?.editConfirmPassword,
+      ids: ids,
 
-      access: (selectEditOptions1.optionSelected || [])?.map(
+      modules: (selectEditOptions1.optionSelected || [])?.map(
         (item) => item?.value
       ),
     };
 
-    // const res = await editStaff(ids, formData);
-    // if (!res.data.error) {
-    //   document?.getElementById("closeModal").click();
-    //   getStaff();
-    //   Swal.fire({
-    //     title: res.data?.message + "!",
-    //     icon: "success",
-    //     confirmButtonText: "Okay",
-    //     confirmButtonColor: "#da3c3b",
-    //     timer: 1000,
-    //   });
-    // }
+    const res = await updateStaff(formData);
+    if (!res.data.error) {
+      document?.getElementById("closeModal").click();
+      getStaff();
+      Swal.fire({
+        title: res.data?.message + "!",
+        icon: "success",
+        confirmButtonText: "Okay",
+        confirmButtonColor: "#da3c3b",
+        timer: 1000,
+      });
+    }
   };
 
   const getBarClick = (val) => {
