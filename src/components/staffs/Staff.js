@@ -14,11 +14,15 @@ import {
   useCreateStaffMutation,
   useGetAllStaffMutation,
   useStaffDetailsMutation,
+  useStaffStatusMutation,
   useUpdateStaffMutation,
 } from "../../services/Post";
 import Sidebar from "../Sidebar";
+import { FadeLoader } from "react-spinners";
 
 function Staff() {
+  let [loading, setLoading] = useState(false);
+
   const [values, setValues] = useState({ from: "", to: "" });
   const [searchQuery, setSearchQuery] = useState("");
   const [sideBar, setSideBar] = useState(true);
@@ -27,6 +31,7 @@ function Staff() {
   const [getAllStaff] = useGetAllStaffMutation();
   const [getStaffDetails] = useStaffDetailsMutation();
   const [updateStaff] = useUpdateStaffMutation();
+  const [changeStaffStatus] = useStaffStatusMutation();
 
   const [info, setInfo] = useState([]);
   console.log("info", info);
@@ -137,7 +142,7 @@ function Staff() {
       });
 
       let types = [];
-      info?.access?.map((itm) => {
+      info?.modules?.map((itm) => {
         types.push({ value: itm, label: itm });
       });
       setSelectEditOptions1({
@@ -185,7 +190,7 @@ function Staff() {
     }
 
     console.log(data, selectOptions);
-
+    setLoading(true);
     const response = await AddStaff({
       staffName: data?.name?.trim(),
       userEmail: data?.email?.trim(),
@@ -194,8 +199,9 @@ function Staff() {
       confirm_password: data?.ConfirmPassword,
       type: "subAdmin",
     });
+    setLoading(false);
     console.log("response add staff", response);
-    if (response?.data?.error_code === 201) {
+    if (response?.data?.message === "Success") {
       setSelectOptions({ optionSelected: [] });
 
       Swal.fire({
@@ -206,6 +212,15 @@ function Staff() {
       });
 
       getStaff();
+    } else if (
+      response?.error?.data?.message === "Staff with this email already exists"
+    ) {
+      Swal.fire({
+        title: "Error",
+        text: "A staff member with this email already exists. Please use a different email address.",
+        icon: "error",
+        confirmButtonColor: "#e25829",
+      });
     } else {
       Swal.fire({
         title: "Error",
@@ -272,13 +287,14 @@ function Staff() {
             <div className="check_toggle" key={list?._id}>
               <input
                 type="checkbox"
-                defaultChecked={list?.status}
+                // defaultChecked={list?.status}
+                checked={list?.status}
                 name="check1"
                 id={list?._id}
                 className="d-none"
-                // onClick={() => {
-                //   handleStaffStatus(list?._id);
-                // }}
+                onClick={() => {
+                  handleStaffStatus(list?._id, list?.status);
+                }}
               />
               <label for={list?._id}></label>
             </div>
@@ -325,49 +341,55 @@ function Staff() {
     });
   };
 
-  //   const handleStaffStatus = async (id) => {
-  //     try {
-  //       const result = await Swal.fire({
-  //         icon: "question",
-  //         title: "Are you sure you want to update the contact status?",
-  //         showCancelButton: true,
-  //         confirmButtonText: "Yes, update it!",
-  //         cancelButtonText: "Cancel",
-  //         confirmButtonColor: "#3085d6",
-  //         cancelButtonColor: "#d33",
-  //       });
+  const handleStaffStatus = async (id, currentStatus) => {
+    try {
+      const newStatus = !currentStatus;
+      const result = await Swal.fire({
+        icon: "question",
+        title: "Are you sure you want to update the contact status?",
+        showCancelButton: true,
+        confirmButtonText: "Yes, update it!",
+        cancelButtonText: "Cancel",
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+      });
 
-  //       if (result.isConfirmed) {
-  //         const response = await changeStaffStatus(id);
-  //         console.log("response", response);
+      const formData = {
+        status: newStatus,
+        ids: id,
+      };
 
-  //         if (response?.data?.error_code === 201) {
-  //           Swal.fire({
-  //             icon: "success",
-  //             title: "Contact Status Updated",
-  //             showConfirmButton: false,
-  //             timer: 1500,
-  //           });
+      if (result.isConfirmed) {
+        const response = await changeStaffStatus(formData);
+        console.log("response", response);
 
-  //           getStaff();
-  //         } else {
-  //           Swal.fire({
-  //             icon: "error",
-  //             title: "Error",
-  //             text: response.message,
-  //           });
-  //         }
-  //       }
-  //     } catch (error) {
-  //       console.error("Error updating contact status:", error);
+        if (response?.data?.message === "success") {
+          Swal.fire({
+            icon: "success",
+            title: "Staff Status Updated",
+            showConfirmButton: false,
+            timer: 1500,
+          });
 
-  //       Swal.fire({
-  //         icon: "error",
-  //         title: "Error",
-  //         text: "An unexpected error occurred",
-  //       });
-  //     }
-  //   };
+          getStaff();
+        } else {
+          Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: response.message,
+          });
+        }
+      }
+    } catch (error) {
+      console.error("Error updating contact status:", error);
+
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "An unexpected error occurred",
+      });
+    }
+  };
 
   const onSubmit2 = async (data) => {
     if (
@@ -571,7 +593,16 @@ function Staff() {
                       </div>
                       <div className="form-group  col-auto mt-4">
                         <button className="comman_btn2 mt-1" type="submit">
-                          Save
+                          {loading ? (
+                            <FadeLoader
+                              loading={loading}
+                              // size={150}
+                              aria-label="Loading Spinner"
+                              data-testid="loader"
+                            />
+                          ) : (
+                            "Submit"
+                          )}
                         </button>
                       </div>
                     </form>

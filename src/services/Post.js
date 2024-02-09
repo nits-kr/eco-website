@@ -36,6 +36,13 @@ export const PostApi = createApi({
         body,
       }),
     }),
+    createCoupan: builder.mutation({
+      query: (body) => ({
+        url: `admin/coupan/coupan/create`,
+        method: "POST",
+        body,
+      }),
+    }),
     createInformation: builder.mutation({
       query: (body) => ({
         url: `/admin/information/info/create`,
@@ -390,6 +397,17 @@ export const PostApi = createApi({
         return {
           url: `admin/staff/staff/updateStaff/${ids}`,
           method: "PATCH",
+          body: data,
+        };
+      },
+    }),
+    staffStatus: builder.mutation({
+      query: (body) => {
+        const { ids, ...data } = body;
+
+        return {
+          url: `admin/staff/staff/stafstatus/${ids}`,
+          method: "post",
           body: data,
         };
       },
@@ -797,4 +815,6 @@ export const {
   useCreateStaffMutation,
   useGetAllStaffMutation,
   useStaffDetailsMutation,
+  useStaffStatusMutation,
+  useCreateCoupanMutation,
 } = PostApi;

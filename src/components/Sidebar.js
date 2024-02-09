@@ -161,13 +161,13 @@ function Sidebar({ Dash }) {
                     <span>Brand Management</span>
                   </Link>
                 </li>
-                <li
+                {/* <li
                   className={Dash === "offers" ? "nav-link active" : "nav-link"}
                 >
                   <Link className="" to="/offers">
                     <i className="fad fa-gift-card"></i>Offers Management
                   </Link>
-                </li>
+                </li> */}
 
                 <li
                   className={Dash === "agents" ? "nav-link active" : "nav-link"}

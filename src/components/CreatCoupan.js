@@ -13,7 +13,12 @@ export default function CreatCoupan() {
     quantity: "",
     discountType: "",
     coupanStatus: "",
+    c1: "",
   });
+
+  console.log("coupan c1", coupan?.c1);
+
+  const [discountType, setDiscountType] = useState("Fixed");
 
   const [restriction, setRestriction] = useState({
     coupanTitle: "",
@@ -54,6 +59,9 @@ export default function CreatCoupan() {
     const { name, value } = event.target;
     setCoupan({ ...coupan, [name]: value });
   };
+  const handleInputChangediscount = (event) => {
+    setDiscountType(event.target.value);
+  };
   const handleInputChange1 = (event) => {
     const { name, value } = event.target;
     setRestriction({ ...restriction, [name]: value });
@@ -78,7 +86,7 @@ export default function CreatCoupan() {
           enddate: coupan.endDate,
           Quantity: coupan.quantity,
           DiscountType: coupan.discountType,
-          status: coupan.coupanStatus,
+          status: coupan.c1,
         }
       );
       console.log("create coupan", response.data.results.coupanData);
@@ -342,7 +350,7 @@ export default function CreatCoupan() {
                                 // minLength="3"
                               />
                             </div>
-                            <div className="form-group col-4">
+                            {/* <div className="form-group col-4">
                               <label htmlFor="">
                                 Discount Type
                                 <span className="required-field text-danger">
@@ -359,8 +367,59 @@ export default function CreatCoupan() {
                                 required
                                 // minLength="3"
                               />
+                            </div> */}
+
+                            <div>
+                              <div className="form-group col-4">
+                                <label htmlFor="">Discount Type</label>
+                                <select
+                                  className="select form-control"
+                                  multiple=""
+                                  name="discountType"
+                                  id="discountType"
+                                  onChange={handleInputChangediscount}
+                                  defaultValue="Select Discount Type"
+                                >
+                                  <option value="" disabled>
+                                    Select Discount Type
+                                  </option>
+                                  <option value="Fixed">Fixed</option>
+                                  <option value="%">Percentage</option>
+                                </select>
+                              </div>
+
+                              <div className="input-group mb-3">
+                                <input
+                                  type="text"
+                                  className="form-control"
+                                  placeholder="Discount Value"
+                                  aria-label="Discount Value"
+                                  aria-describedby="button-addon2"
+                                />
+                                {discountType === "Fixed" && (
+                                  <div className="input-group-append">
+                                    <span
+                                      className="input-group-text"
+                                      style={{ height: "50px" }}
+                                    >
+                                      $
+                                    </span>
+                                  </div>
+                                )}
+                                {discountType === "%" && (
+                                  <div className="input-group-append">
+                                    <span
+                                      className="input-group-text"
+                                      style={{ height: "50px" }}
+                                    >
+                                      %
+                                    </span>
+                                  </div>
+                                )}
+                              </div>
                             </div>
-                            <div className="form-group col-4">
+
+                            {/* <div className="form-group col-4">
                               <label htmlFor="">
                                 Coupan status
                                 <span className="required-field text-danger">
@@ -377,8 +436,8 @@ export default function CreatCoupan() {
                                 required
                                 minLength="3"
                               />
-                            </div>
-                            <div className="form-group col-4 coupon_checkbox">
+                            </div> */}
+                            {/* <div className="form-group col-4 coupon_checkbox">
                               <div className="check_radio">
                                 <input
                                   type="checkbox"
@@ -388,7 +447,7 @@ export default function CreatCoupan() {
                                 />
                                 <label htmlFor="c1">Allow Free Shipping </label>
                               </div>
-                            </div>
+                            </div> */}
                             <div className="form-group col-4 coupon_checkbox">
                               <div className="check_radio">
                                 <input

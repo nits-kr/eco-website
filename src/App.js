@@ -53,6 +53,7 @@ import Banners from "./components/banners/Banners";
 import ProductBanner from "./components/banners/ProductBanner";
 import AddAgents from "./components/AddAgents";
 import Staff from "./components/staffs/Staff";
+import CreatCoupans from "./components/coupans/CreateCoupans";
 
 function App() {
   const [progress, setProgress] = useState(0);
@@ -356,8 +357,15 @@ function App() {
             exact
             className="active"
             path="/creatCoupan"
-            element={<CreatCoupan />}
+            element={<CreatCoupans />}
           />
+
+          {/* <Route
+            exact
+            className="active"
+            path="/creatCoupan"
+            element={<CreatCoupan />}
+          /> */}
           <Route
             exact
             className="active"
