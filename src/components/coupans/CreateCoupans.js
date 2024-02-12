@@ -4,9 +4,11 @@ import Swal from "sweetalert2";
 import { useForm } from "react-hook-form";
 import Sidebar from "../Sidebar";
 import { useCreateCoupanMutation } from "../../services/Post";
+import classNames from "classnames";
 
 export default function CreatCoupans() {
-  const [discountType, setDiscountType] = useState("Fixed");
+  const [discountType, setDiscountType] = useState("");
+  const [show, setShow] = useState(false);
   const [createCoupan] = useCreateCoupanMutation();
 
   const {
@@ -58,6 +60,7 @@ export default function CreatCoupans() {
 
   const handleDiscountTypeChange = (event) => {
     setDiscountType(event.target.value);
+    setShow(true);
   };
 
   return (
@@ -218,13 +221,19 @@ export default function CreatCoupans() {
                                 Discount Type
                               </label>
                               <select
-                                className={`select form-control ${
-                                  errors.discountType ? "is-invalid" : ""
-                                }`}
+                                className={classNames("select form-control", {
+                                  "is-invalid":
+                                    errors.discountType && !discountType,
+                                })}
+                                // className={`select form-control ${
+                                //   errors.discountType && !discountType
+                                //     ? "is-invalid"
+                                //     : ""
+                                // }`}
                                 {...register("discountType", {
                                   required: true,
                                 })}
-                                // onChange={handleDiscountTypeChange}
+                                onChange={handleDiscountTypeChange}
                                 id="discountType"
                               >
                                 <option value="">Select Discount Type</option>
@@ -274,7 +283,10 @@ export default function CreatCoupans() {
                                 )}
                               </div>
                             )} */}
-                            <div className="input-group mb-3">
+                            <div
+                              className="input-group mb-3"
+                              style={{ display: show ? "" : "none" }}
+                            >
                               <input
                                 type="text"
                                 className={`form-control ${
