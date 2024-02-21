@@ -126,6 +126,20 @@ export const PostApi = createApi({
         },
       }),
     }),
+    getProductListSearch: builder.mutation({
+      query: (body) => {
+        const { ecomAdmintoken, ...data } = body;
+
+        return {
+          url: "admin/product/productList",
+          method: "post",
+          body: data,
+          headers: {
+            "x-auth-token-user": ecomAdmintoken,
+          },
+        };
+      },
+    }),
     getLatLongitude: builder.query({
       query: ({ ecomAdmintoken }) => ({
         url: "admin/user/location",
@@ -1182,6 +1196,18 @@ export const PostApi = createApi({
         };
       },
     }),
+    valueListforAttributes: builder.mutation({
+      query: (body) => {
+        const { ecomAdmintoken, id } = body;
+        return {
+          url: `admin/category/listing/selectValues/${id}`,
+          method: "get",
+          headers: {
+            "x-auth-token-user": ecomAdmintoken,
+          },
+        };
+      },
+    }),
     brandList: builder.mutation({
       query: (body) => {
         const { ecomAdmintoken, id } = body;
@@ -1447,4 +1473,6 @@ export const {
   useGetAttibutesListMutation,
   useGetValueListMutation,
   useGetBrandListMutation,
+  useValueListforAttributesMutation,
+  useGetProductListSearchMutation,
 } = PostApi;

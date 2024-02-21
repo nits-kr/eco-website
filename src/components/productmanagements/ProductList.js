@@ -13,6 +13,7 @@ import "slick-carousel/slick/slick-theme.css";
 import {
   useAddReccomdedMutation,
   useEditProductListMutation,
+  useGetProductListSearchMutation,
 } from "../../services/Post";
 import { useDeleteProductListMutation } from "../../services/Post";
 import { useSelector } from "react-redux";
@@ -21,8 +22,10 @@ import { MDBDataTable } from "mdbreact";
 
 function ProductList(props) {
   const ecomAdmintoken = useSelector((data) => data?.local?.token);
-  const { data: productLists, refetch: productListsData } =
-    useGetProductListQuery({ ecomAdmintoken });
+  // const { data: productLists, refetch: productListsData } =
+  //   useGetProductListQuery({ ecomAdmintoken });
+
+  const [productLists] = useGetProductListSearchMutation();
 
   const [loading, setLoading] = useState(false);
   const [selectedProducts, setSelectedProducts] = useState([]);
@@ -113,103 +116,115 @@ function ProductList(props) {
   });
 
   useEffect(() => {
-    if (productLists) {
-      setProductList(productLists?.results?.list);
+    if (ecomAdmintoken) {
+      handleProductList();
+    }
+  }, [ecomAdmintoken, searchQuery, startDate1]);
+
+  const handleProductList = async () => {
+    const data = {
+      from: startDate1,
+      search: searchQuery,
+      ecomAdmintoken: ecomAdmintoken,
+    };
+    const res = await productLists(data);
+    console.log("res pro cate", res);
+    setProductList(res?.data?.results?.list);
+  };
+
+  useEffect(() => {
+    if (productList?.length > 0) {
+      // setProductList(productLists?.results?.list);
       const newRows = [];
 
-      productLists?.results?.list
-        ?.slice()
-        ?.reverse()
-        ?.map((list, index) => {
-          const returnData = {};
-          returnData.sn = index + 1 + ".";
+      productList?.map((list, index) => {
+        const returnData = {};
+        returnData.sn = index + 1 + ".";
 
-          returnData.product_en = (
-            <div
-              className="col-12"
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "left",
-              }}
-            >
-              <strong className="text-dark-emphasis">
-                {list?.productName_en?.toUpperCase()?.length > 20
-                  ? list?.productName_en.toUpperCase().slice(0, 20) + "..."
-                  : list?.productName_en?.toUpperCase() || "N/A"}
-              </strong>
-            </div>
-          );
-          returnData.cate = (
-            <strong>{list?.category_Id?.categoryName_en}</strong>
-          );
-          returnData.brand = list?.brand_Id?.brandName_en
-            ? list?.brand_Id?.brandName_en
-            : "None";
-          returnData.slug = (
-            <div
-              style={{
-                cursor: "pointer",
-                color: "blue",
-              }}
-              title="Copy Slug"
-              onClick={() => copyToClipboard(list.slug)}
-            >
-              {displaySlug(list.slug)}{" "}
-              <span className="text-secondary">
-                <FontAwesomeIcon icon={faCopy} />
-              </span>
-            </div>
-          );
-          returnData.pic = (
-            <div className="">
-              <img
-                src={list?.addVarient?.[0]?.product_Pic?.[0]}
-                className="avatar lg rounded"
-                alt=""
-                style={{
-                  width: "10vh",
-                  height: "10vh",
-                }}
-              />
-            </div>
-          );
-          returnData.status = (
-            <strong>
-              <input
-                type="checkbox"
-                name={`checkbox-${list.productName_en}`}
-                id={list._id}
-                defaultChecked={list?.Recommended === true ? "checked" : ""}
-                onChange={() => handleCheckboxChange(list._id)}
-              />
+        returnData.product_en = (
+          <div
+            className="col-12"
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "left",
+            }}
+          >
+            <strong className="text-dark-emphasis">
+              {list?.productName_en?.toUpperCase()?.length > 20
+                ? list?.productName_en.toUpperCase().slice(0, 20) + "..."
+                : list?.productName_en?.toUpperCase() || "N/A"}
             </strong>
-          );
-          returnData.action = (
-            <>
-              <Link
-                className="comman_btn table_viewbtn"
-                to="/product-management"
-                state={{ id: list?._id }}
-              >
-                View
-              </Link>
-              <Link
-                className="comman_btn2 table_viewbtn ms-2"
-                to="#"
-                onClick={() => {
-                  handleDeleteProduct(list._id, list);
-                }}
-              >
-                Delete
-              </Link>
-            </>
-          );
-          newRows.push(returnData);
-        });
+          </div>
+        );
+        returnData.cate = <strong>{list?.category_Id?.categoryName_en}</strong>;
+        returnData.brand = list?.brand_Id?.brandName_en
+          ? list?.brand_Id?.brandName_en
+          : "None";
+        returnData.slug = (
+          <div
+            style={{
+              cursor: "pointer",
+              color: "blue",
+            }}
+            title="Copy Slug"
+            onClick={() => copyToClipboard(list.slug)}
+          >
+            {displaySlug(list.slug)}{" "}
+            <span className="text-secondary">
+              <FontAwesomeIcon icon={faCopy} />
+            </span>
+          </div>
+        );
+        returnData.pic = (
+          <div className="">
+            <img
+              src={list?.varient?.product_Pic?.[0]}
+              className="avatar lg rounded"
+              alt=""
+              style={{
+                width: "10vh",
+                height: "10vh",
+              }}
+            />
+          </div>
+        );
+        returnData.status = (
+          <strong>
+            <input
+              type="checkbox"
+              name={`checkbox-${list.productName_en}`}
+              id={list._id}
+              defaultChecked={list?.Recommended === true ? "checked" : ""}
+              onChange={() => handleCheckboxChange(list._id)}
+            />
+          </strong>
+        );
+        returnData.action = (
+          <>
+            <Link
+              className="comman_btn table_viewbtn"
+              to="/product-management"
+              state={{ id: list?._id }}
+            >
+              View
+            </Link>
+            <Link
+              className="comman_btn2 table_viewbtn ms-2"
+              to="#"
+              onClick={() => {
+                handleDeleteProduct(list._id, list);
+              }}
+            >
+              Delete
+            </Link>
+          </>
+        );
+        newRows.push(returnData);
+      });
       setProduct({ ...product, rows: newRows });
     }
-  }, [productLists]);
+  }, [productList]);
 
   const copyToClipboard = async (text) => {
     if (navigator.clipboard) {
@@ -268,7 +283,7 @@ function ProductList(props) {
           `${product?.productName_en} item has been deleted.`,
           "success"
         ).then(() => {
-          productListsData();
+          handleProductList();
         });
       }
     });

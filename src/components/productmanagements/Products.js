@@ -19,6 +19,7 @@ import {
   useSubCategoryListMutation,
   useSubSubCategoryListMutation,
   useValueListMutation,
+  useValueListforAttributesMutation,
 } from "../../services/Post";
 import classNames from "classnames";
 import { useForm } from "react-hook-form";
@@ -30,12 +31,10 @@ function Products(props) {
       ecomAdmintoken,
     });
 
-  // const [categoryListdata] = useGetCategoryListMutation();
-
   const [getSubCategory] = useSubCategoryListMutation();
   const [getSubSubCategory] = useSubSubCategoryListMutation();
   const [getAttributes] = useAttributesListMutation();
-  const [getValues] = useValueListMutation();
+  const [getValues] = useValueListforAttributesMutation();
   const [getBrands] = useBrandListMutation();
   const [createProduct] = useCreateProductMutation();
   const [addVariant] = useAddNewVariantMutation();
@@ -287,7 +286,7 @@ function Products(props) {
   const handleGetValues = async (id) => {
     const res = await getValues({ id, ecomAdmintoken });
     console.log("res", res);
-    setValue(res?.data?.results?.attributeCategoryData);
+    setValue(res?.data?.results?.values);
   };
 
   const handleGrtBrandList = async (id) => {
@@ -1615,7 +1614,7 @@ function Products(props) {
               <div
                 className="col-12 design_outter_comman comman_table_design px-0 shadow"
                 style={{
-                  display: details?.addVarient?.length > 0 ? "" : "none",
+                  display: details?.varients?.length > 0 ? "" : "none",
                 }}
               >
                 <div className="row comman_header justify-content-between">
@@ -1644,7 +1643,7 @@ function Products(props) {
                       </tr>
                     </thead>
                     <tbody>
-                      {details?.addVarient?.map((item, index) => {
+                      {details?.varients?.map((item, index) => {
                         return (
                           <tr key={index}>
                             <td>{index + 1}</td>
