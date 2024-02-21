@@ -7,8 +7,10 @@ import Spinner from "../Spinner";
 import {
   useCatogaryStatusMutation,
   useCreateBrandMutation,
+  useGetBrandListMutation,
   useGetBrandListQuery,
   useGetCategoryListQuery,
+  useGetSelectCategoryListQuery,
 } from "../../services/Post";
 import { useDeleteCategoryListMutation } from "../../services/Post";
 import { useDeleteBrabdListMutation } from "../../services/Post";
@@ -22,14 +24,17 @@ import { toast } from "react-toastify";
 function BrandManagement(props) {
   const ecomAdmintoken = useSelector((data) => data?.local?.token);
 
-  const { data: brandListdata, refetch: refetchbrandList } =
-    useGetBrandListQuery({
+  // const { data: brandListdata, refetch: refetchbrandList } =
+  //   useGetBrandListQuery({
+  //     ecomAdmintoken,
+  //   });
+
+  const [brandListdata] = useGetBrandListMutation();
+
+  const { data: categoryListdata, refetch: fetchcategoryListData } =
+    useGetSelectCategoryListQuery({
       ecomAdmintoken,
     });
-
-  const { data: categoryListdata } = useGetCategoryListQuery({
-    ecomAdmintoken,
-  });
   const [files, setFiles] = useState();
   const [addBrand] = useCreateBrandMutation();
   const [updateBrand] = useUpdateBrandMutation();
@@ -40,6 +45,10 @@ function BrandManagement(props) {
   const [deleteBrand] = useDeleteBrabdListMutation();
 
   const [categories, setCategories] = useState([]);
+
+  const [brandListData, setbrandListData] = useState([]);
+
+  console.log("brandListData", brandListData);
 
   const [id1, setId1] = useState([]);
   localStorage?.setItem("brandId", id1);
@@ -97,7 +106,7 @@ function BrandManagement(props) {
       confirmButtonText: "OK",
     }).then((result) => {
       if (result.isConfirmed) {
-        refetchbrandList();
+        handleBrandList();
 
         document.getElementById("closebrandmodal").click();
       }
@@ -106,7 +115,7 @@ function BrandManagement(props) {
 
   useEffect(() => {
     if (categoryListdata) {
-      setCategories(categoryListdata?.results?.list);
+      setCategories(categoryListdata?.results?.categoryData);
     }
   }, [categoryListdata]);
 
@@ -157,79 +166,93 @@ function BrandManagement(props) {
   });
 
   useEffect(() => {
-    if (brandListdata) {
+    if (ecomAdmintoken) {
+      handleBrandList();
+    }
+  }, [ecomAdmintoken, searchQuery, startDate1]);
+
+  const handleBrandList = async () => {
+    const data = {
+      from: startDate1,
+      search: searchQuery,
+      ecomAdmintoken: ecomAdmintoken,
+    };
+    const res = await brandListdata(data);
+    console.log("res brand cate", res);
+    setbrandListData(res?.data?.results?.list);
+  };
+
+  useEffect(() => {
+    if (brandListData?.length > 0) {
       const newRows = [];
 
-      brandListdata?.results?.list
-        ?.slice()
-        ?.reverse()
-        ?.map((list, index) => {
-          const returnData = {};
-          returnData.sn = index + 1 + ".";
-          returnData.cate = list?.category_Id?.categoryName_en;
-          returnData.brandEn = list?.brandName_en;
-          returnData.brandAr = list?.brandName_ar;
-          returnData.pic = (
-            <div className="">
-              <img className="table_img" src={list?.brandPic} alt="" />
-            </div>
-          );
+      brandListData?.map((list, index) => {
+        const returnData = {};
+        returnData.sn = index + 1 + ".";
+        returnData.cate = list?.category_Id?.categoryName_en;
+        returnData.brandEn = list?.brandName_en;
+        returnData.brandAr = list?.brandName_ar;
+        returnData.pic = (
+          <div className="">
+            <img className="table_img" src={list?.brandPic} alt="" />
+          </div>
+        );
 
-          returnData.action = (
-            <>
-              <Link
-                data-bs-toggle="modal"
-                data-bs-target="#staticBackdropeditBrand"
-                className="comman_btn2 table_viewbtn me-2"
-                to=""
-                onClick={() => {
-                  handleUpdate(list);
-                  setId1(list?._id);
-                }}
-              >
-                Edit
-              </Link>
-              <Link
-                className="comman_btn2 table_viewbtn"
-                to="#"
-                onClick={() => {
-                  Swal.fire({
-                    title: "Are you sure?",
-                    text: "You won't be able to revert this!",
-                    icon: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "#3085d6",
-                    cancelButtonColor: "#d33",
-                    confirmButtonText: "Yes, delete it!",
-                  }).then((result) => {
-                    if (result.isConfirmed) {
-                      deleteBrand({
-                        categoryId: list?._id,
-                        ecomAdmintoken,
-                      });
-                      Swal.fire(
-                        "Deleted!",
-                        `${list?.brandName_en} item has been deleted.`,
-                        "success"
-                      ).then(() => {
-                        setTimeout(() => {
-                          refetchbrandList();
-                          toast.success("Item Deleted!");
-                        }, 500);
-                      });
-                    }
-                  });
-                }}
-              >
-                Delete
-              </Link>
-            </>
-          );
-          newRows.push(returnData);
-        });
+        returnData.action = (
+          <>
+            <Link
+              data-bs-toggle="modal"
+              data-bs-target="#staticBackdropeditBrand"
+              className="comman_btn2 table_viewbtn me-2"
+              to=""
+              onClick={() => {
+                handleUpdate(list);
+                setId1(list?._id);
+              }}
+            >
+              Edit
+            </Link>
+            <Link
+              className="comman_btn2 table_viewbtn"
+              to="#"
+              onClick={() => {
+                Swal.fire({
+                  title: "Are you sure?",
+                  text: "You won't be able to revert this!",
+                  icon: "warning",
+                  showCancelButton: true,
+                  confirmButtonColor: "#3085d6",
+                  cancelButtonColor: "#d33",
+                  confirmButtonText: "Yes, delete it!",
+                }).then((result) => {
+                  if (result.isConfirmed) {
+                    deleteBrand({
+                      categoryId: list?._id,
+                      ecomAdmintoken,
+                    });
+                    Swal.fire(
+                      "Deleted!",
+                      `${list?.brandName_en} item has been deleted.`,
+                      "success"
+                    ).then(() => {
+                      setTimeout(() => {
+                        handleBrandList();
+                        toast.success("Item Deleted!");
+                      }, 500);
+                    });
+                  }
+                });
+              }}
+            >
+              Delete
+            </Link>
+          </>
+        );
+        newRows.push(returnData);
+      });
       setBrand({ ...brand, rows: newRows });
     }
-  }, [brandListdata]);
+  }, [brandListData]);
 
   const handleFileChange = (event) => {
     setFormData({ ...formData, uploadImage: event.target.files[0] });
@@ -260,7 +283,7 @@ function BrandManagement(props) {
           confirmButtonText: "OK",
         }).then((result) => {
           if (result.isConfirmed) {
-            refetchbrandList();
+            handleBrandList();
           }
         });
         // handleSave();
@@ -633,7 +656,7 @@ function BrandManagement(props) {
                     <option value="" disabled>
                       Select Category
                     </option>
-                    {categories.map((category) => (
+                    {categories?.map((category) => (
                       <option key={category._id} value={category?._id}>
                         {category?.categoryName_en}
                       </option>

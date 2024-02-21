@@ -207,15 +207,30 @@ export const PostApi = createApi({
         },
       }),
     }),
-    getBrandList: builder.query({
-      query: ({ ecomAdmintoken }) => ({
-        url: "admin/product/brand-list",
-        method: "post",
-        headers: {
-          "x-auth-token-user": ecomAdmintoken,
-        },
-      }),
+
+    getBrandList: builder.mutation({
+      query: (body) => {
+        const { ecomAdmintoken, ...data } = body;
+
+        return {
+          url: "admin/product/brand-list",
+          method: "post",
+          body: data,
+          headers: {
+            "x-auth-token-user": ecomAdmintoken,
+          },
+        };
+      },
     }),
+    // getBrandList: builder.query({
+    //   query: ({ ecomAdmintoken }) => ({
+    //     url: "admin/product/brand-list",
+    //     method: "post",
+    //     headers: {
+    //       "x-auth-token-user": ecomAdmintoken,
+    //     },
+    //   }),
+    // }),
     getCoupanList: builder.query({
       query: ({ ecomAdmintoken }) => ({
         url: "admin/coupan/coupan/list",
@@ -1431,4 +1446,5 @@ export const {
   useGetSubSubCategoryListMutation,
   useGetAttibutesListMutation,
   useGetValueListMutation,
+  useGetBrandListMutation,
 } = PostApi;
