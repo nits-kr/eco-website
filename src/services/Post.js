@@ -331,42 +331,98 @@ export const PostApi = createApi({
       },
     }),
 
-    getSubCategoryList: builder.query({
-      query: ({ ecomAdmintoken }) => ({
-        url: "admin/category/subCategory/SubCategoryList",
-        method: "post",
-        headers: {
-          "x-auth-token-user": ecomAdmintoken,
-        },
-      }),
+    getSubCategoryList: builder.mutation({
+      query: (body) => {
+        const { ecomAdmintoken, ...data } = body;
+
+        return {
+          url: "admin/category/subCategory/SubCategoryList",
+          method: "PATCH",
+          body: data,
+          headers: {
+            "x-auth-token-user": ecomAdmintoken,
+          },
+        };
+      },
     }),
-    getSubSubCategoryList: builder.query({
-      query: ({ ecomAdmintoken }) => ({
-        url: "admin/category/subSubCategory/subSubCategoryList",
-        method: "post",
-        headers: {
-          "x-auth-token-user": ecomAdmintoken,
-        },
-      }),
+    // getSubCategoryList: builder.query({
+    //   query: ({ ecomAdmintoken }) => ({
+    //     url: "admin/category/subCategory/SubCategoryList",
+    //     method: "post",
+    //     headers: {
+    //       "x-auth-token-user": ecomAdmintoken,
+    //     },
+    //   }),
+    // }),
+    // getSubSubCategoryList: builder.query({
+    //   query: ({ ecomAdmintoken }) => ({
+    //     url: "admin/category/subSubCategory/subSubCategoryList",
+    //     method: "post",
+    //     headers: {
+    //       "x-auth-token-user": ecomAdmintoken,
+    //     },
+    //   }),
+    // }),
+    getSubSubCategoryList: builder.mutation({
+      query: (body) => {
+        const { ecomAdmintoken, ...data } = body;
+
+        return {
+          url: "admin/category/subSubCategory/subSubCategoryList",
+          method: "PATCH",
+          body: data,
+          headers: {
+            "x-auth-token-user": ecomAdmintoken,
+          },
+        };
+      },
     }),
-    getAttibutesList: builder.query({
-      query: ({ ecomAdmintoken }) => ({
-        url: "admin/category/attribute/attributeList",
-        method: "post",
-        headers: {
-          "x-auth-token-user": ecomAdmintoken,
-        },
-      }),
+    getAttibutesList: builder.mutation({
+      query: (body) => {
+        const { ecomAdmintoken, ...data } = body;
+
+        return {
+          url: "admin/category/attribute/attributeList",
+          method: "PATCH",
+          body: data,
+          headers: {
+            "x-auth-token-user": ecomAdmintoken,
+          },
+        };
+      },
     }),
-    getValueList: builder.query({
-      query: ({ ecomAdmintoken }) => ({
-        url: "admin/category/values/valuesList",
-        method: "post",
-        headers: {
-          "x-auth-token-user": ecomAdmintoken,
-        },
-      }),
+    // getAttibutesList: builder.query({
+    //   query: ({ ecomAdmintoken }) => ({
+    //     url: "admin/category/attribute/attributeList",
+    //     method: "post",
+    //     headers: {
+    //       "x-auth-token-user": ecomAdmintoken,
+    //     },
+    //   }),
+    // }),
+    getValueList: builder.mutation({
+      query: (body) => {
+        const { ecomAdmintoken, ...data } = body;
+
+        return {
+          url: "admin/category/values/valuesList",
+          method: "PATCH",
+          body: data,
+          headers: {
+            "x-auth-token-user": ecomAdmintoken,
+          },
+        };
+      },
     }),
+    // getValueList: builder.query({
+    //   query: ({ ecomAdmintoken }) => ({
+    //     url: "admin/category/values/valuesList",
+    //     method: "post",
+    //     headers: {
+    //       "x-auth-token-user": ecomAdmintoken,
+    //     },
+    //   }),
+    // }),
     getAnnounceList: builder.query({
       query: ({ ecomAdmintoken }) => ({
         url: "admin/announcement/announcement/list",
@@ -1067,8 +1123,8 @@ export const PostApi = createApi({
       query: (body) => {
         const { ecomAdmintoken, id } = body;
         return {
-          url: `admin/category/subCategory/selectCategory/${id}`,
-          method: "post",
+          url: `admin/category/listing/selectSubCategory/${id}`,
+          method: "get",
           headers: {
             "x-auth-token-user": ecomAdmintoken,
           },
@@ -1079,8 +1135,8 @@ export const PostApi = createApi({
       query: (body) => {
         const { ecomAdmintoken, id } = body;
         return {
-          url: `admin/category/subSubCategory/selectSubCategory/${id}`,
-          method: "post",
+          url: `admin/category/listing/selectSubSubCategory/${id}`,
+          method: "get",
           headers: {
             "x-auth-token-user": ecomAdmintoken,
           },
@@ -1091,8 +1147,8 @@ export const PostApi = createApi({
       query: (body) => {
         const { ecomAdmintoken, id } = body;
         return {
-          url: `admin/category/attribute/selectSubSubCategory/${id}`,
-          method: "post",
+          url: `admin/category/listing/selectAttribute/${id}`,
+          method: "get",
           headers: {
             "x-auth-token-user": ecomAdmintoken,
           },
@@ -1371,4 +1427,8 @@ export const {
   useGetQuestionListMutation,
   useCreateQuestionMutation,
   useGetSelectCategoryListQuery,
+  useGetSubCategoryListMutation,
+  useGetSubSubCategoryListMutation,
+  useGetAttibutesListMutation,
+  useGetValueListMutation,
 } = PostApi;

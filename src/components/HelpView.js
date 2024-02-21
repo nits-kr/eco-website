@@ -8,14 +8,19 @@ import Swal from "sweetalert2";
 import Sidebar from "./Sidebar";
 import { useSelector } from "react-redux";
 import { useGetQuestionListMutation } from "../services/Post";
+import { useForm } from "react-hook-form";
+import classNames from "classnames";
 
 function HelpView() {
   const ecomAdmintoken = useSelector((data) => data?.local?.token);
   const [QuestionList] = useGetQuestionListMutation();
   const [helpViewList, setHelpViewList] = useState("");
   const [selectedQuestionId, setSelectedQuestionId] = useState(null);
-  axios.defaults.headers.common["x-auth-token-user"] =
-    localStorage.getItem("token");
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
   useEffect(() => {
     questionList();
   }, []);

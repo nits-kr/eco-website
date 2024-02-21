@@ -1,16 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
 import Swal from "sweetalert2";
 import {
   useAttributesListMutation,
   useCreateValuesMutation,
-  useGetAttibutesListQuery,
-  useGetCategoryListMutation,
-  // useGetCategoryListQuery,
-  useGetSubCategoryListQuery,
-  useGetSubSubCategoryListQuery,
-  useGetValueListQuery,
+  useGetSelectCategoryListQuery,
+  useGetValueListMutation,
   useSubCategoryListMutation,
   useSubSubCategoryListMutation,
   useUpdateValueMutation,
@@ -24,37 +19,20 @@ import { toast } from "react-toastify";
 function Value() {
   const ecomAdmintoken = useSelector((data) => data?.local?.token);
 
-  // const { data: categoryListdata, refetch: categoryListData } =
-  //   useGetCategoryListQuery({
-  //     ecomAdmintoken,
-  //   });
-  const [categoryListdata] = useGetCategoryListMutation();
-
-  const { data: subcategoryListdata, refetch: subcategoryListData } =
-    useGetSubCategoryListQuery({
-      ecomAdmintoken,
-    });
-  const { data: subSubcategoryListdata, refetch: subSubCategoryListData } =
-    useGetSubSubCategoryListQuery({
-      ecomAdmintoken,
-    });
-  const { data: attributesListdata, refetch: attributesListData } =
-    useGetAttibutesListQuery({
-      ecomAdmintoken,
-    });
-  const { data: valueLists, refetch: valueListData } = useGetValueListQuery({
+  const { data: categoryListdata } = useGetSelectCategoryListQuery({
     ecomAdmintoken,
   });
+
+  const [valueLists] = useGetValueListMutation();
 
   const [getSubCategory] = useSubCategoryListMutation();
   const [getSubSubCategory] = useSubSubCategoryListMutation();
   const [getAttribute] = useAttributesListMutation();
   const [createValues] = useCreateValuesMutation();
-  const [update, res] = useUpdateValueMutation();
+  const [update] = useUpdateValueMutation();
   const [deleteValueList, re] = useDeleteValueListMutation();
-  const [editValueEn, setEditValueEn] = useState("");
-  const [editValueAr, setEditValueAr] = useState("");
-  const [valueList, setValueList] = useState([]);
+
+  const [subValueList, setSubValueList] = useState([]);
   const [itemId, setItemId] = useState("");
   const [categories, setCategories] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
@@ -62,8 +40,7 @@ function Value() {
   const [attributes, setAttributes] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [startDate1, setStartDate1] = useState("");
-  const [valueNameEn2, setValueNameEn2] = useState("");
-  const [valueNameAr2, setValueNameAr2] = useState("");
+
   const [values, setValues] = useState({
     nameEn: "",
     nameAr: "",
@@ -73,38 +50,28 @@ function Value() {
     categoryId3: "",
   });
 
-  const handleCategoryList = async () => {
-    const data = {
-      from: "",
-      to: "",
-      search: "",
-      ecomAdmintoken: ecomAdmintoken,
-    };
-    const res = await categoryListdata(data);
-    console.log("res cate", res);
-    setCategories(res?.data?.results?.list);
-  };
-
   useEffect(() => {
-    handleCategoryList();
-  }, [ecomAdmintoken]);
+    if (categoryListdata) {
+      setCategories(categoryListdata?.results?.categoryData);
+    }
+  }, [categoryListdata]);
 
   const handleGetSubCategory = async (id) => {
     const res = await getSubCategory({ id, ecomAdmintoken });
     console.log("res", res);
-    setSubCategories(res?.data?.results?.categoryData);
+    setSubCategories(res?.data?.results?.subCategoryData);
   };
   const handleGetSubSubCategory = async (id) => {
     const res = await getSubSubCategory({ id, ecomAdmintoken });
     console.log("res", res);
 
-    setSubSubCategories(res.data.results.subCategoryData);
+    setSubSubCategories(res?.data?.results?.subSubCategoryData);
   };
   const handleAttributes = async (id) => {
     const res = await getAttribute({ id, ecomAdmintoken });
     console.log("res", res);
 
-    setAttributes(res.data.results.subSubCategoryData);
+    setAttributes(res?.data?.results?.attributeCategoryData);
   };
 
   useEffect(() => {
@@ -199,70 +166,84 @@ function Value() {
   } = useForm();
 
   useEffect(() => {
-    if (valueLists) {
-      setValueList(valueLists?.results?.list);
+    if (ecomAdmintoken) {
+      handleValueList();
+    }
+  }, [ecomAdmintoken, searchQuery, startDate1]);
+
+  const handleValueList = async () => {
+    const data = {
+      from: startDate1,
+      search: searchQuery,
+      ecomAdmintoken: ecomAdmintoken,
+    };
+    const res = await valueLists(data);
+    console.log("res sub cate", res);
+    setSubValueList(res?.data?.results?.list);
+  };
+
+  useEffect(() => {
+    if (subValueList?.length > 0) {
+      // setValueList(valueLists?.results?.list);
       const newRows = [];
 
-      valueLists?.results?.list
-        ?.slice()
-        ?.reverse()
-        ?.map((list, index) => {
-          const returnData = {};
-          returnData.sn = index + 1 + ".";
-          returnData.name_cate = list?.category_Id?.categoryName_en;
-          returnData.name_subcate = list?.subCategory_Id?.subCategoryName_en;
-          returnData.name_subSubcate =
-            list?.subSubCategory_Id?.subSubCategoryName_en;
-          returnData.name_att = list?.attribute_Id?.attributeName_en;
-          returnData.name_en = list?.valuesName_en;
-          returnData.name_ar = list?.valuesName_ar;
-          returnData.pic = (
-            <div className="">
-              <img className="table_img" src={list?.subCategoryPic} alt="" />
+      subValueList?.map((list, index) => {
+        const returnData = {};
+        returnData.sn = index + 1 + ".";
+        returnData.name_cate = list?.category_Id?.categoryName_en;
+        returnData.name_subcate = list?.subCategory_Id?.subCategoryName_en;
+        returnData.name_subSubcate =
+          list?.subSubCategory_Id?.subSubCategoryName_en;
+        returnData.name_att = list?.attribute_Id?.attributeName_en;
+        returnData.name_en = list?.valuesName_en;
+        returnData.name_ar = list?.valuesName_ar;
+        returnData.pic = (
+          <div className="">
+            <img className="table_img" src={list?.subCategoryPic} alt="" />
+          </div>
+        );
+        returnData.status = (
+          <form className="table_btns d-flex align-items-center">
+            <div className="check_toggle">
+              <input
+                defaultChecked={list?.status}
+                type="checkbox"
+                name={`status_${list._id}`}
+                id={`status_${list._id}`}
+                className="d-none"
+                // data-bs-toggle="modal"
+                // data-bs-target="#staticBackdrop3"
+                disabled
+              />
+              <label htmlFor={`status_${list._id}`}></label>
             </div>
-          );
-          returnData.status = (
-            <form className="table_btns d-flex align-items-center">
-              <div className="check_toggle">
-                <input
-                  defaultChecked={list?.status}
-                  type="checkbox"
-                  name={`status_${list._id}`}
-                  id={`status_${list._id}`}
-                  className="d-none"
-                  // data-bs-toggle="modal"
-                  // data-bs-target="#staticBackdrop3"
-                  disabled
-                />
-                <label htmlFor={`status_${list._id}`}></label>
-              </div>
-            </form>
-          );
-          returnData.action = (
-            <>
-              <Link
-                data-bs-toggle="modal"
-                data-bs-target="#staticBackdropeditvalue"
-                className="comman_btn2 table_viewbtn me-2"
-                to=""
-                onClick={() => handleUpdate(list)}
-              >
-                Edit
-              </Link>
-              <Link
-                className="comman_btn2 table_viewbtn"
-                to="#"
-                onClick={() => handleDeleteValue(list?._id)}
-              >
-                Delete
-              </Link>
-            </>
-          );
-          newRows.push(returnData);
-        });
+          </form>
+        );
+        returnData.action = (
+          <>
+            <Link
+              data-bs-toggle="modal"
+              data-bs-target="#staticBackdropeditvalue"
+              className="comman_btn2 table_viewbtn me-2"
+              to=""
+              onClick={() => handleUpdate(list)}
+            >
+              Edit
+            </Link>
+            <Link
+              className="comman_btn2 table_viewbtn"
+              to="#"
+              onClick={() => handleDeleteValue(list?._id)}
+            >
+              Delete
+            </Link>
+          </>
+        );
+        newRows.push(returnData);
+      });
       setValue({ ...value, rows: newRows });
     }
-  }, [valueLists]);
+  }, [subValueList]);
 
   const handleDeleteValue = async (id) => {
     Swal.fire({
@@ -278,9 +259,9 @@ function Value() {
         const res = deleteValueList({ id, ecomAdmintoken });
 
         setTimeout(() => {
-          valueListData();
+          handleValueList();
           toast.success("Item Deleted!");
-        }, 500);
+        }, 1000);
       }
     });
   };
@@ -308,7 +289,7 @@ function Value() {
       console.log("res", res);
 
       if (res?.data?.message === "Success") {
-        valueListData();
+        handleValueList();
         Swal.fire({
           icon: "success",
           title: "Value Created",
@@ -339,7 +320,7 @@ function Value() {
       console.log("res", res);
 
       if (res?.data?.message === "Success") {
-        valueListData();
+        handleValueList();
         document?.getElementById("deletevaluemodal").click();
         Swal.fire({
           icon: "success",
@@ -355,12 +336,9 @@ function Value() {
   };
 
   const handleUpdate = (item) => {
-    setValueNameEn2(item?.valuesName_en || "");
-    setValueNameAr2(item?.valuesName_ar || "");
-    // setImage2(item?.categoryPic || "");
     reset2({
       valuesEn: item?.valuesName_en,
-      valueAr: item?.valuesName_ar,
+      valuesAr: item?.valuesName_ar,
       categoryId: item?.category_Id?._id,
       categoryId1: item?.subCategory_Id?._id,
       categoryId2: item?.subSubCategory_Id?._id,

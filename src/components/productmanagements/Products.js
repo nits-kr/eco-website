@@ -14,6 +14,7 @@ import {
   useEditProductListMutation,
   useGetCategoryListMutation,
   useGetCategoryListQuery,
+  useGetSelectCategoryListQuery,
   useProductDetailsMutation,
   useSubCategoryListMutation,
   useSubSubCategoryListMutation,
@@ -24,12 +25,12 @@ import { useForm } from "react-hook-form";
 
 function Products(props) {
   const ecomAdmintoken = useSelector((data) => data?.local?.token);
+  const { data: categoryListdata, refetch: fetchcategoryListData } =
+    useGetSelectCategoryListQuery({
+      ecomAdmintoken,
+    });
 
-  // const { data: categoryListdata } = useGetCategoryListQuery({
-  //   ecomAdmintoken,
-  // });
-
-  const [categoryListdata] = useGetCategoryListMutation();
+  // const [categoryListdata] = useGetCategoryListMutation();
 
   const [getSubCategory] = useSubCategoryListMutation();
   const [getSubSubCategory] = useSubSubCategoryListMutation();
@@ -159,22 +160,10 @@ function Products(props) {
   // }, [categoryListdata]);
 
   useEffect(() => {
-    if (ecomAdmintoken) {
-      handleCategoryList();
+    if (categoryListdata) {
+      setCategories(categoryListdata?.results?.categoryData);
     }
-  }, [ecomAdmintoken]);
-
-  const handleCategoryList = async () => {
-    const data = {
-      from: "",
-      to: "",
-      search: "",
-      ecomAdmintoken: ecomAdmintoken,
-    };
-    const res = await categoryListdata(data);
-
-    setCategories(res?.data?.results?.list);
-  };
+  }, [categoryListdata]);
 
   const [variantCount, setVariantCount] = useState(1);
 
@@ -280,19 +269,19 @@ function Products(props) {
   const handleGetSubCategory = async (id) => {
     const res = await getSubCategory({ id, ecomAdmintoken });
     console.log("res", res);
-    setSubCategories(res?.data?.results?.categoryData);
+    setSubCategories(res?.data?.results?.subCategoryData);
   };
 
   const handleGetSubSubCategory = async (id) => {
     const res = await getSubSubCategory({ id, ecomAdmintoken });
     console.log("res", res);
-    setSubSubCategories(res?.data?.results?.subCategoryData);
+    setSubSubCategories(res?.data?.results?.subSubCategoryData);
   };
 
   const handleGetAttributes = async (id) => {
     const res = await getAttributes({ id, ecomAdmintoken });
     console.log("res", res);
-    setAttribute(res?.data?.results?.subSubCategoryData);
+    setAttribute(res?.data?.results?.attributeCategoryData);
   };
 
   const handleGetValues = async (id) => {

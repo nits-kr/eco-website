@@ -1,17 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
 import Swal from "sweetalert2";
-import Sidebar from "./Sidebar";
-// import EditAttribute from "./EditAttribute";
+
 import {
   useCreateAttributeMutation,
   useDeleteAttributeListMutation,
-  useGetAttibutesListQuery,
-  useGetCategoryListMutation,
-  // useGetCategoryListQuery,
-  useGetSubCategoryListQuery,
-  useGetSubSubCategoryListQuery,
+  useGetAttibutesListMutation,
+  useGetSelectCategoryListQuery,
   useSubCategoryListMutation,
   useSubSubCategoryListMutation,
   useUpdateAttributeMutation,
@@ -25,31 +20,19 @@ import { toast } from "react-toastify";
 function Attribute() {
   const ecomAdmintoken = useSelector((data) => data?.local?.token);
 
-  // const { data: categoryListdata, refetch: categoryListData } =
-  //   useGetCategoryListQuery({
-  //     ecomAdmintoken,
-  //   });
-  const [categoryListdata] = useGetCategoryListMutation();
+  const { data: categoryListdata, refetch: fetchcategoryListData } =
+    useGetSelectCategoryListQuery({
+      ecomAdmintoken,
+    });
 
-  const { data: subcategoryListdata, refetch: subcategoryListData } =
-    useGetSubCategoryListQuery({
-      ecomAdmintoken,
-    });
-  const { data: subSubcategoryListdata, refetch: subSubCategoryListData } =
-    useGetSubSubCategoryListQuery({
-      ecomAdmintoken,
-    });
-  const { data: attributesListdata, refetch: attributesListData } =
-    useGetAttibutesListQuery({
-      ecomAdmintoken,
-    });
+  const [attributesListdata] = useGetAttibutesListMutation();
   const [getSubCategory] = useSubCategoryListMutation();
   const [getSubSubCategory] = useSubSubCategoryListMutation();
   const [createAttributes] = useCreateAttributeMutation();
   const [updateAttributes] = useUpdateAttributeMutation();
 
   const [deleteAttribute, res] = useDeleteAttributeListMutation();
-  const [attributesList, setAttributesList] = useState([]);
+
   const [subAttributesList, setSubAttributesList] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [startDate1, setStartDate1] = useState("");
@@ -69,32 +52,22 @@ function Attribute() {
 
   console.log("attributes", attributes);
 
-  const handleCategoryList = async () => {
-    const data = {
-      from: "",
-      to: "",
-      search: "",
-      ecomAdmintoken: ecomAdmintoken,
-    };
-    const res = await categoryListdata(data);
-    console.log("res cate", res);
-    setCategories(res?.data?.results?.list);
-  };
-
   useEffect(() => {
-    handleCategoryList();
-  }, [ecomAdmintoken]);
+    if (categoryListdata) {
+      setCategories(categoryListdata?.results?.categoryData);
+    }
+  }, [categoryListdata]);
 
   const handleGetSubCategory = async (id) => {
     const res = await getSubCategory({ id, ecomAdmintoken });
     console.log("res", res);
-    setSubCategories(res?.data?.results?.categoryData);
+    setSubCategories(res?.data?.results?.subCategoryData);
   };
   const handleGetSubSubCategory = async (id) => {
     const res = await getSubSubCategory({ id, ecomAdmintoken });
     console.log("res", res);
 
-    setSubSubCategories(res.data.results.subCategoryData);
+    setSubSubCategories(res.data.results.subSubCategoryData);
   };
 
   useEffect(() => {
@@ -178,11 +151,28 @@ function Attribute() {
   } = useForm();
 
   useEffect(() => {
-    if (attributesListdata) {
-      setAttributesList(attributesListdata?.results?.list);
+    if (ecomAdmintoken) {
+      handleAttributesList();
+    }
+  }, [ecomAdmintoken, searchQuery, startDate1]);
+
+  const handleAttributesList = async () => {
+    const data = {
+      from: startDate1,
+      search: searchQuery,
+      ecomAdmintoken: ecomAdmintoken,
+    };
+    const res = await attributesListdata(data);
+    console.log("res sub cate", res);
+    setSubAttributesList(res?.data?.results?.list);
+  };
+
+  useEffect(() => {
+    if (subAttributesList?.length > 0) {
+      // setAttributesList(attributesListdata?.results?.list);
       const newRows = [];
 
-      attributesListdata?.results?.list
+      subAttributesList
         ?.slice()
         ?.reverse()
         ?.map((list, index) => {
@@ -240,7 +230,7 @@ function Attribute() {
         });
       setAttribute({ ...attribute, rows: newRows });
     }
-  }, [attributesListdata]);
+  }, [subAttributesList]);
 
   const handleDeleteAttribute = async (id) => {
     Swal.fire({
@@ -255,7 +245,7 @@ function Attribute() {
       if (result.isConfirmed) {
         deleteAttribute({ id, ecomAdmintoken });
         setTimeout(() => {
-          attributesListData();
+          handleAttributesList();
           toast.success("Item Deleted!");
         }, 500);
       }
@@ -284,7 +274,7 @@ function Attribute() {
       console.log("response", response);
       if (response?.data?.message === "Success") {
         toast.success("Attribute Created Successfully");
-        attributesListData();
+        handleAttributesList();
       } else {
         toast.error("Something went wrong!");
       }
@@ -310,7 +300,7 @@ function Attribute() {
       console.log("response", response);
       if (response?.data?.message === "Success") {
         toast.success("Attribute Updated Successfully");
-        attributesListData();
+        handleAttributesList();
         document?.getElementById("deleteAttributes").click();
       } else {
         toast.error("Something went wrong!");

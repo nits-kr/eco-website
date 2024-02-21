@@ -4,6 +4,8 @@ import Swal from "sweetalert2";
 import Sidebar from "./Sidebar";
 import { useSelector } from "react-redux";
 import { useCreateQuestionMutation } from "../services/Post";
+import { useForm } from "react-hook-form";
+import classNames from "classnames";
 
 export default function HelpQuestion() {
   const ecomAdmintoken = useSelector((data) => data?.local?.token);
@@ -14,21 +16,28 @@ export default function HelpQuestion() {
     message: "",
     message1: "",
   });
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setQuestions({ ...questions, [name]: value });
   };
-  const handleOnAdd = async (event) => {
-    event.preventDefault();
-    const data = {
-      Question: questions.question,
-      Answer: questions.message,
-      Question_ar: questions.question1,
-      Answer_ar: questions.message1,
+  const handleOnAdd = async (data) => {
+    // event.preventDefault();
+    const alldata = {
+      Question: data.questionEn,
+      Answer: data.answerEn,
+      Question_ar: data.questionAr,
+      Answer_ar: data.answerAr,
       ecomAdmintoken: ecomAdmintoken,
     };
 
-    const res = await createQuestion(data);
+    const res = await createQuestion(alldata);
     if (res) {
       setQuestions(res?.data?.results?.questionData);
       Swal.fire({
@@ -71,7 +80,11 @@ export default function HelpQuestion() {
               ></button>
             </div>
             <div className="modal-body">
-              <form className="form-design row mx-0 py-2" action="">
+              <form
+                className="form-design row mx-0 py-2"
+                action=""
+                onSubmit={handleSubmit(handleOnAdd)}
+              >
                 <div className="form-group text-center col-6 top_head">
                   <label className="text-center" htmlFor="">
                     - English -
@@ -83,68 +96,120 @@ export default function HelpQuestion() {
                   </label>
                 </div>
                 <div className="form-group col-6">
-                  <label htmlFor="quesstioon">Question</label>
+                  <label htmlFor="questionEn">Question</label>
                   <input
-                    className="form-control"
+                    className={classNames("form-control", {
+                      "is-invalid": errors.questionEn,
+                    })}
                     type="text"
-                    id="question"
-                    name="question"
+                    id="questionEn"
+                    name="questionEn"
                     placeholder="Please Enter Your Question"
-                    value={questions.question}
-                    onChange={handleInputChange}
-                    required
+                    {...register("questionEn", {
+                      required: "Question(En) is required!",
+                      pattern: {
+                        value: /^[A-Za-z\s]{1,}[\.]{0,1}[A-Za-z\s]{0,}$/,
+                        message: "Special Character not allowed!",
+                      },
+
+                      maxLength: {
+                        value: 100,
+                        message: "Max length is 100 characters!",
+                      },
+                    })}
                   />
+                  {errors.questionEn && (
+                    <small className="errorText mx-1 fw-bold text-danger">
+                      {errors.questionEn.message}*
+                    </small>
+                  )}
                 </div>
                 <div className="form-group col-6 text-end">
-                  <label className="text-end" htmlFor="quesstioon">
+                  <label className="text-end" htmlFor="questionAr">
                     Question
                   </label>
                   <input
                     className="form-control text-end"
                     type="text"
-                    id="question1"
-                    name="question1"
+                    id="questionAr"
+                    name="questionAr"
                     placeholder="الرجاء إدخال سؤالك"
-                    value={questions.question1}
-                    onChange={handleInputChange}
-                    required
+                    {...register("questionAr", {
+                      required: "Question(Ar) is required!",
+                      pattern: {
+                        value: /^[A-Za-z\s]{1,}[\.]{0,1}[A-Za-z\s]{0,}$/,
+                        message: "Special Character not allowed!",
+                      },
+
+                      maxLength: {
+                        value: 100,
+                        message: "Max length is 100 characters!",
+                      },
+                    })}
                   />
+                  {errors.questionAr && (
+                    <small className="errorText mx-1 fw-bold text-danger">
+                      {errors.questionAr.message}*
+                    </small>
+                  )}
                 </div>
                 <div className="form-group col-6">
-                  <label htmlFor="quesstioon">Answer</label>
+                  <label htmlFor="answerEn">Answer</label>
 
                   <textarea
                     className="form-control"
-                    name="message"
-                    id="message"
+                    name="answerEn"
+                    id="answerEn"
                     style={{ height: "150px" }}
                     // value={questions.message}
-                    onChange={handleInputChange}
-                    defaultValue="Please Enter Your Answer"
-                    required
+                    {...register("answerEn", {
+                      required: "Answer (EN) is required",
+
+                      pattern: {
+                        value: /^(?=.*[a-zA-Z]).{50,}$/s,
+                        message:
+                          "Please enter at least 50 characters with at least one letter.",
+                      },
+                    })}
                   />
+                  {errors?.answerEn && (
+                    <small className="errorText mx-1 fw-bold text-danger">
+                      {errors?.answerEn?.message}
+                    </small>
+                  )}
                 </div>
                 <div className="form-group col-6 text-end">
-                  <label className="text-end" htmlFor="quesstioon">
+                  <label className="text-end" htmlFor="answerAr">
                     Answer
                   </label>
 
                   <textarea
                     className="form-control text-end"
-                    name="message1"
-                    id="message1"
+                    name="answerAr"
+                    id="answerAr"
                     style={{ height: "150px" }}
                     // value={questions.message1}
-                    onChange={handleInputChange}
-                    defaultValue="من فضلك أدخل إجابتك"
-                    required
+                    {...register("answerAr", {
+                      required: "Answer (Ar) is required",
+
+                      pattern: {
+                        value: /^(?=.*[a-zA-Z]).{50,}$/s,
+                        message:
+                          "Please enter at least 50 characters with at least one letter.",
+                      },
+                    })}
                   />
+                  {errors?.answerAr && (
+                    <small className="errorText mx-1 fw-bold text-danger">
+                      {errors?.answerAr?.message}
+                    </small>
+                  )}
                 </div>
                 <div className="form-group col-12 text-center mb-0">
                   <button
                     type="submit"
                     className="comman_btn"
-                    onClick={handleOnAdd}
+                    // onClick={handleOnAdd}
                   >
                     Add
                   </button>

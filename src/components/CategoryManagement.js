@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
 import SubCategory from "./SubCategory";
 import SubSubCategory from "./SubSubCategory";
 import Attribute from "./Attribute";
@@ -14,7 +13,6 @@ import {
   useCatogaryStatusMutation,
   useCreateCategoryMutation,
   useGetCategoryListMutation,
-  // useGetCategoryListQuery,
   useUpdateCategoryMutation,
 } from "../services/Post";
 import { useDeleteCategoryListMutation } from "../services/Post";
@@ -27,10 +25,6 @@ import classNames from "classnames";
 function CategoryManagement(props) {
   const ecomAdmintoken = useSelector((data) => data?.local?.token);
 
-  // const { data: categoryListdata, refetch: categoryListData } =
-  //   useGetCategoryListQuery({
-  //     ecomAdmintoken,
-  //   });
   const [categoryListdata] = useGetCategoryListMutation();
   const [updateStatus] = useCatogaryStatusMutation();
   const [createCategory] = useCreateCategoryMutation();
@@ -59,9 +53,6 @@ function CategoryManagement(props) {
     setFormData({ ...formData, categoryPic: event?.target?.files[0] });
   };
 
-  // const onFileSelection = (e, key) => {
-  //   setFiles({ ...files, [key]: e.target.files[0] });
-  // };
   const onFileSelection = (e, key) => {
     setFiles({ ...files, [key]: URL.createObjectURL(e.target.files[0]) });
     setFormData1({ ...formData1, pic: e?.target?.files[0] });
@@ -75,12 +66,7 @@ function CategoryManagement(props) {
         sort: "asc",
         width: 150,
       },
-      // {
-      //   label: "CATEGORY",
-      //   field: "name_cate",
-      //   sort: "asc",
-      //   width: 150,
-      // },
+
       {
         label: "CATEGORY (EN)",
         field: "name_en",
@@ -138,8 +124,7 @@ function CategoryManagement(props) {
 
   const handleCategoryList = async () => {
     const data = {
-      from: "",
-      to: startDate1,
+      from: startDate1,
       search: searchQuery,
       ecomAdmintoken: ecomAdmintoken,
     };
@@ -150,7 +135,6 @@ function CategoryManagement(props) {
 
   useEffect(() => {
     if (categoryList?.length > 0) {
-      // setCategoryList(categoryListdata?.results?.list);
       const newRows = [];
 
       categoryList

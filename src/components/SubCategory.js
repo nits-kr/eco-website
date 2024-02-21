@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
 import Swal from "sweetalert2";
-import EditValues from "./EditValues";
 import {
   useCreateSubCategoryMutation,
-  useGetCategoryListMutation,
-  // useGetCategoryListQuery,
-  useGetSubCategoryListQuery,
+  useGetSelectCategoryListQuery,
+  useGetSubCategoryListMutation,
   useUpdateSubCategoryMutation,
 } from "../services/Post";
 import { useDeleteSubCategoryListMutation } from "../services/Post";
@@ -21,19 +18,14 @@ import { toast } from "react-toastify";
 function SubCategory(props) {
   const ecomAdmintoken = useSelector((data) => data?.local?.token);
 
-  // const { data: categoryListdata, refetch: categoryListData } =
-  //   useGetCategoryListQuery({
-  //     ecomAdmintoken,
-  //   });
-
-  const [categoryListdata] = useGetCategoryListMutation();
-
-  const { data: subcategoryListdata, refetch: subcategoryListData } =
-    useGetSubCategoryListQuery({
+  const { data: categoryListdata, refetch: fetchcategoryListData } =
+    useGetSelectCategoryListQuery({
       ecomAdmintoken,
     });
-  // const [update, res] = useUpdateSubCategoryMutation();
-  const [deleteSubCategory, response] = useDeleteSubCategoryListMutation();
+
+  const [subcategoryListdata] = useGetSubCategoryListMutation();
+
+  const [deleteSubCategory] = useDeleteSubCategoryListMutation();
   const [createSubCategory] = useCreateSubCategoryMutation();
   const [updateSubCategory] = useUpdateSubCategoryMutation();
   const [itemId, setItemId] = useState("");
@@ -46,8 +38,6 @@ function SubCategory(props) {
   const [formData1, setFormData1] = useState({
     pic: files?.editImage,
   });
-
-  console.log("formData1", formData1);
 
   const [subCategory, setSubCategory] = useState({
     nameEn: "",
@@ -105,21 +95,27 @@ function SubCategory(props) {
     reset: reset2,
   } = useForm();
 
-  const handleCategoryList = async () => {
-    const data = {
-      from: "",
-      to: "",
-      search: "",
-      ecomAdmintoken: ecomAdmintoken,
-    };
-    const res = await categoryListdata(data);
-    console.log("res cate", res);
-    setCategories(res?.data?.results?.list);
-  };
+  // const handleCategoryList = async () => {
+  //   const data = {
+  //     from: "",
+  //     to: "",
+  //     search: "",
+  //     ecomAdmintoken: ecomAdmintoken,
+  //   };
+  //   const res = await categoryListdata(data);
+  //   console.log("res cate", res);
+  //   setCategories(res?.data?.results?.list);
+  // };
+
+  // useEffect(() => {
+  //   handleCategoryList();
+  // }, [ecomAdmintoken]);
 
   useEffect(() => {
-    handleCategoryList();
-  }, [ecomAdmintoken]);
+    if (categoryListdata) {
+      setCategories(categoryListdata?.results?.categoryData);
+    }
+  }, [categoryListdata]);
 
   const [subCategories, setSubCategories] = useState({
     columns: [
@@ -172,11 +168,27 @@ function SubCategory(props) {
   });
 
   useEffect(() => {
-    if (subcategoryListdata) {
-      setSubCategoryList(subcategoryListdata?.results?.list);
+    if (ecomAdmintoken) {
+      handleSubCategoryList();
+    }
+  }, [ecomAdmintoken, searchQuery, startDate1]);
+
+  const handleSubCategoryList = async () => {
+    const data = {
+      from: startDate1,
+      search: searchQuery,
+      ecomAdmintoken: ecomAdmintoken,
+    };
+    const res = await subcategoryListdata(data);
+    console.log("res sub cate", res);
+    setSubCategoryList(res?.data?.results?.list);
+  };
+
+  useEffect(() => {
+    if (subCategoryList?.length > 0) {
       const newRows = [];
 
-      subcategoryListdata?.results?.list
+      subCategoryList
         ?.slice()
         ?.reverse()
         ?.map((list, index) => {
@@ -231,7 +243,7 @@ function SubCategory(props) {
         });
       setSubCategories({ ...subCategories, rows: newRows });
     }
-  }, [subcategoryListdata]);
+  }, [subCategoryList]);
 
   const handleUpdate = (item) => {
     console.log("item", item);
@@ -266,7 +278,7 @@ function SubCategory(props) {
       if (result.isConfirmed) {
         deleteSubCategory({ id, ecomAdmintoken });
         setTimeout(() => {
-          subcategoryListData();
+          handleSubCategoryList();
           toast.success("Item Deleted!");
         }, 500);
       }
@@ -299,7 +311,7 @@ function SubCategory(props) {
           subCategoryPic: null,
         });
         // subCategoryManagementList();
-        subcategoryListData();
+        handleSubCategoryList();
       }
     } catch (error) {
       console.error(error);
@@ -331,7 +343,7 @@ function SubCategory(props) {
           text: "The Sub category has been updated successfully.",
         });
         document?.getElementById("deletesubcate").click();
-        subcategoryListData();
+        handleSubCategoryList();
       }
     } catch (error) {
       console.error(error);
