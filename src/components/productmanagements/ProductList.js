@@ -164,7 +164,7 @@ function ProductList(props) {
           returnData.pic = (
             <div className="">
               <img
-                src={list?.addVarient[0]?.product_Pic[0]}
+                src={list?.addVarient?.[0]?.product_Pic?.[0]}
                 className="avatar lg rounded"
                 alt=""
                 style={{

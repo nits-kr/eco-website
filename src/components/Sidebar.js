@@ -6,7 +6,7 @@ import { useSelector } from "react-redux";
 
 function Sidebar({ Dash }) {
   const modules = useSelector((data) => data?.local?.modules);
-  console.log("modules", modules);
+
   const storedPic = localStorage.getItem("profilePic");
 
   const isAccessAllowed = (accessItem) => {

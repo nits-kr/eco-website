@@ -292,15 +292,15 @@ export const PostApi = createApi({
         },
       }),
     }),
-    // getCategoryList: builder.query({
-    //   query: ({ ecomAdmintoken }) => ({
-    //     url: "admin/category/category/list",
-    //     method: "patch",
-    //     headers: {
-    //       "x-auth-token-user": ecomAdmintoken,
-    //     },
-    //   }),
-    // }),
+    getSelectCategoryList: builder.query({
+      query: ({ ecomAdmintoken }) => ({
+        url: "admin/category/listing/selectCategory",
+        method: "get",
+        headers: {
+          "x-auth-token-user": ecomAdmintoken,
+        },
+      }),
+    }),
 
     getCategoryList: builder.mutation({
       query: (body) => {
@@ -310,6 +310,20 @@ export const PostApi = createApi({
           url: "admin/category/category/list",
           method: "PATCH",
           body: data,
+          headers: {
+            "x-auth-token-user": ecomAdmintoken,
+          },
+        };
+      },
+    }),
+    getQuestionList: builder.mutation({
+      query: (body) => {
+        const { ecomAdmintoken, ...data } = body;
+
+        return {
+          url: "admin/help/help/questionList",
+          method: "post",
+          // body: data,
           headers: {
             "x-auth-token-user": ecomAdmintoken,
           },
@@ -685,6 +699,34 @@ export const PostApi = createApi({
         };
       },
     }),
+    createHelp: builder.mutation({
+      query: (body) => {
+        const { ecomAdmintoken, ...data } = body;
+
+        return {
+          url: "admin/help/help/createHelp",
+          method: "post",
+          body: data,
+          headers: {
+            "x-auth-token-user": ecomAdmintoken,
+          },
+        };
+      },
+    }),
+    createQuestion: builder.mutation({
+      query: (body) => {
+        const { ecomAdmintoken, ...data } = body;
+
+        return {
+          url: "admin/help/help/createQuestion",
+          method: "post",
+          body: data,
+          headers: {
+            "x-auth-token-user": ecomAdmintoken,
+          },
+        };
+      },
+    }),
 
     updateCoupan: builder.mutation({
       query: (body) => {
@@ -900,9 +942,12 @@ export const PostApi = createApi({
       }),
     }),
     deleteHelpManagementList: builder.mutation({
-      query: (id) => ({
-        url: `/admin/help/help/delete-help/${id}`,
+      query: ({ id, ecomAdmintoken }) => ({
+        url: `admin/help/help/delete-help/${id}`,
         method: "post",
+        headers: {
+          "x-auth-token-user": ecomAdmintoken,
+        },
       }),
     }),
     deleteHelpThoughtList: builder.mutation({
@@ -1322,4 +1367,8 @@ export const {
   useGetContactListQuery,
   useGetHelpListQuery,
   useGetCategoryListMutation,
+  useCreateHelpMutation,
+  useGetQuestionListMutation,
+  useCreateQuestionMutation,
+  useGetSelectCategoryListQuery,
 } = PostApi;

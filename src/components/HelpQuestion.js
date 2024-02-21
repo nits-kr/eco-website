@@ -2,8 +2,12 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 import Sidebar from "./Sidebar";
+import { useSelector } from "react-redux";
+import { useCreateQuestionMutation } from "../services/Post";
 
 export default function HelpQuestion() {
+  const ecomAdmintoken = useSelector((data) => data?.local?.token);
+  const [createQuestion] = useCreateQuestionMutation();
   const [questions, setQuestions] = useState({
     question: "",
     question1: "",
@@ -14,36 +18,31 @@ export default function HelpQuestion() {
     const { name, value } = event.target;
     setQuestions({ ...questions, [name]: value });
   };
-  const handleOnAdd = (event) => {
+  const handleOnAdd = async (event) => {
     event.preventDefault();
-    axios
-      .post(
-        `${process.env.REACT_APP_APIENDPOINT}admin/help/help/createQuestion`,
-        {
-          Question: questions.question,
-          Answer: questions.message,
-          Question_ar: questions.question1,
-          Answer_ar: questions.message1,
+    const data = {
+      Question: questions.question,
+      Answer: questions.message,
+      Question_ar: questions.question1,
+      Answer_ar: questions.message1,
+      ecomAdmintoken: ecomAdmintoken,
+    };
+
+    const res = await createQuestion(data);
+    if (res) {
+      setQuestions(res?.data?.results?.questionData);
+      Swal.fire({
+        title: "Question Created!",
+        text: "Your new question has been created successfully.",
+        icon: "success",
+        confirmButtonColor: "#3085d6",
+        confirmButtonText: "OK",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          window.location.reload();
         }
-      )
-      .then((response) => {
-        console.log(response.data.results.questionData);
-        setQuestions(response.data.results.questionData);
-        Swal.fire({
-          title: "Question Created!",
-          text: "Your new question has been created successfully.",
-          icon: "success",
-          confirmButtonColor: "#3085d6",
-          confirmButtonText: "OK",
-        }).then((result) => {
-          if (result.isConfirmed) {
-            window.location.reload();
-          }
-        });
-      })
-      .catch((error) => {
-        console.log(error);
       });
+    }
   };
 
   return (
@@ -93,6 +92,7 @@ export default function HelpQuestion() {
                     placeholder="Please Enter Your Question"
                     value={questions.question}
                     onChange={handleInputChange}
+                    required
                   />
                 </div>
                 <div className="form-group col-6 text-end">
@@ -107,6 +107,7 @@ export default function HelpQuestion() {
                     placeholder="الرجاء إدخال سؤالك"
                     value={questions.question1}
                     onChange={handleInputChange}
+                    required
                   />
                 </div>
                 <div className="form-group col-6">
@@ -120,6 +121,7 @@ export default function HelpQuestion() {
                     // value={questions.message}
                     onChange={handleInputChange}
                     defaultValue="Please Enter Your Answer"
+                    required
                   />
                 </div>
                 <div className="form-group col-6 text-end">
@@ -135,6 +137,7 @@ export default function HelpQuestion() {
                     // value={questions.message1}
                     onChange={handleInputChange}
                     defaultValue="من فضلك أدخل إجابتك"
+                    required
                   />
                 </div>
                 <div className="form-group col-12 text-center mb-0">

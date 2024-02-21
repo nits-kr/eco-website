@@ -6,26 +6,32 @@ import HelpEditModelEn from "./HelpEditModelEn";
 import axios from "axios";
 import Swal from "sweetalert2";
 import Sidebar from "./Sidebar";
+import { useSelector } from "react-redux";
+import { useGetQuestionListMutation } from "../services/Post";
 
 function HelpView() {
+  const ecomAdmintoken = useSelector((data) => data?.local?.token);
+  const [QuestionList] = useGetQuestionListMutation();
   const [helpViewList, setHelpViewList] = useState("");
   const [selectedQuestionId, setSelectedQuestionId] = useState(null);
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
   useEffect(() => {
-    userList();
+    questionList();
   }, []);
 
-  const userList = async () => {
-    const { data } = await axios.post(
-      `${process.env.REACT_APP_APIENDPOINT}admin/help/help/questionList`
-    );
-    setHelpViewList(data.results.listData.reverse());
-    console.log(data);
+  const questionList = async () => {
+    const data = { ecomAdmintoken: ecomAdmintoken };
+    const res = await QuestionList(data);
+    // const { data } = await axios.post(
+    //   `${process.env.REACT_APP_APIENDPOINT}admin/help/help/questionList`
+    // );
+    setHelpViewList(res?.data?.results?.listData);
+    console.log(res);
   };
 
   const refreshList = () => {
-    userList();
+    questionList();
   };
 
   const handleEdit = (_id) => {

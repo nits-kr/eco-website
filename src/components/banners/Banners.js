@@ -12,11 +12,11 @@ import {
   useDeleteCategorySideBannerMutation,
   useDeleteCategoryTopBannerMutation,
   useGetBannerListQuery,
-  useGetCategoryListQuery,
   useGetCatogaryBottomBannerListQuery,
   useGetCatogaryMiddleBannerListQuery,
   useGetCatogaryScrollBannerListQuery,
   useGetCatogarySideBannerListQuery,
+  useGetSelectCategoryListQuery,
   useSubCategoryListMutation,
   useSubSubCategoryListMutation,
 } from "../../services/Post";
@@ -26,7 +26,7 @@ import { useSelector } from "react-redux";
 function Banners(props) {
   const ecomAdmintoken = useSelector((data) => data?.local?.token);
   const [loading, setLoading] = useState(true);
-  const { data: categoryListdata } = useGetCategoryListQuery({
+  const { data: categoryListdata } = useGetSelectCategoryListQuery({
     ecomAdmintoken,
   });
   const [getSubCategory] = useSubCategoryListMutation();
@@ -359,7 +359,7 @@ function Banners(props) {
 
   useEffect(() => {
     if (categoryListdata) {
-      setCategories(categoryListdata?.results?.list);
+      setCategories(categoryListdata?.results?.categoryData);
     }
   }, [categoryListdata]);
 

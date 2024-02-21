@@ -4,6 +4,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import Sidebar from "./Sidebar";
 import {
+  useCreateHelpMutation,
   useDeleteHelpManagementListMutation,
   useGetHelpListQuery,
 } from "../services/Post";
@@ -12,10 +13,12 @@ import { useSelector } from "react-redux";
 function Help() {
   const ecomAdmintoken = useSelector((data) => data?.local?.token);
 
-  const { data: helpListdata } = useGetHelpListQuery({
+  const { data: helpListdata, refetch: fetchHelpList } = useGetHelpListQuery({
     ecomAdmintoken,
   });
-  const [deleteHelp, response] = useDeleteHelpManagementListMutation();
+
+  const [addHelp] = useCreateHelpMutation();
+  const [deleteHelp] = useDeleteHelpManagementListMutation();
   const [searchQuery, setSearchQuery] = useState("");
   const [startDate1, setStartDate1] = useState("");
   const [helpList, setHelpList] = useState([]);
@@ -50,20 +53,21 @@ function Help() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    const data = {
+      categoryName: category.categoryNameEn,
+      subCategoryName: subCategory.nameEn,
+      categoryName_ar: category.categoryNameAr,
+      subCategoryName_ar: subCategory.nameAr,
+      ecomAdmintoken: ecomAdmintoken,
+    };
+
     try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_APIENDPOINT}admin/help/help/createHelp`,
-        {
-          categoryName: category.categoryNameEn,
-          subCategoryName: subCategory.nameEn,
-          categoryName_ar: category.categoryNameAr,
-          subCategoryName_ar: subCategory.nameAr,
-        }
-      );
+      const response = await addHelp(data);
       console.log(response.data.results.helpData);
       if (!response.data.error) {
         alert("Saved!");
         // handleSave();
+        fetchHelpList();
       }
     } catch (error) {
       console.error(error);
@@ -242,51 +246,58 @@ function Help() {
                               </tr>
                             </thead>
                             <tbody>
-                              {helpList.map((value, index) => (
-                                <tr key={index}>
-                                  <td>{index + 1}</td>
-                                  <td>{value?.categoryName}</td>
-                                  <td>{value?.categoryName_ar}</td>
-                                  <td>{value?.subCategoryName}</td>
-                                  <td>{value?.subCategoryName_ar}</td>
-                                  <td>
-                                    <Link
-                                      className="comman_btn table_viewbtn me-2"
-                                      to="/help-view"
-                                    >
-                                      View
-                                    </Link>
-                                    <Link
-                                      className="comman_btn2 table_viewbtn"
-                                      to="#"
-                                      onClick={() => {
-                                        Swal.fire({
-                                          title: "Are you sure?",
-                                          text: "You won't be able to revert this!",
-                                          icon: "warning",
-                                          showCancelButton: true,
-                                          confirmButtonColor: "#3085d6",
-                                          cancelButtonColor: "#d33",
-                                          confirmButtonText: "Yes, delete it!",
-                                        }).then((result) => {
-                                          if (result.isConfirmed) {
-                                            deleteHelp(value?._id);
-                                            Swal.fire(
-                                              "Deleted!",
-                                              `${value?.categoryName}  item has been deleted.`,
-                                              "success"
-                                            ).then(() => {
-                                              // fetchHelpList();
-                                            });
-                                          }
-                                        });
-                                      }}
-                                    >
-                                      Delete
-                                    </Link>
-                                  </td>
-                                </tr>
-                              ))}
+                              {helpList
+                                ?.slice()
+                                ?.reverse()
+                                ?.map((value, index) => (
+                                  <tr key={index}>
+                                    <td>{index + 1}</td>
+                                    <td>{value?.categoryName}</td>
+                                    <td>{value?.categoryName_ar}</td>
+                                    <td>{value?.subCategoryName}</td>
+                                    <td>{value?.subCategoryName_ar}</td>
+                                    <td>
+                                      <Link
+                                        className="comman_btn table_viewbtn me-2"
+                                        to="/help-view"
+                                      >
+                                        View
+                                      </Link>
+                                      <Link
+                                        className="comman_btn2 table_viewbtn"
+                                        to="#"
+                                        onClick={() => {
+                                          Swal.fire({
+                                            title: "Are you sure?",
+                                            text: "You won't be able to revert this!",
+                                            icon: "warning",
+                                            showCancelButton: true,
+                                            confirmButtonColor: "#3085d6",
+                                            cancelButtonColor: "#d33",
+                                            confirmButtonText:
+                                              "Yes, delete it!",
+                                          }).then((result) => {
+                                            if (result.isConfirmed) {
+                                              deleteHelp({
+                                                id: value?._id,
+                                                ecomAdmintoken,
+                                              });
+                                              Swal.fire(
+                                                "Deleted!",
+                                                `${value?.categoryName}  item has been deleted.`,
+                                                "success"
+                                              ).then(() => {
+                                                fetchHelpList();
+                                              });
+                                            }
+                                          });
+                                        }}
+                                      >
+                                        Delete
+                                      </Link>
+                                    </td>
+                                  </tr>
+                                ))}
                             </tbody>
                           </table>
                         </div>
