@@ -2648,3 +2648,35 @@ strong.box_tag_left {
   /* height: 50px !important; */
   height: auto !important;
 }
+
+.apexcharts-legend {
+  display: flex;
+  overflow: auto;
+  padding: 0 10px;
+}
+
+.canvasjs-chart-credit {
+  display: none !important;
+}
+
+.mdb-datatable-filter {
+  padding-right: 20px !important;
+  margin-bottom: 10px !important;
+}
+
+.dataTables_paginate {
+  padding-left: 45vh;
+}
+
+.dataTables_info {
+  margin-left: 15px;
+}
+
+.swal2-styled.swal2-confirm {
+  border: 0;
+  border-radius: 0.25em;
+  background: initial;
+  background-color: #144881 !important;
+  color: #fff;
+  font-size: 1em;
+}

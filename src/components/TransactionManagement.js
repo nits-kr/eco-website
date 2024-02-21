@@ -9,9 +9,14 @@ import { useGetTransactionListDetailsMutation } from "../services/Post";
 import Sidebar from "./Sidebar";
 import { useGetFileQuery } from "../services/Post";
 import { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 function TransactionManagement() {
+  const ecomAdmintoken = useSelector((data) => data?.local?.token);
+
   const { data, isLoading, isError } = useGetFileQuery("file-id");
-  const transactionList = useGetTransactionListQuery();
+  const { data: transactionList } = useGetTransactionListQuery({
+    ecomAdmintoken,
+  });
   const [transactionListItems, setTransactionListItems] = useState([]);
   const [getTransactionDetails] = useGetTransactionListDetailsMutation();
   const [startDate, setStartDate] = useState("");
@@ -20,33 +25,12 @@ function TransactionManagement() {
   const [searchQuery, setSearchQuery] = useState("");
   const [categoryListData, setCategoryListData] = useState([]);
   console.log("getTransactionDetails", getTransactionDetails);
-  axios.defaults.headers.common["x-auth-token-user"] =
-    localStorage.getItem("token");
+
   useEffect(() => {
     const reversedList =
       transactionList?.data?.results?.statusData?.slice().reverse() ?? [];
     setCategoryListData(reversedList);
   }, [transactionList]);
-  const url = `${process.env.REACT_APP_APIENDPOINT}admin/transacation/list`;
-  const url2 = `${process.env.REACT_APP_APIENDPOINT}admin/order/order/search`;
-  useEffect(() => {
-    subTransactionList();
-  }, []);
-  const subTransactionList = async (e) => {
-    axios
-      .post(url)
-      .then((response) => {
-        setTransactionListItems(response?.data?.results?.statusData?.reverse());
-      })
-      .catch((error) => {
-        console.log(error.response.data);
-        Swal.fire({
-          icon: "error",
-          title: "Network Error",
-          text: "Failed to fetch recent order list data. Please try again later.",
-        });
-      });
-  };
 
   const handleDownload = () => {
     if (data) {
@@ -58,101 +42,7 @@ function TransactionManagement() {
       link.click();
     }
   };
-  useEffect(() => {
-    handleSearch1();
-  }, [searchQuery]);
 
-  const handleSearch1 = async () => {
-    try {
-      const url1 = searchQuery !== "" ? url2 : url;
-      const response = await axios.post(url1, {
-        orderStatus: searchQuery,
-      });
-      const { error, results } = response.data;
-      if (error) {
-        setTransactionListItems([]);
-        Swal.fire({
-          title: "Error!",
-          // text: error.response.data,
-          text: "Error searching for products. Data is not found",
-          icon: "error",
-          confirmButtonText: "OK",
-        }).then((result) => {
-          if (result.isConfirmed) {
-            setTransactionListItems();
-          }
-        });
-        // throw new Error("Error searching for products. Data is not found.");
-      } else {
-        setTransactionListItems(
-          searchQuery !== "" ? results?.orderData : results?.list?.reverse()
-        );
-      }
-    } catch (error) {
-      if (error.response) {
-        Swal.fire({
-          title: "Error!",
-          text: error.response.data,
-          icon: "error",
-          confirmButtonText: "OK",
-        });
-      } else if (error.request) {
-        Swal.fire({
-          title: "Error!",
-          text: "Network error. Please try again later.",
-          icon: "error",
-          confirmButtonText: "OK",
-        });
-      } else {
-        Swal.fire({
-          title: "Error!",
-          text: error.message,
-          icon: "error",
-          confirmButtonText: "OK",
-        });
-      }
-    }
-  };
-  const handleSearch = (e) => {
-    e.preventDefault();
-    axios
-      .post(url, {
-        from: startDate,
-        to: endDate,
-      })
-      .then((response) => {
-        const list = response?.data?.results?.statusData?.reverse();
-        if (list && list.length > 0) {
-          Swal.fire({
-            title: "List Found!",
-            text: "list is available for the selected date.",
-            icon: "success",
-            confirmButtonText: "OK",
-          }).then((result) => {
-            if (result.isConfirmed) {
-              setCategoryListData(list);
-            }
-          });
-          // setRecentOrderList(list);
-        } else {
-          setCategoryListData([]);
-          Swal.fire({
-            icon: "warning",
-            title: "No data found!",
-            text: "There is no list between the selected dates.",
-            confirmButtonText: "OK",
-          }).then((result) => {
-            if (result.isConfirmed) {
-              // dashBoardList();
-              window?.location?.reload();
-            }
-          });
-        }
-      })
-      .catch((error) => {
-        console.log(error.response.data);
-      });
-  };
   return (
     <>
       <Sidebar Dash={"transactions"} />
@@ -169,7 +59,7 @@ function TransactionManagement() {
                     <form
                       className="form-design"
                       action=""
-                      onSubmit={handleSearch1}
+                      // onSubmit={handleSearch1}
                     >
                       <div className="form-group mb-0 position-relative icons_set">
                         <input
@@ -183,7 +73,7 @@ function TransactionManagement() {
                         />
                         <i
                           className="far fa-search"
-                          onClick={handleSearch1}
+                          // onClick={handleSearch1}
                         ></i>
                       </div>
                     </form>
@@ -246,7 +136,7 @@ function TransactionManagement() {
                             <form
                               className="form-design py-4 px-3 help-support-form row align-items-end justify-content-between"
                               action=""
-                              onSubmit={handleSearch}
+                              // onSubmit={handleSearch}
                             >
                               {/* <div className="form-group mb-0 col position-relative percent_mark">
                                 <label htmlFor="">Commission</label>

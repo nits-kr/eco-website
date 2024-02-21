@@ -4,255 +4,253 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import Sidebar from "../Sidebar";
 import Spinner from "../Spinner";
-import { useCatogaryStatusMutation } from "../../services/Post";
+import {
+  useCatogaryStatusMutation,
+  useCreateBrandMutation,
+  useGetBrandListQuery,
+  useGetCategoryListQuery,
+} from "../../services/Post";
 import { useDeleteCategoryListMutation } from "../../services/Post";
 import { useDeleteBrabdListMutation } from "../../services/Post";
 import { useUpdateBrandMutation } from "../../services/Post";
+import { useSelector } from "react-redux";
+import { useForm } from "react-hook-form";
+import classNames from "classnames";
+import { MDBDataTable } from "mdbreact";
+import { toast } from "react-toastify";
 
 function BrandManagement(props) {
-  axios.defaults.headers.common["x-auth-token-user"] =
-    localStorage.getItem("token");
-  const [updateStatus] = useCatogaryStatusMutation();
+  const ecomAdmintoken = useSelector((data) => data?.local?.token);
+
+  const { data: brandListdata, refetch: refetchbrandList } =
+    useGetBrandListQuery({
+      ecomAdmintoken,
+    });
+
+  const { data: categoryListdata } = useGetCategoryListQuery({
+    ecomAdmintoken,
+  });
+  const [files, setFiles] = useState();
+  const [addBrand] = useCreateBrandMutation();
+  const [updateBrand] = useUpdateBrandMutation();
   const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [startDate1, setStartDate1] = useState("");
-  const [categoryList, setCategoryList] = useState([]);
-  const [deleteBrand, res] = useDeleteBrabdListMutation();
-  const [nameEn1, setNameEn1] = useState([]);
-  const [nameAr1, setNameAr1] = useState([]);
+
+  const [deleteBrand] = useDeleteBrabdListMutation();
+
   const [categories, setCategories] = useState([]);
-  const [pic1, setPic1] = useState([]);
+
   const [id1, setId1] = useState([]);
   localStorage?.setItem("brandId", id1);
   console.log(id1);
   const [formData, setFormData] = useState({
-    nameEn: "",
-    nameAr: "",
-    categoryPic: null,
+    uploadImage: null,
   });
+
+  const [formData1, setFormData1] = useState({
+    pic: files?.editImage,
+  });
+
   const [category, setCategory] = useState({
     nameEn1: "",
     nameAr1: "",
     uploadImage1: null,
   });
-  const [subCategory, setSubCategory] = useState({
-    nameEn: "",
-    nameAr: "",
-    categoryId: "",
-    categoryId1: "",
-    subCategoryId: "",
-    subCategoryPic: null,
-  });
+
   const handleInputChange1 = (event) => {
     const { name, value } = event.target;
     setCategory({ ...category, [name]: value });
-    console.log("edit category value:  ", value);
   };
-  const handleFileChange1 = (e, key) => {
-    setCategory({ ...category, uploadImage1: e.target.files[0] });
-  };
+
+  console.log("formData", formData);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
+  const {
+    register: register2,
+    handleSubmit: handleSubmit2,
+    formState: { errors: errors2 },
+    reset: reset2,
+  } = useForm();
   console.log(category?.uploadImage1);
-  const handleUpdate1 = (event) => {
-    event.preventDefault();
+  const handleUpdateBrand = async (data) => {
     const formData = new FormData();
-    formData.append("brandName_en", category?.nameEn1);
-    formData.append("brandName_ar", category?.nameAr1);
-    formData.append("brandPic", category?.uploadImage1);
-    axios
-      .post(
-        `${process.env.REACT_APP_APIENDPOINT}admin/product/edit-brand/${id1}`,
-        formData
-      )
-      .then((response) => {
-        console.log(response);
-        if (!response.data.error) {
-          Swal.fire({
-            title: "Updated!",
-            text: "Your have been updated the list successfully.",
-            icon: "success",
-            confirmButtonColor: "#3085d6",
-            confirmButtonText: "OK",
-          }).then((result) => {
-            if (result.isConfirmed) {
-              window.location.reload();
-            }
-          });
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-
-  const url = `${process.env.REACT_APP_APIENDPOINT}admin/product/brand-list`;
-  const url2 = `${process.env.REACT_APP_APIENDPOINT}admin/product/search-brand`;
-  useEffect(() => {
-    categoryManagementList();
-  }, []);
-
-  const categoryManagementList = async (e) => {
-    axios
-      .post(url)
-      .then((response) => {
-        setCategoryList(response?.data?.results?.list?.reverse());
-      })
-      .catch((error) => {
-        console.log(error.response.data);
-        Swal.fire({
-          icon: "error",
-          title: "Network Error",
-          text: "Failed to fetch recent order list data. Please try again later.",
-        });
-      });
-  };
-  const userList2 = async () => {
-    if (!startDate1) return;
-    try {
-      const { data } = await axios.post(url, {
-        startDate1,
-      });
-      const filteredUsers = data?.results?.list?.filter(
-        (user) =>
-          new Date(user?.createdAt?.slice(0, 10)).toISOString().slice(0, 10) ===
-          new Date(startDate1).toISOString().slice(0, 10)
-      );
-      if (filteredUsers.length === 0) {
-        setCategoryList([]);
-        await Swal.fire({
-          title: "No List Found",
-          text: "No list is available for the selected date.",
-          icon: "warning",
-          confirmButtonText: "OK",
-        }).then((result) => {
-          if (result.isConfirmed) {
-            categoryManagementList();
-          }
-        });
-      } else if (filteredUsers.length > 0) {
-        await Swal.fire({
-          title: "List Found!",
-          text: "list is available for the selected date.",
-          icon: "success",
-          confirmButtonText: "OK",
-        }).then((result) => {
-          if (result.isConfirmed) {
-            setCategoryList(filteredUsers);
-          }
-        });
-      }
-      setCategoryList(filteredUsers);
-      console.log(data);
-    } catch (error) {
-      console.error("Error fetching user list:", error);
+    formData.append("brandName_en", data.editCatename_en);
+    formData.append("brandName_ar", data.editCatename_ar);
+    if (formData1.pic) {
+      formData.append("brandPic", formData1.pic);
     }
-  };
-  useEffect(() => {
-    userList2();
-  }, [startDate1]);
 
-  useEffect(() => {
-    handleSearch1();
-  }, [searchQuery]);
+    formData.append("category_Id", data.categoryId1);
 
-  const handleSearch1 = async () => {
-    try {
-      const url1 = searchQuery !== "" ? url2 : url;
-      const response = await axios.post(url1, {
-        brandName_en: searchQuery,
-      });
-      const { error, results } = response.data;
-      if (error) {
-        setCategoryList([]);
-        Swal.fire({
-          title: "Error!",
-          // text: error.response.data,
-          text: "Error searching for products. Data is not found",
-          icon: "error",
-          confirmButtonText: "OK",
-        }).then((result) => {
-          if (result.isConfirmed) {
-            categoryManagementList();
-          }
-        });
-        // setCategoryList([]);
-        // throw new Error("Error searching for products. Data is not found.");
-      } else {
-        setCategoryList(
-          searchQuery !== "" ? results?.brandData : results?.list?.reverse()
-        );
+    const res = await updateBrand({ formData, id1, ecomAdmintoken });
+    Swal.fire({
+      title: "Updated!",
+      text: "Your have been updated the list successfully.",
+      icon: "success",
+      confirmButtonColor: "#3085d6",
+      confirmButtonText: "OK",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        refetchbrandList();
+
+        document.getElementById("closebrandmodal").click();
       }
-    } catch (error) {
-      if (error.response) {
-        Swal.fire({
-          title: "Error!",
-          text: error.response.data,
-          icon: "error",
-          confirmButtonText: "OK",
-        });
-      } else if (error.request) {
-        Swal.fire({
-          title: "Error!",
-          text: "Network error. Please try again later.",
-          icon: "error",
-          confirmButtonText: "OK",
-        });
-      } else {
-        Swal.fire({
-          title: "Error!",
-          text: error.message,
-          icon: "error",
-          confirmButtonText: "OK",
-        });
-      }
-    }
+    });
   };
 
-  const handleInputChange = (event) => {
-    const { name, value } = event.target;
-    setFormData({ ...formData, [name]: value });
-  };
   useEffect(() => {
-    fetchData();
-  }, []);
-
-  const fetchData = async () => {
-    try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_APIENDPOINT}admin/category/category/list`
-      );
-      setCategories(response?.data?.results?.list);
-      console.log(response?.data?.results?.list);
-    } catch (error) {
-      console.error(error);
+    if (categoryListdata) {
+      setCategories(categoryListdata?.results?.list);
     }
-  };
-  const handleInputChange2 = (event) => {
-    const { name, value } = event.target;
-    setSubCategory({ ...subCategory, [name]: value });
-  };
+  }, [categoryListdata]);
+
+  const [brand, setBrand] = useState({
+    columns: [
+      {
+        label: "S.NO.",
+        field: "sn",
+        sort: "asc",
+        width: 150,
+      },
+
+      {
+        label: "BRAND (EN)",
+        field: "brandEn",
+        sort: "asc",
+        width: 150,
+      },
+
+      {
+        label: "BRAND (AR)",
+        field: "brandAr",
+        sort: "asc",
+        width: 100,
+      },
+      {
+        label: "CATEGORY",
+        field: "cate",
+        sort: "asc",
+        width: 150,
+      },
+
+      {
+        label: "Media",
+        field: "pic",
+        sort: "asc",
+        width: 100,
+      },
+
+      {
+        label: "ACTION",
+        field: "action",
+        sort: "asc",
+        width: 100,
+      },
+    ],
+    rows: [],
+  });
+
+  useEffect(() => {
+    if (brandListdata) {
+      const newRows = [];
+
+      brandListdata?.results?.list
+        ?.slice()
+        ?.reverse()
+        ?.map((list, index) => {
+          const returnData = {};
+          returnData.sn = index + 1 + ".";
+          returnData.cate = list?.category_Id?.categoryName_en;
+          returnData.brandEn = list?.brandName_en;
+          returnData.brandAr = list?.brandName_ar;
+          returnData.pic = (
+            <div className="">
+              <img className="table_img" src={list?.brandPic} alt="" />
+            </div>
+          );
+
+          returnData.action = (
+            <>
+              <Link
+                data-bs-toggle="modal"
+                data-bs-target="#staticBackdropeditBrand"
+                className="comman_btn2 table_viewbtn me-2"
+                to=""
+                onClick={() => {
+                  handleUpdate(list);
+                  setId1(list?._id);
+                }}
+              >
+                Edit
+              </Link>
+              <Link
+                className="comman_btn2 table_viewbtn"
+                to="#"
+                onClick={() => {
+                  Swal.fire({
+                    title: "Are you sure?",
+                    text: "You won't be able to revert this!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Yes, delete it!",
+                  }).then((result) => {
+                    if (result.isConfirmed) {
+                      deleteBrand({
+                        categoryId: list?._id,
+                        ecomAdmintoken,
+                      });
+                      Swal.fire(
+                        "Deleted!",
+                        `${list?.brandName_en} item has been deleted.`,
+                        "success"
+                      ).then(() => {
+                        setTimeout(() => {
+                          refetchbrandList();
+                          toast.success("Item Deleted!");
+                        }, 500);
+                      });
+                    }
+                  });
+                }}
+              >
+                Delete
+              </Link>
+            </>
+          );
+          newRows.push(returnData);
+        });
+      setBrand({ ...brand, rows: newRows });
+    }
+  }, [brandListdata]);
 
   const handleFileChange = (event) => {
-    setFormData({ ...formData, categoryPic: event.target.files[0] });
+    setFormData({ ...formData, uploadImage: event.target.files[0] });
+    console.log("picture", event.target.files[0]);
   };
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+
+  const onFileSelection = (e, key) => {
+    setFiles({ ...files, [key]: URL.createObjectURL(e.target.files[0]) });
+    setFormData1({ ...formData1, pic: e?.target?.files[0] });
+  };
+  const handleBrandSubmit = async (data) => {
     try {
-      const data = new FormData();
-      data.append("category_Id", subCategory.categoryId);
-      data.append("brandName_en", formData.nameEn);
-      data.append("brandName_ar", formData.nameAr);
-      data.append("brandPic", formData.categoryPic);
-      const response = await axios.post(
-        `${process.env.REACT_APP_APIENDPOINT}admin/product/addBrand`,
-        data,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            "x-auth-token-user": localStorage.getItem("token"),
-          },
-        }
-      );
-      console.log(response.data.results.saveCategory);
+      const alldata = new FormData();
+      alldata.append("category_Id", data.categoryId);
+      alldata.append("brandName_en", data.brandEn);
+      alldata.append("brandName_ar", data.brandAr);
+      alldata.append("brandPic", formData?.uploadImage);
+
+      const response = await addBrand({ alldata, ecomAdmintoken });
+
+      console.log(response);
       if (!response.data.error) {
         Swal.fire({
           icon: "success",
@@ -262,43 +260,22 @@ function BrandManagement(props) {
           confirmButtonText: "OK",
         }).then((result) => {
           if (result.isConfirmed) {
-            window.location.reload();
+            refetchbrandList();
           }
         });
-        handleSave();
+        // handleSave();
       }
     } catch (error) {
       console.error(error);
     }
   };
 
-  const handleSave = async () => {
-    try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_APIENDPOINT}admin/product/brand-list`,
-        null,
-        {
-          headers: {
-            "x-auth-token-user": localStorage.getItem("token"),
-          },
-        }
-      );
-      setCategoryList(response.data.results.list.reverse());
-      console.log(response.data);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  useEffect(() => {
-    handleSave();
-  }, []);
-
   const handleUpdate = (item) => {
-    setNameEn1(item?.brandName_en);
-    setNameAr1(item?.brandName_ar);
-    setPic1(item?.brandPic);
-    // setId1(item?._id);
+    reset2({
+      editCatename_en: item?.brandName_en,
+      editCatename_ar: item?.brandName_ar,
+    });
+    setFiles({ editImage: item?.brandPic });
   };
 
   return (
@@ -335,35 +312,24 @@ function BrandManagement(props) {
                                 </div>
                                 <form
                                   className="form-design py-4 px-3 help-support-form row align-items-end justify-content-between"
-                                  onSubmit={handleSubmit}
+                                  onSubmit={handleSubmit(handleBrandSubmit)}
                                 >
-                                  {/* <div className="form-group mb-0 col-6">
-                                    <label htmlFor="name-en">
-                                      Enter Category Name
-                                      <span className="required-field text-danger">
-                                        *
-                                      </span>
-                                    </label>
-                                    <input
-                                      type="text"
-                                      className="form-control"
-                                      name="nameEn"
-                                      id="name-en"
-                                      value={formData.nameEn}
-                                      onChange={handleInputChange}
-                                      required
-                                      minLength="3"
-                                    />
-                                  </div> */}
                                   <div className="form-group mb-0 col-6">
-                                    <label htmlFor="">Select Category</label>
+                                    <label htmlFor="categoryId">
+                                      Select Category
+                                    </label>
                                     <select
-                                      className="select form-control"
+                                      className={classNames("form-control", {
+                                        "is-invalid": errors.categoryId,
+                                      })}
                                       multiple=""
                                       name="categoryId"
-                                      id="selectCategory"
-                                      value={subCategory.categoryId}
-                                      onChange={handleInputChange2}
+                                      id="categoryId"
+                                      // value={subCategory.categoryId}
+                                      // onChange={handleInputChange2}
+                                      {...register("categoryId", {
+                                        required: "Please Select Category*",
+                                      })}
                                     >
                                       <option value="">Select Category</option>
                                       {Array.isArray(categories) &&
@@ -376,9 +342,14 @@ function BrandManagement(props) {
                                           </option>
                                         ))}
                                     </select>
+                                    {errors.categoryId && (
+                                      <small className="errorText mx-1 fw-bold text-danger">
+                                        {errors.categoryId?.message}
+                                      </small>
+                                    )}
                                   </div>
                                   <div className="form-group mb-0 col-6">
-                                    <label htmlFor="name-en">
+                                    <label htmlFor="brandEn">
                                       Enter Brand Name (En)
                                       <span className="required-field text-danger">
                                         *
@@ -386,17 +357,40 @@ function BrandManagement(props) {
                                     </label>
                                     <input
                                       type="text"
-                                      className="form-control"
-                                      name="nameEn"
-                                      id="name-en"
-                                      value={formData.nameEn}
-                                      onChange={handleInputChange}
-                                      required
-                                      minLength="2"
+                                      // className="form-control"
+                                      name="brandEn"
+                                      id="brandEn"
+                                      // value={formData.nameEn}
+                                      // onChange={handleInputChange}
+                                      // required
+                                      // minLength="2"
+                                      className={classNames("form-control", {
+                                        "is-invalid": errors.brandEn,
+                                      })}
+                                      {...register("brandEn", {
+                                        required: "Brand (En) is required!",
+                                        pattern: {
+                                          value:
+                                            /^[A-Za-z\s]{1,}[\.]{0,1}[A-Za-z\s]{0,}$/,
+                                          message:
+                                            "Special Character not allowed!",
+                                        },
+
+                                        maxLength: {
+                                          value: 100,
+                                          message:
+                                            "Max length is 100 characters!",
+                                        },
+                                      })}
                                     />
+                                    {errors.brandEn && (
+                                      <small className="errorText mx-1 fw-bold text-danger">
+                                        {errors.brandEn.message}*
+                                      </small>
+                                    )}
                                   </div>
                                   <div className="form-group mb-0 mt-3 col">
-                                    <label htmlFor="name-ar">
+                                    <label htmlFor="brandAr">
                                       Enter Brand Name (Ar)
                                       <span className="required-field text-danger">
                                         *
@@ -404,39 +398,78 @@ function BrandManagement(props) {
                                     </label>
                                     <input
                                       type="text"
-                                      className="form-control"
-                                      name="nameAr"
-                                      id="name-ar"
-                                      value={formData.nameAr}
-                                      onChange={handleInputChange}
-                                      required
-                                      minLength="2"
+                                      // className="form-control"
+                                      name="brandAr"
+                                      id="brandAr"
+                                      className={classNames("form-control", {
+                                        "is-invalid": errors.brandAr,
+                                      })}
+                                      {...register("brandAr", {
+                                        required: "Brand (Ar) is required!",
+                                        pattern: {
+                                          value:
+                                            /^[A-Za-z\s]{1,}[\.]{0,1}[A-Za-z\s]{0,}$/,
+                                          message:
+                                            "Special Character not allowed!",
+                                        },
+
+                                        maxLength: {
+                                          value: 100,
+                                          message:
+                                            "Max length is 100 characters!",
+                                        },
+                                      })}
                                     />
+                                    {errors.brandAr && (
+                                      <small className="errorText mx-1 fw-bold text-danger">
+                                        {errors.brandAr.message}*
+                                      </small>
+                                    )}
                                   </div>
-                                  <div className="form-group mb-0 mt-3 col choose_file position-relative">
-                                    <span>Upload Image</span>
-                                    <label htmlFor="upload-video">
-                                      <i className="fal fa-camera me-1"></i>
-                                      Choose File{" "}
-                                    </label>
-                                    <input
-                                      type="file"
-                                      className="form-control"
-                                      name="upload-video"
-                                      id="upload-video"
-                                      onChange={handleFileChange}
-                                      style={{
-                                        marginLeft: "15px",
-                                        width: "95%",
-                                      }}
-                                      required
-                                      accept=".jpg, .jpeg, .png"
-                                    />
+                                  <div className="form-group col-auto mb-0">
+                                    <div className="form-group mb-0 col choose_file position-relative">
+                                      <span>Upload Image</span>
+                                      <label
+                                        htmlFor="uploadImage"
+                                        style={{
+                                          marginTop: "-1px",
+                                          height: "50px",
+                                        }}
+                                      >
+                                        <i className="fal fa-camera me-1"></i>
+                                        Choose File{" "}
+                                      </label>
+                                      <input
+                                        type="file"
+                                        name="uploadImage"
+                                        id="uploadImage"
+                                        className={classNames("form-control", {
+                                          "is-invalid": errors.uploadImage,
+                                        })}
+                                        {...register("uploadImage", {
+                                          required: "Image required!",
+                                        })}
+                                        onChange={handleFileChange}
+                                        style={{
+                                          marginLeft: "10px",
+                                          width: "95%",
+                                        }}
+                                        // required
+                                        accept=".jpg, .jpeg, .png"
+                                      />
+
+                                      <div className="invalid-feedback fw-bold">
+                                        Please choose a valid image file (JPG,
+                                        JPEG, or PNG).
+                                      </div>
+                                    </div>
                                   </div>
-                                  <div className="invalid-feedback">
-                                    Please choose a valid image file (JPG, JPEG,
-                                    or PNG).
-                                  </div>
+                                  {errors.uploadImage && (
+                                    <div className="invalid-feedback fw-bold">
+                                      {errors.uploadImage.message}*
+                                    </div>
+                                  )}
+
                                   <div className="form-group mb-0 col-auto">
                                     <button
                                       className="comman_btn2"
@@ -455,7 +488,7 @@ function BrandManagement(props) {
                                   <div className="col-3">
                                     <form
                                       className="form-design"
-                                      onSubmit={handleSearch1}
+                                      // onSubmit={handleSearch1}
                                     >
                                       <div className="form-group mb-0 position-relative icons_set">
                                         <input
@@ -471,7 +504,7 @@ function BrandManagement(props) {
                                         />
                                         <i
                                           className="far fa-search"
-                                          onClick={handleSearch1}
+                                          // onClick={handleSearch1}
                                         ></i>
                                       </div>
                                     </form>
@@ -493,136 +526,16 @@ function BrandManagement(props) {
                                   <div className="row">
                                     <div className="col-12 comman_table_design px-0">
                                       <div className="table-responsive">
-                                        <table className="table mb-0">
-                                          <thead>
-                                            <tr>
-                                              <th>S.No.</th>
-                                              <th>Brand Name (En)</th>
-                                              <th>Brand Name (Ar)</th>
-                                              <th>Category Name</th>
-                                              <th>Media</th>
-                                              {/* <th>SHIPMENT SERVICE</th> */}
-                                              {/* <th>Status</th> */}
-                                              <th>Action</th>
-                                            </tr>
-                                          </thead>
-                                          <tbody>
-                                            {(categoryList || [])?.map(
-                                              (category, index) => (
-                                                <tr key={category._id}>
-                                                  <td>{index + 1}</td>
-                                                  <td>
-                                                    {category?.brandName_en}
-                                                  </td>
-                                                  <td>
-                                                    {category?.brandName_ar}
-                                                  </td>
-                                                  <td>
-                                                    {" "}
-                                                    {
-                                                      category?.category_Id
-                                                        ?.categoryName_en
-                                                    }{" "}
-                                                  </td>
-                                                  <td>
-                                                    <img
-                                                      className="table_img"
-                                                      src={category?.brandPic}
-                                                      alt=""
-                                                    />
-                                                  </td>
-
-                                                  {/* <td>
-                                                    <form className="table_btns d-flex align-items-center">
-                                                      <div className="check_toggle">
-                                                        <input
-                                                          className="d-none"
-                                                          // data-bs-toggle="modal"
-                                                          // data-bs-target="#staticBackdrop3"
-                                                          defaultChecked={
-                                                            category.status
-                                                          }
-                                                          type="checkbox"
-                                                          name={`status_${category._id}`}
-                                                          id={`status_${category._id}`}
-                                                          onChange={(e) =>
-                                                            handleCheckboxChange(
-                                                              e,
-                                                              category._id
-                                                            )
-                                                          }
-                                                        />
-                                                        <label
-                                                          htmlFor={`status_${category._id}`}
-                                                        ></label>
-                                                      </div>
-                                                    </form>
-                                                  </td> */}
-                                                  <td>
-                                                    <Link
-                                                      data-bs-toggle="modal"
-                                                      data-bs-target="#staticBackdrop"
-                                                      className="comman_btn2 table_viewbtn me-2"
-                                                      to=""
-                                                      onClick={() => {
-                                                        handleUpdate(category);
-                                                        setId1(category?._id);
-                                                      }}
-                                                    >
-                                                      Edit
-                                                    </Link>
-                                                    <Link
-                                                      className="comman_btn2 table_viewbtn"
-                                                      // data-bs-toggle="modal"
-                                                      // data-bs-target="#delete"
-                                                      to="#"
-                                                      onClick={() => {
-                                                        Swal.fire({
-                                                          title:
-                                                            "Are you sure?",
-                                                          text: "You won't be able to revert this!",
-                                                          icon: "warning",
-                                                          showCancelButton: true,
-                                                          confirmButtonColor:
-                                                            "#3085d6",
-                                                          cancelButtonColor:
-                                                            "#d33",
-                                                          confirmButtonText:
-                                                            "Yes, delete it!",
-                                                        }).then((result) => {
-                                                          if (
-                                                            result.isConfirmed
-                                                          ) {
-                                                            deleteBrand(
-                                                              category?._id
-                                                            );
-                                                            Swal.fire(
-                                                              "Deleted!",
-                                                              `${category?.brandName_en}  item has been deleted.`,
-                                                              "success"
-                                                            ).then(() => {
-                                                              const updatedOfferList =
-                                                                categoryList.filter(
-                                                                  (offer) =>
-                                                                    offer._id !==
-                                                                    category?._id
-                                                                );
-                                                              setCategoryList(
-                                                                updatedOfferList
-                                                              );
-                                                            });
-                                                          }
-                                                        });
-                                                      }}
-                                                    >
-                                                      Delete
-                                                    </Link>
-                                                  </td>
-                                                </tr>
-                                              )
-                                            )}
-                                          </tbody>
-                                        </table>
+                                        <MDBDataTable
+                                          bordered
+                                          displayEntries={false}
+                                          className="mt-0"
+                                          hover
+                                          data={brand}
+                                          noBottomColumns
+                                          sortable
+                                          searching={false}
+                                        />
                                       </div>
                                     </div>
                                   </div>
@@ -642,7 +555,7 @@ function BrandManagement(props) {
       </div>
       <div
         className="modal fade Edit_modal"
-        id="staticBackdrop"
+        id="staticBackdropeditBrand"
         data-bs-backdrop="static"
         data-bs-keyboard="false"
         tabIndex="-1"
@@ -660,51 +573,108 @@ function BrandManagement(props) {
                 className="btn-close"
                 data-bs-dismiss="modal"
                 aria-label="Close"
+                id="closebrandmodal"
               ></button>
             </div>
             <div className="modal-body">
               <form
                 className="form-design p-3 help-support-form row align-items-end justify-content-center"
                 action=""
-                onSubmit={handleUpdate1}
+                onSubmit={handleSubmit2(handleUpdateBrand)}
               >
+                <div className="form-group col-12 mb-3">
+                  <div className="banner-profile position-relative d-flex align-items-center justify-content-center">
+                    <div
+                      className="banner-Box bg-light"
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        height: "auto",
+                        // width: "150px",
+                      }}
+                    >
+                      <>
+                        <img
+                          src={files?.editImage}
+                          className="img-fluid"
+                          alt="..."
+                          style={{ width: "40vh" }}
+                        />{" "}
+                        {/* <div>150 X 150</div> */}
+                      </>
+                    </div>
+                    <div className="p-image">
+                      <label htmlFor="editImage">
+                        <i className="upload-button fas fa-camera" />
+                      </label>
+                      <input
+                        className="form-control d-none"
+                        type="file"
+                        accept="image/*"
+                        name="editImage"
+                        id="editImage"
+                        onChange={(e) => onFileSelection(e, "editImage")}
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="form-group col-12">
+                  <label htmlFor="">Select Category</label>
+                  <select
+                    className="select form-control"
+                    multiple=""
+                    name="categoryId1"
+                    id="categoryId1"
+                    onChange={handleInputChange1}
+                    {...register2("categoryId1", {})}
+                  >
+                    <option value="" disabled>
+                      Select Category
+                    </option>
+                    {categories.map((category) => (
+                      <option key={category._id} value={category?._id}>
+                        {category?.categoryName_en}
+                      </option>
+                    ))}
+                  </select>
+                </div>
                 <div className="form-group col-6">
-                  <label htmlFor="">Enter Brand Name (En)</label>
+                  <label htmlFor="editCatename_en">Enter Brand Name (En)</label>
+                  <input
+                    className={classNames("form-control", {})}
+                    name="editCatename_en"
+                    id="editCatename_en"
+                    {...register2("editCatename_en", {
+                      maxLength: {
+                        value: 100,
+                        message: "Max length is 100 characters!",
+                      },
+                    })}
+                  />
+                  {errors2.editCatename_en && (
+                    <small className="errorText mx-1 text-danger">
+                      *{errors2.editCatename_en?.message}
+                    </small>
+                  )}
+                </div>
+                <div className="form-group col-6">
+                  <label htmlFor="editCatename_ar">Enter Brand Name (Ar)</label>
                   <input
                     type="text"
-                    className="form-control"
-                    name="nameEn1"
-                    id="nameEn1"
-                    defaultValue={nameEn1}
-                    onChange={handleInputChange1}
+                    className={classNames("form-control", {})}
+                    name="editCatename_ar"
+                    id="editCatename_ar"
+                    {...register2("editCatename_ar", {})}
                   />
+                  {errors2.editCatename_ar && (
+                    <small className="errorText mx-1 text-danger">
+                      *{errors2.editCatename_ar?.message}
+                    </small>
+                  )}
                 </div>
-                <div className="form-group col-6">
-                  <label htmlFor="">Enter Brand Name (Ar)</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    name="nameAr1"
-                    id="nameAr1"
-                    defaultValue={nameAr1}
-                    onChange={handleInputChange1}
-                  />
-                </div>
-                <div className="form-group col-12 choose_file position-relative">
-                  <span>Upload Image</span>
-                  <label htmlFor="upload_video">
-                    <i className="fal fa-camera me-1"></i>Choose File{" "}
-                  </label>
-                  <input
-                    type="file"
-                    className="form-control"
-                    // defaultValue={props?.newCategory?.categoryPic}
-                    name="uploadImage"
-                    id="uploadImage"
-                    onChange={(e) => handleFileChange1(e, "uploadImage")}
-                  />
-                  {pic1}
-                </div>
+
                 <div className="form-group mb-0 col-auto">
                   <button type="submit" className="comman_btn2">
                     Save

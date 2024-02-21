@@ -3,60 +3,47 @@ import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 // import axios from "axios";
 import { useUserLoginMutation } from "../services/Post";
+import { useDispatch } from "react-redux";
+import { setModules, setToken } from "../app/localSlice";
+import { useForm } from "react-hook-form";
+import classNames from "classnames";
+
 function Login() {
   const [loginData, res] = useUserLoginMutation();
-  const [userName, setUserName] = useState("");
-  const [password, setPassword] = useState("");
-  const [userNameError, setUserNameError] = useState("");
-  const [passwordError, setPasswordError] = useState("");
+
   const navigate = useNavigate();
-  useEffect(() => {
-    if (res.isSuccess) {
-      localStorage.setItem("loginId", res.data?.results?.login?._id);
-      localStorage.setItem("token", res.data?.results?.token);
-      localStorage.setItem(
-        "userLoginEmail",
-        res.data?.results?.login?.userEmail
-      );
-      Swal.fire({
-        title: "Login Successful!",
-        icon: "success",
-        text: "You have successfully logged in.",
-        showConfirmButton: false,
-        timer: 500,
-      }).then(() => {
-        navigate("/dashboard");
-      });
-    } else if (res.isError && res.error?.data?.error) {
-      Swal.fire({
-        title: "Incorrect Password!",
-        icon: "error",
-        text: res.error?.data?.message || "Unknown error occurred.",
-      });
-    }
-  }, [res, navigate]);
 
-  const handleSaveChanges = async (e) => {
-    e.preventDefault();
-    setUserNameError("");
-    setPasswordError("");
+  const dispatch = useDispatch();
 
-    if (userName.trim() === "") {
-      setUserNameError("Username is required.");
-      return;
-    }
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    trigger,
+  } = useForm();
 
-    if (password.trim() === "") {
-      setPasswordError("Password is required.");
-      return;
-    }
+  const handleSaveChanges = async (data) => {
+    // e.preventDefault();
 
     try {
       const response = await loginData({
-        userEmail: userName,
-        password: password,
+        userEmail: data?.email,
+        password: data?.password,
       });
       console.log("response login", response);
+      if (response?.data?.message === "Successs") {
+        dispatch(setModules(response?.data?.results?.login?.modules));
+        dispatch(setToken(response?.data?.results?.token));
+        Swal.fire({
+          title: "Login Successful!",
+          icon: "success",
+          text: "You have successfully logged in.",
+          showConfirmButton: false,
+          timer: 500,
+        }).then(() => {
+          navigate("/dashboard");
+        });
+      }
     } catch (error) {
       console.error("Login error:", error);
       // Show a generic error message if something goes wrong
@@ -84,39 +71,63 @@ function Login() {
                     <p>Please enter your email and password</p>
                   </div>
                   <div className="col-12">
-                    <form className="row form-design">
+                    <form
+                      className="row form-design"
+                      action=""
+                      onSubmit={handleSubmit(handleSaveChanges)}
+                    >
                       <div className="form-group col-12">
-                        <label htmlFor="userEmail">User Email</label>
+                        <label htmlFor="email">User Email</label>
                         <input
-                          type="text"
-                          className="form-control"
-                          placeholder="User@gmail.com"
-                          name="userEmail"
-                          id="userEmail"
-                          value={userName}
-                          onChange={(e) => setUserName(e.target.value)}
+                          type="email"
+                          className={classNames("form-control signup_fields ", {
+                            "is-invalid": errors.email,
+                          })}
+                          id="email"
+                          placeholder="Email Address"
+                          {...register("email", {
+                            required: "Email is Required*",
+                            pattern: {
+                              value:
+                                /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+                              message: "Invalid email address",
+                            },
+                          })}
                         />
-                        {userNameError && (
-                          <span className="error-message text-danger">
-                            {userNameError}
-                          </span>
+                        {errors.email && (
+                          <small className="errorText d-flex mx-1 fw-bold text-danger">
+                            {errors.email?.message}
+                          </small>
                         )}
                       </div>
                       <div className="form-group col-12">
                         <label htmlFor="password">Password</label>
                         <input
                           type="password"
-                          className="form-control"
-                          placeholder="**********"
-                          name="password"
+                          className={classNames("form-control", {
+                            "is-invalid": errors.password,
+                          })}
                           id="password"
-                          value={password}
-                          onChange={(e) => setPassword(e.target.value)}
+                          placeholder="Password"
+                          {...register("password", {
+                            required: "Password is required",
+                            minLength: {
+                              value: 7,
+                              message:
+                                "Password must be at least 7 characters long",
+                            },
+                            pattern: {
+                              value:
+                                /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])(?=.*[A-Z])[A-Za-z\d@$!%*#?&]+$/,
+                              message:
+                                "Password must contain at least one lowercase letter, one uppercase letter, one number, and one special character",
+                            },
+                          })}
                         />
-                        {passwordError && (
-                          <span className="error-message text-danger">
-                            {passwordError}
-                          </span>
+                        {errors.password && (
+                          <small className="errorText d-flex mx-1 fw-bold text-danger">
+                            {errors.password.message}
+                          </small>
                         )}
                       </div>
                       <div className="form-group col-12">
@@ -124,17 +135,15 @@ function Login() {
                           Forgot Password?
                         </Link>
                       </div>
-                      <Link to="#">
-                        <div className="form-group col-12">
-                          <button
-                            type="submit"
-                            className="comman_btn"
-                            onClick={handleSaveChanges}
-                          >
-                            Submit
-                          </button>
-                        </div>
-                      </Link>
+                      <div className="form-group col-12">
+                        <button
+                          type="submit"
+                          className="comman_btn"
+                          // onClick={handleSaveChanges}
+                        >
+                          Submit
+                        </button>
+                      </div>
                     </form>
                   </div>
                 </div>

@@ -1,18 +1,18 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faList,
-  faTrash,
-  faDollarSign,
-  faMoneyBill1Wave,
-  faDownload,
-  faFileExport,
-  faCog,
-} from "@fortawesome/free-solid-svg-icons";
+import { faCog } from "@fortawesome/free-solid-svg-icons";
+import { useSelector } from "react-redux";
 
 function Sidebar({ Dash }) {
+  const modules = useSelector((data) => data?.local?.modules);
+  console.log("modules", modules);
   const storedPic = localStorage.getItem("profilePic");
+
+  const isAccessAllowed = (accessItem) => {
+    return modules?.includes(accessItem);
+  };
+
   return (
     <>
       <div className="admin_main">
@@ -67,53 +67,9 @@ function Sidebar({ Dash }) {
                       <i className="fas fa-list-ol"></i>
                       Category Management
                     </Link>
-                    {/* <Link
-                      className={
-                        Dash === "products" ? "nav-link active" : "nav-link"
-                      }
-                      to="#"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        const subMenu = document.querySelector("#menu-product");
-                        const icon = e.currentTarget.querySelector("i");
-                        subMenu.classList.toggle("collapse");
-                        if (subMenu.classList.contains("collapse")) {
-                          icon.classList.replace(
-                            "fa-chevron-up",
-                            "fa-chevron-down"
-                          );
-                        } else {
-                          icon.classList.replace(
-                            "fa-chevron-down",
-                            "fa-chevron-up"
-                          );
-                        }
-                      }}
-                      style={{ borderRadius: "20px 0px 0px 0px" }}
-                    >
-                      <i
-                        className="fa fa-chevron-down text-end fs-6"
-                        style={{ fontSize: "6px", marginRight: "4px" }}
-                      ></i>
-                    </Link> */}
                   </div>
                 </li>
-                {/* <ul className="sub-menu collapse" id="menu-product"> */}
-                {/* <li
-                    className={
-                      Dash === "products" ? "nav-link active" : "nav-link"
-                    }
-                  >
-                    <Link
-                      className="ms-link"
-                      to="/products"
-                      // onClick={() => handleItemClick("products")}
-                    >
-                      <i className="fas fa-check-square"></i>
-                      <span> Product List</span>
-                    </Link>
-                  </li> */}
-                {/* </ul> */}
+
                 <li
                   className={
                     Dash === "product-management"
@@ -161,13 +117,6 @@ function Sidebar({ Dash }) {
                     <span>Brand Management</span>
                   </Link>
                 </li>
-                {/* <li
-                  className={Dash === "offers" ? "nav-link active" : "nav-link"}
-                >
-                  <Link className="" to="/offers">
-                    <i className="fad fa-gift-card"></i>Offers Management
-                  </Link>
-                </li> */}
 
                 <li
                   className={Dash === "agents" ? "nav-link active" : "nav-link"}

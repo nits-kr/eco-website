@@ -3,9 +3,18 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
 import Sidebar from "./Sidebar";
-import { useDeleteHelpManagementListMutation } from "../services/Post";
+import {
+  useDeleteHelpManagementListMutation,
+  useGetHelpListQuery,
+} from "../services/Post";
+import { useSelector } from "react-redux";
 
 function Help() {
+  const ecomAdmintoken = useSelector((data) => data?.local?.token);
+
+  const { data: helpListdata } = useGetHelpListQuery({
+    ecomAdmintoken,
+  });
   const [deleteHelp, response] = useDeleteHelpManagementListMutation();
   const [searchQuery, setSearchQuery] = useState("");
   const [startDate1, setStartDate1] = useState("");
@@ -22,17 +31,13 @@ function Help() {
   });
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
-  axios.defaults.headers.common["x-auth-token-user"] =
-    localStorage.getItem("token");
-  const url = `${process.env.REACT_APP_APIENDPOINT}admin/help/help/list`;
-  const url2 = `${process.env.REACT_APP_APIENDPOINT}admin/help/help/helpSearch`;
+
   useEffect(() => {
-    fetchHelpList();
-  }, []);
-  const fetchHelpList = async () => {
-    const { data } = await axios.post(url);
-    setHelpList(data.results.list.reverse());
-  };
+    if (helpListdata) {
+      setHelpList(helpListdata?.results?.list);
+    }
+  }, [helpListdata]);
+
   const handleCategoryInputChange = (event) => {
     const { name, value } = event.target;
     setCategory({ ...category, [name]: value });
@@ -43,146 +48,6 @@ function Help() {
     setSubCategory({ ...subCategory, [name]: value });
   };
 
-  useEffect(() => {
-    handleSearch1();
-  }, [searchQuery]);
-
-  const handleSearch1 = async () => {
-    try {
-      const url1 = searchQuery !== "" ? url2 : url;
-      const response = await axios.post(url1, {
-        categoryName: searchQuery,
-      });
-      const { error, results } = response.data;
-      if (error) {
-        setHelpList([]);
-        Swal.fire({
-          title: "Error!",
-          // text: error.response.data,
-          text: "Error searching for products. Data is not found",
-          icon: "error",
-          confirmButtonText: "OK",
-        }).then((result) => {
-          if (result.isConfirmed) {
-            fetchHelpList();
-          }
-        });
-        // throw new Error("Error searching for products. Data is not found.");
-      } else {
-        setHelpList(
-          searchQuery !== "" ? results?.searchData : results?.list?.reverse()
-        );
-      }
-    } catch (error) {
-      if (error.response) {
-        Swal.fire({
-          title: "Error!",
-          text: error.response.data,
-          icon: "error",
-          confirmButtonText: "OK",
-        });
-      } else if (error.request) {
-        Swal.fire({
-          title: "Error!",
-          text: "Network error. Please try again later.",
-          icon: "error",
-          confirmButtonText: "OK",
-        });
-      } else {
-        Swal.fire({
-          title: "Error!",
-          text: error.message,
-          icon: "error",
-          confirmButtonText: "OK",
-        });
-      }
-    }
-  };
-
-  const userList2 = async () => {
-    if (!startDate1) return;
-    try {
-      const { data } = await axios.post(url, {
-        startDate1,
-      });
-      const filteredUsers = data?.results?.list?.filter(
-        (user) =>
-          new Date(user?.createdAt?.slice(0, 10)).toISOString().slice(0, 10) ===
-          new Date(startDate1).toISOString().slice(0, 10)
-      );
-      if (filteredUsers.length === 0) {
-        setHelpList([]);
-        await Swal.fire({
-          title: "No List Found",
-          text: "No list is available for the selected date.",
-          icon: "warning",
-          confirmButtonText: "OK",
-        }).then((result) => {
-          if (result.isConfirmed) {
-            fetchHelpList();
-          }
-        });
-      } else if (filteredUsers.length > 0) {
-        await Swal.fire({
-          title: "List Found!",
-          text: "list is available for the selected date.",
-          icon: "success",
-          confirmButtonText: "OK",
-        }).then((result) => {
-          if (result.isConfirmed) {
-            setHelpList(filteredUsers);
-          }
-        });
-      }
-      setHelpList(filteredUsers);
-      console.log(data);
-    } catch (error) {
-      console.error("Error fetching user list:", error);
-    }
-  };
-  useEffect(() => {
-    userList2();
-  }, [startDate1]);
-
-  const handleSearch = (e) => {
-    e.preventDefault();
-    axios
-      .post(url, {
-        from: startDate,
-        to: endDate,
-      })
-      .then((response) => {
-        const list = response?.data?.results?.list?.reverse();
-        if (list && list.length > 0) {
-          Swal.fire({
-            title: "List Found!",
-            text: "list is available for the selected date.",
-            icon: "success",
-            confirmButtonText: "OK",
-          }).then((result) => {
-            if (result.isConfirmed) {
-              setHelpList(list);
-            }
-          });
-          // setHelpList(list);
-        } else {
-          setHelpList([]);
-          Swal.fire({
-            icon: "warning",
-            title: "No data found!",
-            text: "There is no list between the selected dates.",
-            confirmButtonText: "OK",
-          }).then((result) => {
-            if (result.isConfirmed) {
-              fetchHelpList();
-            }
-          });
-        }
-      })
-      .catch((error) => {
-        console.log(error.response.data);
-      });
-  };
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
@@ -198,23 +63,13 @@ function Help() {
       console.log(response.data.results.helpData);
       if (!response.data.error) {
         alert("Saved!");
-        handleSave();
+        // handleSave();
       }
     } catch (error) {
       console.error(error);
     }
   };
-  const handleSave = async () => {
-    try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_APIENDPOINT}admin/help/help/list`
-      );
-      setHelpList(response.data.results.list.reverse());
-      console.log(response.data);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+
   return (
     <>
       <Sidebar Dash={"help"} />
@@ -312,7 +167,7 @@ function Help() {
                         <form
                           className="form-design"
                           action=""
-                          onSubmit={handleSearch1}
+                          // onSubmit={handleSearch1}
                         >
                           <div className="form-group mb-0 position-relative icons_set">
                             <input
@@ -326,7 +181,7 @@ function Help() {
                             />
                             <i
                               className="far fa-search"
-                              onClick={handleSearch1}
+                              // onClick={handleSearch1}
                             ></i>
                           </div>
                         </form>
@@ -343,7 +198,7 @@ function Help() {
                     <form
                       className="form-design py-4 px-3 help-support-form row align-items-end justify-content-between"
                       action=""
-                      onSubmit={handleSearch}
+                      // onSubmit={handleSearch}
                     >
                       <div className="form-group mb-0 col-5">
                         <label htmlFor="">From</label>
@@ -421,7 +276,7 @@ function Help() {
                                               `${value?.categoryName}  item has been deleted.`,
                                               "success"
                                             ).then(() => {
-                                              fetchHelpList();
+                                              // fetchHelpList();
                                             });
                                           }
                                         });

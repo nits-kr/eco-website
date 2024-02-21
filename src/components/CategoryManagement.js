@@ -4,233 +4,289 @@ import axios from "axios";
 import SubCategory from "./SubCategory";
 import SubSubCategory from "./SubSubCategory";
 import Attribute from "./Attribute";
-//import EditValues from "./EditValues";
-import EditCategory from "./EditCategory";
+
 import Value from "./Value";
-// import EditSubCategory from "./EditSubCategory";
-//import EditSubSubCategory from "./EditSubSubCategory";
-import EditAttribute from "./EditAttribute";
+
 import Swal from "sweetalert2";
 import Sidebar from "./Sidebar";
 import Spinner from "./Spinner";
-import { useCatogaryStatusMutation } from "../services/Post";
+import {
+  useCatogaryStatusMutation,
+  useCreateCategoryMutation,
+  useGetCategoryListMutation,
+  // useGetCategoryListQuery,
+  useUpdateCategoryMutation,
+} from "../services/Post";
 import { useDeleteCategoryListMutation } from "../services/Post";
+import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
+import { MDBDataTable } from "mdbreact";
+import { useForm } from "react-hook-form";
+import classNames from "classnames";
 
 function CategoryManagement(props) {
-  axios.defaults.headers.common["x-auth-token-user"] =
-    localStorage.getItem("token");
+  const ecomAdmintoken = useSelector((data) => data?.local?.token);
+
+  // const { data: categoryListdata, refetch: categoryListData } =
+  //   useGetCategoryListQuery({
+  //     ecomAdmintoken,
+  //   });
+  const [categoryListdata] = useGetCategoryListMutation();
   const [updateStatus] = useCatogaryStatusMutation();
+  const [createCategory] = useCreateCategoryMutation();
+  const [updateCategory] = useUpdateCategoryMutation();
   const [deleteCategory, response] = useDeleteCategoryListMutation();
   const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [startDate1, setStartDate1] = useState("");
   const [categoryList, setCategoryList] = useState([]);
+  const [files, setFiles] = useState();
   const [formData, setFormData] = useState({
-    nameEn: "",
-    nameAr: "",
     categoryPic: null,
   });
+  const [formData1, setFormData1] = useState({
+    pic: files?.editImages,
+  });
+  console.log("formData1", formData1);
+  console.log("formData1.pic23", formData1.pic);
   const [newCategory, setNewCategory] = useState([]);
 
-  const url = `${process.env.REACT_APP_APIENDPOINT}admin/category/category/list`;
-  const url2 = `${process.env.REACT_APP_APIENDPOINT}admin/category/category/search-category`;
-  useEffect(() => {
-    categoryManagementList();
-  }, []);
+  const [itemId, setItemId] = useState("");
 
-  const categoryManagementList = async (e) => {
-    axios
-      .post(url)
-      .then((response) => {
-        setCategoryList(response?.data?.results?.list?.reverse());
-      })
-      .catch((error) => {
-        console.log(error.response.data);
-        Swal.fire({
-          icon: "error",
-          title: "Network Error",
-          text: "Failed to fetch recent order list data. Please try again later.",
-        });
-      });
-  };
-  const userList2 = async () => {
-    if (!startDate1) return;
-    try {
-      const { data } = await axios.post(url, {
-        startDate1,
-      });
-      const filteredUsers = data?.results?.list?.filter(
-        (user) =>
-          new Date(user?.createdAt?.slice(0, 10)).toISOString().slice(0, 10) ===
-          new Date(startDate1).toISOString().slice(0, 10)
-      );
-      if (filteredUsers.length === 0) {
-        setCategoryList([]);
-        await Swal.fire({
-          title: "No List Found",
-          text: "No list is available for the selected date.",
-          icon: "warning",
-          confirmButtonText: "OK",
-        }).then((result) => {
-          if (result.isConfirmed) {
-            categoryManagementList();
-          }
-        });
-      } else if (filteredUsers.length > 0) {
-        await Swal.fire({
-          title: "List Found!",
-          text: "list is available for the selected date.",
-          icon: "success",
-          confirmButtonText: "OK",
-        }).then((result) => {
-          if (result.isConfirmed) {
-            setCategoryList(filteredUsers);
-          }
-        });
-      }
-      setCategoryList(filteredUsers);
-      console.log(data);
-    } catch (error) {
-      console.error("Error fetching user list:", error);
-    }
-  };
-  useEffect(() => {
-    userList2();
-  }, [startDate1]);
-
-  useEffect(() => {
-    handleSearch1();
-  }, [searchQuery]);
-
-  const handleSearch1 = async () => {
-    try {
-      const url1 = searchQuery !== "" ? url2 : url;
-      const response = await axios.post(url1, {
-        categoryName_en: searchQuery,
-      });
-      const { error, results } = response.data;
-      if (error) {
-        setCategoryList([]);
-        Swal.fire({
-          title: "Error!",
-          // text: error.response.data,
-          text: "Error searching for products. Data is not found",
-          icon: "error",
-          confirmButtonText: "OK",
-        }).then((result) => {
-          if (result.isConfirmed) {
-            categoryManagementList();
-          }
-        });
-        // setCategoryList([]);
-        // throw new Error("Error searching for products. Data is not found.");
-      } else {
-        setCategoryList(
-          searchQuery !== "" ? results?.categoryData : results?.list?.reverse()
-        );
-      }
-    } catch (error) {
-      if (error.response) {
-        Swal.fire({
-          title: "Error!",
-          text: error.response.data,
-          icon: "error",
-          confirmButtonText: "OK",
-        });
-      } else if (error.request) {
-        Swal.fire({
-          title: "Error!",
-          text: "Network error. Please try again later.",
-          icon: "error",
-          confirmButtonText: "OK",
-        });
-      } else {
-        Swal.fire({
-          title: "Error!",
-          text: error.message,
-          icon: "error",
-          confirmButtonText: "OK",
-        });
-      }
-    }
-  };
-
-  const handleInputChange = (event) => {
-    const { name, value } = event.target;
-    setFormData({ ...formData, [name]: value });
-  };
+  console.log("files", files);
 
   const handleFileChange = (event) => {
-    setFormData({ ...formData, categoryPic: event.target.files[0] });
+    setFormData({ ...formData, categoryPic: event?.target?.files[0] });
   };
+
+  // const onFileSelection = (e, key) => {
+  //   setFiles({ ...files, [key]: e.target.files[0] });
+  // };
+  const onFileSelection = (e, key) => {
+    setFiles({ ...files, [key]: URL.createObjectURL(e.target.files[0]) });
+    setFormData1({ ...formData1, pic: e?.target?.files[0] });
+  };
+
+  const [category, setCategory] = useState({
+    columns: [
+      {
+        label: "S.NO.",
+        field: "sn",
+        sort: "asc",
+        width: 150,
+      },
+      // {
+      //   label: "CATEGORY",
+      //   field: "name_cate",
+      //   sort: "asc",
+      //   width: 150,
+      // },
+      {
+        label: "CATEGORY (EN)",
+        field: "name_en",
+        sort: "asc",
+        width: 150,
+      },
+
+      {
+        label: "CATEGORY (AR)",
+        field: "name_ar",
+        sort: "asc",
+        width: 100,
+      },
+
+      {
+        label: "Media",
+        field: "pic",
+        sort: "asc",
+        width: 100,
+      },
+      {
+        label: "STATUS",
+        field: "status",
+        sort: "asc",
+        width: 100,
+      },
+      {
+        label: "ACTION",
+        field: "action",
+        sort: "asc",
+        width: 100,
+      },
+    ],
+    rows: [],
+  });
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
+  const {
+    register: register2,
+    handleSubmit: handleSubmit2,
+    formState: { errors: errors2 },
+    reset: reset2,
+  } = useForm();
+
+  useEffect(() => {
+    if (ecomAdmintoken) {
+      handleCategoryList();
+    }
+  }, [ecomAdmintoken, searchQuery, startDate1]);
+
+  const handleCategoryList = async () => {
+    const data = {
+      from: "",
+      to: startDate1,
+      search: searchQuery,
+      ecomAdmintoken: ecomAdmintoken,
+    };
+    const res = await categoryListdata(data);
+    console.log("res cate", res);
+    setCategoryList(res?.data?.results?.list);
+  };
+
+  useEffect(() => {
+    if (categoryList?.length > 0) {
+      // setCategoryList(categoryListdata?.results?.list);
+      const newRows = [];
+
+      categoryList
+        ?.slice()
+        ?.reverse()
+        ?.map((list, index) => {
+          const returnData = {};
+          returnData.sn = index + 1 + ".";
+          returnData.name_cate = list?.category?.name_en;
+          returnData.name_en = list?.categoryName_en;
+          returnData.name_ar = list?.categoryName_ar;
+          returnData.pic = (
+            <div className="">
+              <img className="table_img" src={list?.categoryPic} alt="" />
+            </div>
+          );
+          returnData.status = (
+            <form
+              className="table_btns d-flex align-items-center"
+              key={list?._id}
+            >
+              <div className="check_toggle">
+                <input
+                  className="d-none"
+                  defaultChecked={list?.status}
+                  type="checkbox"
+                  name={`status_${list?._id}`}
+                  id={`status_${list?._id}`}
+                  onChange={(e) => handleCheckboxChange(e, list?._id)}
+                />
+                <label htmlFor={`status_${list?._id}`}></label>
+              </div>
+            </form>
+          );
+          returnData.action = (
+            <>
+              <Link
+                data-bs-toggle="modal"
+                data-bs-target="#staticBackdropeditCat"
+                className="comman_btn2 table_viewbtn me-2"
+                to=""
+                onClick={() => handleUpdate(list)}
+              >
+                Edit
+              </Link>
+              <Link
+                className="comman_btn2 table_viewbtn"
+                to="#"
+                onClick={() => handleDeleteCate(list?._id)}
+              >
+                Delete
+              </Link>
+            </>
+          );
+          newRows.push(returnData);
+        });
+      setCategory({ ...category, rows: newRows });
+    }
+  }, [categoryList]);
+
   console.log("set form data pic", formData.categoryPic);
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+  const handleOnSave = async (data) => {
     try {
-      const data = new FormData();
-      data.append("categoryName_en", formData.nameEn);
-      data.append("categoryName_ar", formData.nameAr);
-      data.append("categoryPic", formData.categoryPic);
-      const response = await axios.post(
-        `${process.env.REACT_APP_APIENDPOINT}admin/category/category/create`,
-        data,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            "x-auth-token-user": localStorage.getItem("token"),
-          },
-        }
-      );
-      console.log(response.data.results.saveCategory);
-      if (!response.data.error) {
+      const alldata = new FormData();
+      alldata.append("categoryName_en", data.Category_name);
+      alldata.append("categoryName_ar", data.Category_nameAr);
+      alldata.append("categoryPic", formData.categoryPic);
+      const res = await createCategory({ alldata, ecomAdmintoken });
+
+      console.log("res,", res);
+      if (res?.data?.message === "Category Create Successfully") {
         Swal.fire({
           icon: "success",
           title: "Category Created",
           text: "The category has been created successfully.",
         });
-        handleSave();
-        setTimeout(() => {
-          window?.location?.reload();
-        }, 500);
+        handleCategoryList();
+      } else {
+        toast.error("Something went wrong!");
       }
     } catch (error) {
       console.error(error);
     }
   };
 
-  const handleSave = async () => {
-    props.setProgress(10);
-    setLoading(true);
+  console.log("FormData1.pic:", formData1.pic);
+  const onSubmit2 = async (data) => {
     try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_APIENDPOINT}admin/category/category/list`,
-        null,
-        {
-          headers: {
-            "x-auth-token-user": localStorage.getItem("token"),
-          },
-        }
-      );
-      setCategoryList(response.data.results.list.reverse());
-      console.log(response.data);
+      const alldata = new FormData();
+      alldata.append("categoryName_en", data.editCatename_en);
+      alldata.append("categoryName_ar", data.editCatename_ar);
+
+      // Log the value of formData1.pic before appending it to FormData
+      console.log("FormData1.pic:", formData1.pic);
+
+      if (formData1.pic) {
+        alldata.append("categoryPic", formData1.pic);
+      }
+
+      // Log the content of the FormData object before submitting
+      console.log("FormData content:", alldata);
+
+      const res = await updateCategory({ alldata, ecomAdmintoken, itemId });
+
+      console.log("res,", res);
+      if (res?.data?.message === "Success") {
+        Swal.fire({
+          icon: "success",
+          title: "Category Updated",
+          text: "The category has been updated successfully.",
+        });
+        handleCategoryList();
+        document?.getElementById("deletecate").click();
+      } else {
+        toast.error("Something went wrong!");
+      }
     } catch (error) {
       console.error(error);
     }
-    props.setProgress(100);
-    setLoading(false);
   };
 
-  useEffect(() => {
-    handleSave();
-  }, []);
-
   const handleUpdate = (item) => {
+    console.log("item", item);
     setNewCategory({
       nameEn: item?.categoryName_en,
       nameAr: item?.categoryName_ar,
       categoryPic: item?.categoryPic,
       id: item?._id,
     });
+    reset2({
+      editCatename_en: item?.categoryName_en,
+      editCatename_ar: item?.categoryName_ar,
+    });
+    setFiles({ editImages: item?.categoryPic });
+    setItemId(item?._id);
+    // setFormData1({ pic: item?.categoryPic });
   };
 
   const handleCheckboxChange = async (e, categoryId) => {
@@ -251,9 +307,11 @@ function CategoryManagement(props) {
       const editStatus = {
         id: categoryId,
         status: newStatus,
+        ecomAdmintoken: ecomAdmintoken,
       };
       try {
         await updateStatus(editStatus);
+
         Swal.fire({
           title: "Changes Saved",
           text: "The Status has been updated successfully.",
@@ -262,10 +320,31 @@ function CategoryManagement(props) {
         }).then((result) => {
           if (result.isConfirmed) {
             window.location.reload();
+            // categoryListData();
           }
         });
       } catch (error) {}
     }
+  };
+
+  const handleDeleteCate = async (id) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        deleteCategory({ id, ecomAdmintoken });
+        setTimeout(() => {
+          toast.success("Item Deleted!");
+          handleCategoryList();
+        }, 500);
+      }
+    });
   };
 
   return (
@@ -368,9 +447,11 @@ function CategoryManagement(props) {
                                     <h2>Add New Category</h2>
                                   </div>
                                 </div>
+
                                 <form
                                   className="form-design py-4 px-3 help-support-form row align-items-end justify-content-between"
-                                  onSubmit={handleSubmit}
+                                  onSubmit={handleSubmit(handleOnSave)}
+                                  action=""
                                 >
                                   <div className="form-group mb-0 col">
                                     <label htmlFor="name-en">
@@ -380,18 +461,40 @@ function CategoryManagement(props) {
                                       </span>
                                     </label>
                                     <input
-                                      type="text"
-                                      className="form-control"
-                                      name="nameEn"
+                                      // className={
+                                      //   errors.Category_name
+                                      //     ? "form-control is-invalid"
+                                      //     : "form-control"
+                                      // }
+                                      className={classNames("form-control", {
+                                        "is-invalid": errors.Category_name,
+                                      })}
                                       id="name-en"
-                                      value={formData.nameEn}
-                                      onChange={handleInputChange}
-                                      required
-                                      minLength="3"
+                                      {...register("Category_name", {
+                                        required: "Category Name is required!",
+                                        pattern: {
+                                          value:
+                                            /^[A-Za-z\s]{1,}[\.]{0,1}[A-Za-z\s]{0,}$/,
+                                          message:
+                                            "Special Character not allowed!",
+                                        },
+
+                                        maxLength: {
+                                          value: 100,
+                                          message:
+                                            "Max length is 100 characters!",
+                                        },
+                                      })}
                                     />
+                                    {errors.Category_name && (
+                                      <small className="errorText mx-1 text-danger">
+                                        {errors.Category_name.message}*
+                                      </small>
+                                    )}
                                   </div>
+
                                   <div className="form-group mb-0 col">
-                                    <label htmlFor="name-ar">
+                                    <label htmlFor="Category_nameAr">
                                       Enter Category Name (Ar)
                                       <span className="required-field text-danger">
                                         *
@@ -399,39 +502,63 @@ function CategoryManagement(props) {
                                     </label>
                                     <input
                                       type="text"
-                                      className="form-control"
-                                      name="nameAr"
-                                      id="name-ar"
-                                      value={formData.nameAr}
-                                      onChange={handleInputChange}
-                                      required
-                                      minLength="3"
+                                      className={classNames("form-control", {
+                                        "is-invalid": errors.Category_nameAr,
+                                      })}
+                                      id="Category_nameAr"
+                                      {...register("Category_nameAr", {
+                                        required: "Category Name is required!",
+                                        pattern: {
+                                          value:
+                                            /^[A-Za-z\s]{1,}[\.]{0,1}[A-Za-z\s]{0,}$/,
+                                          message:
+                                            "Special Character not allowed!",
+                                        },
+                                        maxLength: {
+                                          value: 100,
+                                          message:
+                                            "Max length is 100 characters!",
+                                        },
+                                      })}
                                     />
+                                    {errors.Category_nameAr && (
+                                      <small className="errorText mx-1 text-danger">
+                                        {errors.Category_nameAr.message}*
+                                      </small>
+                                    )}
                                   </div>
+
                                   <div className="form-group mb-0 col choose_file position-relative">
                                     <span>Upload Image</span>
-                                    <label htmlFor="upload-video">
+                                    <label htmlFor="uploadImage">
                                       <i className="fal fa-camera me-1"></i>
                                       Choose File{" "}
                                     </label>
                                     <input
                                       type="file"
-                                      className="form-control"
-                                      name="upload-video"
-                                      id="upload-video"
-                                      onChange={handleFileChange}
+                                      // className="form-control"
+                                      className={classNames("form-control", {
+                                        "is-invalid":
+                                          errors.uploadImage &&
+                                          !formData.categoryPic,
+                                      })}
+                                      id="uploadImage"
+                                      {...register("uploadImage", {
+                                        required: "Image required!",
+                                      })}
                                       style={{
                                         marginLeft: "15px",
                                         width: "95%",
                                       }}
-                                      // required
-                                      // accept=".jpg, .jpeg, .png"
+                                      onChange={handleFileChange}
                                     />
+                                    {errors.uploadImage && (
+                                      <div className="invalid-feedback">
+                                        {errors.uploadImage.message}*
+                                      </div>
+                                    )}
                                   </div>
-                                  <div className="invalid-feedback">
-                                    Please choose a valid image file (JPG, JPEG,
-                                    or PNG).
-                                  </div>
+
                                   <div className="form-group mb-0 col-auto">
                                     <button
                                       className="comman_btn2"
@@ -450,15 +577,15 @@ function CategoryManagement(props) {
                                   <div className="col-3">
                                     <form
                                       className="form-design"
-                                      onSubmit={handleSearch1}
+                                      // onSubmit={handleSearch1}
                                     >
                                       <div className="form-group mb-0 position-relative icons_set">
                                         <input
                                           type="text"
                                           className="form-control"
                                           placeholder="Search"
-                                          name="name"
-                                          id="name"
+                                          name="searchQuery"
+                                          id="searchQuery"
                                           value={searchQuery}
                                           onChange={(e) =>
                                             setSearchQuery(e.target.value)
@@ -466,7 +593,7 @@ function CategoryManagement(props) {
                                         />
                                         <i
                                           className="far fa-search"
-                                          onClick={handleSearch1}
+                                          onClick={() => handleCategoryList()}
                                         ></i>
                                       </div>
                                     </form>
@@ -488,144 +615,16 @@ function CategoryManagement(props) {
                                   <div className="row">
                                     <div className="col-12 comman_table_design px-0">
                                       <div className="table-responsive">
-                                        <table className="table mb-0">
-                                          <thead>
-                                            <tr>
-                                              <th>S.No.</th>
-                                              <th>Category Name (En)</th>
-                                              <th>Category Name (Ar)</th>
-                                              <th>Media</th>
-                                              {/* <th>SHIPMENT SERVICE</th> */}
-                                              <th>Status</th>
-                                              <th>Action</th>
-                                            </tr>
-                                          </thead>
-                                          <tbody>
-                                            {(categoryList || [])?.map(
-                                              (category, index) => (
-                                                <tr key={category._id}>
-                                                  <td>{index + 1}</td>
-                                                  <td>
-                                                    {category?.categoryName_en}
-                                                  </td>
-                                                  <td>
-                                                    {category?.categoryName_ar}
-                                                  </td>
-                                                  <td>
-                                                    <img
-                                                      className="table_img"
-                                                      src={category.categoryPic}
-                                                      alt=""
-                                                    />
-                                                  </td>
-                                                  {/* <td>
-                                                    <form className="table_btns d-flex align-items-center">
-                                                      <div className="check_toggle">
-                                                        <input
-                                                          className="d-none"
-                                                          data-bs-toggle="modal"
-                                                          data-bs-target="#staticBackdrop2"
-                                                          defaultChecked={
-                                                            category.shipmentService
-                                                          }
-                                                          type="checkbox"
-                                                          name={`shipment_service_${category._id}`}
-                                                          id={`shipment_service_${category._id}`}
-                                                        />
-                                                        <label
-                                                          htmlFor={`shipment_service_${category._id}`}
-                                                        ></label>
-                                                      </div>
-                                                    </form>
-                                                  </td> */}
-                                                  <td>
-                                                    <form className="table_btns d-flex align-items-center">
-                                                      <div className="check_toggle">
-                                                        <input
-                                                          className="d-none"
-                                                          // data-bs-toggle="modal"
-                                                          // data-bs-target="#staticBackdrop3"
-                                                          defaultChecked={
-                                                            category.status
-                                                          }
-                                                          type="checkbox"
-                                                          name={`status_${category._id}`}
-                                                          id={`status_${category._id}`}
-                                                          onChange={(e) =>
-                                                            handleCheckboxChange(
-                                                              e,
-                                                              category._id
-                                                            )
-                                                          }
-                                                        />
-                                                        <label
-                                                          htmlFor={`status_${category._id}`}
-                                                        ></label>
-                                                      </div>
-                                                    </form>
-                                                  </td>
-                                                  <td>
-                                                    <Link
-                                                      data-bs-toggle="modal"
-                                                      data-bs-target="#staticBackdrop"
-                                                      className="comman_btn2 table_viewbtn me-2"
-                                                      to=""
-                                                      onClick={() =>
-                                                        handleUpdate(
-                                                          // category?.categoryName_en,
-                                                          // category?.categoryName_ar,
-                                                          // category?.categoryPic,
-                                                          // category?._id
-                                                          category
-                                                        )
-                                                      }
-                                                    >
-                                                      Edit
-                                                    </Link>
-                                                    <Link
-                                                      className="comman_btn2 table_viewbtn"
-                                                      // data-bs-toggle="modal"
-                                                      // data-bs-target="#delete"
-                                                      to="#"
-                                                      onClick={() => {
-                                                        Swal.fire({
-                                                          title:
-                                                            "Are you sure?",
-                                                          text: "You won't be able to revert this!",
-                                                          icon: "warning",
-                                                          showCancelButton: true,
-                                                          confirmButtonColor:
-                                                            "#3085d6",
-                                                          cancelButtonColor:
-                                                            "#d33",
-                                                          confirmButtonText:
-                                                            "Yes, delete it!",
-                                                        }).then((result) => {
-                                                          if (
-                                                            result.isConfirmed
-                                                          ) {
-                                                            deleteCategory(
-                                                              category?._id
-                                                            );
-                                                            Swal.fire(
-                                                              "Deleted!",
-                                                              `${category?.categoryName_en}  item has been deleted.`,
-                                                              "success"
-                                                            ).then(() => {
-                                                              categoryManagementList();
-                                                            });
-                                                          }
-                                                        });
-                                                      }}
-                                                    >
-                                                      Delete
-                                                    </Link>
-                                                  </td>
-                                                </tr>
-                                              )
-                                            )}
-                                          </tbody>
-                                        </table>
+                                        <MDBDataTable
+                                          bordered
+                                          displayEntries={false}
+                                          className="mt-0"
+                                          hover
+                                          data={category}
+                                          noBottomColumns
+                                          sortable
+                                          searching={false}
+                                        />
                                       </div>
                                     </div>
                                   </div>
@@ -633,10 +632,12 @@ function CategoryManagement(props) {
                               </div>
                             </div>
                           </div>
+                          {/* <div> */}
                           <SubCategory />
                           <SubSubCategory />
                           <Attribute />
                           <Value />
+                          {/* </div> */}
                         </div>
                       </div>
                     </div>
@@ -731,14 +732,158 @@ function CategoryManagement(props) {
           </div>
         </div>
       </div>
+      <div
+        className="modal fade Edit_modal"
+        id="staticBackdropeditCat"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+        tabIndex="-1"
+        aria-labelledby="staticBackdropLabel"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog modal-dialog-centered">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title" id="staticBackdropLabel">
+                Edit Category
+              </h5>
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+                id="deletecate"
+              ></button>
+            </div>
+            <div className="modal-body">
+              <form
+                className="form-design p-3 help-support-form row align-items-end justify-content-center"
+                action=""
+                onSubmit={handleSubmit2(onSubmit2)}
+              >
+                <div className="form-group col-12 mb-3">
+                  <div className="banner-profile position-relative d-flex align-items-center justify-content-center">
+                    <div
+                      className="banner-Box bg-light"
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        height: "auto",
+                        // width: "150px",
+                      }}
+                    >
+                      <>
+                        <img
+                          src={files?.editImages}
+                          className="img-fluid"
+                          alt="..."
+                          style={{ width: "40vh" }}
+                        />{" "}
+                        {/* <div>150 X 150</div> */}
+                      </>
+                    </div>
+                    <div className="p-image">
+                      <label htmlFor="editImages">
+                        <i className="upload-button fas fa-camera" />
+                      </label>
+                      <input
+                        className="form-control d-none"
+                        type="file"
+                        accept="image/*"
+                        name="editImages"
+                        id="editImages"
+                        onChange={(e) => onFileSelection(e, "editImages")}
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="form-group col-6">
+                  <label htmlFor="editCatename_en">
+                    Enter Category Name (En)
+                  </label>
+                  <input
+                    className={classNames("form-control", {
+                      // "is-invalid": errors2.editCatename_en,
+                    })}
+                    name="editCatename_en"
+                    id="editCatename_en"
+                    {...register2("editCatename_en", {
+                      // required: "Category Name is required!",
+                      // pattern: {
+                      //   value: /^[A-Za-z\s]{1,}[\.]{0,1}[A-Za-z\s]{0,}$/,
+                      //   message: "Special Character not allowed!",
+                      // },
+                      // maxLength: {
+                      //   value: 20,
+                      //   message: "Max length is 20 characters!",
+                      // },
+                    })}
+                  />
+                  {errors2.editCatename_en && (
+                    <small className="errorText mx-1 text-danger">
+                      *{errors2.editCatename_en?.message}
+                    </small>
+                  )}
+                </div>
+                <div className="form-group col-6">
+                  <label htmlFor="editCatename_ar">
+                    Enter Category Name (Ar)
+                  </label>
+                  <input
+                    type="text"
+                    className={classNames("form-control", {
+                      // "is-invalid": errors2.editCatename_ar,
+                    })}
+                    name="editCatename_ar"
+                    id="editCatename_ar"
+                    {...register2("editCatename_ar", {
+                      // required: "Category Name is required!",
+                      // maxLength: {
+                      //   value: 20,
+                      //   message: "Max length is 20 characters!",
+                      // },
+                    })}
+                  />
+                  {errors2.editCatename_ar && (
+                    <small className="errorText mx-1 text-danger">
+                      *{errors2.editCatename_ar?.message}
+                    </small>
+                  )}
+                </div>
+                {/* <div className="form-group col-12 choose_file position-relative">
+                  <span>Upload Image</span>
+                  <label htmlFor="upload_video">
+                    <i className="fal fa-camera me-1"></i>Choose File{" "}
+                  </label>
+                  <input
+                    type="file"
+                    className="form-control"
+                    // defaultValue={props?.newCategory?.categoryPic}
+                    name="upload_video"
+                    id="upload_video"
+                    onChange={(e) => handleFileChange(e, "uploadImage")}
+                  />
+                </div> */}
+                <div className="form-group mb-0 col-auto">
+                  <button className="comman_btn2" type="submit">
+                    Save
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
       {/* <!-- Modal --> */}
-      <EditCategory newCategory={newCategory} />
+      {/* <EditCategory newCategory={newCategory} /> */}
       {/* <!-- Modal --> */}
       {/* <EditSubCategory /> */}
       {/* <!-- Modal --> */}
       {/* <EditSubSubCategory /> */}
       {/* <!-- Modal --> */}
-      <EditAttribute />
+      {/* <EditAttribute /> */}
       {/* <!-- Modal --> */}
       {/* <EditValues newCategory={newCategory}/> */}
     </>

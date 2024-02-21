@@ -5,8 +5,33 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import Sidebar from "./Sidebar";
 import Spinner from "./Spinner";
+import { useSelector } from "react-redux";
+import {
+  useAddNewVariantMutation,
+  useAttributesListMutation,
+  useBrandListMutation,
+  useCreateProductMutation,
+  useGetCategoryListQuery,
+  useSubCategoryListMutation,
+  useSubSubCategoryListMutation,
+  useValueListMutation,
+} from "../services/Post";
 
 function ProductManagement2(props) {
+  const ecomAdmintoken = useSelector((data) => data?.local?.token);
+
+  const { data: categoryListdata } = useGetCategoryListQuery({
+    ecomAdmintoken,
+  });
+
+  const [getSubCategory] = useSubCategoryListMutation();
+  const [getSubSubCategory] = useSubSubCategoryListMutation();
+  const [getAttributes] = useAttributesListMutation();
+  const [getValues] = useValueListMutation();
+  const [getBrands] = useBrandListMutation();
+  const [createProduct] = useCreateProductMutation();
+  const [addVariant] = useAddNewVariantMutation();
+
   const [loading, setLoading] = useState(false);
   const [selectedImage, setSelectedImage] = useState([]);
   const [formData, setFormData] = useState([]);
@@ -55,6 +80,13 @@ function ProductManagement2(props) {
   const slug = `www.ecommerce.com/${categoryNameNew}/${subCategoryNameNew}`;
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
+
+  useEffect(() => {
+    if (categoryListdata) {
+      setCategories(categoryListdata?.results?.list);
+    }
+  }, [categoryListdata]);
+
   const [variantCount, setVariantCount] = useState(1);
 
   const handleImageUpload1 = (event) => {
@@ -137,90 +169,55 @@ function ProductManagement2(props) {
       [name]: value,
     });
   };
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.post(
-          `${process.env.REACT_APP_APIENDPOINT}admin/category/category/list`
-        );
-        setCategories(response.data.results.list);
-        console.log(response.data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    fetchData();
-  }, []);
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.post(
-          `${process.env.REACT_APP_APIENDPOINT}admin/category/subCategory/selectCategory/${subSubCategory.categoryId}`
-        );
-        setSubCategories(response.data.results.categoryData);
-        console.log(response.data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    fetchData();
-  }, [subSubCategory.categoryId]);
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.post(
-          `${process.env.REACT_APP_APIENDPOINT}admin/category/subSubCategory/selectSubCategory/${subSubCategory.categoryId1}`
-        );
-        setSubSubCategories(response.data.results.subCategoryData);
-        console.log(response.data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    fetchData();
-  }, [subSubCategory.categoryId1]);
-  useEffect(() => {
-    const fetchData2 = async () => {
-      try {
-        const response = await axios.post(
-          `${process.env.REACT_APP_APIENDPOINT}admin/product/select-brand/${subSubCategory.categoryId}`
-        );
-        setBrands(response.data.results.selectBrand);
-        console.log(response.data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    fetchData2();
-  }, [subSubCategory.categoryId]);
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.post(
-          `${process.env.REACT_APP_APIENDPOINT}admin/category/attribute/selectSubSubCategory/${subSubCategory.categoryId}`
-        );
-        setAttribute(response.data.results.subSubCategoryData);
-        console.log(response.data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    fetchData();
-  }, [subSubCategory.categoryId]);
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.post(
-          `${process.env.REACT_APP_APIENDPOINT}admin/category/values/selectAttribute/${subSubCategory.attributeId}`
-        );
-        setValue(response.data.results.attributeCategoryData);
-        console.log(response.data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    fetchData();
-  }, [subSubCategory.attributeId]);
+    if (
+      subSubCategory.categoryId ||
+      subSubCategory.categoryId1 ||
+      subSubCategory.attributeId
+    ) {
+      handleGetSubCategory(subSubCategory.categoryId);
+      handleGrtBrandList(subSubCategory.categoryId);
+      handleGetSubSubCategory(subSubCategory.categoryId1);
+      handleGetAttributes(subSubCategory.categoryId);
+      handleGetValues(subSubCategory.attributeId);
+    }
+  }, [
+    subSubCategory.categoryId,
+    subSubCategory.categoryId1,
+    subSubCategory.attributeId,
+  ]);
+
+  const handleGetSubCategory = async (id) => {
+    const res = await getSubCategory({ id, ecomAdmintoken });
+    console.log("res", res);
+    setSubCategories(res?.data?.results?.categoryData);
+  };
+
+  const handleGetSubSubCategory = async (id) => {
+    const res = await getSubSubCategory({ id, ecomAdmintoken });
+    console.log("res", res);
+    setSubSubCategories(res?.data?.results?.subCategoryData);
+  };
+
+  const handleGetAttributes = async (id) => {
+    const res = await getAttributes({ id, ecomAdmintoken });
+    console.log("res", res);
+    setAttribute(res?.data?.results?.subSubCategoryData);
+  };
+
+  const handleGetValues = async (id) => {
+    const res = await getValues({ id, ecomAdmintoken });
+    console.log("res", res);
+    setValue(res?.data?.results?.attributeCategoryData);
+  };
+
+  const handleGrtBrandList = async (id) => {
+    const res = await getBrands({ id, ecomAdmintoken });
+    console.log("res", res);
+    setBrands(res?.data?.results?.selectBrand);
+  };
+
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setFormData({ ...formData, [name]: value });
@@ -234,7 +231,7 @@ function ProductManagement2(props) {
     console.log("img", img);
     setSelectedImage(img);
   };
-  const handleOnSave = (e) => {
+  const handleOnSave = async (e) => {
     e.preventDefault();
     const data = new FormData();
     data.append("productName_en", formData.productNameEn);
@@ -289,36 +286,29 @@ function ProductManagement2(props) {
         data.append(`product_Pic`, item);
       });
     }
-    axios
-      .post(
-        `${process.env.REACT_APP_APIENDPOINT}admin/product/createProduct`,
-        data
-      )
-      .then((response) => {
-        setFormData(response.data.results.saveProduct);
-        console.log(response.data.results.saveProduct);
-        localStorage?.setItem(
-          "productId",
-          response?.data?.results?.saveProduct?._id
-        );
-        Swal.fire({
-          title: "Product Created!",
-          text: "Your new product has been created successfully.",
-          icon: "success",
-          confirmButtonColor: "#3085d6",
-          confirmButtonText: "OK",
-        }).then((result) => {
-          if (result.isConfirmed) {
-          }
-        });
-      })
-      .catch((error) => {
-        console.log(error.response.data);
+
+    const res = await createProduct({ data, ecomAdmintoken });
+    if (res) {
+      setFormData(res.data.results.saveProduct);
+      console.log(res.data.results.saveProduct);
+      localStorage?.setItem("productId", res?.data?.results?.saveProduct?._id);
+      Swal.fire({
+        title: "Product Created!",
+        text: "Your new product has been created successfully.",
+        icon: "success",
+        confirmButtonColor: "#3085d6",
+        confirmButtonText: "OK",
+      }).then((result) => {
+        if (result.isConfirmed) {
+        }
       });
+    } else {
+      toast.error("Error in creating the Product");
+    }
   };
   const productId = localStorage?.getItem("productId");
 
-  const handleOnSave1 = (e) => {
+  const handleOnSave1 = async (e) => {
     e.preventDefault();
     const data = new FormData();
     data.append("Price", formData.Price);
@@ -369,29 +359,24 @@ function ProductManagement2(props) {
     if (formData1.bannerPic4) {
       data.append("product_Pic", formData1.bannerPic4);
     }
-    axios
-      .post(
-        `${process.env.REACT_APP_APIENDPOINT}admin/product/new-varient/${productId}`,
-        data
-      )
-      .then((response) => {
-        setFormData(response?.data?.results?.saveVarient);
 
-        Swal.fire({
-          title: "Product Created!",
-          text: "Your new product has been created successfully.",
-          icon: "success",
-          confirmButtonColor: "#3085d6",
-          confirmButtonText: "OK",
-        }).then((result) => {
-          if (result.isConfirmed) {
-            navigate(`/product-management-edit/${productId}`);
-          }
-        });
-      })
-      .catch((error) => {
-        console.log(error.response.data);
+    const res = await addVariant({ data, ecomAdmintoken, productId });
+    if (res) {
+      setFormData(res?.data?.results?.saveVarient);
+
+      Swal.fire({
+        title: "Product Created!",
+        text: "Your new product has been created successfully.",
+        icon: "success",
+        confirmButtonColor: "#3085d6",
+        confirmButtonText: "OK",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          navigate(`/product-management-edit/${productId}`);
+        }
       });
+    } else {
+    }
   };
   const copyToClipboard = async (text) => {
     if (navigator.clipboard) {
@@ -447,7 +432,7 @@ function ProductManagement2(props) {
                           className="form-design py-4 px-3 help-support-form row align-items-end justify-content-between"
                           action=""
                         >
-                          {subSubCategories.length > 0 ? (
+                          {subSubCategories?.length > 0 ? (
                             <>
                               {" "}
                               <div className="form-group col-6">
@@ -709,25 +694,7 @@ function ProductManagement2(props) {
                               minLength="3"
                             />
                           </div>
-                          {/* <div className="form-group col-12">
-                            <label htmlFor="">
-                              <Editor
-                                initialdefaultValue="<p>This is the initial content of the editor</p>"
-                                apiKey="k4wjbhrsxipehw955y2hg7i3c5jb0p8j38twj2raedkrlf7x"
-                                init={{
-                                  height: 300,
-                                  menubar: false,
-                                  plugins: [
-                                    "advlist autolink lists link image charmap print preview anchor",
-                                    "searchreplace visualblocks code fullscreen",
-                                    "insertdatetime media table paste code help wordcount",
-                                  ],
-                                  toolbar:
-                                    "undo redo | formatselect | bold italic backcolor | lignleft aligncenter alignright alignjustify | \bullist numlist outdent indent | removeformat | help",
-                                }}
-                              />
-                            </label>
-                          </div> */}
+
                           <div className="form-group col-6">
                             <label htmlFor="shortDescriptionEn">
                               Care Instructions(En)
@@ -806,75 +773,14 @@ function ProductManagement2(props) {
                               minLength="3"
                             />
                           </div>
-                          {/* <div className="form-group col-6">
-                            <label htmlFor="weight">
-                              Weight(En)
-                              <span className="required-field text-danger">
-                                *
-                              </span>
-                            </label>
-                            <input
-                              type="text"
-                              className="form-control"
-                              // defaultValue=""
-                              name="weight"
-                              id="weight"
-                              value={formData.weight}
-                              placeholder="1 kg"
-                              onChange={handleInputChange}
-                              required
-                              minLength="3"
-                            />
-                          </div>
-                          <div className="form-group col-6">
-                            <label htmlFor="weightAr">
-                              Weight(Ar)
-                              <span className="required-field text-danger">
-                                *
-                              </span>
-                            </label>
-                            <input
-                              type="text"
-                              className="form-control"
-                              // defaultValue=""
-                              name="weightAr"
-                              id="weightAr"
-                              value={formData.weightAr}
-                              placeholder="1 كجم"
-                              onChange={handleInputChange}
-                              required
-                              minLength="3"
-                            />
-                          </div> */}
                         </div>
                         <div className="col-12 text-end mb-4">
-                          {/* {showAddButton ? (
-                            <button
-                              className="comman_btn"
-                              onClick={handleAddVariant}
-                            >
-                              Add New variant
-                            </button>
-                          ) : (
-                            <button
-                              className="comman_btn"
-                              onClick={handleClick}
-                            >
-                              Save
-                            </button>
-                          )} */}
                           <div
                             style={{
                               display: "flex",
                               justifyContent: "center",
                             }}
                           >
-                            {/* <button
-                              className="comman_btn"
-                              onClick={handleClick}
-                            >
-                              Save
-                            </button> */}
                             <button
                               className="comman_btn"
                               onClick={(e) => {

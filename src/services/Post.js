@@ -7,9 +7,9 @@ export const PostApi = createApi({
 
   baseQuery: fetchBaseQuery({
     baseUrl: "https://euser.techgropsedev.com:2087/",
-    headers: {
-      "x-auth-token-user": localStorage.getItem("token"),
-    },
+    // headers: {
+    //   "x-auth-token-user": localStorage.getItem("token"),
+    // },
   }),
   endpoints: (builder) => ({
     userLogin: builder.mutation({
@@ -64,23 +64,83 @@ export const PostApi = createApi({
       }),
     }),
     getBannerList: builder.query({
-      query: (name) => ({
+      query: ({ ecomAdmintoken }) => ({
         url: "admin/home/homeScreen/category-banner-list",
         method: "post",
+        headers: {
+          "x-auth-token-user": ecomAdmintoken,
+        },
       }),
     }),
     getDashboardCount: builder.query({
-      query: (name) => ({
-        url: "/admin/dashboards/count/order-dashboards",
+      query: ({ ecomAdmintoken }) => ({
+        url: "admin/dashboards/count/order-dashboards",
         method: "post",
+        headers: {
+          "x-auth-token-user": ecomAdmintoken,
+        },
+      }),
+    }),
+    getOrderList: builder.query({
+      query: ({ ecomAdmintoken }) => ({
+        url: "admin/order/order/list",
+        method: "post",
+        headers: {
+          "x-auth-token-user": ecomAdmintoken,
+        },
+      }),
+    }),
+    getUserList: builder.query({
+      query: ({ ecomAdmintoken }) => ({
+        url: "admin/agent/agent/user-List",
+        method: "post",
+        headers: {
+          "x-auth-token-user": ecomAdmintoken,
+        },
+      }),
+    }),
+    getAgentList: builder.query({
+      query: ({ ecomAdmintoken }) => ({
+        url: "admin/agent/agent/user-List",
+        method: "post",
+        headers: {
+          "x-auth-token-user": ecomAdmintoken,
+        },
+      }),
+    }),
+    getUserListAll: builder.query({
+      query: ({ ecomAdmintoken }) => ({
+        url: "admin/user/userList",
+        method: "post",
+        headers: {
+          "x-auth-token-user": ecomAdmintoken,
+        },
+      }),
+    }),
+    getProductList: builder.query({
+      query: ({ ecomAdmintoken }) => ({
+        url: "admin/product/productList",
+        method: "post",
+        headers: {
+          "x-auth-token-user": ecomAdmintoken,
+        },
       }),
     }),
     getLatLongitude: builder.query({
-      query: (name) => ({
-        url: "/admin/user/location",
+      query: ({ ecomAdmintoken }) => ({
+        url: "admin/user/location",
         method: "post",
+        headers: {
+          "x-auth-token-user": ecomAdmintoken,
+        },
       }),
     }),
+    // getLatLongitude: builder.query({
+    //   query: (name) => ({
+    //     url: "/admin/user/location",
+    //     method: "post",
+    //   }),
+    // }),
     getStaffList: builder.query({
       query: (name) => ({
         url: `admin/staff/staff/list`,
@@ -88,9 +148,12 @@ export const PostApi = createApi({
       }),
     }),
     getTransactionList: builder.query({
-      query: (name) => ({
+      query: ({ ecomAdmintoken }) => ({
         url: `admin/transacation/list`,
         method: "post",
+        headers: {
+          "x-auth-token-user": ecomAdmintoken,
+        },
       }),
     }),
     getReportList: builder.query({
@@ -100,33 +163,93 @@ export const PostApi = createApi({
       }),
     }),
     getContentList: builder.query({
-      query: (name) => ({
+      query: ({ ecomAdmintoken }) => ({
         url: `admin/content/content/list`,
         method: "post",
+        headers: {
+          "x-auth-token-user": ecomAdmintoken,
+        },
       }),
     }),
     getCatogarySideBannerList: builder.query({
-      query: (name) => ({
+      query: ({ ecomAdmintoken }) => ({
         url: "admin/home/homeScreen/side-banner-list",
         method: "post",
+        headers: {
+          "x-auth-token-user": ecomAdmintoken,
+        },
       }),
     }),
     getCatogaryBottomBannerList: builder.query({
-      query: (name) => ({
+      query: ({ ecomAdmintoken }) => ({
         url: "admin/home/homeScreen/bottom-banner-list",
         method: "post",
+        headers: {
+          "x-auth-token-user": ecomAdmintoken,
+        },
       }),
     }),
     getCatogaryMiddleBannerList: builder.query({
-      query: (name) => ({
+      query: ({ ecomAdmintoken }) => ({
         url: "admin/home/homeScreen/middle-banner-list",
         method: "post",
+        headers: {
+          "x-auth-token-user": ecomAdmintoken,
+        },
       }),
     }),
     getCatogaryScrollBannerList: builder.query({
-      query: (name) => ({
+      query: ({ ecomAdmintoken }) => ({
         url: "admin/home/homeScreen/scroll-banner-list",
         method: "post",
+        headers: {
+          "x-auth-token-user": ecomAdmintoken,
+        },
+      }),
+    }),
+    getBrandList: builder.query({
+      query: ({ ecomAdmintoken }) => ({
+        url: "admin/product/brand-list",
+        method: "post",
+        headers: {
+          "x-auth-token-user": ecomAdmintoken,
+        },
+      }),
+    }),
+    getCoupanList: builder.query({
+      query: ({ ecomAdmintoken }) => ({
+        url: "admin/coupan/coupan/list",
+        method: "post",
+        headers: {
+          "x-auth-token-user": ecomAdmintoken,
+        },
+      }),
+    }),
+    getInfoList: builder.query({
+      query: ({ ecomAdmintoken }) => ({
+        url: "admin/information/info/list",
+        method: "post",
+        headers: {
+          "x-auth-token-user": ecomAdmintoken,
+        },
+      }),
+    }),
+    getContactList: builder.query({
+      query: ({ ecomAdmintoken }) => ({
+        url: "admin/contact/contact/contactList",
+        method: "post",
+        headers: {
+          "x-auth-token-user": ecomAdmintoken,
+        },
+      }),
+    }),
+    getHelpList: builder.query({
+      query: ({ ecomAdmintoken }) => ({
+        url: "admin/help/help/list",
+        method: "post",
+        headers: {
+          "x-auth-token-user": ecomAdmintoken,
+        },
       }),
     }),
     getProductTopBannerList: builder.query({
@@ -159,10 +282,93 @@ export const PostApi = createApi({
         method: "post",
       }),
     }),
+
     getFile: builder.query({
-      query: (name) => ({
-        url: `admin/user/download`,
+      query: ({ ecomAdmintoken }) => ({
+        url: "admin/user/download",
         method: "post",
+        headers: {
+          "x-auth-token-user": ecomAdmintoken,
+        },
+      }),
+    }),
+    // getCategoryList: builder.query({
+    //   query: ({ ecomAdmintoken }) => ({
+    //     url: "admin/category/category/list",
+    //     method: "patch",
+    //     headers: {
+    //       "x-auth-token-user": ecomAdmintoken,
+    //     },
+    //   }),
+    // }),
+
+    getCategoryList: builder.mutation({
+      query: (body) => {
+        const { ecomAdmintoken, ...data } = body;
+
+        return {
+          url: "admin/category/category/list",
+          method: "PATCH",
+          body: data,
+          headers: {
+            "x-auth-token-user": ecomAdmintoken,
+          },
+        };
+      },
+    }),
+
+    getSubCategoryList: builder.query({
+      query: ({ ecomAdmintoken }) => ({
+        url: "admin/category/subCategory/SubCategoryList",
+        method: "post",
+        headers: {
+          "x-auth-token-user": ecomAdmintoken,
+        },
+      }),
+    }),
+    getSubSubCategoryList: builder.query({
+      query: ({ ecomAdmintoken }) => ({
+        url: "admin/category/subSubCategory/subSubCategoryList",
+        method: "post",
+        headers: {
+          "x-auth-token-user": ecomAdmintoken,
+        },
+      }),
+    }),
+    getAttibutesList: builder.query({
+      query: ({ ecomAdmintoken }) => ({
+        url: "admin/category/attribute/attributeList",
+        method: "post",
+        headers: {
+          "x-auth-token-user": ecomAdmintoken,
+        },
+      }),
+    }),
+    getValueList: builder.query({
+      query: ({ ecomAdmintoken }) => ({
+        url: "admin/category/values/valuesList",
+        method: "post",
+        headers: {
+          "x-auth-token-user": ecomAdmintoken,
+        },
+      }),
+    }),
+    getAnnounceList: builder.query({
+      query: ({ ecomAdmintoken }) => ({
+        url: "admin/announcement/announcement/list",
+        method: "post",
+        headers: {
+          "x-auth-token-user": ecomAdmintoken,
+        },
+      }),
+    }),
+    getNotificationList: builder.query({
+      query: ({ ecomAdmintoken }) => ({
+        url: "admin/notification/notification/list",
+        method: "post",
+        headers: {
+          "x-auth-token-user": ecomAdmintoken,
+        },
       }),
     }),
     searchOffer: builder.mutation({
@@ -185,19 +391,41 @@ export const PostApi = createApi({
         body,
       }),
     }),
+    // createStaff: builder.mutation({
+    //   query: (body) => ({
+    //     url: `admin/staff/staff/createStaff`,
+    //     method: "post",
+    //     body,
+    //   }),
+    // }),
+
     createStaff: builder.mutation({
-      query: (body) => ({
-        url: `admin/staff/staff/createStaff`,
-        method: "post",
-        body,
-      }),
+      query: (body) => {
+        const { ecomAdmintoken, ...data } = body;
+
+        return {
+          url: "admin/staff/staff/createStaff",
+          method: "post",
+          body: data,
+          headers: {
+            "x-auth-token-user": ecomAdmintoken,
+          },
+        };
+      },
     }),
     getAllStaff: builder.mutation({
-      query: (body) => ({
-        url: `admin/staff/staff/list`,
-        method: "post",
-        body,
-      }),
+      query: (body) => {
+        const { ecomAdmintoken, ...data } = body;
+
+        return {
+          url: "admin/staff/staff/list",
+          method: "post",
+          body: data,
+          headers: {
+            "x-auth-token-user": ecomAdmintoken,
+          },
+        };
+      },
     }),
     addToCart: builder.mutation({
       query: (body) => ({
@@ -340,75 +568,79 @@ export const PostApi = createApi({
       },
     }),
     updateCategory: builder.mutation({
-      query: (body) => {
-        console.log("update category", body);
-        const { id, ...data } = body;
-        console.log("update offer body data", data);
-        return {
-          url: `admin/category/category/update/${id}`,
-          method: "PATCH",
-          body: data,
-        };
-      },
+      query: ({ alldata, itemId, ecomAdmintoken }) => ({
+        url: `admin/category/category/update/${itemId}`,
+        method: "PATCH",
+        body: alldata,
+        headers: {
+          "x-auth-token-user": ecomAdmintoken,
+        },
+      }),
     }),
+    updateSubCategory: builder.mutation({
+      query: ({ alldata, itemId, ecomAdmintoken }) => ({
+        url: `admin/category/subCategory/subCategoryUpdate/${itemId}`,
+        method: "PATCH",
+        body: alldata,
+        headers: {
+          "x-auth-token-user": ecomAdmintoken,
+        },
+      }),
+    }),
+
     updateBrand: builder.mutation({
-      query: ({ id1, formData }) => {
+      query: ({ id1, formData, ecomAdmintoken }) => {
         return {
-          url: `/admin/product/edit-brand/${id1}`,
+          url: `admin/product/edit-brand/${id1}`,
           method: "post",
           body: formData,
           headers: {
-            "Content-Type": "multipart/form-data",
-            "x-auth-token-user": localStorage.getItem("token"),
+            "x-auth-token-user": ecomAdmintoken,
           },
         };
       },
     }),
-    updateSubCategory: builder.mutation({
-      query: (body) => {
-        console.log("update category", body);
-        const { id, ...data } = body;
-        console.log("update Sub category body data", data);
-        console.log("update Sub category body id", id);
-        return {
-          url: `admin/category/subCategory/subCategoryUpdate/${id}`,
-          method: "PATCH",
-          body: data,
-        };
-      },
-    }),
+
     updateValue: builder.mutation({
       query: (body) => {
-        console.log("update category", body);
-        const { id, ...data } = body;
-        console.log("update Sub category body data", data);
-        console.log("update Sub category body id", id);
+        const { ecomAdmintoken, id, ...data } = body;
+
         return {
           url: `admin/category/values/valuesUpdate/${id}`,
           method: "PATCH",
           body: data,
+          headers: {
+            "x-auth-token-user": ecomAdmintoken,
+          },
         };
       },
     }),
+
     updateStaff: builder.mutation({
       query: (body) => {
-        const { ids, ...data } = body;
+        const { ecomAdmintoken, ids, ...data } = body;
 
         return {
           url: `admin/staff/staff/updateStaff/${ids}`,
           method: "PATCH",
           body: data,
+          headers: {
+            "x-auth-token-user": ecomAdmintoken,
+          },
         };
       },
     }),
     staffStatus: builder.mutation({
       query: (body) => {
-        const { ids, ...data } = body;
+        const { ecomAdmintoken, ids, ...data } = body;
 
         return {
           url: `admin/staff/staff/stafstatus/${ids}`,
           method: "post",
           body: data,
+          headers: {
+            "x-auth-token-user": ecomAdmintoken,
+          },
         };
       },
     }),
@@ -425,6 +657,35 @@ export const PostApi = createApi({
         };
       },
     }),
+    updateSubSubCategory: builder.mutation({
+      query: (body) => {
+        const { ecomAdmintoken, id, ...data } = body;
+
+        return {
+          url: `admin/category/subSubCategory/subSubCategoryUpdate/${id}`,
+          method: "PATCH",
+          body: data,
+          headers: {
+            "x-auth-token-user": ecomAdmintoken,
+          },
+        };
+      },
+    }),
+    updateAttribute: builder.mutation({
+      query: (body) => {
+        const { ecomAdmintoken, id, ...data } = body;
+
+        return {
+          url: `admin/category/attribute/attributeUpdate/${id}`,
+          method: "PATCH",
+          body: data,
+          headers: {
+            "x-auth-token-user": ecomAdmintoken,
+          },
+        };
+      },
+    }),
+
     updateCoupan: builder.mutation({
       query: (body) => {
         console.log("update category", body);
@@ -439,10 +700,13 @@ export const PostApi = createApi({
       },
     }),
     editProductList: builder.mutation({
-      query: ({ id, data }) => ({
+      query: ({ id, alldata, ecomAdmintoken }) => ({
         url: `admin/product/updateProduct/${id}`,
         method: "PATCH",
-        body: data,
+        body: alldata,
+        headers: {
+          "x-auth-token-user": ecomAdmintoken,
+        },
       }),
     }),
     // editProductList: builder.mutation({
@@ -459,13 +723,14 @@ export const PostApi = createApi({
     // }),
     editOrderList: builder.mutation({
       query: (body) => {
-        console.log("update category", body);
-        const { id, ...data } = body;
-        console.log("update offer body data", data);
+        const { ecomAdmintoken, id, ...data } = body;
         return {
-          url: `/admin/order/order/order-update/${id}`,
+          url: `admin/order/order/order-update/${id}`,
           method: "post",
           body: data,
+          headers: {
+            "x-auth-token-user": ecomAdmintoken,
+          },
         };
       },
     }),
@@ -483,13 +748,14 @@ export const PostApi = createApi({
     }),
     orderAssign: builder.mutation({
       query: (body) => {
-        console.log("update category", body);
-        const { id, ...data } = body;
-        console.log("update offer body data", data);
+        const { ecomAdmintoken, id, ...data } = body;
         return {
-          url: `/admin/agent/agent/order-assign/${id}`,
+          url: `admin/agent/agent/order-assign/${id}`,
           method: "post",
           body: data,
+          headers: {
+            "x-auth-token-user": ecomAdmintoken,
+          },
         };
       },
     }),
@@ -506,12 +772,15 @@ export const PostApi = createApi({
     catogaryStatus: builder.mutation({
       query: (body) => {
         console.log("update category", body);
-        const { id, ...data } = body;
+        const { ecomAdmintoken, id, ...data } = body;
         console.log("update offer body data", data);
         return {
-          url: `/admin/category/category/checkstatus/${id}`,
+          url: `admin/category/category/checkstatus/${id}`,
           method: "post",
           body: data,
+          headers: {
+            "x-auth-token-user": ecomAdmintoken,
+          },
         };
       },
     }),
@@ -552,12 +821,12 @@ export const PostApi = createApi({
       },
     }),
     addReccomded: builder.mutation({
-      query: (ecomUserId) => ({
-        url: `admin/product/addRecommendedProduct/${ecomUserId}`,
+      query: ({ productId, ecoAdminToken }) => ({
+        url: `admin/product/addRecommendedProduct/${productId}`,
         method: "post",
-        // headers: {
-        //   "x-auth-token-user": ecommercetoken,
-        // },
+        headers: {
+          "x-auth-token-user": ecoAdminToken,
+        },
       }),
     }),
     valueStatus: builder.mutation({
@@ -586,9 +855,12 @@ export const PostApi = createApi({
       },
     }),
     deleteProductList: builder.mutation({
-      query: (id) => ({
-        url: `/admin/product/delete-product/${id}`,
+      query: ({ id, ecomAdmintoken }) => ({
+        url: `admin/product/delete-product/${id}`,
         method: "DELETE",
+        headers: {
+          "x-auth-token-user": ecomAdmintoken,
+        },
       }),
     }),
     deleteCoupanList: builder.mutation({
@@ -604,15 +876,27 @@ export const PostApi = createApi({
       }),
     }),
     deleteBrabdList: builder.mutation({
-      query: (id) => ({
-        url: `/admin/product/delete-brand/${id}`,
+      query: ({ categoryId, ecomAdmintoken }) => ({
+        url: `admin/product/delete-brand/${categoryId}`,
         method: "post",
+        headers: {
+          "x-auth-token-user": ecomAdmintoken,
+        },
       }),
     }),
+    // deleteAgentList: builder.mutation({
+    //   query: (id) => ({
+    //     url: `/admin/agent/agent/delete-user/${id}`,
+    //     method: "DELETE",
+    //   }),
+    // }),
     deleteAgentList: builder.mutation({
-      query: (id) => ({
-        url: `/admin/agent/agent/delete-user/${id}`,
+      query: ({ id, ecomAdmintoken }) => ({
+        url: `admin/agent/agent/delete-user/${id}`,
         method: "DELETE",
+        headers: {
+          "x-auth-token-user": ecomAdmintoken,
+        },
       }),
     }),
     deleteHelpManagementList: builder.mutation({
@@ -628,39 +912,57 @@ export const PostApi = createApi({
       }),
     }),
     deleteOrderList: builder.mutation({
-      query: (id) => ({
-        url: `/admin/order/order/delete-order/${id}`,
+      query: ({ id, ecomAdmintoken }) => ({
+        url: `admin/order/order/delete-order/${id}`,
         method: "DELETE",
+        headers: {
+          "x-auth-token-user": ecomAdmintoken,
+        },
       }),
     }),
     deleteCategoryList: builder.mutation({
-      query: (id) => ({
-        url: `/admin/category/category/delete-category/${id}`,
+      query: ({ id, ecomAdmintoken }) => ({
+        url: `admin/category/category/delete-category/${id}`,
         method: "post",
+        headers: {
+          "x-auth-token-user": ecomAdmintoken,
+        },
       }),
     }),
     deleteSubCategoryList: builder.mutation({
-      query: (id) => ({
-        url: `/admin/category/Subcategory/delete-SubCategory/${id}`,
+      query: ({ id, ecomAdmintoken }) => ({
+        url: `admin/category/Subcategory/delete-SubCategory/${id}`,
         method: "post",
+        headers: {
+          "x-auth-token-user": ecomAdmintoken,
+        },
       }),
     }),
     deleteSubSubCategoryList: builder.mutation({
-      query: (id) => ({
-        url: `/admin/category/subSubcategory/delete-subSubCategory/${id}`,
+      query: ({ id, ecomAdmintoken }) => ({
+        url: `admin/category/subSubcategory/delete-subSubCategory/${id}`,
         method: "post",
+        headers: {
+          "x-auth-token-user": ecomAdmintoken,
+        },
       }),
     }),
     deleteAttributeList: builder.mutation({
-      query: (id) => ({
-        url: `/admin/category/attribute/delete-attribute/${id}`,
+      query: ({ id, ecomAdmintoken }) => ({
+        url: `admin/category/attribute/delete-attribute/${id}`,
         method: "post",
+        headers: {
+          "x-auth-token-user": ecomAdmintoken,
+        },
       }),
     }),
     deleteValueList: builder.mutation({
-      query: (id) => ({
-        url: `/admin/category/values/delete-values/${id}`,
+      query: ({ id, ecomAdmintoken }) => ({
+        url: `admin/category/values/delete-values/${id}`,
         method: "post",
+        headers: {
+          "x-auth-token-user": ecomAdmintoken,
+        },
       }),
     }),
     deleteNotificationList: builder.mutation({
@@ -681,48 +983,217 @@ export const PostApi = createApi({
         method: "DELETE",
       }),
     }),
+    // userDetailsAll: builder.mutation({
+    //   query: (body) => {
+    //     console.log("update category", body);
+    //     const { id } = body;
+    //     console.log("user details body data", id);
+    //     return {
+    //       url: `/admin/user/details/${id}`,
+    //       method: "post",
+    //     };
+    //   },
+    // }),
     userDetailsAll: builder.mutation({
       query: (body) => {
-        console.log("update category", body);
-        const { id } = body;
-        console.log("user details body data", id);
+        const { ecomAdmintoken, id } = body;
         return {
-          url: `/admin/user/details/${id}`,
+          url: `admin/user/details/${id}`,
           method: "post",
+          headers: {
+            "x-auth-token-user": ecomAdmintoken,
+          },
+        };
+      },
+    }),
+    productDetails: builder.mutation({
+      query: (body) => {
+        const { ecomAdmintoken, id } = body;
+        return {
+          url: `admin/category/product/product-details/${id}`,
+          method: "post",
+          headers: {
+            "x-auth-token-user": ecomAdmintoken,
+          },
+        };
+      },
+    }),
+    subCategoryList: builder.mutation({
+      query: (body) => {
+        const { ecomAdmintoken, id } = body;
+        return {
+          url: `admin/category/subCategory/selectCategory/${id}`,
+          method: "post",
+          headers: {
+            "x-auth-token-user": ecomAdmintoken,
+          },
+        };
+      },
+    }),
+    subSubCategoryList: builder.mutation({
+      query: (body) => {
+        const { ecomAdmintoken, id } = body;
+        return {
+          url: `admin/category/subSubCategory/selectSubCategory/${id}`,
+          method: "post",
+          headers: {
+            "x-auth-token-user": ecomAdmintoken,
+          },
+        };
+      },
+    }),
+    attributesList: builder.mutation({
+      query: (body) => {
+        const { ecomAdmintoken, id } = body;
+        return {
+          url: `admin/category/attribute/selectSubSubCategory/${id}`,
+          method: "post",
+          headers: {
+            "x-auth-token-user": ecomAdmintoken,
+          },
+        };
+      },
+    }),
+    valueList: builder.mutation({
+      query: (body) => {
+        const { ecomAdmintoken, id } = body;
+        return {
+          url: `admin/category/values/selectAttribute/${id}`,
+          method: "post",
+          headers: {
+            "x-auth-token-user": ecomAdmintoken,
+          },
+        };
+      },
+    }),
+    brandList: builder.mutation({
+      query: (body) => {
+        const { ecomAdmintoken, id } = body;
+        return {
+          url: `admin/product/select-brand/${id}`,
+          method: "post",
+          headers: {
+            "x-auth-token-user": ecomAdmintoken,
+          },
         };
       },
     }),
     staffDetails: builder.mutation({
       query: (body) => {
-        console.log("taffDetails", body);
-        const { id } = body;
+        const { ecomAdmintoken, i } = body;
         return {
-          url: `admin/staff/staff/StaffDetails/${body}`,
+          url: `admin/staff/staff/StaffDetails/${i}`,
           method: "post",
+          headers: {
+            "x-auth-token-user": ecomAdmintoken,
+          },
         };
       },
     }),
     agentDetailsAll: builder.mutation({
       query: (body) => {
-        console.log("update category", body);
-        const { id } = body;
-        console.log("user details body data", id);
+        const { ecomAdmintoken, id } = body;
+
         return {
-          url: `/admin/agent/agent/user-details/${id}`,
+          url: `admin/agent/agent/user-details/${id}`,
           method: "post",
+          headers: {
+            "x-auth-token-user": ecomAdmintoken,
+          },
         };
       },
     }),
     orderDetailsAll: builder.mutation({
       query: (body) => {
-        console.log("update category", body);
-        const { id } = body;
-        console.log("user details body data", id);
+        const { ecomAdmintoken, id } = body;
         return {
-          url: `/admin/order/order/order-Details/${id}`,
+          url: `admin/order/order/order-Details/${id}`,
           method: "post",
+          headers: {
+            "x-auth-token-user": ecomAdmintoken,
+          },
         };
       },
+    }),
+    createProduct: builder.mutation({
+      query: ({ alldata, ecomAdmintoken }) => ({
+        url: `admin/product/createProduct`,
+        method: "POST",
+        body: alldata,
+        headers: {
+          "x-auth-token-user": ecomAdmintoken,
+        },
+      }),
+    }),
+    createBrand: builder.mutation({
+      query: ({ alldata, ecomAdmintoken }) => ({
+        url: `admin/product/addBrand`,
+        method: "POST",
+        body: alldata,
+        headers: {
+          "x-auth-token-user": ecomAdmintoken,
+        },
+      }),
+    }),
+    createCategory: builder.mutation({
+      query: ({ alldata, ecomAdmintoken }) => ({
+        url: `admin/category/category/create`,
+        method: "POST",
+        body: alldata,
+        headers: {
+          "x-auth-token-user": ecomAdmintoken,
+        },
+      }),
+    }),
+    createSubCategory: builder.mutation({
+      query: ({ alldata, ecomAdmintoken }) => ({
+        url: `admin/category/subCategory/createSubCategory`,
+        method: "POST",
+        body: alldata,
+        headers: {
+          "x-auth-token-user": ecomAdmintoken,
+        },
+      }),
+    }),
+    createAttribute: builder.mutation({
+      query: ({ alldata, ecomAdmintoken }) => ({
+        url: `admin/category/attribute/createAttribute`,
+        method: "POST",
+        body: alldata,
+        headers: {
+          "x-auth-token-user": ecomAdmintoken,
+        },
+      }),
+    }),
+    createValues: builder.mutation({
+      query: ({ alldata, ecomAdmintoken }) => ({
+        url: `admin/category/values/createvalues`,
+        method: "POST",
+        body: alldata,
+        headers: {
+          "x-auth-token-user": ecomAdmintoken,
+        },
+      }),
+    }),
+    createSubSubCategory: builder.mutation({
+      query: ({ alldata, ecomAdmintoken }) => ({
+        url: `admin/category/subSubCategory/createSubSubCategory`,
+        method: "POST",
+        body: alldata,
+        headers: {
+          "x-auth-token-user": ecomAdmintoken,
+        },
+      }),
+    }),
+    addNewVariant: builder.mutation({
+      query: ({ productId, alldata, ecomAdmintoken }) => ({
+        url: `admin/product/new-varient/${productId}`,
+        method: "POST",
+        body: alldata,
+        headers: {
+          "x-auth-token-user": ecomAdmintoken,
+        },
+      }),
     }),
   }),
 });
@@ -817,4 +1288,38 @@ export const {
   useStaffDetailsMutation,
   useStaffStatusMutation,
   useCreateCoupanMutation,
+  useGetOrderListQuery,
+  useGetProductListQuery,
+  useGetUserListQuery,
+  useGetUserListAllQuery,
+  useGetCategoryListQuery,
+  useSubCategoryListMutation,
+  useBrandListMutation,
+  useSubSubCategoryListMutation,
+  useAttributesListMutation,
+  useValueListMutation,
+  useCreateProductMutation,
+  useAddNewVariantMutation,
+  useCreateCategoryMutation,
+  useGetSubCategoryListQuery,
+  useCreateSubCategoryMutation,
+  useGetSubSubCategoryListQuery,
+  useCreateSubSubCategoryMutation,
+  useGetAttibutesListQuery,
+  useCreateAttributeMutation,
+  useGetValueListQuery,
+  useCreateValuesMutation,
+  useUpdateSubSubCategoryMutation,
+  useUpdateAttributeMutation,
+  useProductDetailsMutation,
+  useGetAgentListQuery,
+  useGetBrandListQuery,
+  useCreateBrandMutation,
+  useGetNotificationListQuery,
+  useGetAnnounceListQuery,
+  useGetCoupanListQuery,
+  useGetInfoListQuery,
+  useGetContactListQuery,
+  useGetHelpListQuery,
+  useGetCategoryListMutation,
 } = PostApi;

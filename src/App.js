@@ -54,6 +54,9 @@ import ProductBanner from "./components/banners/ProductBanner";
 import AddAgents from "./components/AddAgents";
 import Staff from "./components/staffs/Staff";
 import CreatCoupans from "./components/coupans/CreateCoupans";
+import Products from "./components/productmanagements/Products";
+import ProductEdit from "./components/productmanagements/ProductEdit";
+import ProductList from "./components/productmanagements/ProductList";
 
 function App() {
   const [progress, setProgress] = useState(0);
@@ -124,6 +127,13 @@ function App() {
             element={<AgentInformation />}
           /> */}
 
+          {/* <Route
+            exact
+            className="active"
+            path="/categories"
+            element={<Category setProgress={setProgress} />}
+          /> */}
+
           <Route
             exact
             className="active"
@@ -140,8 +150,15 @@ function App() {
             exact
             className="active"
             path="/product-management"
-            element={<ProductManagement2 setProgress={setProgress} />}
+            element={<Products setProgress={setProgress} />}
           />
+
+          {/* <Route
+            exact
+            className="active"
+            path="/product-management"
+            element={<ProductManagement2 setProgress={setProgress} />}
+          /> */}
           <Route
             exact
             className="active"
@@ -153,8 +170,15 @@ function App() {
             exact
             className="active"
             path="/product-management-edit/:id"
-            element={<ProductManagementEdit2 setProgress={setProgress} />}
+            element={<ProductEdit setProgress={setProgress} />}
           />
+
+          {/* <Route
+            exact
+            className="active"
+            path="/product-management-edit/:id"
+            element={<ProductManagementEdit2 setProgress={setProgress} />}
+          /> */}
           {/* <Route
             exact
             className="active"
@@ -168,8 +192,15 @@ function App() {
             exact
             className="active"
             path="/products"
-            element={<ProductList2 setProgress={setProgress} />}
+            element={<ProductList setProgress={setProgress} />}
           />
+
+          {/* <Route
+            exact
+            className="active"
+            path="/products"
+            element={<ProductList2 setProgress={setProgress} />}
+          /> */}
           {/* <ProductList2/> */}
           <Route
             exact

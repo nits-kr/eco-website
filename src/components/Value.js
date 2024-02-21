@@ -2,9 +2,54 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
-import { useUpdateValueMutation } from "../services/Post";
+import {
+  useAttributesListMutation,
+  useCreateValuesMutation,
+  useGetAttibutesListQuery,
+  useGetCategoryListMutation,
+  // useGetCategoryListQuery,
+  useGetSubCategoryListQuery,
+  useGetSubSubCategoryListQuery,
+  useGetValueListQuery,
+  useSubCategoryListMutation,
+  useSubSubCategoryListMutation,
+  useUpdateValueMutation,
+} from "../services/Post";
 import { useDeleteValueListMutation } from "../services/Post";
+import { useSelector } from "react-redux";
+import { MDBDataTable } from "mdbreact";
+import { useForm } from "react-hook-form";
+import classNames from "classnames";
+import { toast } from "react-toastify";
 function Value() {
+  const ecomAdmintoken = useSelector((data) => data?.local?.token);
+
+  // const { data: categoryListdata, refetch: categoryListData } =
+  //   useGetCategoryListQuery({
+  //     ecomAdmintoken,
+  //   });
+  const [categoryListdata] = useGetCategoryListMutation();
+
+  const { data: subcategoryListdata, refetch: subcategoryListData } =
+    useGetSubCategoryListQuery({
+      ecomAdmintoken,
+    });
+  const { data: subSubcategoryListdata, refetch: subSubCategoryListData } =
+    useGetSubSubCategoryListQuery({
+      ecomAdmintoken,
+    });
+  const { data: attributesListdata, refetch: attributesListData } =
+    useGetAttibutesListQuery({
+      ecomAdmintoken,
+    });
+  const { data: valueLists, refetch: valueListData } = useGetValueListQuery({
+    ecomAdmintoken,
+  });
+
+  const [getSubCategory] = useSubCategoryListMutation();
+  const [getSubSubCategory] = useSubSubCategoryListMutation();
+  const [getAttribute] = useAttributesListMutation();
+  const [createValues] = useCreateValuesMutation();
   const [update, res] = useUpdateValueMutation();
   const [deleteValueList, re] = useDeleteValueListMutation();
   const [editValueEn, setEditValueEn] = useState("");
@@ -27,280 +72,300 @@ function Value() {
     categoryId2: "",
     categoryId3: "",
   });
-  const url = `${process.env.REACT_APP_APIENDPOINT}admin/category/values/valuesList`;
-  const url2 = `${process.env.REACT_APP_APIENDPOINT}admin/category/values/valuesSearch`;
-  useEffect(() => {
-    subValueManagementList();
-  }, []);
-  const subValueManagementList = () => {
-    axios
-      .post(url)
-      .then((response) => {
-        setValueList(response?.data?.results?.list?.reverse());
-      })
-      .catch((error) => {
-        console.log(error.response.data);
-        Swal.fire({
-          icon: "error",
-          title: "Network Error",
-          text: "Failed to fetch recent order list data. Please try again later.",
-        });
-      });
+
+  const handleCategoryList = async () => {
+    const data = {
+      from: "",
+      to: "",
+      search: "",
+      ecomAdmintoken: ecomAdmintoken,
+    };
+    const res = await categoryListdata(data);
+    console.log("res cate", res);
+    setCategories(res?.data?.results?.list);
   };
 
-  const userList2 = async () => {
-    if (!startDate1) return;
-    try {
-      const { data } = await axios.post(url, {
-        startDate1,
-      });
-      const filteredUsers = data?.results?.list?.filter(
-        (user) =>
-          new Date(user?.createdAt?.slice(0, 10)).toISOString().slice(0, 10) ===
-          new Date(startDate1).toISOString().slice(0, 10)
-      );
-      if (filteredUsers.length === 0) {
-        setValueList([]);
-        await Swal.fire({
-          title: "No List Found",
-          text: "No list is available for the selected date.",
-          icon: "warning",
-          confirmButtonText: "OK",
-        }).then((result) => {
-          if (result.isConfirmed) {
-            subValueManagementList();
-          }
-        });
-      } else if (filteredUsers.length > 0) {
-        await Swal.fire({
-          title: "List Found!",
-          text: "list is available for the selected date.",
-          icon: "success",
-          confirmButtonText: "OK",
-        }).then((result) => {
-          if (result.isConfirmed) {
-            setValueList(filteredUsers);
-          }
-        });
-      }
-      setValueList(filteredUsers);
-      console.log(data);
-    } catch (error) {
-      console.error("Error fetching user list:", error);
-    }
+  useEffect(() => {
+    handleCategoryList();
+  }, [ecomAdmintoken]);
+
+  const handleGetSubCategory = async (id) => {
+    const res = await getSubCategory({ id, ecomAdmintoken });
+    console.log("res", res);
+    setSubCategories(res?.data?.results?.categoryData);
   };
-  useEffect(() => {
-    userList2();
-  }, [startDate1]);
+  const handleGetSubSubCategory = async (id) => {
+    const res = await getSubSubCategory({ id, ecomAdmintoken });
+    console.log("res", res);
+
+    setSubSubCategories(res.data.results.subCategoryData);
+  };
+  const handleAttributes = async (id) => {
+    const res = await getAttribute({ id, ecomAdmintoken });
+    console.log("res", res);
+
+    setAttributes(res.data.results.subSubCategoryData);
+  };
 
   useEffect(() => {
-    handleSearch1();
-  }, [searchQuery]);
-
-  const handleSearch1 = async () => {
-    try {
-      const url1 = searchQuery !== "" ? url2 : url;
-      const response = await axios.post(url1, {
-        valuesName_en: searchQuery,
-      });
-      const { error, results } = response.data;
-      if (error) {
-        setValueList([]);
-        Swal.fire({
-          title: "Error!",
-          // text: error.response.data,
-          text: "Error searching for products. Data is not found",
-          icon: "error",
-          confirmButtonText: "OK",
-        }).then((result) => {
-          if (result.isConfirmed) {
-            subValueManagementList();
-          }
-        });
-        // throw new Error("Error searching for products. Data is not found.");
-      } else {
-        setValueList(
-          searchQuery !== "" ? results?.valuesData : results?.list?.reverse()
-        );
-      }
-    } catch (error) {
-      if (error.response) {
-        Swal.fire({
-          title: "Error!",
-          text: error.response.data,
-          icon: "error",
-          confirmButtonText: "OK",
-        });
-      } else if (error.request) {
-        Swal.fire({
-          title: "Error!",
-          text: "Network error. Please try again later.",
-          icon: "error",
-          confirmButtonText: "OK",
-        });
-      } else {
-        Swal.fire({
-          title: "Error!",
-          text: error.message,
-          icon: "error",
-          confirmButtonText: "OK",
-        });
-      }
+    if (values.categoryId) {
+      handleGetSubCategory(values.categoryId);
     }
+  }, [values.categoryId]);
+  useEffect(() => {
+    if (values.categoryId) {
+      handleAttributes(values.categoryId);
+    }
+  }, [values.categoryId]);
+  useEffect(() => {
+    if (values.categoryId1) {
+      handleGetSubSubCategory(values.categoryId1);
+    }
+  }, [values.categoryId1]);
+
+  const [value, setValue] = useState({
+    columns: [
+      {
+        label: "S.NO.",
+        field: "sn",
+        sort: "asc",
+        width: 150,
+      },
+      {
+        label: "CATEGORY",
+        field: "name_cate",
+        sort: "asc",
+        width: 150,
+      },
+      {
+        label: "SUB CATEGORY",
+        field: "name_subcate",
+        sort: "asc",
+        width: 150,
+      },
+      {
+        label: "SUB SUB CATEGORY",
+        field: "name_subSubcate",
+        sort: "asc",
+        width: 150,
+      },
+      {
+        label: "Attribute",
+        field: "name_att",
+        sort: "asc",
+        width: 150,
+      },
+
+      {
+        label: "Value (EN)",
+        field: "name_en",
+        sort: "asc",
+        width: 100,
+      },
+      {
+        label: "Value (AR)",
+        field: "name_ar",
+        sort: "asc",
+        width: 100,
+      },
+
+      {
+        label: "STATUS",
+        field: "status",
+        sort: "asc",
+        width: 100,
+      },
+      {
+        label: "ACTION",
+        field: "action",
+        sort: "asc",
+        width: 100,
+      },
+    ],
+    rows: [],
+  });
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
+  const {
+    register: register2,
+    handleSubmit: handleSubmit2,
+    formState: { errors: errors2 },
+    reset: reset2,
+  } = useForm();
+
+  useEffect(() => {
+    if (valueLists) {
+      setValueList(valueLists?.results?.list);
+      const newRows = [];
+
+      valueLists?.results?.list
+        ?.slice()
+        ?.reverse()
+        ?.map((list, index) => {
+          const returnData = {};
+          returnData.sn = index + 1 + ".";
+          returnData.name_cate = list?.category_Id?.categoryName_en;
+          returnData.name_subcate = list?.subCategory_Id?.subCategoryName_en;
+          returnData.name_subSubcate =
+            list?.subSubCategory_Id?.subSubCategoryName_en;
+          returnData.name_att = list?.attribute_Id?.attributeName_en;
+          returnData.name_en = list?.valuesName_en;
+          returnData.name_ar = list?.valuesName_ar;
+          returnData.pic = (
+            <div className="">
+              <img className="table_img" src={list?.subCategoryPic} alt="" />
+            </div>
+          );
+          returnData.status = (
+            <form className="table_btns d-flex align-items-center">
+              <div className="check_toggle">
+                <input
+                  defaultChecked={list?.status}
+                  type="checkbox"
+                  name={`status_${list._id}`}
+                  id={`status_${list._id}`}
+                  className="d-none"
+                  // data-bs-toggle="modal"
+                  // data-bs-target="#staticBackdrop3"
+                  disabled
+                />
+                <label htmlFor={`status_${list._id}`}></label>
+              </div>
+            </form>
+          );
+          returnData.action = (
+            <>
+              <Link
+                data-bs-toggle="modal"
+                data-bs-target="#staticBackdropeditvalue"
+                className="comman_btn2 table_viewbtn me-2"
+                to=""
+                onClick={() => handleUpdate(list)}
+              >
+                Edit
+              </Link>
+              <Link
+                className="comman_btn2 table_viewbtn"
+                to="#"
+                onClick={() => handleDeleteValue(list?._id)}
+              >
+                Delete
+              </Link>
+            </>
+          );
+          newRows.push(returnData);
+        });
+      setValue({ ...value, rows: newRows });
+    }
+  }, [valueLists]);
+
+  const handleDeleteValue = async (id) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const res = deleteValueList({ id, ecomAdmintoken });
+
+        setTimeout(() => {
+          valueListData();
+          toast.success("Item Deleted!");
+        }, 500);
+      }
+    });
   };
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setValues({ ...values, [name]: value });
   };
-  axios.defaults.headers.common["x-auth-token-user"] =
-    localStorage.getItem("token");
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+
+  const handleOnSubmit = async (data) => {
     try {
-      const requestBody = {
-        valuesName_en: values.nameEn,
-        valuesName_ar: values.nameAr,
-        category_Id: values.categoryId,
-        subCategory_Id: values.categoryId1,
-        attribute_Id: values.categoryId3,
+      const alldata = {
+        valuesName_en: data.valueEn,
+        valuesName_ar: data.valueAr,
+        category_Id: data.categoryId,
+        subCategory_Id: data.categoryId1,
+        attribute_Id: data.categoryId3,
       };
-      if (values.categoryId2) {
-        requestBody.subSubCategory_Id = values.categoryId2;
+      if (data.categoryId2) {
+        alldata.subSubCategory_Id = data.categoryId2;
       }
 
-      const response = await axios.post(
-        `${process.env.REACT_APP_APIENDPOINT}admin/category/values/createvalues`,
-        requestBody
-      );
+      const res = await createValues({ alldata, ecomAdmintoken });
 
-      console.log(response.data.results.createValues);
-      if (!response.data.error) {
+      console.log("res", res);
+
+      if (res?.data?.message === "Success") {
+        valueListData();
         Swal.fire({
           icon: "success",
           title: "Value Created",
           text: "The Value has been created successfully.",
         });
-        handleSave();
-        setTimeout(() => {
-          window?.location?.reload();
-        }, 500);
+      } else {
+        toast.error("Something went wrong!");
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const handleOnEdit = async (data) => {
+    try {
+      const alldata = {
+        valuesName_en: data.valuesEn,
+        valuesName_ar: data.valuesAr,
+        category_Id: data.categoryId,
+        subCategory_Id: data.categoryId1,
+        attribute_Id: data.categoryId3,
+        ...(data.categoryId2 && { subSubCategory_Id: data.categoryId2 }),
+        ecomAdmintoken: ecomAdmintoken,
+        id: itemId,
+      };
+
+      const res = await update(alldata);
+
+      console.log("res", res);
+
+      if (res?.data?.message === "Success") {
+        valueListData();
+        document?.getElementById("deletevaluemodal").click();
+        Swal.fire({
+          icon: "success",
+          title: "Value Updated",
+          text: "The Value has been Updated successfully.",
+        });
+      } else {
+        toast.error("Something went wrong!");
       }
     } catch (error) {
       console.error(error);
     }
   };
 
-  const handleSave = async () => {
-    try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_APIENDPOINT}admin/category/values/valuesList`
-      );
-      setValueList(response.data.results.list.reverse());
-      console.log(response.data);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-  useEffect(() => {
-    handleSave();
-  }, []);
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.post(
-          `${process.env.REACT_APP_APIENDPOINT}admin/category/category/list`
-        );
-        setCategories(response.data.results.list);
-        console.log(response.data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    fetchData();
-  }, []);
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.post(
-          `${process.env.REACT_APP_APIENDPOINT}admin/category/subCategory/selectCategory/${values.categoryId}`
-        );
-        setSubCategories(response.data.results.categoryData);
-        console.log(response.data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    fetchData();
-  }, [values.categoryId]);
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.post(
-          `${process.env.REACT_APP_APIENDPOINT}admin/category/subSubCategory/selectSubCategory/${values.categoryId1}`
-        );
-        setSubSubCategories(response.data.results.subCategoryData);
-        console.log(response.data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    fetchData();
-  }, [values.categoryId1]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.post(
-          `${process.env.REACT_APP_APIENDPOINT}admin/category/attribute/selectSubSubCategory/${values.categoryId}`
-        );
-        setAttributes(response.data.results.subSubCategoryData);
-        console.log(response.data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    fetchData();
-  }, [values.categoryId]);
-
-  const handleSaveChanges1 = async (e) => {
-    e.preventDefault();
-    console.log("handleSaveChanges1", itemId);
-    const editAddress = {
-      id: itemId,
-      valuesName_en: editValueEn,
-      valuesName_ar: editValueAr,
-      category_Id: values.categoryId,
-      subCategory_Id: values.categoryId1,
-      subSubCategory_Id: values.categoryId2,
-      attribute_Id: values.categoryId3,
-      // categoryName: subCategory.subCategoryId,
-    };
-    try {
-      await update(editAddress);
-      Swal.fire({
-        icon: "success",
-        title: "Changes Saved",
-        text: "The subcategory has been updated successfully.",
-        confirmButtonColor: "#3085d6",
-        confirmButtonText: "OK",
-      }).then((result) => {
-        if (result.isConfirmed) {
-          window.location.reload();
-        }
-      });
-    } catch (error) {
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: "An error occurred while updating the subcategory.",
-      });
-    }
-  };
-  const handleItem = (item) => {
+  const handleUpdate = (item) => {
     setValueNameEn2(item?.valuesName_en || "");
     setValueNameAr2(item?.valuesName_ar || "");
     // setImage2(item?.categoryPic || "");
+    reset2({
+      valuesEn: item?.valuesName_en,
+      valueAr: item?.valuesName_ar,
+      categoryId: item?.category_Id?._id,
+      categoryId1: item?.subCategory_Id?._id,
+      categoryId2: item?.subSubCategory_Id?._id,
+    });
+    setItemId(item?._id);
   };
   return (
     <>
@@ -320,16 +385,24 @@ function Value() {
             <form
               className="form-design py-4 px-3 help-support-form row align-items-end justify-content-between"
               action=""
-              onSubmit={handleSubmit}
+              onSubmit={handleSubmit(handleOnSubmit)}
             >
               <div className="form-group col-6">
-                <label htmlFor="selectCategory">Select Category</label>
+                <label htmlFor="categoryId">
+                  Select Category
+                  <span className="required-field text-danger">*</span>
+                </label>
                 <select
-                  className="select form-control"
+                  className={classNames("form-control", {
+                    "is-invalid": errors.categoryId && !values.categoryId,
+                  })}
                   multiple=""
                   name="categoryId"
-                  id="selectCategory"
-                  value={values.categoryId}
+                  id="categoryId"
+                  // value={subSubCategory.categoryId}
+                  {...register("categoryId", {
+                    required: "Please Select Category*",
+                  })}
                   onChange={handleInputChange}
                 >
                   <option value="">Select Category</option>
@@ -340,16 +413,26 @@ function Value() {
                       </option>
                     ))}
                 </select>
+                {errors.categoryId && !values.categoryId && (
+                  <small className="errorText mx-1 fw-bold text-danger">
+                    {errors.categoryId?.message}
+                  </small>
+                )}
               </div>
               <div className="form-group col-6">
-                <label htmlFor="">Select Sub Category</label>
+                <label htmlFor="categoryId1">Select Sub Category</label>
                 <select
-                  className="select form-control"
+                  // className="select form-control"
+                  className={classNames("form-control", {
+                    "is-invalid": errors.categoryId1 && !values.categoryId1,
+                  })}
                   multiple=""
                   name="categoryId1"
-                  id="selectSubCategory"
-                  value={values.categoryId1}
-                  // onChange={(e) => handleInputSubCategory(e.target.value)}
+                  id="categoryId1"
+                  // value={subSubCategory.categoryId1}
+                  {...register("categoryId1", {
+                    required: "Please Select Sub Category*",
+                  })}
                   onChange={handleInputChange}
                 >
                   <option value="">Select Sub Category</option>
@@ -360,9 +443,14 @@ function Value() {
                       </option>
                     ))}
                 </select>
+                {errors.categoryId1 && !values.categoryId1 && (
+                  <small className="errorText mx-1 fw-bold text-danger">
+                    {errors.categoryId1?.message}
+                  </small>
+                )}
               </div>
               <div className="form-group col-6">
-                <label htmlFor="">Select Sub Sub Category</label>
+                {/* <label htmlFor="">Select Sub Sub Category</label>
                 <select
                   className="select form-control"
                   multiple=""
@@ -381,16 +469,56 @@ function Value() {
                         {subSubCategory.subSubCategoryName_en}
                       </option>
                     ))}
+                </select> */}
+                <label htmlFor="categoryId2">Select Sub Sub Category</label>
+                <select
+                  // className="select form-control"
+                  className={classNames("form-control", {
+                    "is-invalid": errors.categoryId2 && !values.categoryId2,
+                  })}
+                  multiple=""
+                  name="categoryId2"
+                  id="categoryId2"
+                  // value={attributes.categoryId2}
+                  {...register("categoryId2", {
+                    required: "Please Select Category*",
+                  })}
+                  onChange={handleInputChange}
+                >
+                  <option value="">Select Sub Sub Category</option>
+                  {Array.isArray(subSubCategories) &&
+                    subSubCategories.map((subSubCategory) => (
+                      <option
+                        key={subSubCategory._id}
+                        value={subSubCategory._id}
+                      >
+                        {subSubCategory.subSubCategoryName_en}
+                      </option>
+                    ))}
                 </select>
+                {errors.categoryId2 && !values.categoryId2 && (
+                  <small className="errorText mx-1 fw-bold text-danger">
+                    {errors.categoryId2?.message}
+                  </small>
+                )}
               </div>
               <div className="form-group col-6">
-                <label htmlFor="">Select Attribute</label>
+                <label htmlFor="categoryId3">
+                  Select Attribute
+                  <span className="required-field text-danger">*</span>
+                </label>
                 <select
-                  className="select form-control"
+                  // className="select form-control"
+                  className={classNames("form-control", {
+                    "is-invalid": errors.categoryId3 && !values.categoryId3,
+                  })}
                   multiple=""
                   name="categoryId3"
-                  id="selectAttribute"
+                  id="categoryId3"
                   value={values.categoryId3}
+                  {...register("categoryId3", {
+                    required: "Please Select Category*",
+                  })}
                   onChange={handleInputChange}
                 >
                   <option value="">Select Attribute</option>
@@ -401,44 +529,93 @@ function Value() {
                       </option>
                     ))}
                 </select>
+                {errors.categoryId3 && !values.categoryId3 && (
+                  <small className="errorText mx-1 fw-bold text-danger">
+                    {errors.categoryId3?.message}
+                  </small>
+                )}
               </div>
               <div className="form-group col">
-                <label htmlFor="">
+                <label htmlFor="valueEn">
                   Enter Value Name (En)
                   <span className="required-field text-danger">*</span>
                 </label>
                 <input
                   type="text"
-                  className="form-control"
-                  name="nameEn"
-                  id="nameEn"
-                  value={values.nameEn}
-                  onChange={handleInputChange}
-                  required
-                  // minLength="3"
+                  // className="form-control"
+                  className={classNames("form-control", {
+                    "is-invalid": errors.valueEn,
+                  })}
+                  name="valueEn"
+                  id="valueEn"
+                  // value={values.valueEn}
+                  // onChange={handleInputChange}
+                  {...register("valueEn", {
+                    required: "Value (En) is required!",
+                    pattern: {
+                      value: /^[A-Za-z0-9\s]{1,}[\.]{0,1}[A-Za-z0-9\s]{0,}$/,
+                      message:
+                        "Please enter only letters, digits, spaces, and an optional dot.",
+                    },
+
+                    minLength: {
+                      value: 2,
+                      message: "Min length should be 2 characters!",
+                    },
+                    maxLength: {
+                      value: 100,
+                      message: "Max length is 100 characters!",
+                    },
+                  })}
                 />
+                {errors.valueEn && (
+                  <small className="errorText mx-1 fw-bold text-danger">
+                    {errors.valueEn.message}*
+                  </small>
+                )}
               </div>
               <div className="form-group col">
-                <label htmlFor="">
+                <label htmlFor="valueAr">
                   Enter Value Name (Ar)
                   <span className="required-field text-danger">*</span>
                 </label>
                 <input
                   type="text"
-                  className="form-control"
-                  name="nameAr"
-                  id="nameAr"
-                  value={values.nameAr}
-                  onChange={handleInputChange}
-                  required
-                  // minLength="3"
+                  // className="form-control"
+                  className={classNames("form-control", {
+                    "is-invalid": errors.valueAr,
+                  })}
+                  name="valueEn"
+                  id="valueEn"
+                  {...register("valueAr", {
+                    required: "Value (Ar) is required!",
+                    pattern: {
+                      value: /^[A-Za-z0-9\s]{1,}[\.]{0,1}[A-Za-z0-9\s]{0,}$/,
+                      message:
+                        "Please enter only letters, digits, spaces, and an optional dot.",
+                    },
+
+                    minLength: {
+                      value: 2,
+                      message: "Min length should be 2 characters!",
+                    },
+                    maxLength: {
+                      value: 100,
+                      message: "Max length is 100 characters!",
+                    },
+                  })}
                 />
+                {errors.valueAr && (
+                  <small className="errorText mx-1 fw-bold text-danger">
+                    {errors.valueAr.message}*
+                  </small>
+                )}
               </div>
-              {/* <div className="form-group col-auto">
-                <button className="comman_btn">Add More Row</button>
-              </div> */}
+
               <div className="form-group mb-0 col-12 text-center">
-                <button className="comman_btn2">Save</button>
+                <button type="submit" className="comman_btn2">
+                  Save
+                </button>
               </div>
             </form>
           </div>
@@ -448,7 +625,7 @@ function Value() {
                 <h2>Values List</h2>
               </div>
               <div className="col-3">
-                <form className="form-design" onSubmit={handleSearch1}>
+                <form className="form-design">
                   <div className="form-group mb-0 position-relative icons_set">
                     <input
                       type="text"
@@ -476,116 +653,16 @@ function Value() {
             <div className="row">
               <div className="col-12 comman_table_design px-0">
                 <div className="table-responsive">
-                  <table className="table mb-0">
-                    <thead>
-                      <tr>
-                        <th>S.No.</th>
-                        <th>Category Name</th>
-                        <th>Sub Category Name</th>
-                        <th>Sub Sub Category Name</th>
-                        <th>Attribute Name</th>
-                        <th>Values (En)</th>
-                        <th>Values (Ar)</th>
-                        {/* <th>SHIPMENT SERVICE</th> */}
-                        <th>Status</th>
-                        <th>Action</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {(valueList || [])?.map((value, index) => (
-                        <tr key={index}>
-                          <td>{index + 1}</td>
-                          <td>{value?.category_Id?.categoryName_en}</td>
-                          <td>{value?.subCategory_Id?.subCategoryName_en}</td>
-                          <td>
-                            {value?.subSubCategory_Id?.subSubCategoryName_en}
-                          </td>
-                          <td>{value?.attribute_Id?.attributeName_en}</td>
-                          <td>{value?.valuesName_en}</td>
-                          <td>{value?.valuesName_ar}</td>
-                          {/* <td>
-                            <form className="table_btns d-flex align-items-center">
-                              <div className="check_toggle">
-                                <input
-                                  defaultChecked={value.shipmentService}
-                                  type="checkbox"
-                                  name={`shipment_service_${value._id}`}
-                                  id={`shipment_service_${value._id}`}
-                                  className="d-none"
-                                  data-bs-toggle="modal"
-                                  data-bs-target="#staticBackdrop2"
-                                />
-                                <label
-                                  htmlFor={`shipment_service_${value._id}`}
-                                ></label>
-                              </div>
-                            </form>
-                          </td> */}
-                          <td style={{ cursor: "not-allowed" }}>
-                            <form className="table_btns d-flex align-items-center">
-                              <div className="check_toggle">
-                                <input
-                                  defaultChecked={value?.status}
-                                  type="checkbox"
-                                  name={`status_${value._id}`}
-                                  id={`status_${value._id}`}
-                                  className="d-none"
-                                  // data-bs-toggle="modal"
-                                  // data-bs-target="#staticBackdrop3"
-                                  disabled
-                                />
-                                <label htmlFor={`status_${value._id}`}></label>
-                              </div>
-                            </form>
-                          </td>
-                          <td>
-                            <Link
-                              data-bs-toggle="modal"
-                              data-bs-target="#staticBackdrop4"
-                              className="comman_btn2 table_viewbtn"
-                              to=""
-                              onClick={() => {
-                                handleItem(value);
-                                setItemId(value?._id);
-                              }}
-                            >
-                              Edit
-                            </Link>
-                            <Link
-                              className="comman_btn2 table_viewbtn ms-2"
-                              // data-bs-toggle="modal"
-                              // data-bs-target="#delete"
-                              to="#"
-                              onClick={() => {
-                                Swal.fire({
-                                  title: "Are you sure?",
-                                  text: "You won't be able to revert this!",
-                                  icon: "warning",
-                                  showCancelButton: true,
-                                  confirmButtonColor: "#3085d6",
-                                  cancelButtonColor: "#d33",
-                                  confirmButtonText: "Yes, delete it!",
-                                }).then((result) => {
-                                  if (result.isConfirmed) {
-                                    deleteValueList(value?._id);
-                                    Swal.fire(
-                                      "Deleted!",
-                                      `${value?.valuesName_en}  item has been deleted.`,
-                                      "success"
-                                    ).then(() => {
-                                      subValueManagementList();
-                                    });
-                                  }
-                                });
-                              }}
-                            >
-                              Delete
-                            </Link>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                  <MDBDataTable
+                    bordered
+                    displayEntries={false}
+                    className="mt-0"
+                    hover
+                    data={value}
+                    noBottomColumns
+                    sortable
+                    searching={false}
+                  />
                 </div>
               </div>
             </div>
@@ -594,7 +671,7 @@ function Value() {
       </div>
       <div
         className="modal fade Edit_modal"
-        id="staticBackdrop4"
+        id="staticBackdropeditvalue"
         data-bs-backdrop="static"
         data-bs-keyboard="false"
         tabIndex="-1"
@@ -612,23 +689,28 @@ function Value() {
                 className="btn-close"
                 data-bs-dismiss="modal"
                 aria-label="Close"
+                id="deletevaluemodal"
               ></button>
             </div>
             <div className="modal-body">
               <form
                 className="form-design p-3 help-support-form row align-items-end justify-content-center"
                 action=""
-                onSubmit={handleSubmit}
+                onSubmit={handleSubmit2(handleOnEdit)}
               >
                 <div className="form-group col-6">
-                  <label htmlFor="">Select Category</label>
+                  <label htmlFor="categoryId">Select Category</label>
                   <select
                     className="select form-control"
                     multiple=""
                     name="categoryId"
-                    id="selectCategory"
-                    value={values.categoryId}
-                    onChange={handleInputChange}
+                    id="categoryId"
+                    {...register2("categoryId", {
+                      // required: "Please Select Category*",
+                    })}
+                    onChange={(e) => {
+                      handleInputChange(e);
+                    }}
                   >
                     <option value="">Select Category</option>
                     {Array.isArray(categories) &&
@@ -639,15 +721,18 @@ function Value() {
                       ))}
                   </select>
                 </div>
+
                 <div className="form-group col-6">
-                  <label htmlFor="">Select Sub Category</label>
+                  <label htmlFor="categoryId1">Select Sub Category</label>
                   <select
                     className="select form-control"
                     multiple=""
                     name="categoryId1"
                     id="categoryId1"
-                    value={values.categoryId1}
-                    onChange={handleInputChange}
+                    {...register2("categoryId1", {})}
+                    onChange={(e) => {
+                      handleInputChange(e);
+                    }}
                   >
                     <option value="">Select Sub Category</option>
                     {Array.isArray(subCategories) &&
@@ -658,15 +743,25 @@ function Value() {
                       ))}
                   </select>
                 </div>
-                <div className="form-group col-6">
-                  <label htmlFor="">Select Sub Sub Category</label>
+
+                <div
+                  className="form-group col-6"
+                  style={{
+                    display: subSubCategories?.length > 0 ? "" : "none",
+                  }}
+                >
+                  <label htmlFor="categoryId2">Select Sub Sub Category</label>
                   <select
                     className="select form-control"
                     multiple=""
                     name="categoryId2"
-                    id="selectSubSubCategory"
-                    value={values.categoryId2}
-                    onChange={handleInputChange}
+                    id="categoryId2"
+                    {...register2("categoryId2", {
+                      // required: "Please Select Category*",
+                    })}
+                    onChange={(e) => {
+                      handleInputChange(e);
+                    }}
                   >
                     <option value="">Select Sub Sub Category</option>
                     {Array.isArray(subSubCategories) &&
@@ -681,14 +776,19 @@ function Value() {
                   </select>
                 </div>
                 <div className="form-group col-6">
-                  <label htmlFor="">Select Attribute</label>
+                  <label htmlFor="categoryId3">Select Attribute</label>
                   <select
                     className="select form-control"
                     multiple=""
                     name="categoryId3"
                     id="categoryId3"
-                    value={values.categoryId3}
-                    onChange={handleInputChange}
+                    // value={values.categoryId3}
+                    onChange={(e) => {
+                      handleInputChange(e);
+                    }}
+                    {...register2("categoryId3", {
+                      // required: "Please Select Category*",
+                    })}
                   >
                     <option value="">Select Attribute</option>
                     {Array.isArray(attributes) &&
@@ -699,36 +799,41 @@ function Value() {
                       ))}
                   </select>
                 </div>
+
                 <div className="form-group col-6">
-                  <label htmlFor="">Value Name (En)</label>
+                  <label htmlFor="valuesEn">Value Name (En)</label>
                   <input
                     type="text"
                     className="form-control"
-                    name="nameEn"
-                    id="nameEn"
-                    defaultValue={valueNameEn2}
+                    name="valuesEn"
+                    id="valuesEn"
+                    // defaultValue={valueNameEn2}
                     // onChange={handleInputChange}
-                    onChange={(e) => setEditValueEn(e.target.value)}
+                    {...register2("valuesEn", {
+                      maxLength: {
+                        value: 100,
+                        message: "Max length is 100 characters!",
+                      },
+                    })}
                   />
                 </div>
                 <div className="form-group col-6">
-                  <label htmlFor="">Value Name (Ar)</label>
+                  <label htmlFor="valuesAr">Value Name (Ar)</label>
                   <input
                     type="text"
                     className="form-control"
-                    name="nameAr"
-                    id="nameAr"
-                    defaultValue={valueNameAr2}
-                    // onChange={handleInputChange}
-                    onChange={(e) => setEditValueAr(e.target.value)}
+                    name="valuesAr"
+                    id="valuesAr"
+                    {...register2("valuesAr", {
+                      maxLength: {
+                        value: 100,
+                        message: "Max length is 100 characters!",
+                      },
+                    })}
                   />
                 </div>
                 <div className="form-group mb-0 col-auto">
-                  <button
-                    className="comman_btn2"
-                    // onClick={(event) => handleUpdate(category._id, event)}
-                    onClick={handleSaveChanges1}
-                  >
+                  <button type="submit" className="comman_btn2">
                     Save
                   </button>
                 </div>

@@ -5,9 +5,19 @@ import Swal from "sweetalert2";
 import Sidebar from "./Sidebar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
-import { useDeleteNotificationListMutation } from "../services/Post";
+import {
+  useDeleteNotificationListMutation,
+  useGetNotificationListQuery,
+} from "../services/Post";
+import { useSelector } from "react-redux";
 
 function NotificationManagement() {
+  const ecomAdmintoken = useSelector((data) => data?.local?.token);
+
+  const { data: notificationListData } = useGetNotificationListQuery({
+    ecomAdmintoken,
+  });
+
   const [deleteNotification, response] = useDeleteNotificationListMutation();
   const [startDate1, setStartDate1] = useState("");
   const [notificationList, setNotificationList] = useState([]);
@@ -22,129 +32,12 @@ function NotificationManagement() {
     customAr: "",
     categoryId: "",
   });
-  axios.defaults.headers.common["x-auth-token-user"] =
-    localStorage.getItem("token");
-  const url = `${process.env.REACT_APP_APIENDPOINT}admin/notification/notification/list`;
-  const url2 = `${process.env.REACT_APP_APIENDPOINT}admin/notification/notification/search-notification`;
-  useEffect(() => {
-    subNotificationList();
-  }, []);
-  const subNotificationList = async (e) => {
-    await axios
-      .post(url)
-      .then((response) => {
-        setNotificationList(response?.data?.results?.listData?.reverse());
-      })
-      .catch((error) => {
-        console.log(error.response.data);
-        Swal.fire({
-          icon: "error",
-          title: "Network Error",
-          text: "Failed to fetch recent order list data. Please try again later.",
-        });
-      });
-  };
 
-  const userList2 = async () => {
-    if (!startDate1) return;
-    try {
-      const { data } = await axios.post(url, {
-        startDate1,
-      });
-      const filteredUsers = data?.results?.listData?.filter(
-        (user) =>
-          new Date(user?.createdAt?.slice(0, 10)).toISOString().slice(0, 10) ===
-          new Date(startDate1).toISOString().slice(0, 10)
-      );
-      if (filteredUsers.length === 0) {
-        setNotificationList([]);
-        await Swal.fire({
-          title: "No List Found",
-          text: "No list is available for the selected date.",
-          icon: "warning",
-          confirmButtonText: "OK",
-        }).then((result) => {
-          if (result.isConfirmed) {
-            subNotificationList();
-          }
-        });
-      } else if (filteredUsers.length > 0) {
-        await Swal.fire({
-          title: "List Found!",
-          text: "list is available for the selected date.",
-          icon: "success",
-          confirmButtonText: "OK",
-        }).then((result) => {
-          if (result.isConfirmed) {
-            setNotificationList(filteredUsers);
-          }
-        });
-      }
-      setNotificationList(filteredUsers);
-      console.log(data);
-    } catch (error) {
-      console.error("Error fetching user list:", error);
+  useEffect(() => {
+    if (notificationListData) {
+      setNotificationList(notificationListData?.results?.listData);
     }
-  };
-  useEffect(() => {
-    userList2();
-  }, [startDate1]);
-
-  useEffect(() => {
-    handleSearch1();
-  }, [searchQuery]);
-
-  const handleSearch1 = async () => {
-    try {
-      const url1 = searchQuery !== "" ? url2 : url;
-      const response = await axios.post(url1, {
-        text_en: searchQuery,
-      });
-      const { error, results } = response.data;
-      if (error) {
-        setNotificationList([]);
-        Swal.fire({
-          title: "Error!",
-          // text: error.response.data,
-          text: "Error searching for products. Data is not found",
-          icon: "error",
-          confirmButtonText: "OK",
-        }).then((result) => {
-          if (result.isConfirmed) {
-            subNotificationList();
-          }
-        });
-        // throw new Error("Error searching for products. Data is not found.");
-      } else {
-        setNotificationList(
-          searchQuery !== "" ? results?.listData : results?.listData?.reverse()
-        );
-      }
-    } catch (error) {
-      if (error.response) {
-        Swal.fire({
-          title: "Error!",
-          text: error.response.data,
-          icon: "error",
-          confirmButtonText: "OK",
-        });
-      } else if (error.request) {
-        Swal.fire({
-          title: "Error!",
-          text: "Network error. Please try again later.",
-          icon: "error",
-          confirmButtonText: "OK",
-        });
-      } else {
-        Swal.fire({
-          title: "Error!",
-          text: error.message,
-          icon: "error",
-          confirmButtonText: "OK",
-        });
-      }
-    }
-  };
+  }, [notificationListData]);
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -154,17 +47,7 @@ function NotificationManagement() {
     const { name, value } = event.target;
     setCustomNotification({ ...customNotification, [name]: value });
   };
-  // useEffect(() => {
-  //   userList();
-  // }, []);
-  // const userList = async () => {
-  //   const { data } = await axios.post(
-  //     "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/notification/notification/list",
-  //     {}
-  //   );
-  //   setNotificationList(data?.results?.listData?.reverse());
-  //   console.log(data);
-  // };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
@@ -370,7 +253,7 @@ function NotificationManagement() {
                         <form
                           className="form-design"
                           action=""
-                          onSubmit={handleSearch1}
+                          // onSubmit={handleSearch1}
                         >
                           <div className="form-group mb-0 position-relative icons_set">
                             <input
@@ -384,7 +267,7 @@ function NotificationManagement() {
                             />
                             <i
                               className="far fa-search"
-                              onClick={handleSearch1}
+                              // onClick={handleSearch1}
                             ></i>
                           </div>
                         </form>
@@ -462,7 +345,7 @@ function NotificationManagement() {
                                             `${data?._id}  item has been deleted.`,
                                             "success"
                                           ).then(() => {
-                                            subNotificationList();
+                                            // subNotificationList();
                                           });
                                         }
                                       });

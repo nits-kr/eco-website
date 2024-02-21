@@ -13,11 +13,19 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import Sidebar from "./Sidebar";
 import Spinner from "./Spinner";
-import { useDeleteAgentListMutation } from "../services/Post";
+import {
+  useDeleteAgentListMutation,
+  useGetAgentListQuery,
+} from "../services/Post";
+import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
 
 function Agent(props) {
-  axios.defaults.headers.common["x-auth-token-user"] =
-    localStorage.getItem("token");
+  const ecomAdmintoken = useSelector((data) => data?.local?.token);
+  const { data: userListdata, refetch: agentListData } = useGetAgentListQuery({
+    ecomAdmintoken,
+  });
+
   const [deleteAgent] = useDeleteAgentListMutation();
   const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -25,116 +33,35 @@ function Agent(props) {
   const [startDate, setStartDate] = useState("");
   const [startDate1, setStartDate1] = useState("");
   const [endDate, setEndDate] = useState("");
-  const url = `${process.env.REACT_APP_APIENDPOINT}admin/agent/agent/user-List`;
-  const url2 = `${process.env.REACT_APP_APIENDPOINT}admin/agent/agent/search-user`;
-  useEffect(() => {
-    agentManagementList();
-  }, []);
-  const agentManagementList = () => {
-    props.setProgress(10);
-    setLoading(true);
-    axios
-      .post(url)
-      .then((response) => {
-        setAgentList(response?.data?.results?.list?.reverse());
-        props.setProgress(100);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.log(error.response.data);
-        Swal.fire({
-          icon: "error",
-          title: "Network Error",
-          text: "Failed to fetch recent order list data. Please try again later.",
-        });
-      });
-  };
 
-  const viewAgent = (_id) => {
-    console.log("viewAgent", _id);
-  };
-  const handleSearch = (e) => {
-    e.preventDefault();
-    axios
-      .post(url, {
-        from: startDate,
-        to: endDate,
-      })
-      .then((response) => {
-        const list = response?.data?.results?.list?.reverse();
-        if (list && list.length > 0) {
-          Swal.fire({
-            title: "List Found!",
-            text: "list is available for the selected date.",
-            icon: "success",
-            confirmButtonText: "OK",
-          }).then((result) => {
-            if (result.isConfirmed) {
-              setAgentList(list);
-            }
-          });
-          // setAgentList(list);
-        } else {
-          setAgentList([]);
-          Swal.fire({
-            icon: "warning",
-            title: "No data found!",
-            text: "There is no list between the selected dates.",
-            confirmButtonText: "OK",
-          }).then((result) => {
-            if (result.isConfirmed) {
-              agentManagementList();
-            }
-          });
-        }
-      })
-      .catch((error) => {
-        console.log(error.response.data);
-      });
-  };
   useEffect(() => {
-    handleSearch1();
-  }, [searchQuery]);
-
-  const handleSearch1 = async () => {
-    try {
-      const url1 = searchQuery !== "" ? url2 : url;
-      const response = await axios.post(url1, {
-        name: searchQuery,
-      });
-      const { error, results } = response.data;
-      if (error) {
-        throw new Error("Error searching for products. Data is not found.");
-      } else {
-        setAgentList(
-          searchQuery !== "" ? results?.searchData : results?.list?.reverse()
-        );
-      }
-    } catch (error) {
-      if (error.response) {
-        Swal.fire({
-          title: "Error!",
-          text: error.response.data,
-          icon: "error",
-          confirmButtonText: "OK",
-        });
-      } else if (error.request) {
-        Swal.fire({
-          title: "Error!",
-          text: "Network error. Please try again later.",
-          icon: "error",
-          confirmButtonText: "OK",
-        });
-      } else {
-        Swal.fire({
-          title: "Error!",
-          text: error.message,
-          icon: "error",
-          confirmButtonText: "OK",
-        });
-      }
+    if (userListdata) {
+      setAgentList(userListdata?.results?.list);
     }
+  }, [userListdata]);
+
+  const handleDeleteAgent = async (id) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        deleteAgent({ id, ecomAdmintoken });
+        // agentListData();
+        // toast.success("Item Deleted!");
+        setTimeout(() => {
+          toast.success("Item Deleted!");
+          agentListData();
+        }, 500);
+      }
+    });
   };
+
   return (
     <>
       {loading}
@@ -196,7 +123,7 @@ function Agent(props) {
                             >
                               <strong>Filter By: </strong>
                             </label>
-                            <div style={{ display: "inline-block" }}>
+                            {/* <div style={{ display: "inline-block" }}>
                               <select
                                 name="myDataTable_length"
                                 aria-controls="myDataTable"
@@ -209,7 +136,7 @@ function Agent(props) {
                                 <option value={50}>Another Action</option>
                                 <option value={100}>Something else</option>
                               </select>
-                            </div>
+                            </div> */}
                           </div>
                         </div>
                       </div>
@@ -217,7 +144,7 @@ function Agent(props) {
                         <form
                           className="form-design"
                           action=""
-                          onSubmit={handleSearch}
+                          // onSubmit={handleSearch}
                         >
                           <div className="form-group mb-0 position-relative icons_set">
                             <input
@@ -231,7 +158,7 @@ function Agent(props) {
                             />
                             <i
                               className="fa fa-search"
-                              onClick={handleSearch1}
+                              // onClick={handleSearch1}
                             ></i>
                           </div>
                         </form>
@@ -248,7 +175,7 @@ function Agent(props) {
                     <form
                       className="form-design py-4 px-3 help-support-form row align-items-end justify-content-between"
                       action=""
-                      onSubmit={handleSearch}
+                      // onSubmit={handleSearch}
                     >
                       <div className="form-group mb-0 col-5">
                         <label htmlFor="">From</label>
@@ -311,36 +238,15 @@ function Agent(props) {
                                       <Link
                                         className="comman_btn table_viewbtn"
                                         to={`/agents-information/${agent._id}`}
-                                        onClick={() => viewAgent(agent._id)}
                                       >
                                         <FontAwesomeIcon icon={faEye} />
                                       </Link>
                                       <Link
                                         className="comman_btn2 table_viewbtn ms-2"
                                         to="#"
-                                        onClick={() => {
-                                          Swal.fire({
-                                            title: "Are you sure?",
-                                            text: "You won't be able to revert this!",
-                                            icon: "warning",
-                                            showCancelButton: true,
-                                            confirmButtonColor: "#3085d6",
-                                            cancelButtonColor: "#d33",
-                                            confirmButtonText:
-                                              "Yes, delete it!",
-                                          }).then((result) => {
-                                            if (result.isConfirmed) {
-                                              deleteAgent(agent?._id);
-                                              Swal.fire(
-                                                "Deleted!",
-                                                `${agent?.name}  item has been deleted.`,
-                                                "success"
-                                              ).then(() => {
-                                                agentManagementList();
-                                              });
-                                            }
-                                          });
-                                        }}
+                                        onClick={() =>
+                                          handleDeleteAgent(agent?._id)
+                                        }
                                       >
                                         <FontAwesomeIcon icon={faTrash} />
                                       </Link>

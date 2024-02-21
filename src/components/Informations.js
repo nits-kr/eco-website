@@ -3,9 +3,19 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
 import Sidebar from "./Sidebar";
-import { useCreateInformationMutation } from "../services/Post";
+import {
+  useCreateInformationMutation,
+  useGetInfoListQuery,
+} from "../services/Post";
 import Spinner from "./Spinner";
+import { useSelector } from "react-redux";
 function Informations(props) {
+  const ecomAdmintoken = useSelector((data) => data?.local?.token);
+
+  const { data: infoListdata } = useGetInfoListQuery({
+    ecomAdmintoken,
+  });
+
   const [loading, setLoading] = useState(false);
   const [informationListItems, setInformationListItems] = useState([]);
   const [createInformation, responseInfo] = useCreateInformationMutation();
@@ -25,27 +35,13 @@ function Informations(props) {
   const [titleAr2, setTitleAr2] = useState("");
   const [descriptionAr2, setDescriptionAr2] = useState("");
 
-  axios.defaults.headers.common["x-auth-token-user"] =
-    localStorage.getItem("token");
-
   useEffect(() => {
-    informationList();
-  }, []);
-  const informationList = async () => {
-    props.setProgress(10);
-    setLoading(true);
-    const { data } = await axios.post(
-      `${process.env.REACT_APP_APIENDPOINT}admin/information/info/list`
-    );
-    setInformationListItems(data.results.list.reverse());
-    setTitle(data?.results?.list[0]?.title);
-    setDescription(data?.results?.list[0]?.Description);
-    console.log("Information List", data);
-    props.setProgress(100);
-    setLoading(false);
-  };
-  console.log("Title", title);
-  console.log("dscription", description);
+    if (infoListdata) {
+      setInformationListItems(infoListdata?.results?.list);
+      setTitle(infoListdata?.results?.list[0]?.title);
+      setDescription(infoListdata?.results?.list[0]?.Description);
+    }
+  }, [infoListdata]);
 
   const handleUpdate = async (e) => {
     e.preventDefault();

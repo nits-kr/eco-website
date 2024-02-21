@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { GoogleMap, useJsApiLoader, Marker } from "@react-google-maps/api";
 import { useGetLatLongitudeQuery } from "../services/Post";
+import { useSelector } from "react-redux";
 
 const containerStyle = {
   width: "100%",
@@ -9,7 +10,11 @@ const containerStyle = {
 };
 
 function ReactGoogleMap() {
-  const { data: userLocationQuery } = useGetLatLongitudeQuery();
+  const ecomAdmintoken = useSelector((data) => data?.local?.token);
+
+  const { data: userLocationQuery } = useGetLatLongitudeQuery({
+    ecomAdmintoken,
+  });
   const [location, setLocation] = useState([]);
   console.log(location);
 

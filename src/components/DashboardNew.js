@@ -8,13 +8,23 @@ import DashboardConvaschart from "./chart/DashboardConvaschart";
 import DashboardDougnetChart from "./chart/DashboardDougnetChart";
 import Barchart from "./chart/Barchart";
 import DashboardDiscountedChart from "./chart/DashboardDiscountedChart";
-import { useGetDashboardCountQuery } from "../services/Post";
-import { useDispatch } from "react-redux";
+import {
+  useGetDashboardCountQuery,
+  useGetOrderListQuery,
+  useGetProductListQuery,
+} from "../services/Post";
+import { useDispatch, useSelector } from "react-redux";
 import { getAllData } from "../app/chartSlice";
+import { MDBDataTable } from "mdbreact";
+import moment from "moment";
 
 function DashboardNew(props) {
+  const ecomAdmintoken = useSelector((data) => data?.local?.token);
   const [loading, setLoading] = useState(false);
-  const dashboard = useGetDashboardCountQuery();
+  const { data: dashboard, refetch: refetchdashboard } =
+    useGetDashboardCountQuery({ ecomAdmintoken });
+  const { data: orderListdata } = useGetOrderListQuery({ ecomAdmintoken });
+  const { data: productListdata } = useGetProductListQuery({ ecomAdmintoken });
   const [orderList, setOrderList] = useState([]);
   const [productList, setProductList] = useState([]);
   const [monthPrice, setMonthPrice] = useState([]);
@@ -23,54 +33,311 @@ function DashboardNew(props) {
   const [salesList, setSalesList] = useState([]);
   const [totalCartsTotal, setTotalCartsTotal] = useState(0);
 
-  axios.defaults.headers.common["x-auth-token-user"] =
-    localStorage.getItem("token");
-
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  const [dashboarddata, setDashboarddata] = useState("");
+
+  useEffect(() => {
+    if (dashboard) {
+      setDashboarddata(dashboard?.results);
+      setUsersList(dashboard?.results?.customerMonth || []);
+      dispatch(getAllData(dashboard?.results));
+      const orderyearData = dashboard?.results?.orderyear || [];
+      const orderMonthData = dashboard?.results?.OrderMonth || [];
+      const totalOrderMonth = orderMonthData.reduce((sum, order) => {
+        return (sum += order.cartsTotal);
+      }, 0);
+      setMonthPrice(totalOrderMonth?.toFixed(2));
+      const salesData = dashboard?.results?.salesDAy || [];
+      let totalCartsTotal = 0;
+      orderyearData.forEach((order) => {
+        totalCartsTotal += order.cartsTotal;
+      });
+
+      const totalSalesCartsTotal = salesData.reduce((sum, sale) => {
+        sum += sale.cartsTotal;
+        return sum;
+      }, 0);
+
+      setSalesList(totalSalesCartsTotal.toFixed(2));
+    }
+  }, [dashboard]);
+
+  const [product, setProduct] = useState({
+    columns: [
+      {
+        label: "ITEM",
+        field: "title",
+        sort: "asc",
+        width: 100,
+      },
+      {
+        label: "PRODUCT ID",
+        field: "id",
+        sort: "asc",
+        width: 150,
+      },
+
+      {
+        label: "CREATED AT",
+        field: "date",
+        sort: "asc",
+        width: 100,
+      },
+      {
+        label: "PRICE",
+        field: "price",
+        sort: "asc",
+        width: 150,
+      },
+      {
+        label: "STATUS",
+        field: "status",
+        sort: "asc",
+        width: 100,
+      },
+      {
+        label: "QUANTITY",
+        field: "quantity",
+        sort: "asc",
+        width: 100,
+      },
+    ],
+    rows: [],
+  });
+  const [order, setOrder] = useState({
+    columns: [
+      {
+        label: "S.No.",
+        field: "sn",
+        sort: "asc",
+        width: 100,
+      },
+      {
+        label: "Image",
+        field: "pic",
+        sort: "asc",
+        width: 150,
+      },
+      {
+        label: "ORDER ID",
+        field: "id",
+        sort: "asc",
+        width: 150,
+      },
+      {
+        label: "To",
+        field: "del_to",
+        sort: "asc",
+        width: 150,
+      },
+
+      {
+        label: "PRODUCT NAME",
+        field: "title",
+        sort: "asc",
+        width: 150,
+      },
+
+      {
+        label: "CREATED AT",
+        field: "date",
+        sort: "asc",
+        width: 100,
+      },
+      {
+        label: "CUSTOMER",
+        field: "customer",
+        sort: "asc",
+        width: 150,
+      },
+      {
+        label: "TOTAL",
+        field: "total",
+        sort: "asc",
+        width: 100,
+      },
+      {
+        label: "STATUS",
+        field: "status",
+        sort: "asc",
+        width: 100,
+      },
+    ],
+    rows: [],
+  });
+
+  useEffect(() => {
+    if (orderListdata) {
+      setOrderList(orderListdata?.results?.list);
+      calculateTotalCartsTotal(orderListdata?.results?.list);
+      const newRows = [];
+      orderListdata?.results?.list
+        ?.slice()
+        ?.reverse()
+        ?.map((list, index) => {
+          const returnData = {};
+          // const totalStockQuantity =
+          //   list.addVarient.length > 0
+          //     ? list.addVarient.reduce(
+          //         (sum, variant) => sum + (variant.stockQuantity || 0),
+          //         0
+          //       )
+          //     : 0;
+          returnData.sn = index + 1;
+          returnData.title = list?.products[0]?.product_Id?.productName_en
+            ?.split(/\s+/)
+            .slice(0, 2)
+            .join(" ");
+          returnData.id = list?._id;
+          returnData.del_to = <strong>{list?.user_Id?.userName}</strong>;
+          returnData.pic = (
+            <>
+              <img
+                src={
+                  list?.products[0]?.product_Id?.addVarient[0]?.product_Pic[0]
+                }
+                alt=""
+                height={50}
+                width={50}
+              />
+            </>
+          );
+          returnData.date = moment(list?.publishDate).format("L");
+          returnData.customer = list?.user_Id?.userName;
+          returnData.total = list?.cartsTotal
+            ? list?.cartsTotal?.toFixed(2)
+            : "N/A";
+          returnData.status = (
+            <div
+              className={
+                list?.orderStatus === "Cancelled"
+                  ? "text-danger"
+                  : list?.orderStatus === "Pending"
+                  ? "text-warning"
+                  : list?.orderStatus === "Packed"
+                  ? "text-info"
+                  : list?.orderStatus === "Approved"
+                  ? "text-success"
+                  : list?.orderStatus === "Inprogress"
+                  ? "text-primary"
+                  : list?.orderStatus === "Delivered"
+                  ? "text-secondary"
+                  : "text-default"
+              }
+              style={{
+                background:
+                  list?.orderStatus === "Cancelled"
+                    ? "#ffe5e5"
+                    : list?.orderStatus === "Pending"
+                    ? "#fff6e5"
+                    : list?.orderStatus === "Packed"
+                    ? "#e5f0ff"
+                    : list?.orderStatus === "Approved"
+                    ? "#e5ffe5"
+                    : list?.orderStatus === "Inprogress"
+                    ? "#e5e5ff"
+                    : list?.orderStatus === "Delivered"
+                    ? "#f3f3f3"
+                    : "#f9f9f9",
+                borderRadius: "5px",
+                padding: "2px 5px",
+              }}
+            >
+              {list?.orderStatus}
+            </div>
+          );
+          // returnData.quantity = totalStockQuantity;
+
+          newRows.push(returnData);
+        });
+
+      setOrder({ ...order, rows: newRows });
+    }
+  }, [orderListdata]);
+
+  useEffect(() => {
+    if (productListdata) {
+      setProductList(productListdata?.results?.list);
+      const totalStock = productListdata?.results?.list.reduce(
+        (total, product) => {
+          const variants = product?.addVarient || [];
+          const stockQuantity = variants.reduce(
+            (variantTotal, variant) => variantTotal + variant.stockQuantity,
+            0
+          );
+          return total + stockQuantity;
+        },
+        0
+      );
+      setTotalStockQuantity(totalStock);
+      const newRows = [];
+      productListdata?.results?.list
+        ?.slice()
+        ?.reverse()
+        ?.map((list, index) => {
+          const returnData = {};
+          const totalStockQuantity =
+            list.addVarient.length > 0
+              ? list.addVarient.reduce(
+                  (sum, variant) => sum + (variant.stockQuantity || 0),
+                  0
+                )
+              : 0;
+          // returnData.sn = index + 1;
+          returnData.title = list?.productName_en
+            ?.split(/\s+/)
+            .slice(0, 2)
+            .join(" ");
+          returnData.id = list?._id;
+          returnData.date = moment(list?.publishDate).format("L");
+          returnData.price = list?.addVarient[0]?.Price?.toLocaleString();
+          returnData.status = (
+            <div
+              style={{
+                background:
+                  totalStockQuantity > 10
+                    ? "#c8e6c9" // Green background for "In Stock"
+                    : totalStockQuantity === 0
+                    ? "#ffcdd2" // Red background for "Out of Stock"
+                    : "#fff9c4", // Yellow background for "Low Stock"
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                padding: "4px", // Optional padding for spacing
+                borderRadius: "5px",
+                color:
+                  totalStockQuantity > 10
+                    ? "#005a02" // Dark green text for "In Stock"
+                    : totalStockQuantity === 0
+                    ? "#e60000" // Dark red text for "Out of Stock"
+                    : "#9e7800", // Dark yellow text for "Low Stock"
+              }}
+            >
+              <strong>
+                {totalStockQuantity > 10
+                  ? "In Stock"
+                  : totalStockQuantity === 0
+                  ? "Out of Stock"
+                  : "Low Stock"}
+              </strong>
+            </div>
+          );
+          returnData.quantity = totalStockQuantity;
+
+          newRows.push(returnData);
+        });
+
+      setProduct({ ...product, rows: newRows });
+    }
+  }, [productListdata]);
 
   const reloadUsersPage = () => {
     navigate("/users");
     setTimeout(() => {
       window?.location?.reload();
     }, 500);
-  };
-  const url1 = `${process.env.REACT_APP_APIENDPOINT}admin/dashboards/count/order-dashboards`;
-  useEffect(() => {
-    userManagementList();
-  }, []);
-  const userManagementList = async () => {
-    props.setProgress(10);
-    setLoading(true);
-    await axios
-      .post(url1)
-      .then((response) => {
-        setUsersList(response?.data?.results?.customerMonth || []);
-        dispatch(getAllData(response?.data?.results));
-        const orderyearData = response?.data?.results?.orderyear || [];
-        const orderMonthData = response?.data?.results?.OrderMonth || [];
-        const totalOrderMonth = orderMonthData.reduce((sum, order) => {
-          return (sum += order.cartsTotal);
-        }, 0);
-        setMonthPrice(totalOrderMonth?.toFixed(2));
-        const salesData = response?.data?.results?.salesDAy || [];
-        let totalCartsTotal = 0;
-        orderyearData.forEach((order) => {
-          totalCartsTotal += order.cartsTotal;
-        });
-
-        const totalSalesCartsTotal = salesData.reduce((sum, sale) => {
-          sum += sale.cartsTotal;
-          return sum;
-        }, 0);
-
-        setSalesList(totalSalesCartsTotal.toFixed(2));
-        props.setProgress(100);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.log(error.response.data);
-      });
   };
 
   let totalDeliveredItems = 0;
@@ -79,53 +346,6 @@ function DashboardNew(props) {
       totalDeliveredItems++;
     }
   });
-
-  useEffect(() => {
-    props.setProgress(10);
-    setLoading(true);
-    axios
-      .post(`${process.env.REACT_APP_APIENDPOINT}admin/product/productList`)
-      .then((response) => {
-        setProductList(response?.data?.results?.list.reverse());
-        console.log(response.data);
-        props.setProgress(100);
-        setLoading(false);
-      });
-  }, []);
-  useEffect(() => {
-    const totalStock = productList.reduce((total, product) => {
-      const variants = product?.addVarient || [];
-      const stockQuantity = variants.reduce(
-        (variantTotal, variant) => variantTotal + variant.stockQuantity,
-        0
-      );
-      return total + stockQuantity;
-    }, 0);
-    setTotalStockQuantity(totalStock);
-  }, [productList]);
-
-  const url = `${process.env.REACT_APP_APIENDPOINT}admin/order/order/list`;
-  useEffect(() => {
-    subOrderList();
-  }, []);
-  const subOrderList = async (e) => {
-    await axios
-      .post(url)
-      .then((response) => {
-        console.log("Order List:", orderList);
-        setOrderList(response?.data?.results?.list);
-        calculateTotalCartsTotal(response?.data?.results?.list);
-      })
-
-      .catch((error) => {
-        console.log(error.response.data);
-        Swal.fire({
-          icon: "error",
-          title: "Network Error",
-          text: "Failed to fetch recent order list data. Please try again later.",
-        });
-      });
-  };
 
   const calculateTotalCartsTotal = (orderList) => {
     let total = 0;
@@ -201,12 +421,12 @@ function DashboardNew(props) {
                             <div className="canvas_top d-flex align-items-center">
                               <h3>
                                 <span>$</span>
-                                {totalCartsTotal.toFixed(2)}
+                                {dashboarddata?.expectedEarnings?.toFixed(2)}
                               </h3>
                               <div className="Percent_box ms-2">2.2%</div>
                             </div>
-                            <DashboardDougnetChart />
                           </div>
+                          <DashboardDougnetChart />
                         </div>
                       </div>
                     </div>
@@ -265,35 +485,48 @@ function DashboardNew(props) {
                         <div className="row comman_header justify-content-between">
                           <div className="canvas_top d-flex align-items-center mt-3">
                             <h3 className="p-0">
-                              {" "}
-                              {
-                                dashboard?.data?.results?.orderMonth[0]?.count
-                              }{" "}
+                              {dashboarddata?.OrderMonth?.length}
                             </h3>
-                            <div className="Percent_box ms-2">2.2%</div>
+                            <div className="Percent_box ms-2">
+                              {(
+                                (dashboarddata?.OrderMonth?.length / 200) *
+                                100
+                              ).toFixed(1)}
+                              %
+                            </div>
                           </div>
                           <div className="col text-secondary">
                             <h6>Orders This Month</h6>
                           </div>
                         </div>
-                        {/* <div className="row comman_header justify-content-between">
-                          <div className="col">
-                            <h2>Orders This Month</h2>
-                          </div>
-                        </div> */}
                         <div className="row">
                           <div className="col-12 p-4">
                             <div className="order_this mt-5">
                               <div className="order_top">
-                                <strong>1,048 to Goal</strong>
-                                <span>62%</span>
+                                <strong>200 to Goal</strong>
+                                <span>
+                                  {(
+                                    (dashboarddata?.OrderMonth?.length / 200) *
+                                    100
+                                  ).toFixed(0)}
+                                  %
+                                </span>
                               </div>
                               <div className="progress">
                                 <div
                                   className="progress-bar"
                                   role="progressbar"
-                                  style={{ width: "85%" }}
-                                  aria-valuenow={85}
+                                  style={{
+                                    width: `${(
+                                      (dashboarddata?.OrderMonth?.length /
+                                        200) *
+                                      100
+                                    ).toFixed(0)}%`,
+                                  }}
+                                  aria-valuenow={(
+                                    (dashboarddata?.OrderMonth?.length / 200) *
+                                    100
+                                  ).toFixed(0)}
                                   aria-valuemin={0}
                                   aria-valuemax={100}
                                 />
@@ -570,89 +803,23 @@ function DashboardNew(props) {
                         <div className="row">
                           <div className="col-12 comman_table_design px-0">
                             <div className="table-responsive">
-                              <table className="table mb-0">
-                                <thead>
-                                  <tr>
-                                    <th>S.No.</th>
-                                    <th>ORDER ID</th>
-                                    <th>CREATED</th>
-                                    <th>CUSTOMER</th>
-                                    <th>TOTAL</th>
-                                    {/* <th>PROFIT</th> */}
-                                    <th>STATUS</th>
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                  {orderList?.map((data, index) => (
-                                    <tr key={index}>
-                                      <td> {index + 1} </td>
-                                      <td> {data?._id} </td>
-                                      <td className="text-secondary fs-7">
-                                        {data?.createdAt &&
-                                          formatTimeAgo(data.createdAt)}
-                                      </td>
-                                      <td>{data?.user_Id?.userName}</td>
-                                      <td>
-                                        {data?.cartsTotal
-                                          ? data?.cartsTotal?.toFixed(2)
-                                          : "N/A"}
-                                      </td>
-                                      <td>
-                                        <div
-                                          className={
-                                            data?.orderStatus === "Cancelled"
-                                              ? "text-danger"
-                                              : data?.orderStatus === "Pending"
-                                              ? "text-warning"
-                                              : data?.orderStatus === "Packed"
-                                              ? "text-info"
-                                              : data?.orderStatus === "Approved"
-                                              ? "text-success"
-                                              : data?.orderStatus ===
-                                                "Inprogress"
-                                              ? "text-primary"
-                                              : data?.orderStatus ===
-                                                "Delivered"
-                                              ? "text-secondary"
-                                              : "text-default"
-                                          }
-                                          style={{
-                                            background:
-                                              data?.orderStatus === "Cancelled"
-                                                ? "#ffe5e5"
-                                                : data?.orderStatus ===
-                                                  "Pending"
-                                                ? "#fff6e5"
-                                                : data?.orderStatus === "Packed"
-                                                ? "#e5f0ff"
-                                                : data?.orderStatus ===
-                                                  "Approved"
-                                                ? "#e5ffe5"
-                                                : data?.orderStatus ===
-                                                  "Inprogress"
-                                                ? "#e5e5ff"
-                                                : data?.orderStatus ===
-                                                  "Delivered"
-                                                ? "#f3f3f3"
-                                                : "#f9f9f9",
-                                            borderRadius: "5px",
-                                            padding: "2px 5px",
-                                          }}
-                                        >
-                                          {data?.orderStatus}
-                                        </div>
-                                      </td>
-                                    </tr>
-                                  ))}
-                                </tbody>
-                              </table>
+                              <MDBDataTable
+                                bordered
+                                displayEntries={false}
+                                // searching={false}
+                                className="userDatable"
+                                hover
+                                data={order}
+                                noBottomColumns
+                                sortable
+                              />
                             </div>
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                  <div className="col-md-4 mb-4">
+                  {/* <div className="col-md-4 mb-4">
                     <div className="row mx-0 w-100">
                       <div className="col-12 design_outter_comman shadow">
                         <div className="row comman_header justify-content-between">
@@ -668,109 +835,98 @@ function DashboardNew(props) {
                           <div className="col-12 comman_table_design px-0">
                             <div className="table-responsive">
                               <table className="table mb-0">
-                                {/* <thead>
-                                  <tr>
-                                    <th>S.No.</th>
-                                    <th>ORDER ID</th>
-                                    <th>CREATED</th>
-                                    <th>CUSTOMER</th>
-                                    <th>TOTAL</th>
-                                    <th>PROFIT</th>
-                                    <th>STATUS</th>
-                                  </tr>
-                                </thead> */}
                                 <tbody>
-                                  {orderList?.map((data, index) => (
-                                    <tr key={index}>
-                                      <td>
-                                        <div className="product_showw">
-                                          <img
-                                            src={
-                                              data?.products[0]?.product_Id
-                                                ?.addVarient[0]?.product_Pic[0]
-                                            }
-                                            alt=""
-                                          />
-                                          <div className="product_showw_iiner">
-                                            <a href="javascript:;">
-                                              {/* {
+                                  {orderList
+                                    ?.slice(0, 9)
+                                    ?.map((data, index) => (
+                                      <tr key={index}>
+                                        <td>
+                                          <div className="product_showw">
+                                            <img
+                                              src={
                                                 data?.products[0]?.product_Id
-                                                  ?.productName_en?.slice(0,4)
-                                              } */}
-                                              {trimProductName(
-                                                data?.products[0]?.product_Id
-                                                  ?.productName_en
-                                              )}
-                                            </a>
-                                            {/* <span>{data?._id}</span> */}
-                                          </div>
-                                        </div>
-                                        <div
-                                          style={{
-                                            display: "flex",
-                                            alignItems: "flex-start",
-                                            justifyContent: "space-between",
-                                          }}
-                                        >
-                                          <div>
-                                            To:{" "}
-                                            <strong>
-                                              {" "}
-                                              &nbsp;
-                                              {data?.user_Id?.userName}
-                                            </strong>
+                                                  ?.addVarient[0]
+                                                  ?.product_Pic[0]
+                                              }
+                                              alt=""
+                                            />
+                                            <div className="product_showw_iiner">
+                                              <a href="javascript:;">
+                                                {trimProductName(
+                                                  data?.products[0]?.product_Id
+                                                    ?.productName_en
+                                                )}
+                                              </a>
+                                            </div>
                                           </div>
                                           <div
-                                            className={
-                                              data?.orderStatus === "Cancelled"
-                                                ? "text-danger"
-                                                : data?.orderStatus ===
-                                                  "Pending"
-                                                ? "text-warning"
-                                                : data?.orderStatus === "Packed"
-                                                ? "text-info"
-                                                : data?.orderStatus ===
-                                                  "Approved"
-                                                ? "text-success"
-                                                : data?.orderStatus ===
-                                                  "Inprogress"
-                                                ? "text-primary"
-                                                : data?.orderStatus ===
-                                                  "Delivered"
-                                                ? "text-secondary"
-                                                : "text-default"
-                                            }
                                             style={{
-                                              background:
-                                                data?.orderStatus ===
-                                                "Cancelled"
-                                                  ? "#ffe5e5"
-                                                  : data?.orderStatus ===
-                                                    "Pending"
-                                                  ? "#fff6e5"
-                                                  : data?.orderStatus ===
-                                                    "Packed"
-                                                  ? "#e5f0ff"
-                                                  : data?.orderStatus ===
-                                                    "Approved"
-                                                  ? "#e5ffe5"
-                                                  : data?.orderStatus ===
-                                                    "Inprogress"
-                                                  ? "#e5e5ff"
-                                                  : data?.orderStatus ===
-                                                    "Delivered"
-                                                  ? "#f3f3f3"
-                                                  : "#f9f9f9",
-                                              borderRadius: "5px",
-                                              padding: "2px 5px",
+                                              display: "flex",
+                                              alignItems: "flex-start",
+                                              justifyContent: "space-between",
                                             }}
                                           >
-                                            {data?.orderStatus}
+                                            <div>
+                                              To:{" "}
+                                              <strong>
+                                                {" "}
+                                                &nbsp;
+                                                {data?.user_Id?.userName}
+                                              </strong>
+                                            </div>
+                                            <div
+                                              className={
+                                                data?.orderStatus ===
+                                                "Cancelled"
+                                                  ? "text-danger"
+                                                  : data?.orderStatus ===
+                                                    "Pending"
+                                                  ? "text-warning"
+                                                  : data?.orderStatus ===
+                                                    "Packed"
+                                                  ? "text-info"
+                                                  : data?.orderStatus ===
+                                                    "Approved"
+                                                  ? "text-success"
+                                                  : data?.orderStatus ===
+                                                    "Inprogress"
+                                                  ? "text-primary"
+                                                  : data?.orderStatus ===
+                                                    "Delivered"
+                                                  ? "text-secondary"
+                                                  : "text-default"
+                                              }
+                                              style={{
+                                                background:
+                                                  data?.orderStatus ===
+                                                  "Cancelled"
+                                                    ? "#ffe5e5"
+                                                    : data?.orderStatus ===
+                                                      "Pending"
+                                                    ? "#fff6e5"
+                                                    : data?.orderStatus ===
+                                                      "Packed"
+                                                    ? "#e5f0ff"
+                                                    : data?.orderStatus ===
+                                                      "Approved"
+                                                    ? "#e5ffe5"
+                                                    : data?.orderStatus ===
+                                                      "Inprogress"
+                                                    ? "#e5e5ff"
+                                                    : data?.orderStatus ===
+                                                      "Delivered"
+                                                    ? "#f3f3f3"
+                                                    : "#f9f9f9",
+                                                borderRadius: "5px",
+                                                padding: "2px 5px",
+                                              }}
+                                            >
+                                              {data?.orderStatus}
+                                            </div>
                                           </div>
-                                        </div>
-                                      </td>
-                                    </tr>
-                                  ))}
+                                        </td>
+                                      </tr>
+                                    ))}
                                 </tbody>
                               </table>
                             </div>
@@ -778,12 +934,12 @@ function DashboardNew(props) {
                         </div>
                       </div>
                     </div>
-                  </div>
-                  <div className="col-md-8 mb-4">
+                  </div> */}
+                  <div className="col-md-12 mb-4">
                     <div className="row mx-0 w-100">
                       <div className="col-12 design_outter_comman shadow">
                         <div className="row comman_header justify-content-between">
-                          <div className="col">
+                          <div className="col d-flex justify-content-between">
                             <h2>Stock Report</h2>
                             <div className="text-secondary">
                               Total{" "}
@@ -797,82 +953,16 @@ function DashboardNew(props) {
                         <div className="row">
                           <div className="col-12 comman_table_design px-0">
                             <div className="table-responsive">
-                              <table className="table mb-0">
-                                <thead>
-                                  <tr>
-                                    <th>Item</th>
-                                    <th>Product ID</th>
-                                    <th>CREATED AT</th>
-                                    <th>Price</th>
-                                    <th> STATUS</th>
-                                    <th> Quantity</th>
-                                    {/* <th>PROFIT</th> */}
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                  {productList?.map((data, index) => {
-                                    const totalStockQuantity =
-                                      data.addVarient.length > 0
-                                        ? data.addVarient.reduce(
-                                            (sum, variant) =>
-                                              sum +
-                                              (variant.stockQuantity || 0),
-                                            0
-                                          )
-                                        : 0;
-                                    return (
-                                      <tr key={index}>
-                                        <td>
-                                          {trimProductName(
-                                            data?.productName_en
-                                          )}
-                                        </td>
-                                        <td>{data?._id}</td>
-                                        <td className="text-secondary fs-7">
-                                          {data?.publishDate?.slice(0, 10)}
-                                        </td>
-                                        {/* <td>${data.addVarient[0]?.Price}</td> */}
-                                        <td>
-                                          $
-                                          {data.addVarient[0]?.Price?.toLocaleString()}
-                                        </td>
-                                        <td>
-                                          <div
-                                            style={{
-                                              background:
-                                                totalStockQuantity > 10
-                                                  ? "#c8e6c9" // Green background for "In Stock"
-                                                  : totalStockQuantity === 0
-                                                  ? "#ffcdd2" // Red background for "Out of Stock"
-                                                  : "#fff9c4", // Yellow background for "Low Stock"
-                                              display: "flex",
-                                              alignItems: "center",
-                                              justifyContent: "center",
-                                              padding: "4px", // Optional padding for spacing
-                                              borderRadius: "5px",
-                                              color:
-                                                totalStockQuantity > 10
-                                                  ? "#005a02" // Dark green text for "In Stock"
-                                                  : totalStockQuantity === 0
-                                                  ? "#e60000" // Dark red text for "Out of Stock"
-                                                  : "#9e7800", // Dark yellow text for "Low Stock"
-                                            }}
-                                          >
-                                            <strong>
-                                              {totalStockQuantity > 10
-                                                ? "In Stock"
-                                                : totalStockQuantity === 0
-                                                ? "Out of Stock"
-                                                : "Low Stock"}
-                                            </strong>
-                                          </div>
-                                        </td>
-                                        <td>{totalStockQuantity} PCS</td>
-                                      </tr>
-                                    );
-                                  })}
-                                </tbody>
-                              </table>
+                              <MDBDataTable
+                                bordered
+                                displayEntries={false}
+                                // searching={false}
+                                className="userDatable"
+                                hover
+                                data={product}
+                                noBottomColumns
+                                sortable
+                              />
                             </div>
                           </div>
                         </div>
@@ -958,8 +1048,9 @@ function DashboardNew(props) {
                                   <a href="javascript:;">
                                     <strong>
                                       $
-                                      {data.totalAfterDiscount[0]?.toFixed(2) ||
-                                        0.0}
+                                      {data?.totalAfterDiscount?.[0]?.toFixed(
+                                        2
+                                      ) || 0.0}
                                     </strong>{" "}
                                   </a>
                                 </div>

@@ -15,8 +15,11 @@ import {
   useEditProductListMutation,
 } from "../services/Post";
 import { useDeleteProductListMutation } from "../services/Post";
+import { useSelector } from "react-redux";
 
 function ProductList2(props) {
+  const ecomAdmintoken = useSelector((data) => data?.local?.token);
+
   const [loading, setLoading] = useState(false);
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [userCounts, setUserCounts] = useState(0);
@@ -211,8 +214,31 @@ function ProductList2(props) {
   };
 
   const handleCheckboxChange = async (productId) => {
-    const res = await addReccomded(productId);
+    const res = await addReccomded({ productId, ecomAdmintoken });
     console.log("res reccomended", res);
+  };
+
+  const handleDeleteProduct = async (id, product) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        deleteProductList({ id, ecomAdmintoken });
+        Swal.fire(
+          "Deleted!",
+          `${product?.productName_en} item has been deleted.`,
+          "success"
+        ).then(() => {
+          fetchProductList();
+        });
+      }
+    });
   };
 
   return (
@@ -454,11 +480,13 @@ function ProductList2(props) {
                                     <td>
                                       <Link
                                         className="comman_btn table_viewbtn"
-                                        to={`/product-management-edit/${product?._id}`}
-                                        onClick={() => {
-                                          handleItem(product);
-                                          setItemId(product?._id);
-                                        }}
+                                        to="/product-management"
+                                        // to={`/product-management-edit/${product?._id}`}
+                                        state={{ id: product?._id }}
+                                        // onClick={() => {
+                                        //   handleItem(product);
+                                        //   setItemId(product?._id);
+                                        // }}
                                       >
                                         View
                                       </Link>
@@ -466,27 +494,10 @@ function ProductList2(props) {
                                         className="comman_btn2 table_viewbtn ms-2"
                                         to="#"
                                         onClick={() => {
-                                          Swal.fire({
-                                            title: "Are you sure?",
-                                            text: "You won't be able to revert this!",
-                                            icon: "warning",
-                                            showCancelButton: true,
-                                            confirmButtonColor: "#3085d6",
-                                            cancelButtonColor: "#d33",
-                                            confirmButtonText:
-                                              "Yes, delete it!",
-                                          }).then((result) => {
-                                            if (result.isConfirmed) {
-                                              deleteProductList(product?._id);
-                                              Swal.fire(
-                                                "Deleted!",
-                                                `${product?.productName_en} item has been deleted.`,
-                                                "success"
-                                              ).then(() => {
-                                                fetchProductList();
-                                              });
-                                            }
-                                          });
+                                          handleDeleteProduct(
+                                            product._id,
+                                            product
+                                          );
                                         }}
                                       >
                                         Delete

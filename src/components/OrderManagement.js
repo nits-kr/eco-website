@@ -5,38 +5,53 @@ import Swal from "sweetalert2";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faPencil, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import Sidebar from "./Sidebar";
-import { useGetFileQuery } from "../services/Post";
+import {
+  useGetFileQuery,
+  useGetOrderListQuery,
+  useGetUserListQuery,
+} from "../services/Post";
 import { useEditOrderListMutation } from "../services/Post";
 import { useDeleteOrderListMutation } from "../services/Post";
 import { useOrderAssignMutation } from "../services/Post";
+import { MDBDataTable } from "mdbreact";
+import moment from "moment";
+import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
+import { FidgetSpinner } from "react-loader-spinner";
+import { useForm } from "react-hook-form";
+
 function OrderManagement() {
+  const [loader, setLoader] = useState(false);
+  const ecomAdmintoken = useSelector((data) => data?.local?.token);
+
   const [deleteOrder, response] = useDeleteOrderListMutation();
-  const { data, isLoading, isError } = useGetFileQuery("file-id");
+  const {
+    data: download,
+    isLoading,
+    isError,
+  } = useGetFileQuery({ ecomAdmintoken });
+  const { data: orderListdata, refetch: refetchOrderList } =
+    useGetOrderListQuery({ ecomAdmintoken });
+  const { data: userListdata } = useGetUserListQuery({ ecomAdmintoken });
+
   const [updateOrder] = useEditOrderListMutation();
   const [assignOrder] = useOrderAssignMutation();
-  console.log("down load data", data);
   const [orderList, setOrderList] = useState([]);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [startDate1, setStartDate1] = useState("");
-  const [status, setStatus] = useState("");
-  const [status2, setStatus2] = useState("");
   const [itemId, setItemId] = useState("");
-  const [itemId3, setItemId3] = useState("");
-  console.log("item id 3", itemId3);
   const [itemId2, setItemId2] = useState("");
-  const [orderStatus, setOrderStatus] = useState([]);
-  const [orderStatusAr, setOrderStatusAr] = useState([]);
   const [brands, setBrands] = useState([]);
   const [selectedBrandIds, setSelectedBrandIds] = useState([]);
-  console.log("selectedBrandIds", selectedBrandIds);
-  const [subSubCategory, setSubSubCategory] = useState({
-    brandId1: "",
-  });
 
-  axios.defaults.headers.common["x-auth-token-user"] =
-    localStorage.getItem("token");
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
   const handleInputChange1 = (event, index) => {
     const { value } = event.target;
     setSelectedBrandIds((prevSelectedBrandIds) => {
@@ -49,209 +64,362 @@ function OrderManagement() {
   const handleSelectChange = async (e, itemId, index) => {
     e.preventDefault();
     handleInputChange1(e, index);
-    setItemId3(data?._id);
+    // setItemId3(data?._id);
     const updatedSelectedBrandIds = [...selectedBrandIds];
     updatedSelectedBrandIds[index] = e.target.value;
 
     const editOffer = {
       id: itemId,
       deliverdBy: updatedSelectedBrandIds.filter(Boolean),
+      ecomAdmintoken: ecomAdmintoken,
     };
     try {
-      await assignOrder(editOffer);
-      Swal.fire({
-        title: "Changes Saved",
-        text: "The Order has been updated successfully.",
-        icon: "success",
-        confirmButtonText: "OK",
-      }).then((result) => {
-        if (result.isConfirmed) {
-          window.location.reload();
-        }
-      });
+      const res = await assignOrder(editOffer);
+      if (res?.data?.message === "Assign Order") {
+        Swal.fire({
+          title: "Changes Saved",
+          text: "The Order has been updated successfully.",
+          icon: "success",
+          confirmButtonText: "OK",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            refetchOrderList();
+          }
+        });
+      } else {
+        toast.error("Error Occured!");
+      }
     } catch (error) {
       // Handle error here
     }
   };
 
   useEffect(() => {
-    const fetchData2 = async () => {
+    if (userListdata) {
+      setBrands(userListdata?.results?.list);
+    }
+  }, [userListdata]);
+
+  const handledeleteOrder = async (e, id) => {
+    const result = await Swal.fire({
+      title: "Confirm Deletion",
+      text: "Are you sure you want to delete this order? This action cannot be undone.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it",
+      cancelButtonText: "Cancel",
+    });
+
+    if (result.isConfirmed) {
       try {
-        const response = await axios.post(
-          `${process.env.REACT_APP_APIENDPOINT}admin/agent/agent/user-List`
-        );
-        setBrands(response?.data?.results?.list);
-        console.log(response.data);
+        deleteOrder({ id, ecomAdmintoken });
+
+        await Swal.fire({
+          title: "Deleted",
+          text: "The order has been successfully deleted.",
+          icon: "success",
+          timer: 1500,
+          timerProgressBar: true,
+          showConfirmButton: false,
+        });
+
+        refetchOrderList();
       } catch (error) {
-        console.error(error);
+        console.error("Error deleting order:", error);
+        Swal.fire({
+          title: "Error",
+          text: "An error occurred while deleting the order. Please try again later.",
+          icon: "error",
+        });
       }
-    };
-    fetchData2();
-  }, []);
+    }
+  };
+
+  const [order, setOrder] = useState({
+    columns: [
+      {
+        label: "S.No.",
+        field: "sn",
+        sort: "asc",
+        width: 100,
+      },
+      {
+        label: "ORDER ID",
+        field: "id",
+        sort: "asc",
+        width: 150,
+      },
+
+      {
+        label: "DATE",
+        field: "date",
+        sort: "asc",
+        width: 100,
+      },
+      {
+        label: "Payment Method",
+        field: "paymentIntent",
+        sort: "asc",
+        width: 150,
+      },
+      {
+        label: "AMOUNT",
+        field: "total",
+        sort: "asc",
+        width: 100,
+      },
+      {
+        label: "DELIVERY STATUS",
+        field: "status",
+        sort: "asc",
+        width: 100,
+      },
+      {
+        label: "ACTION",
+        field: "action",
+        sort: "asc",
+        width: 100,
+      },
+      {
+        label: "ASSIGN DELIVERY BOY",
+        field: "assign",
+        sort: "asc",
+        width: 100,
+      },
+    ],
+    rows: [],
+  });
+
+  useEffect(() => {
+    if (orderListdata) {
+      setOrderList(orderListdata?.results?.list);
+      // calculateTotalCartsTotal(orderListdata?.results?.list);
+      const newRows = [];
+      orderListdata?.results?.list?.map((list, index) => {
+        const returnData = {};
+
+        returnData.sn = index + 1;
+        returnData.title = list?.products[0]?.product_Id?.productName_en
+          ?.split(/\s+/)
+          .slice(0, 2)
+          .join(" ");
+        returnData.id = list?._id;
+        returnData.date = moment(list?.publishDate).format("L");
+        returnData.customer = list?.user_Id?.userName;
+        returnData.paymentIntent = list?.paymentIntent;
+        returnData.total = list?.cartsTotal
+          ? list?.cartsTotal?.toFixed(2)
+          : "N/A";
+        returnData.status = (
+          <div
+            className={
+              list?.orderStatus === "Cancelled"
+                ? "text-danger"
+                : list?.orderStatus === "Pending"
+                ? "text-warning"
+                : list?.orderStatus === "Packed"
+                ? "text-info"
+                : list?.orderStatus === "Approved"
+                ? "text-success"
+                : list?.orderStatus === "Inprogress"
+                ? "text-primary"
+                : list?.orderStatus === "Delivered"
+                ? "text-secondary"
+                : "text-default"
+            }
+            style={{
+              background:
+                list?.orderStatus === "Cancelled"
+                  ? "#ffe5e5"
+                  : list?.orderStatus === "Pending"
+                  ? "#fff6e5"
+                  : list?.orderStatus === "Packed"
+                  ? "#e5f0ff"
+                  : list?.orderStatus === "Approved"
+                  ? "#e5ffe5"
+                  : list?.orderStatus === "Inprogress"
+                  ? "#e5e5ff"
+                  : list?.orderStatus === "Delivered"
+                  ? "#f3f3f3"
+                  : "#f9f9f9",
+              borderRadius: "5px",
+              padding: "2px 5px",
+            }}
+          >
+            {list?.orderStatus}
+          </div>
+        );
+        returnData.action = (
+          <div>
+            {" "}
+            {list.orderStatus === "Delivered" ? (
+              <Link
+                className="comman_btn table_viewbtn"
+                title="Can't Edit"
+                to="#"
+                style={{
+                  cursor: "not-allowed",
+                  filter: "blur(0.5px)",
+                  backgroundColor: "#fa9898",
+                }}
+                disabled
+              >
+                Edit
+              </Link>
+            ) : (
+              <Link
+                className="comman_btn table_viewbtn"
+                data-bs-toggle="modal"
+                data-bs-target="#edittoffer"
+                to="#"
+                onClick={() => {
+                  setItemId(list?._id);
+                }}
+              >
+                Edit
+              </Link>
+            )}
+            <Link
+              className="comman_btn table_viewbtn ms-2"
+              to={`/order-details/${list?._id}`}
+              onClick={() => {
+                // handleItem(data);
+                setItemId2(list?._id);
+              }}
+            >
+              View
+            </Link>
+            <Link
+              className="comman_btn2 table_viewbtn ms-2"
+              to="#"
+              onClick={(e) => handledeleteOrder(e, list?._id)}
+            >
+              Delete
+            </Link>
+          </div>
+        );
+        returnData.assign = (
+          <div>
+            {list?.assignStatus === "Assign" ? (
+              <span style={{ cursor: "not-allowed" }}>
+                {list?.deliverdBy?.name}
+              </span>
+            ) : (
+              <div className="form-group col-12">
+                <select
+                  className="select form-control"
+                  multiple=""
+                  name={`brandId1_${index}`}
+                  id={`brandId1_${index}`}
+                  value={selectedBrandIds[index] || ""}
+                  onChange={(e) => handleSelectChange(e, list?._id, index)}
+                >
+                  <option value="" style={{ textAlign: "center" }}>
+                    Assign
+                  </option>
+                  {Array.isArray(brands) &&
+                    brands.map((subCategory) => (
+                      <option
+                        key={subCategory._id}
+                        value={subCategory._id}
+                        style={{ textAlign: "center" }}
+                      >
+                        {subCategory.name}
+                      </option>
+                    ))}
+                </select>
+              </div>
+            )}
+          </div>
+        );
+
+        newRows.push(returnData);
+      });
+
+      setOrder({ ...order, rows: newRows });
+    }
+  }, [orderListdata]);
 
   const url = `${process.env.REACT_APP_APIENDPOINT}admin/order/order/list`;
   const url2 = `${process.env.REACT_APP_APIENDPOINT}admin/order/order/search`;
-  useEffect(() => {
-    subOrderList();
-  }, []);
-  const subOrderList = async (e) => {
-    await axios
-      .post(url)
-      .then((response) => {
-        setOrderList(response?.data?.results?.list);
-      })
-      .catch((error) => {
-        console.log(error.response.data);
-        Swal.fire({
-          icon: "error",
-          title: "Network Error",
-          text: "Failed to fetch recent order list data. Please try again later.",
-        });
-      });
-  };
+  // useEffect(() => {
+  //   subOrderList();
+  // }, []);
+  // const subOrderList = async (e) => {
+  //   await axios
+  //     .post(url)
+  //     .then((response) => {
+  //       setOrderList(response?.data?.results?.list);
+  //     })
+  //     .catch((error) => {
+  //       console.log(error.response.data);
+  //       Swal.fire({
+  //         icon: "error",
+  //         title: "Network Error",
+  //         text: "Failed to fetch recent order list data. Please try again later.",
+  //       });
+  //     });
+  // };
 
-  const handleSearch = (e) => {
-    e.preventDefault();
-    axios
-      .post(url, {
-        from: startDate,
-        to: endDate,
-      })
-      .then((response) => {
-        const list = response?.data?.results?.list;
-        if (list && list.length > 0) {
-          Swal.fire({
-            title: "List Found!",
-            text: "list is available for the selected date.",
-            icon: "success",
-            confirmButtonText: "OK",
-          }).then((result) => {
-            if (result.isConfirmed) {
-              setOrderList(list);
-            }
-          });
-          // setOrderList(list);
-        } else {
-          setOrderList([]);
-          Swal.fire({
-            icon: "warning",
-            title: "No data found!",
-            text: "There is no list between the selected dates.",
-            confirmButtonText: "OK",
-          }).then((result) => {
-            if (result.isConfirmed) {
-              subOrderList();
-            }
-          });
-        }
-      })
-      .catch((error) => {
-        console.log(error.response.data);
-      });
-  };
+  // useEffect(() => {
+  //   handleSearch1();
+  // }, [searchQuery]);
 
-  const userList2 = async () => {
-    if (!startDate1) return;
-    try {
-      const { data } = await axios.post(url, {
-        startDate1,
-      });
-      const filteredUsers = data?.results?.list?.filter(
-        (user) =>
-          new Date(user?.createdAt?.slice(0, 10)).toISOString().slice(0, 10) ===
-          new Date(startDate1).toISOString().slice(0, 10)
-      );
-      if (filteredUsers.length === 0) {
-        setOrderList([]);
-        await Swal.fire({
-          title: "No List Found",
-          text: "No list is available for the selected date.",
-          icon: "warning",
-          confirmButtonText: "OK",
-        }).then((result) => {
-          if (result.isConfirmed) {
-            subOrderList();
-          }
-        });
-      } else if (filteredUsers.length > 0) {
-        await Swal.fire({
-          title: "List Found!",
-          text: "list is available for the selected date.",
-          icon: "success",
-          confirmButtonText: "OK",
-        }).then((result) => {
-          if (result.isConfirmed) {
-            setOrderList(filteredUsers);
-          }
-        });
-      }
-      setOrderList(filteredUsers);
-      console.log(data);
-    } catch (error) {
-      console.error("Error fetching user list:", error);
-    }
-  };
-  useEffect(() => {
-    userList2();
-  }, [startDate1]);
-
-  useEffect(() => {
-    handleSearch1();
-  }, [searchQuery]);
-
-  const handleSearch1 = async () => {
-    try {
-      const url1 = searchQuery !== "" ? url2 : url;
-      const response = await axios.post(url1, {
-        orderStatus: searchQuery,
-      });
-      const { error, results } = response.data;
-      if (error) {
-        setOrderList([]);
-        Swal.fire({
-          title: "Error!",
-          // text: error.response.data,
-          text: "Error searching for products. Data is not found",
-          icon: "error",
-          confirmButtonText: "OK",
-        }).then((result) => {
-          if (result.isConfirmed) {
-            subOrderList();
-          }
-        });
-        // throw new Error("Error searching for products. Data is not found.");
-      } else {
-        setOrderList(searchQuery !== "" ? results?.orderData : results?.list);
-      }
-    } catch (error) {
-      if (error.response) {
-        Swal.fire({
-          title: "Error!",
-          text: error.response.data,
-          icon: "error",
-          confirmButtonText: "OK",
-        });
-      } else if (error.request) {
-        Swal.fire({
-          title: "Error!",
-          text: "Network error. Please try again later.",
-          icon: "error",
-          confirmButtonText: "OK",
-        });
-      } else {
-        Swal.fire({
-          title: "Error!",
-          text: error.message,
-          icon: "error",
-          confirmButtonText: "OK",
-        });
-      }
-    }
-  };
+  // const handleSearch1 = async () => {
+  //   try {
+  //     const url1 = searchQuery !== "" ? url2 : url;
+  //     const response = await axios.post(url1, {
+  //       orderStatus: searchQuery,
+  //     });
+  //     const { error, results } = response.data;
+  //     if (error) {
+  //       setOrderList([]);
+  //       Swal.fire({
+  //         title: "Error!",
+  //         // text: error.response.data,
+  //         text: "Error searching for products. Data is not found",
+  //         icon: "error",
+  //         confirmButtonText: "OK",
+  //       }).then((result) => {
+  //         if (result.isConfirmed) {
+  //           // subOrderList();
+  //         }
+  //       });
+  //       // throw new Error("Error searching for products. Data is not found.");
+  //     } else {
+  //       setOrderList(searchQuery !== "" ? results?.orderData : results?.list);
+  //     }
+  //   } catch (error) {
+  //     if (error.response) {
+  //       Swal.fire({
+  //         title: "Error!",
+  //         text: error.response.data,
+  //         icon: "error",
+  //         confirmButtonText: "OK",
+  //       });
+  //     } else if (error.request) {
+  //       Swal.fire({
+  //         title: "Error!",
+  //         text: "Network error. Please try again later.",
+  //         icon: "error",
+  //         confirmButtonText: "OK",
+  //       });
+  //     } else {
+  //       Swal.fire({
+  //         title: "Error!",
+  //         text: error.message,
+  //         icon: "error",
+  //         confirmButtonText: "OK",
+  //       });
+  //     }
+  //   }
+  // };
 
   const handleDownload = () => {
-    if (data) {
-      const blob = new Blob([data]);
+    if (download) {
+      const blob = new Blob([download]);
       const downloadUrl = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = downloadUrl;
@@ -268,29 +436,33 @@ function OrderManagement() {
     return <div>Error occurred while fetching the file.</div>;
   }
 
-  const handleItem = (item) => {
-    setStatus2(item?.orderStatus || "");
-  };
-  const handleSaveChanges1 = async (e) => {
-    e.preventDefault();
-    console.log("handleSaveChanges1", itemId);
+  const handleSaveChanges1 = async (data) => {
+    // e.preventDefault();
     const editOffer = {
       id: itemId,
-      orderStatus: orderStatus,
-      orderStatus_ar: orderStatusAr,
+      orderStatus: data?.orderStatus,
+      orderStatus_ar: data?.orderStatusAr,
+      ecomAdmintoken: ecomAdmintoken,
     };
     try {
-      await updateOrder(editOffer);
-      Swal.fire({
-        title: "Changes Saved",
-        text: "The Order Status has been updated successfully.",
-        icon: "success",
-        confirmButtonText: "OK",
-      }).then((result) => {
-        if (result.isConfirmed) {
-          window.location.reload();
-        }
-      });
+      setLoader(true);
+      const res = await updateOrder(editOffer);
+      setLoader(false);
+      if (res?.data?.message === "Success") {
+        Swal.fire({
+          title: "Changes Saved",
+          text: "The Order Status has been updated successfully.",
+          icon: "success",
+          confirmButtonText: "OK",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            refetchOrderList();
+            document?.getElementById("EditModalCloseBtn").click();
+          }
+        });
+      } else {
+        toast.error("Failed to save changes");
+      }
     } catch (error) {}
   };
 
@@ -312,7 +484,7 @@ function OrderManagement() {
                         <form
                           className="form-design"
                           action=""
-                          onSubmit={handleSearch1}
+                          // onSubmit={handleSearch1}
                         >
                           <div className="form-group mb-0 position-relative icons_set">
                             <input
@@ -326,7 +498,7 @@ function OrderManagement() {
                             />
                             <i
                               className="far fa-search"
-                              onClick={handleSearch1}
+                              // onClick={handleSearch1}
                             ></i>
                           </div>
                         </form>
@@ -351,7 +523,6 @@ function OrderManagement() {
                     <form
                       className="form-design py-4 px-3 help-support-form row align-items-end justify-content-between"
                       action=""
-                      onSubmit={handleSearch}
                     >
                       <div className="form-group mb-0 col-5">
                         <label htmlFor="">From</label>
@@ -385,228 +556,16 @@ function OrderManagement() {
                     <div className="row">
                       <div className="col-12 comman_table_design px-0">
                         <div className="table-responsive">
-                          <table className="table mb-0">
-                            <thead>
-                              <tr>
-                                <th>Order ID</th>
-                                <th>Date</th>
-                                <th>Payment Method</th>
-                                <th>Amount</th>
-                                <th>Delivery Status</th>
-                                <th>Action</th>
-                                <th>Assign Delivery Boy</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {orderList?.map((data, index) => (
-                                <tr key={index}>
-                                  <td> {data?._id} </td>
-                                  <td> {data?.createdAt?.slice(0, 10)} </td>
-                                  <td> {data.paymentIntent} </td>
-                                  {/* <td>
-                                    {" "}
-                                    {data.cartsTotal[0]?.[0]?.totalAfterDiscount[0]?.toFixed(
-                                      2
-                                    )}{" "}
-                                  </td> */}
-                                  <td>
-                                    {data?.cartsTotal
-                                      ? data?.cartsTotal?.toFixed(2)
-                                      : "N/A"}
-                                    {/* {typeof data.cartsTotal?.[0]?.[0] ===
-                                    "number"
-                                      ? `$${data.cartsTotal?.[0]?.[0].toFixed(
-                                          2
-                                        )}`
-                                      : "N/A"} */}
-                                  </td>
-                                  <td>
-                                    {" "}
-                                    <div
-                                      className={
-                                        data?.orderStatus === "Cancelled"
-                                          ? "text-danger"
-                                          : data?.orderStatus === "Pending"
-                                          ? "text-warning"
-                                          : data?.orderStatus === "Packed"
-                                          ? "text-info"
-                                          : data?.orderStatus === "Approved"
-                                          ? "text-success"
-                                          : data?.orderStatus === "Inprogress"
-                                          ? "text-primary"
-                                          : data?.orderStatus === "Delivered"
-                                          ? "text-secondary"
-                                          : "text-default"
-                                      }
-                                      style={{
-                                        background:
-                                          data?.orderStatus === "Cancelled"
-                                            ? "#ffe5e5"
-                                            : data?.orderStatus === "Pending"
-                                            ? "#fff6e5"
-                                            : data?.orderStatus === "Packed"
-                                            ? "#e5f0ff"
-                                            : data?.orderStatus === "Approved"
-                                            ? "#e5ffe5"
-                                            : data?.orderStatus === "Inprogress"
-                                            ? "#e5e5ff"
-                                            : data?.orderStatus === "Delivered"
-                                            ? "#f3f3f3"
-                                            : "#f9f9f9",
-                                        borderRadius: "5px",
-                                        padding: "2px 5px",
-                                      }}
-                                    >
-                                      {data?.orderStatus}
-                                    </div>{" "}
-                                  </td>
-                                  <td>
-                                    {data.orderStatus === "Delivered" ? (
-                                      <Link
-                                        className="comman_btn table_viewbtn"
-                                        title="Can't Edit"
-                                        to="#"
-                                        style={{
-                                          cursor: "not-allowed",
-                                          filter: "blur(0.5px)",
-                                          backgroundColor: "#fa9898",
-                                        }}
-                                        disabled
-                                      >
-                                        Edit
-                                      </Link>
-                                    ) : (
-                                      <Link
-                                        className="comman_btn table_viewbtn"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#edittoffer"
-                                        to="#"
-                                        onClick={() => {
-                                          handleItem(data);
-                                          setItemId(data?._id);
-                                        }}
-                                      >
-                                        Edit
-                                      </Link>
-                                    )}
-
-                                    <Link
-                                      className="comman_btn table_viewbtn ms-2"
-                                      to={`/order-details/${data?._id}`}
-                                      onClick={() => {
-                                        // handleItem(data);
-                                        setItemId2(data?._id);
-                                      }}
-                                    >
-                                      View
-                                    </Link>
-                                    <Link
-                                      className="comman_btn2 table_viewbtn ms-2"
-                                      to="#"
-                                      onClick={() => {
-                                        Swal.fire({
-                                          title: "Are you sure?",
-                                          text: "You won't be able to revert this!",
-                                          icon: "warning",
-                                          showCancelButton: true,
-                                          confirmButtonColor: "#3085d6",
-                                          cancelButtonColor: "#d33",
-                                          confirmButtonText: "Yes, delete it!",
-                                        }).then((result) => {
-                                          if (result.isConfirmed) {
-                                            deleteOrder(data?._id);
-                                            Swal.fire(
-                                              "Deleted!",
-                                              `${data?.status}  item has been deleted.`,
-                                              "success"
-                                            ).then(() => {
-                                              subOrderList();
-                                            });
-                                          }
-                                        });
-                                      }}
-                                    >
-                                      Delete
-                                    </Link>
-                                  </td>
-                                  <td>
-                                    {data?.assignStatus === "Assign" ? (
-                                      <span style={{ cursor: "not-allowed" }}>
-                                        {data?.deliverdBy?.name}
-                                      </span>
-                                    ) : (
-                                      <div className="form-group col-12">
-                                        <select
-                                          className="select form-control"
-                                          multiple=""
-                                          name={`brandId1_${index}`}
-                                          id={`brandId1_${index}`}
-                                          value={selectedBrandIds[index] || ""}
-                                          onChange={(e) =>
-                                            handleSelectChange(
-                                              e,
-                                              data?._id,
-                                              index
-                                            )
-                                          }
-                                        >
-                                          <option
-                                            value=""
-                                            style={{ textAlign: "center" }}
-                                          >
-                                            Assign
-                                          </option>
-                                          {Array.isArray(brands) &&
-                                            brands.map((subCategory) => (
-                                              <option
-                                                key={subCategory._id}
-                                                value={subCategory._id}
-                                                style={{ textAlign: "center" }}
-                                              >
-                                                {subCategory.name}
-                                              </option>
-                                            ))}
-                                        </select>
-                                      </div>
-                                    )}
-                                    {/* <div className="form-group col-12">
-                                      <select
-                                        className="select form-control"
-                                        multiple=""
-                                        name={`brandId1_${index}`}
-                                        id={`brandId1_${index}`}
-                                        value={selectedBrandIds[index] || ""}
-                                        onChange={(e) =>
-                                          handleSelectChange(
-                                            e,
-                                            data?._id,
-                                            index
-                                          )
-                                        }
-                                      >
-                                        <option
-                                          value=""
-                                          style={{ textAlign: "center" }}
-                                        >
-                                          Assign
-                                        </option>
-                                        {Array.isArray(brands) &&
-                                          brands.map((subCategory) => (
-                                            <option
-                                              key={subCategory._id}
-                                              value={subCategory._id}
-                                              style={{ textAlign: "center" }}
-                                            >
-                                              {subCategory.name}
-                                            </option>
-                                          ))}
-                                      </select>
-                                    </div> */}
-                                  </td>
-                                </tr>
-                              ))}
-                            </tbody>
-                          </table>
+                          <MDBDataTable
+                            bordered
+                            displayEntries={false}
+                            searching={false}
+                            className="userDatable"
+                            hover
+                            data={order}
+                            noBottomColumns
+                            sortable
+                          />
                         </div>
                       </div>
                     </div>
@@ -637,26 +596,29 @@ function OrderManagement() {
                 className="btn-close"
                 data-bs-dismiss="modal"
                 aria-label="Close"
+                id="EditModalCloseBtn"
               />
             </div>
             <div className="modal-body">
               <form
                 className="form-design py-4 px-3 help-support-form row align-items-end justify-content-between"
                 action=""
-                onSubmit={handleSaveChanges1}
+                // onSubmit={handleSaveChanges1}
+                onSubmit={handleSubmit(handleSaveChanges1)}
               >
                 <div className="form-group col-6">
-                  <form>
+                  <div>
                     <div className="form-floating ">
                       <select
                         className="form-select"
-                        id="floatingSelect12"
+                        id="orderStatus"
                         aria-label="  select example"
                         defaultValue=" "
                         style={{
                           padding: "5px",
                         }}
-                        onChange={(e) => setOrderStatus(e.target.value)}
+                        // onChange={(e) => setOrderStatus(e.target.value)}
+                        {...register("orderStatus", { required: true })}
                       >
                         <option value="">Order Status</option>
                         <option value="Approved">Approved</option>
@@ -668,10 +630,15 @@ function OrderManagement() {
                         <option value="Inprogress">Inprogress</option>
                       </select>
                     </div>
-                  </form>
+                    {errors.orderStatus && (
+                      <span className="text-danger">
+                        This field is required
+                      </span>
+                    )}
+                  </div>
                 </div>
                 <div className="form-group col-6">
-                  <form>
+                  <div>
                     <div className="form-floating ">
                       <select
                         className="form-select"
@@ -681,7 +648,8 @@ function OrderManagement() {
                         style={{
                           padding: "5px",
                         }}
-                        onChange={(e) => setOrderStatusAr(e.target.value)}
+                        // onChange={(e) => setOrderStatusAr(e.target.value)}
+                        {...register("orderStatusAr", { required: true })}
                       >
                         <option value="">حالة الطلب</option>
                         <option value="موافقة">موافقة</option>
@@ -693,34 +661,55 @@ function OrderManagement() {
                         <option value="في تَقَدم">في تَقَدم</option>
                       </select>
                     </div>
-                  </form>
+                    {errors.orderStatusAr && (
+                      <span className="text-danger">
+                        This field is required
+                      </span>
+                    )}
+                  </div>
                 </div>
-                {/* <div className="form-group mb-0 col">
-                  <label htmlFor="">Code</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    // value={code}
-                    defaultValue={code2}
-                    onChange={(e) => setCode(e.target.value)}
-                    name="code"
-                    id="code"
-                  />
+                {/* <div>
+                  <label htmlFor="orderStatus">Order Status</label>
+                  <select
+                    id="orderStatus"
+                    {...register("orderStatus", { required: true })}
+                  >
+                    <option value="">Select an option</option>
+                    <option value="Pending">Pending</option>
+                    <option value="Processing">Processing</option>
+                    <option value="Shipped">Shipped</option>
+                    <option value="Delivered">Delivered</option>
+                  </select>
+                  {errors.orderStatus && <span>This field is required</span>}
                 </div>
-                <div className="form-group mb-0 col">
-                  <label htmlFor="">Discount</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    // value={discount}
-                    // defaultValue={discount2}
-                    // onChange={(e) => setDiscount(e.target.value)}
-                    name="name"
-                    id="name"
-                  />
+
+                <div>
+                  <label htmlFor="orderStatusAr">Order Status (Arabic)</label>
+                  <select
+                    id="orderStatusAr"
+                    {...register("orderStatusAr", { required: true })}
+                  >
+                    <option value="">Select an option</option>
+                    <option value="قيد الانتظار">قيد الانتظار</option>
+                    <option value="معالجة">معالجة</option>
+                    <option value="شحن">شحن</option>
+                    <option value="تم التوصيل">تم التوصيل</option>
+                  </select>
+                  {errors.orderStatusAr && <span>This field is required</span>}
                 </div> */}
-                <div className="form-group mb-0 col-auto">
-                  <button className="comman_btn2">Add</button>
+
+                <div className="form-group mb-0 col-12 d-flex justify-content-center">
+                  <button
+                    type="submit"
+                    className="comman_btn2"
+                    disabled={loader}
+                    style={{
+                      cursor: loader ? "not-allowed" : "",
+                      padding: loader ? "0px" : "",
+                    }}
+                  >
+                    {loader ? <FidgetSpinner height={50} /> : "Update"}
+                  </button>
                 </div>
               </form>
             </div>

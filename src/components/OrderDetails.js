@@ -14,12 +14,15 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import Sidebar from "./Sidebar";
 import { useGetFileQuery, useOrderDetailsAllMutation } from "../services/Post";
+import { useSelector } from "react-redux";
+import { GoogleMap, MarkerF, useJsApiLoader } from "@react-google-maps/api";
+
 function OrderDetails() {
-  axios.defaults.headers.common["x-auth-token-user"] =
-    localStorage.getItem("token");
+  const ecomAdmintoken = useSelector((data) => data?.local?.token);
+
   const { id: routeId } = useParams();
   const { data } = useGetFileQuery("file-id");
-  const [orderDetails] = useOrderDetailsAllMutation(routeId);
+  const [orderDetails] = useOrderDetailsAllMutation();
   const [details, setDetails] = useState([]);
   const [address, setAddress] = useState([]);
   const [productId, setProductId] = useState([]);
@@ -31,6 +34,7 @@ function OrderDetails() {
   const userDetail = async () => {
     const userdetailId = {
       id: routeId,
+      ecomAdmintoken: ecomAdmintoken,
     };
     const response = await orderDetails(userdetailId);
     setDetails(response?.data?.results?.orderDetails);
@@ -40,9 +44,37 @@ function OrderDetails() {
     );
   };
 
+  // const position = {
+  //   lat: +details?.location?.latitude ? +details?.location?.latitude : 50,
+  //   lng: +details?.location?.longitude ? +details?.location?.longitude : 50,
+  // };
+
   const position = {
     lat: +details?.location?.latitude ? +details?.location?.latitude : 50,
     lng: +details?.location?.longitude ? +details?.location?.longitude : 50,
+  };
+  const containerStyle = {
+    width: "100%",
+    height: "400px",
+  };
+  const center = {
+    lat: +details?.location?.latitude ? +details?.location?.latitude : 50,
+    lng: +details?.location?.longitude ? +details?.location?.longitude : 50,
+  };
+  const { isLoaded } = useJsApiLoader({
+    id: "google-map-script",
+    googleMapsApiKey: "AIzaSyA1X0VM5k6DeAGJSWM6W8KkPCVYnohdTg8",
+  });
+
+  const [map, setMap] = React.useState(null);
+
+  const onLoad = React.useCallback(function callback(map) {
+    const bounds = new window.google.maps.LatLngBounds(center);
+    // map.fitBounds(bounds);
+    setMap(map);
+  }, []);
+  const onLoadMark = (marker) => {
+    console.log("marker: ", marker);
   };
 
   const handleDownload = () => {
@@ -356,6 +388,22 @@ function OrderDetails() {
                                 title="Google Maps - San Diego, California"
                                 referrerPolicy="no-referrer-when-downgrade"
                               ></iframe>
+                              {/* {isLoaded ? (
+                                <GoogleMap
+                                  mapContainerStyle={containerStyle}
+                                  zoom={14}
+                                  center={center}
+                                  onLoad={onLoad}
+                                  // onUnmount={onUnmount}
+                                >
+                                  <>
+                                    <MarkerF
+                                      onLoad={onLoadMark}
+                                      position={position}
+                                    />
+                                  </>
+                                </GoogleMap>
+                              ) : null} */}
                             </div>
                           </div>
                         </form>

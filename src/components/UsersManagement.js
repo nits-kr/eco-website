@@ -3,15 +3,29 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 import Sidebar from "./Sidebar";
-import { useGetFileQuery } from "../services/Post";
+import {
+  useGetFileQuery,
+  useGetUserListAllQuery,
+  useGetUserListQuery,
+} from "../services/Post";
 import Spinner from "./Spinner";
 import GoogleMap from "./GoogleMap";
 import ReactGoogleMap from "./ReactGoogleMap";
 import { useCreateMapMutation } from "../services/Post";
 import { useGetLatLongitudeQuery } from "../services/Post";
+import { useSelector } from "react-redux";
 function UsersManagement(props) {
+  const ecomAdmintoken = useSelector((data) => data?.local?.token);
+
   const [createMap, res] = useCreateMapMutation();
-  const { data, isLoading, isError } = useGetFileQuery("file-id");
+  const { data: userListdata } = useGetUserListAllQuery({ ecomAdmintoken });
+
+  const {
+    data: download,
+    isLoading,
+    isError,
+  } = useGetFileQuery({ ecomAdmintoken });
+
   const [loading, setLoading] = useState(false);
 
   const [usersList, setUsersList] = useState([]);
@@ -21,26 +35,34 @@ function UsersManagement(props) {
   const [searchQuery, setSearchQuery] = useState("");
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
+
+  console.log("userListdata", userListdata);
+
+  useEffect(() => {
+    if (userListdata) {
+      setUsersList(userListdata?.results?.createData);
+    }
+  }, [userListdata]);
   const handleId = (id) => {};
   const url = `${process.env.REACT_APP_APIENDPOINT}admin/user/userList`;
   const url2 = `${process.env.REACT_APP_APIENDPOINT}admin/user/user-search`;
-  useEffect(() => {
-    userManagementList();
-  }, []);
-  const userManagementList = () => {
-    props.setProgress(10);
-    setLoading(true);
-    axios
-      .post(url)
-      .then((response) => {
-        setUsersList(response?.data?.results?.createData?.reverse());
-        props.setProgress(100);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.log(error.response.data);
-      });
-  };
+  // useEffect(() => {
+  //   userManagementList();
+  // }, []);
+  // const userManagementList = () => {
+  //   props.setProgress(10);
+  //   setLoading(true);
+  //   axios
+  //     .post(url)
+  //     .then((response) => {
+  //       setUsersList(response?.data?.results?.createData?.reverse());
+  //       props.setProgress(100);
+  //       setLoading(false);
+  //     })
+  //     .catch((error) => {
+  //       console.log(error.response.data);
+  //     });
+  // };
   const userList2 = async () => {
     if (!startDate1) return;
     try {
@@ -61,7 +83,7 @@ function UsersManagement(props) {
           confirmButtonText: "OK",
         }).then((result) => {
           if (result.isConfirmed) {
-            userManagementList();
+            // userManagementList();
           }
         });
       } else if (filteredUsers.length > 0) {
@@ -116,7 +138,7 @@ function UsersManagement(props) {
             confirmButtonText: "OK",
           }).then((result) => {
             if (result.isConfirmed) {
-              userManagementList();
+              // userManagementList();
             }
           });
         }
@@ -126,67 +148,67 @@ function UsersManagement(props) {
       });
   };
 
-  useEffect(() => {
-    handleSearch1();
-  }, [searchQuery]);
+  // useEffect(() => {
+  //   handleSearch1();
+  // }, [searchQuery]);
 
-  const handleSearch1 = async () => {
-    try {
-      const url1 = searchQuery !== "" ? url2 : url;
-      const response = await axios.post(url1, {
-        userName: searchQuery,
-      });
-      const { error, results } = response.data;
-      if (error) {
-        setUsersList([]);
-        Swal.fire({
-          title: "Error!",
-          // text: error.response.data,
-          text: "Error searching for products. Data is not found",
-          icon: "error",
-          confirmButtonText: "OK",
-        }).then((result) => {
-          if (result.isConfirmed) {
-            userManagementList();
-          }
-        });
-        // throw new Error("Error searching for products. Data is not found.");
-      } else {
-        setUsersList(
-          searchQuery !== ""
-            ? results?.userData
-            : results?.createData?.reverse()
-        );
-      }
-    } catch (error) {
-      if (error.response) {
-        Swal.fire({
-          title: "Error!",
-          text: error.response.data,
-          icon: "error",
-          confirmButtonText: "OK",
-        });
-      } else if (error.request) {
-        Swal.fire({
-          title: "Error!",
-          text: "Network error. Please try again later.",
-          icon: "error",
-          confirmButtonText: "OK",
-        });
-      } else {
-        Swal.fire({
-          title: "Error!",
-          text: error.message,
-          icon: "error",
-          confirmButtonText: "OK",
-        });
-      }
-    }
-  };
+  // const handleSearch1 = async () => {
+  //   try {
+  //     const url1 = searchQuery !== "" ? url2 : url;
+  //     const response = await axios.post(url1, {
+  //       userName: searchQuery,
+  //     });
+  //     const { error, results } = response.data;
+  //     if (error) {
+  //       setUsersList([]);
+  //       Swal.fire({
+  //         title: "Error!",
+  //         // text: error.response.data,
+  //         text: "Error searching for products. Data is not found",
+  //         icon: "error",
+  //         confirmButtonText: "OK",
+  //       }).then((result) => {
+  //         if (result.isConfirmed) {
+  //           // userManagementList();
+  //         }
+  //       });
+  //       // throw new Error("Error searching for products. Data is not found.");
+  //     } else {
+  //       setUsersList(
+  //         searchQuery !== ""
+  //           ? results?.userData
+  //           : results?.createData?.reverse()
+  //       );
+  //     }
+  //   } catch (error) {
+  //     if (error.response) {
+  //       Swal.fire({
+  //         title: "Error!",
+  //         text: error.response.data,
+  //         icon: "error",
+  //         confirmButtonText: "OK",
+  //       });
+  //     } else if (error.request) {
+  //       Swal.fire({
+  //         title: "Error!",
+  //         text: "Network error. Please try again later.",
+  //         icon: "error",
+  //         confirmButtonText: "OK",
+  //       });
+  //     } else {
+  //       Swal.fire({
+  //         title: "Error!",
+  //         text: error.message,
+  //         icon: "error",
+  //         confirmButtonText: "OK",
+  //       });
+  //     }
+  //   }
+  // };
 
   const handleDownload = () => {
-    if (data) {
-      const blob = new Blob([data]);
+    if (download) {
+      const blob = new Blob([download]);
       const downloadUrl = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = downloadUrl;
@@ -237,7 +259,7 @@ function UsersManagement(props) {
                         <form
                           className="form-design"
                           action=""
-                          onSubmit={handleSearch1}
+                          // onSubmit={handleSearch1}
                         >
                           <div className="form-group mb-0 position-relative icons_set">
                             <input
@@ -251,7 +273,7 @@ function UsersManagement(props) {
                             />
                             <i
                               className="far fa-search"
-                              onClick={handleSearch1}
+                              // onClick={handleSearch1}
                             ></i>
                           </div>
                         </form>

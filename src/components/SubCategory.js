@@ -3,19 +3,52 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
 import EditValues from "./EditValues";
-import { useUpdateSubCategoryMutation } from "../services/Post";
+import {
+  useCreateSubCategoryMutation,
+  useGetCategoryListMutation,
+  // useGetCategoryListQuery,
+  useGetSubCategoryListQuery,
+  useUpdateSubCategoryMutation,
+} from "../services/Post";
 import { useDeleteSubCategoryListMutation } from "../services/Post";
 import Spinner from "./Spinner";
+import { useSelector } from "react-redux";
+import { MDBDataTable } from "mdbreact";
+import { useForm } from "react-hook-form";
+import classNames from "classnames";
+import { toast } from "react-toastify";
 
 function SubCategory(props) {
+  const ecomAdmintoken = useSelector((data) => data?.local?.token);
+
+  // const { data: categoryListdata, refetch: categoryListData } =
+  //   useGetCategoryListQuery({
+  //     ecomAdmintoken,
+  //   });
+
+  const [categoryListdata] = useGetCategoryListMutation();
+
+  const { data: subcategoryListdata, refetch: subcategoryListData } =
+    useGetSubCategoryListQuery({
+      ecomAdmintoken,
+    });
   // const [update, res] = useUpdateSubCategoryMutation();
   const [deleteSubCategory, response] = useDeleteSubCategoryListMutation();
+  const [createSubCategory] = useCreateSubCategoryMutation();
+  const [updateSubCategory] = useUpdateSubCategoryMutation();
   const [itemId, setItemId] = useState("");
   const [subCategoryNameEn2, setSubCategoryNameEn2] = useState("");
   const [subCategoryNameAr2, setSubCategoryNameAr2] = useState("");
   const [image2, setImage2] = useState("");
   const [subCategoryList, setSubCategoryList] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [files, setFiles] = useState();
+  const [formData1, setFormData1] = useState({
+    pic: files?.editImage,
+  });
+
+  console.log("formData1", formData1);
+
   const [subCategory, setSubCategory] = useState({
     nameEn: "",
     nameAr: "",
@@ -53,143 +86,207 @@ function SubCategory(props) {
   const handleFileChange1 = (e, key) => {
     setCategory({ ...category, uploadImage: e.target.files[0] });
   };
-  const url = `${process.env.REACT_APP_APIENDPOINT}admin/category/subCategory/SubCategoryList`;
-  const url2 = `${process.env.REACT_APP_APIENDPOINT}admin/category/subCategory/subCategorySearch`;
-  useEffect(() => {
-    subCategoryManagementList();
-  }, []);
-  const subCategoryManagementList = () => {
-    axios
-      .post(url)
-      .then((response) => {
-        setSubCategoryList(response?.data?.results?.list?.reverse());
-      })
-      .catch((error) => {
-        console.log(error.response.data);
-        Swal.fire({
-          icon: "error",
-          title: "Network Error",
-          text: "Failed to fetch recent order list data. Please try again later.",
-        });
-      });
+
+  const onFileSelection = (e, key) => {
+    setFiles({ ...files, [key]: URL.createObjectURL(e.target.files[0]) });
+    setFormData1({ ...formData1, pic: e?.target?.files[0] });
   };
 
-  const userList2 = async () => {
-    if (!startDate1) return;
-    try {
-      const { data } = await axios.post(url, {
-        startDate1,
-      });
-      const filteredUsers = data?.results?.list?.filter(
-        (user) =>
-          new Date(user?.createdAt?.slice(0, 10)).toISOString().slice(0, 10) ===
-          new Date(startDate1).toISOString().slice(0, 10)
-      );
-      if (filteredUsers.length === 0) {
-        setSubCategoryList([]);
-        await Swal.fire({
-          title: "No List Found",
-          text: "No list is available for the selected date.",
-          icon: "warning",
-          confirmButtonText: "OK",
-        }).then((result) => {
-          if (result.isConfirmed) {
-            subCategoryManagementList();
-          }
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
+  const {
+    register: register2,
+    handleSubmit: handleSubmit2,
+    formState: { errors: errors2 },
+    reset: reset2,
+  } = useForm();
+
+  const handleCategoryList = async () => {
+    const data = {
+      from: "",
+      to: "",
+      search: "",
+      ecomAdmintoken: ecomAdmintoken,
+    };
+    const res = await categoryListdata(data);
+    console.log("res cate", res);
+    setCategories(res?.data?.results?.list);
+  };
+
+  useEffect(() => {
+    handleCategoryList();
+  }, [ecomAdmintoken]);
+
+  const [subCategories, setSubCategories] = useState({
+    columns: [
+      {
+        label: "S.NO.",
+        field: "sn",
+        sort: "asc",
+        width: 150,
+      },
+      {
+        label: "CATEGORY",
+        field: "name_cate",
+        sort: "asc",
+        width: 150,
+      },
+      {
+        label: "SUB CATEGORY (EN)",
+        field: "name_en",
+        sort: "asc",
+        width: 150,
+      },
+
+      {
+        label: "SUB CATEGORY (AR)",
+        field: "name_ar",
+        sort: "asc",
+        width: 100,
+      },
+
+      {
+        label: "Media",
+        field: "pic",
+        sort: "asc",
+        width: 100,
+      },
+      {
+        label: "STATUS",
+        field: "status",
+        sort: "asc",
+        width: 100,
+      },
+      {
+        label: "ACTION",
+        field: "action",
+        sort: "asc",
+        width: 100,
+      },
+    ],
+    rows: [],
+  });
+
+  useEffect(() => {
+    if (subcategoryListdata) {
+      setSubCategoryList(subcategoryListdata?.results?.list);
+      const newRows = [];
+
+      subcategoryListdata?.results?.list
+        ?.slice()
+        ?.reverse()
+        ?.map((list, index) => {
+          const returnData = {};
+          returnData.sn = index + 1 + ".";
+          returnData.name_cate = list?.category_Id?.categoryName_en;
+          returnData.name_en = list?.subCategoryName_en;
+          returnData.name_ar = list?.subCategoryName_ar;
+          returnData.pic = (
+            <div className="">
+              <img className="table_img" src={list?.subCategoryPic} alt="" />
+            </div>
+          );
+          returnData.status = (
+            <form className="table_btns d-flex align-items-center">
+              <div className="check_toggle">
+                <input
+                  defaultChecked={list?.status}
+                  type="checkbox"
+                  name={`r${index}`}
+                  id={`r${index}`}
+                  className="d-none"
+                  // data-bs-toggle="modal"
+                  // data-bs-target="#staticBackdrop3"
+                  disabled
+                />
+                <label htmlFor={`r${index}`}></label>
+              </div>
+            </form>
+          );
+          returnData.action = (
+            <>
+              <Link
+                data-bs-toggle="modal"
+                data-bs-target="#staticBackdrop10"
+                className="comman_btn2 table_viewbtn me-2"
+                to=""
+                onClick={() => handleUpdate(list)}
+              >
+                Edit
+              </Link>
+              <Link
+                className="comman_btn2 table_viewbtn"
+                to="#"
+                onClick={() => handleDeleteSubCate(list?._id)}
+              >
+                Delete
+              </Link>
+            </>
+          );
+          newRows.push(returnData);
         });
-      } else if (filteredUsers.length > 0) {
-        await Swal.fire({
-          title: "List Found!",
-          text: "list is available for the selected date.",
-          icon: "success",
-          confirmButtonText: "OK",
-        }).then((result) => {
-          if (result.isConfirmed) {
-            setSubCategoryList(filteredUsers);
-          }
-        });
-      }
-      setSubCategoryList(filteredUsers);
-      console.log(data);
-    } catch (error) {
-      console.error("Error fetching user list:", error);
+      setSubCategories({ ...subCategories, rows: newRows });
     }
-  };
-  useEffect(() => {
-    userList2();
-  }, [startDate1]);
+  }, [subcategoryListdata]);
 
-  useEffect(() => {
-    handleSearch1();
-  }, [searchQuery]);
+  const handleUpdate = (item) => {
+    console.log("item", item);
 
-  const handleSearch1 = async () => {
-    try {
-      const url1 = searchQuery !== "" ? url2 : url;
-      const response = await axios.post(url1, {
-        subCategoryName_en: searchQuery,
-      });
-      const { error, results } = response.data;
-      if (error) {
-        setSubCategoryList([]);
-        Swal.fire({
-          title: "Error!",
-          // text: error.response.data,
-          text: "Error searching for products. Data is not found",
-          icon: "error",
-          confirmButtonText: "OK",
-        }).then((result) => {
-          if (result.isConfirmed) {
-            subCategoryManagementList();
-          }
-        });
-        // throw new Error("Error searching for products. Data is not found.");
-      } else {
-        setSubCategoryList(
-          searchQuery !== "" ? results?.categoryData : results?.list?.reverse()
-        );
-      }
-    } catch (error) {
-      if (error.response) {
-        Swal.fire({
-          title: "Error!",
-          text: error.response.data,
-          icon: "error",
-          confirmButtonText: "OK",
-        });
-      } else if (error.request) {
-        Swal.fire({
-          title: "Error!",
-          text: "Network error. Please try again later.",
-          icon: "error",
-          confirmButtonText: "OK",
-        });
-      } else {
-        Swal.fire({
-          title: "Error!",
-          text: error.message,
-          icon: "error",
-          confirmButtonText: "OK",
-        });
-      }
-    }
+    reset2({
+      editCatename_en: item?.subCategoryName_en,
+      editCatename_ar: item?.subCategoryName_ar,
+    });
+    setFiles({ editImage: item?.subCategoryPic });
+    setItemId(item?._id);
+    // setFormData1({ pic: item?.categoryPic });
   };
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+  const handleItem = (item) => {
+    setSubCategoryNameEn2(item?.subCategoryName_en || "");
+    setSubCategoryNameAr2(item?.subCategoryName_ar || "");
+    setImage2(item?.category_Id?.categoryPic || "");
+    setItem(item);
+    setItemId(item?._id);
+  };
+
+  const handleDeleteSubCate = async (id) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        deleteSubCategory({ id, ecomAdmintoken });
+        setTimeout(() => {
+          subcategoryListData();
+          toast.success("Item Deleted!");
+        }, 500);
+      }
+    });
+  };
+
+  const handleOnSave = async (data) => {
+    // event.preventDefault();
     try {
-      const data = new FormData();
-      data.append("subCategoryName_en", subCategory.nameEn);
-      data.append("subCategoryName_ar", subCategory.nameAr);
-      data.append("category_Id", subCategory.categoryId);
-      data.append("subCategoryPic", subCategory.subCategoryPic);
+      const alldata = new FormData();
+      alldata.append("subCategoryName_en", data.subCategoryEn);
+      alldata.append("subCategoryName_ar", data.subCategoryAr);
+      alldata.append("category_Id", data.categoryId);
+      alldata.append("subCategoryPic", subCategory.subCategoryPic);
 
-      const response = await axios.post(
-        `${process.env.REACT_APP_APIENDPOINT}admin/category/subCategory/createSubCategory`,
-        data
-      );
+      const response = await createSubCategory({ alldata, ecomAdmintoken });
 
-      if (!response.data.error) {
+      console.log("response from server ", response);
+
+      if (response) {
         Swal.fire({
           icon: "success",
           title: "Sub Category Created",
@@ -201,89 +298,46 @@ function SubCategory(props) {
           categoryId: "",
           subCategoryPic: null,
         });
-        subCategoryManagementList();
-        setTimeout(() => {
-          window?.location?.reload();
-        }, 500);
+        // subCategoryManagementList();
+        subcategoryListData();
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const onSubmit2 = async (data) => {
+    // event.preventDefault();
+    try {
+      const alldata = new FormData();
+      alldata.append("subCategoryName_en", data.editCatename_en);
+      alldata.append("subCategoryName_ar", data.editCatename_ar);
+      alldata.append("category_Id", data.categoryId1);
+      if (formData1.pic) {
+        alldata.append("subCategoryPic", formData1.pic);
+      }
+      console.log("formData1.pic)", formData1.pic);
+      const response = await updateSubCategory({
+        alldata,
+        itemId,
+        ecomAdmintoken,
+      });
+
+      console.log("response from server ", response);
+
+      if (response) {
+        Swal.fire({
+          icon: "success",
+          title: "Sub Category Updated",
+          text: "The Sub category has been updated successfully.",
+        });
+        document?.getElementById("deletesubcate").click();
+        subcategoryListData();
       }
     } catch (error) {
       console.error(error);
     }
   };
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  const fetchData = async () => {
-    try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_APIENDPOINT}admin/category/category/list`
-      );
-      setCategories(response?.data?.results?.list);
-      console.log(response?.data?.results?.list);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const handleSaveChanges1 = (event) => {
-    event.preventDefault();
-    const formData = new FormData();
-    if (category.nameEn) {
-      formData.append(
-        "subCategoryName_en",
-        category.nameEn !== "" ? category.nameEn : subCategoryNameEn2
-      );
-    }
-    if (category.nameAr) {
-      formData.append(
-        "subCategoryName_ar",
-        category.nameAr !== "" ? category.nameAr : subCategoryNameAr2
-      );
-    }
-    if (category.uploadImage) {
-      formData.append("subCategoryPic", category.uploadImage);
-    }
-    if (category.categoryId1) {
-      formData.append(
-        "category_Id",
-        category.categoryId1 !== ""
-          ? category.categoryId1
-          : item?.category_Id?._id
-      );
-    }
-    axios
-      .patch(
-        `${process.env.REACT_APP_APIENDPOINT}admin/category/subCategory/subCategoryUpdate/${itemId}`,
-        formData
-      )
-      .then((response) => {
-        console.log(response);
-        if (!response.data.error) {
-          Swal.fire({
-            title: "Updated!",
-            text: "Your have been updated the list successfully.",
-            icon: "success",
-            confirmButtonColor: "#3085d6",
-            confirmButtonText: "OK",
-          }).then((result) => {
-            if (result.isConfirmed) {
-              window.location.reload();
-            }
-          });
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-  const handleItem = (item) => {
-    setSubCategoryNameEn2(item?.subCategoryName_en || "");
-    setSubCategoryNameAr2(item?.subCategoryName_ar || "");
-    setImage2(item?.category_Id?.categoryPic || "");
-    setItem(item);
-  };
   return (
     <>
       <div
@@ -301,18 +355,23 @@ function SubCategory(props) {
             </div>
             <form
               className="form-design py-4 px-3 help-support-form row align-items-end justify-content-between"
-              encType="multipart/form-data"
-              onSubmit={handleSubmit}
+              action=""
+              onSubmit={handleSubmit(handleOnSave)}
+              noValidate
             >
               <div className="form-group col-12">
-                <label htmlFor="">Select Category</label>
+                <label htmlFor="categoryId">Select Category</label>
                 <select
-                  className="select form-control"
+                  className={classNames("form-control", {
+                    "is-invalid": errors.categoryId,
+                  })}
                   multiple=""
                   name="categoryId"
-                  id="selectCategory"
-                  value={subCategory.categoryId}
-                  onChange={handleInputChange}
+                  id="categoryId"
+                  {...register("categoryId", {
+                    required: "Please Select Category*",
+                  })}
+                  // onChange={handleInputChange}
                 >
                   <option value="">Select Category</option>
                   {Array.isArray(categories) &&
@@ -322,38 +381,71 @@ function SubCategory(props) {
                       </option>
                     ))}
                 </select>
+                {errors.categoryId && !subCategory.categoryId && (
+                  <small className="errorText mx-1 fw-bold text-danger">
+                    {errors.categoryId?.message}
+                  </small>
+                )}
               </div>
               <div className="form-group col">
-                <label htmlFor="">
+                <label htmlFor="subCategoryEn">
                   Enter Sub Category Name (En)
                   <span className="required-field text-danger">*</span>
                 </label>
                 <input
-                  type="text"
-                  className="form-control"
-                  name="nameEn"
-                  id="nameEn"
-                  value={subCategory.nameEn}
-                  onChange={handleInputChange}
-                  required
-                  minLength="3"
+                  className={classNames("form-control", {
+                    "is-invalid": errors.subCategoryEn,
+                  })}
+                  id="subCategoryEn"
+                  name="subCategoryEn"
+                  {...register("subCategoryEn", {
+                    required: "Sub Category Name(En) is required!",
+                    pattern: {
+                      value: /^[A-Za-z\s]{1,}[\.]{0,1}[A-Za-z\s]{0,}$/,
+                      message: "Special Character not allowed!",
+                    },
+
+                    maxLength: {
+                      value: 100,
+                      message: "Max length is 100 characters!",
+                    },
+                  })}
                 />
+                {errors.subCategoryEn && (
+                  <small className="errorText mx-1 fw-bold text-danger">
+                    {errors.subCategoryEn.message}*
+                  </small>
+                )}
               </div>
               <div className="form-group col">
-                <label htmlFor="">
+                <label htmlFor="subCategoryAr">
                   Enter Sub Category Name (Ar)
                   <span className="required-field text-danger">*</span>
                 </label>
                 <input
-                  type="text"
-                  className="form-control"
-                  name="nameAr"
-                  id="nameAr"
-                  value={subCategory.nameAr}
-                  onChange={handleInputChange}
-                  required
-                  minLength="3"
+                  className={classNames("form-control", {
+                    "is-invalid": errors.subCategoryAr,
+                  })}
+                  id="subCategoryAr"
+                  name="subCategoryAr"
+                  {...register("subCategoryAr", {
+                    required: "Sub Category Name(Ar) is required!",
+                    // pattern: {
+                    //   value: /^[A-Za-z\s]{1,}[\.]{0,1}[A-Za-z\s]{0,}$/,
+                    //   message: "Special Character not allowed!",
+                    // },
+
+                    maxLength: {
+                      value: 100,
+                      message: "Max length is 100 characters!",
+                    },
+                  })}
                 />
+                {errors.subCategoryAr && (
+                  <small className="errorText mx-1 fw-bold text-danger">
+                    {errors.subCategoryAr.message}*
+                  </small>
+                )}
               </div>
 
               <div className="form-group col-auto">
@@ -361,26 +453,45 @@ function SubCategory(props) {
                   <span>Upload Image</span>
                   <label
                     htmlFor="uploadImage"
-                    style={{ marginTop: "-1px", height: "63%" }}
+                    style={{ marginTop: "-1px", height: "50px" }}
                   >
                     <i className="fal fa-camera me-1"></i>
                     Choose File{" "}
                   </label>
                   <input
                     type="file"
-                    className="form-control"
+                    // className="form-control"
                     name="uploadImage"
                     id="uploadImage"
+                    className={classNames("form-control", {
+                      "is-invalid":
+                        errors.uploadImage && !subCategory.subCategoryPic,
+                    })}
+                    // id="uploadImage"
+                    {...register("uploadImage", {
+                      required: "Image required!",
+                    })}
+                    // style={{
+                    //   marginLeft: "15px",
+                    //   width: "95%",
+                    // }}
+                    // onChange={handleFileChange}
                     onChange={handleFileChange}
                     style={{ marginLeft: "10px", width: "95%" }}
                     required
                     accept=".jpg, .jpeg, .png"
                   />
-                  <div className="invalid-feedback">
+
+                  <div className="invalid-feedback fw-bold">
                     Please choose a valid image file (JPG, JPEG, or PNG).
                   </div>
                 </div>
               </div>
+              {errors.uploadImage && (
+                <div className="invalid-feedback fw-bold">
+                  {errors.uploadImage.message}*
+                </div>
+              )}
               <div className="form-group col-auto">
                 <button type="submit" className="comman_btn2">
                   Save
@@ -394,7 +505,7 @@ function SubCategory(props) {
                 <h2>Sub Category List</h2>
               </div>
               <div className="col-3">
-                <form className="form-design" onSubmit={handleSearch1}>
+                <form className="form-design">
                   <div className="form-group mb-0 position-relative icons_set">
                     <input
                       type="text"
@@ -422,114 +533,16 @@ function SubCategory(props) {
             <div className="row">
               <div className="col-12 comman_table_design px-0">
                 <div className="table-responsive">
-                  <table className="table mb-0">
-                    <thead>
-                      <tr>
-                        <th>S.No.</th>
-                        <th>Category Name</th>
-                        <th>Sub Category Name (EN)</th>
-                        <th>Sub Category Name (AR)</th>
-                        <th>Media</th>
-                        {/* <th>SHIPMENT SERVICE</th> */}
-                        <th>Status</th>
-                        <th>Action</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {subCategoryList?.map((value, index) => (
-                        <tr key={index}>
-                          <td>{index + 1}</td>
-                          <td>{value?.category_Id?.categoryName_en}</td>
-                          <td>{value?.subCategoryName_en}</td>
-                          <td>{value.subCategoryName_ar}</td>
-                          <td>
-                            <img
-                              className="table_img"
-                              src={value?.subCategoryPic}
-                              alt=""
-                            />
-                          </td>
-                          {/* <td>
-                            <form className="table_btns d-flex align-items-center">
-                              <div className="check_toggle">
-                                <input
-                                  defaultChecked
-                                  type="checkbox"
-                                  name={`s${index}`}
-                                  id={`s${index}`}
-                                  className="d-none"
-                                  data-bs-toggle="modal"
-                                  data-bs-target="#staticBackdrop2"
-                                />
-                                <label htmlFor={`s${index}`}></label>
-                              </div>
-                            </form>
-                          </td> */}
-                          <td style={{ cursor: "not-allowed" }}>
-                            <form className="table_btns d-flex align-items-center">
-                              <div className="check_toggle">
-                                <input
-                                  defaultChecked={value?.status}
-                                  type="checkbox"
-                                  name={`r${index}`}
-                                  id={`r${index}`}
-                                  className="d-none"
-                                  // data-bs-toggle="modal"
-                                  // data-bs-target="#staticBackdrop3"
-                                  disabled
-                                />
-                                <label htmlFor={`r${index}`}></label>
-                              </div>
-                            </form>
-                          </td>
-                          <td>
-                            <Link
-                              data-bs-toggle="modal"
-                              data-bs-target="#staticBackdrop10"
-                              className="comman_btn2 table_viewbtn"
-                              to=""
-                              onClick={() => {
-                                handleItem(value);
-                                setItemId(value?._id);
-                              }}
-                            >
-                              Edit
-                            </Link>
-                            <Link
-                              className="comman_btn2 table_viewbtn ms-2"
-                              // data-bs-toggle="modal"
-                              // data-bs-target="#delete"
-                              to="#"
-                              onClick={() => {
-                                Swal.fire({
-                                  title: "Are you sure?",
-                                  text: "You won't be able to revert this!",
-                                  icon: "warning",
-                                  showCancelButton: true,
-                                  confirmButtonColor: "#3085d6",
-                                  cancelButtonColor: "#d33",
-                                  confirmButtonText: "Yes, delete it!",
-                                }).then((result) => {
-                                  if (result.isConfirmed) {
-                                    deleteSubCategory(value?._id);
-                                    Swal.fire(
-                                      "Deleted!",
-                                      `${value?.subCategoryName_en}  item has been deleted.`,
-                                      "success"
-                                    ).then(() => {
-                                      subCategoryManagementList();
-                                    });
-                                  }
-                                });
-                              }}
-                            >
-                              Delete
-                            </Link>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                  <MDBDataTable
+                    bordered
+                    displayEntries={false}
+                    className="mt-0"
+                    hover
+                    data={subCategories}
+                    noBottomColumns
+                    sortable
+                    searching={false}
+                  />
                 </div>
               </div>
             </div>
@@ -556,13 +569,54 @@ function SubCategory(props) {
                 className="btn-close"
                 data-bs-dismiss="modal"
                 aria-label="Close"
+                id="deletesubcate"
               ></button>
             </div>
             <div className="modal-body">
               <form
                 className="form-design p-3 help-support-form row align-items-end justify-content-center"
                 action=""
+                onSubmit={handleSubmit2(onSubmit2)}
               >
+                <div className="form-group col-12 mb-3">
+                  <div className="banner-profile position-relative d-flex align-items-center justify-content-center">
+                    <div
+                      className="banner-Box bg-light"
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        height: "auto",
+                        // width: "150px",
+                      }}
+                    >
+                      <>
+                        <img
+                          src={files?.editImage}
+                          className="img-fluid"
+                          alt="..."
+                          style={{ width: "40vh" }}
+                        />{" "}
+                        {/* <div>150 X 150</div> */}
+                      </>
+                    </div>
+                    <div className="p-image">
+                      <label htmlFor="editImage">
+                        <i className="upload-button fas fa-camera" />
+                      </label>
+                      <input
+                        className="form-control d-none"
+                        type="file"
+                        accept="image/*"
+                        name="editImage"
+                        id="editImage"
+                        onChange={(e) => onFileSelection(e, "editImage")}
+                      />
+                    </div>
+                  </div>
+                </div>
+
                 <div className="form-group col-12">
                   <label htmlFor="">Select Category</label>
                   <select
@@ -574,10 +628,11 @@ function SubCategory(props) {
                     onChange={handleInputChange1}
                     // onChange={(e) => setCategoryNew(e.target.value)}
                     // defaultValue={item?.category_Id?.categoryName_en}
+                    {...register2("categoryId1", {
+                      // required: "Please Select Category*",
+                    })}
                   >
-                    <option value="" disabled>
-                      Select Category
-                    </option>
+                    <option value="">Select Category</option>
                     {categories.map((category) => (
                       <option key={category._id} value={category?._id}>
                         {category?.categoryName_en}
@@ -586,31 +641,59 @@ function SubCategory(props) {
                   </select>
                 </div>
                 <div className="form-group col-6">
-                  <label htmlFor="">Enter Subcategory Category Name (En)</label>
+                  <label htmlFor="editCatename_en">
+                    Enter Category Name (En)
+                  </label>
                   <input
-                    type="text"
-                    className="form-control"
-                    name="nameEn"
-                    id="nameEn"
-                    defaultValue={subCategoryNameEn2}
-                    // defaultValue={props.newCategory.nameEn}
-                    onChange={handleInputChange1}
+                    className={classNames("form-control", {
+                      // "is-invalid": errors2.editCatename_en,
+                    })}
+                    name="editCatename_en"
+                    id="editCatename_en"
+                    {...register2("editCatename_en", {
+                      // required: "Category Name is required!",
+                      // pattern: {
+                      //   value: /^[A-Za-z\s]{1,}[\.]{0,1}[A-Za-z\s]{0,}$/,
+                      //   message: "Special Character not allowed!",
+                      // },
+                      maxLength: {
+                        value: 100,
+                        message: "Max length is 100 characters!",
+                      },
+                    })}
                   />
+                  {errors2.editCatename_en && (
+                    <small className="errorText mx-1 text-danger">
+                      *{errors2.editCatename_en?.message}
+                    </small>
+                  )}
                 </div>
                 <div className="form-group col-6">
-                  <label htmlFor="">Enter Sub Category Name (Ar)</label>
+                  <label htmlFor="editCatename_ar">
+                    Enter Category Name (Ar)
+                  </label>
                   <input
                     type="text"
-                    className="form-control"
-                    name="nameAr"
-                    id="nameAr"
-                    defaultValue={subCategoryNameAr2}
-                    // defaultValue={props.newCategory.nameEn}
-                    onChange={handleInputChange1}
+                    className={classNames("form-control", {
+                      // "is-invalid": errors2.editCatename_ar,
+                    })}
+                    name="editCatename_ar"
+                    id="editCatename_ar"
+                    {...register2("editCatename_ar", {
+                      // required: "Category Name is required!",
+                      // maxLength: {
+                      //   value: 20,
+                      //   message: "Max length is 20 characters!",
+                      // },
+                    })}
                   />
+                  {errors2.editCatename_ar && (
+                    <small className="errorText mx-1 text-danger">
+                      *{errors2.editCatename_ar?.message}
+                    </small>
+                  )}
                 </div>
-
-                <div className="form-group col-12 choose_file position-relative">
+                {/* <div className="form-group col-12 choose_file position-relative">
                   <span>Upload Image</span>
                   <label htmlFor="upload_video">
                     <i className="fal fa-camera me-1"></i>Choose File{" "}
@@ -618,16 +701,14 @@ function SubCategory(props) {
                   <input
                     type="file"
                     className="form-control"
-                    // defaultValue={image2}
-                    name="uploadImage"
-                    id="uploadImage"
-                    onChange={(e) => handleFileChange1(e, "uploadImage")}
-                    // onChange={handleFileChange}
+                    // defaultValue={props?.newCategory?.categoryPic}
+                    name="upload_video"
+                    id="upload_video"
+                    onChange={(e) => handleFileChange(e, "uploadImage")}
                   />
-                  {image2}
-                </div>
+                </div> */}
                 <div className="form-group mb-0 col-auto">
-                  <button className="comman_btn2" onClick={handleSaveChanges1}>
+                  <button className="comman_btn2" type="submit">
                     Save
                   </button>
                 </div>
@@ -636,6 +717,7 @@ function SubCategory(props) {
           </div>
         </div>
       </div>
+
       <div
         className="modal fade Update_modal"
         id="staticBackdrop2"

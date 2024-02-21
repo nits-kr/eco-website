@@ -19,8 +19,10 @@ import {
 } from "../../services/Post";
 import Sidebar from "../Sidebar";
 import { FadeLoader } from "react-spinners";
+import { useSelector } from "react-redux";
 
 function Staff() {
+  const ecomAdmintoken = useSelector((data) => data?.local?.token);
   let [loading, setLoading] = useState(false);
 
   const [values, setValues] = useState({ from: "", to: "" });
@@ -130,7 +132,7 @@ function Staff() {
 
   const EditStaff = async (i) => {
     setIds(i);
-    const { data } = await getStaffDetails(i);
+    const { data } = await getStaffDetails({ i, ecomAdmintoken });
     if (!data?.error) {
       let info = data?.results?.staffMember;
 
@@ -191,14 +193,16 @@ function Staff() {
 
     console.log(data, selectOptions);
     setLoading(true);
-    const response = await AddStaff({
+    const alldata = {
       staffName: data?.name?.trim(),
       userEmail: data?.email?.trim(),
       modules: (selectOptions.optionSelected || [])?.map((item) => item?.value),
       password: data?.NewPassword,
       confirm_password: data?.ConfirmPassword,
       type: "subAdmin",
-    });
+      ecomAdmintoken: ecomAdmintoken,
+    };
+    const response = await AddStaff(alldata);
     setLoading(false);
     console.log("response add staff", response);
     if (response?.data?.message === "Success") {
@@ -236,12 +240,14 @@ function Staff() {
   }, [searchQuery]);
 
   const getStaff = async (date) => {
-    await getAllStaff({
+    const data = {
       year: date,
       from: values.from,
       to: values.to,
       search: searchQuery,
-    }).then((res) => {
+      ecomAdmintoken: ecomAdmintoken,
+    };
+    await getAllStaff(data).then((res) => {
       const newRows = [];
       if (res) {
         let data = res?.data?.results?.list;
@@ -357,6 +363,7 @@ function Staff() {
       const formData = {
         status: newStatus,
         ids: id,
+        ecomAdmintoken: ecomAdmintoken,
       };
 
       if (result.isConfirmed) {
@@ -416,6 +423,7 @@ function Staff() {
       modules: (selectEditOptions1.optionSelected || [])?.map(
         (item) => item?.value
       ),
+      ecomAdmintoken: ecomAdmintoken,
     };
 
     const res = await updateStaff(formData);

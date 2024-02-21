@@ -18,20 +18,13 @@ import {
 import { useAgentDetailsAllMutation } from "../services/Post";
 import { useDeleteOrderMutation } from "../services/Post";
 import { useBlockUserMutation } from "../services/Post";
+import { useSelector } from "react-redux";
 
 function AgentDetailsAll() {
-  axios.defaults.headers.common["x-auth-token-user"] =
-    localStorage.getItem("token");
-  const { id: routeId } = useParams();
-  const [
-    agentDetails,
-    isError,
-    isLoading,
-    isSuccess,
-    isUninitialized,
-    originalArgs,
-    error,
-  ] = useAgentDetailsAllMutation(routeId);
+  const ecomAdmintoken = useSelector((data) => data?.local?.token);
+
+  const { id } = useParams();
+  const [agentDetails, isLoading] = useAgentDetailsAllMutation();
   const [deleteOrder] = useDeleteOrderMutation();
   const [blockUser, res] = useBlockUserMutation();
   const [address, setAddress] = useState([]);
@@ -41,15 +34,19 @@ function AgentDetailsAll() {
   const [totalOrder, setTotalOrder] = useState([]);
   const [status, setStatus] = useState(false);
 
+  console.log("id", id);
+
   useEffect(() => {
-    userDetail();
-  }, []);
+    if (id) {
+      userDetail(id);
+    }
+  }, [id]);
 
   const userDetail = async () => {
     const userdetailId = {
-      id: routeId,
+      id: id,
     };
-    const response = await agentDetails(userdetailId);
+    const response = await agentDetails({ id, ecomAdmintoken });
     setAddress(response?.data?.results?.address);
     setOrder(response?.data?.results?.details);
     setReview(response?.data?.results?.review);
@@ -91,7 +88,7 @@ function AgentDetailsAll() {
 
     if (confirmationResult.isConfirmed) {
       const editStatus = {
-        id: routeId,
+        id: id,
         status: newStatus,
       };
       try {

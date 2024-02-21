@@ -3,9 +3,18 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
 import Sidebar from "./Sidebar";
-import { useDeleteContactMutation } from "../services/Post";
+import {
+  useDeleteContactMutation,
+  useGetContactListQuery,
+} from "../services/Post";
 import { useCreateContactMutation } from "../services/Post";
+import { useSelector } from "react-redux";
 function ContactUs() {
+  const ecomAdmintoken = useSelector((data) => data?.local?.token);
+
+  const { data: contactListdata } = useGetContactListQuery({
+    ecomAdmintoken,
+  });
   const [deleteContact, response] = useDeleteContactMutation();
   const [createContact, responseInfo] = useCreateContactMutation();
   const [contactList, setContactList] = useState("");
@@ -21,112 +30,26 @@ function ContactUs() {
   const [descriptionAr, setDescriptionAr] = useState([]);
   console.log("item id", itemId);
   const [viewContact, setViewContact] = useState("");
-  axios.defaults.headers.common["x-auth-token-user"] =
-    localStorage.getItem("token");
+
+  useEffect(() => {
+    if (contactListdata) {
+      setContactList(contactListdata?.results?.list);
+    }
+  }, [contactListdata]);
+
   const url = `${process.env.REACT_APP_APIENDPOINT}admin/contact/contact/contactList`;
   const url2 = `${process.env.REACT_APP_APIENDPOINT}admin/order/order/search`;
   useEffect(() => {
-    handleView();
+    if (itemId) {
+      handleView(itemId);
+    }
   }, [itemId]);
 
-  const handleView = async (e) => {
+  const handleView = async (itemId) => {
     const { data } = await axios.post(
       `${process.env.REACT_APP_APIENDPOINT}admin/contact/contact/contactView/${itemId}`
     );
     setViewContact(data?.results?.contactData);
-  };
-
-  useEffect(() => {
-    fetchInformationList();
-  }, []);
-  const fetchInformationList = async () => {
-    const { data } = await axios.post(url);
-    setContactList(data.results.list.reverse());
-  };
-
-  const userList2 = async () => {
-    if (!startDate1) return;
-    try {
-      const { data } = await axios.post(url, {
-        startDate1,
-      });
-      const filteredUsers = data?.results?.list?.filter(
-        (user) =>
-          new Date(user?.createdAt?.slice(0, 10)).toISOString().slice(0, 10) ===
-          new Date(startDate1).toISOString().slice(0, 10)
-      );
-      if (filteredUsers.length === 0) {
-        setContactList([]);
-        await Swal.fire({
-          title: "No List Found",
-          text: "No list is available for the selected date.",
-          icon: "warning",
-          confirmButtonText: "OK",
-        }).then((result) => {
-          if (result.isConfirmed) {
-            fetchInformationList();
-          }
-        });
-      } else if (filteredUsers.length > 0) {
-        await Swal.fire({
-          title: "List Found!",
-          text: "list is available for the selected date.",
-          icon: "success",
-          confirmButtonText: "OK",
-        }).then((result) => {
-          if (result.isConfirmed) {
-            setContactList(filteredUsers);
-          }
-        });
-      }
-      setContactList(filteredUsers);
-      console.log(data);
-    } catch (error) {
-      console.error("Error fetching user list:", error);
-    }
-  };
-  useEffect(() => {
-    userList2();
-  }, [startDate1]);
-
-  const handleSearch = (e) => {
-    e.preventDefault();
-    axios
-      .post(url, {
-        from: startDate,
-        to: endDate,
-      })
-      .then((response) => {
-        const list = response?.data?.results?.list?.reverse();
-        if (list && list.length > 0) {
-          Swal.fire({
-            title: "List Found!",
-            text: "list is available for the selected date.",
-            icon: "success",
-            confirmButtonText: "OK",
-          }).then((result) => {
-            if (result.isConfirmed) {
-              setContactList(list);
-            }
-          });
-          // setContactList(list);
-        } else {
-          setContactList([]);
-          Swal.fire({
-            icon: "warning",
-            title: "No data found!",
-            text: "There is no list between the selected dates.",
-            confirmButtonText: "OK",
-          }).then((result) => {
-            if (result.isConfirmed) {
-              fetchInformationList();
-            }
-          });
-        }
-      })
-      .catch((error) => {
-        console.log(error.response.data);
-      });
   };
 
   const handleItem = (item) => {
@@ -149,7 +72,7 @@ function ContactUs() {
     }).then((result) => {
       if (result.isConfirmed) {
         // window.location.reload();
-        fetchInformationList();
+        // fetchInformationList();
       }
     });
   };
@@ -388,7 +311,7 @@ function ContactUs() {
                     <form
                       className="form-design py-4 px-3 help-support-form row align-items-end justify-content-between"
                       action=""
-                      onSubmit={handleSearch}
+                      // onSubmit={handleSearch}
                     >
                       <div className="form-group mb-0 col-5">
                         <label htmlFor="">From</label>
@@ -493,7 +416,7 @@ function ContactUs() {
                                               `${data?.userName_en}  item has been deleted.`,
                                               "success"
                                             ).then(() => {
-                                              fetchInformationList();
+                                              // fetchInformationList();
                                             });
                                           }
                                         });

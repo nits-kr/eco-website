@@ -4,9 +4,18 @@ import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 import axios from "axios";
 import Sidebar from "./Sidebar";
-import { useUpdateCoupanMutation } from "../services/Post";
+import {
+  useGetCoupanListQuery,
+  useUpdateCoupanMutation,
+} from "../services/Post";
 import { useDeleteCoupanListMutation } from "../services/Post";
+import { useSelector } from "react-redux";
 function CoupanList() {
+  const ecomAdmintoken = useSelector((data) => data?.local?.token);
+
+  const { data: coupanListdata } = useGetCoupanListQuery({
+    ecomAdmintoken,
+  });
   const [update, res] = useUpdateCoupanMutation();
   const [deleteCoupan, response] = useDeleteCoupanListMutation();
   const [coupanList, setCoupanList] = useState([]);
@@ -26,119 +35,12 @@ function CoupanList() {
   const [coupanStatus2, setCoupanStatus2] = useState([]);
   const [coupanCode2, setCoupanCode2] = useState([]);
   const [coupanDiscount2, setCoupanDiscount2] = useState([]);
-  axios.defaults.headers.common["x-auth-token-user"] =
-    localStorage.getItem("token");
-
-  const url = `${process.env.REACT_APP_APIENDPOINT}admin/coupan/coupan/list`;
-  const url2 = `${process.env.REACT_APP_APIENDPOINT}admin/coupan/coupan/search-coupan`;
-
-  const fetchCoupanList = async () => {
-    try {
-      const response = await axios.post(url);
-      setCoupanList(response?.data?.results?.list?.reverse());
-    } catch (error) {
-      console.log(error.response.data);
-    }
-  };
-  useEffect(() => {
-    fetchCoupanList();
-  }, []);
-
-  const handleSearch = (e) => {
-    e.preventDefault();
-    axios
-      .post(url, {
-        from: startDate,
-        to: endDate,
-      })
-      .then((response) => {
-        const list = response?.data?.results?.list?.reverse();
-        if (list && list.length > 0) {
-          Swal.fire({
-            title: "List Found!",
-            text: "list is available for the selected date.",
-            icon: "success",
-            confirmButtonText: "OK",
-          }).then((result) => {
-            if (result.isConfirmed) {
-              setCoupanList(list);
-            }
-          });
-          // setCoupanList(list);
-        } else {
-          setCoupanList([]);
-          Swal.fire({
-            icon: "warning",
-            title: "No data found!",
-            text: "There is no list between the selected dates.",
-            confirmButtonText: "OK",
-          }).then((result) => {
-            if (result.isConfirmed) {
-              fetchCoupanList();
-            }
-          });
-        }
-      })
-      .catch((error) => {
-        console.log(error.response.data);
-      });
-  };
 
   useEffect(() => {
-    handleSearch1();
-  }, [searchQuery]);
-
-  const handleSearch1 = async () => {
-    try {
-      const url1 = searchQuery !== "" ? url2 : url;
-      const response = await axios.post(url1, {
-        coupanTitle_en: searchQuery,
-      });
-      const { error, results } = response.data;
-      if (error) {
-        setCoupanList([]);
-        Swal.fire({
-          title: "Error!",
-          // text: error.response.data,
-          text: "Error searching for products. Data is not found",
-          icon: "error",
-          confirmButtonText: "OK",
-        }).then((result) => {
-          if (result.isConfirmed) {
-            fetchCoupanList();
-          }
-        });
-        // throw new Error("Error searching for products. Data is not found.");
-      } else {
-        setCoupanList(
-          searchQuery !== "" ? results?.coupanData : results?.list?.reverse()
-        );
-      }
-    } catch (error) {
-      if (error.response) {
-        Swal.fire({
-          title: "Error!",
-          text: error.response.data,
-          icon: "error",
-          confirmButtonText: "OK",
-        });
-      } else if (error.request) {
-        Swal.fire({
-          title: "Error!",
-          text: "Network error. Please try again later.",
-          icon: "error",
-          confirmButtonText: "OK",
-        });
-      } else {
-        Swal.fire({
-          title: "Error!",
-          text: error.message,
-          icon: "error",
-          confirmButtonText: "OK",
-        });
-      }
+    if (coupanListdata) {
+      setCoupanList(coupanListdata?.results?.list);
     }
-  };
+  }, [coupanListdata]);
 
   const deleteConfirm = (_id) => {
     const data = axios.delete(
@@ -206,7 +108,7 @@ function CoupanList() {
                     <form
                       className="form-design"
                       action=""
-                      onSubmit={handleSearch1}
+                      // onSubmit={handleSearch1}
                     >
                       <div className="form-group mb-0 position-relative icons_set">
                         <input
@@ -220,7 +122,7 @@ function CoupanList() {
                         />
                         <i
                           className="far fa-search"
-                          onClick={handleSearch1}
+                          // onClick={handleSearch1}
                         ></i>
                       </div>
                     </form>
@@ -229,7 +131,7 @@ function CoupanList() {
                 <form
                   className="form-design py-4 px-3 help-support-form row align-items-end justify-content-between"
                   action=""
-                  onSubmit={handleSearch}
+                  // onSubmit={handleSearch}
                 >
                   <div className="form-group mb-0 col-5">
                     <label htmlFor="">From</label>
@@ -352,7 +254,7 @@ function CoupanList() {
                                           `${item?.coupanTitle_en}  item has been deleted.`,
                                           "success"
                                         ).then(() => {
-                                          fetchCoupanList();
+                                          // fetchCoupanList();
                                         });
                                       }
                                     });

@@ -16,13 +16,14 @@ import {
 import { useUserDetailsAllMutation } from "../services/Post";
 import { useDeleteOrderMutation } from "../services/Post";
 import { useBlockUserMutation } from "../services/Post";
+import { useSelector } from "react-redux";
 
 function UserDetailsAll() {
-  axios.defaults.headers.common["x-auth-token-user"] =
-    localStorage.getItem("token");
+  const ecomAdmintoken = useSelector((data) => data?.local?.token);
+
   const { id: routeId } = useParams();
   const [loading, setLoading] = useState(false);
-  const [userDetails, isLoading] = useUserDetailsAllMutation(routeId);
+  const [userDetails, isLoading] = useUserDetailsAllMutation();
   const [deleteOrder] = useDeleteOrderMutation();
   const [blockUser, res] = useBlockUserMutation();
   const [address, setAddress] = useState([]);
@@ -39,6 +40,7 @@ function UserDetailsAll() {
   const userDetail = async () => {
     const userdetailId = {
       id: routeId,
+      ecomAdmintoken: ecomAdmintoken,
     };
     const response = await userDetails(userdetailId);
     setAddress(response?.data?.results?.address);

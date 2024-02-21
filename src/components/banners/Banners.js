@@ -12,20 +12,41 @@ import {
   useDeleteCategorySideBannerMutation,
   useDeleteCategoryTopBannerMutation,
   useGetBannerListQuery,
+  useGetCategoryListQuery,
   useGetCatogaryBottomBannerListQuery,
   useGetCatogaryMiddleBannerListQuery,
   useGetCatogaryScrollBannerListQuery,
   useGetCatogarySideBannerListQuery,
+  useSubCategoryListMutation,
+  useSubSubCategoryListMutation,
 } from "../../services/Post";
 import Spinner from "../Spinner";
+import { useSelector } from "react-redux";
 
 function Banners(props) {
+  const ecomAdmintoken = useSelector((data) => data?.local?.token);
   const [loading, setLoading] = useState(true);
-  const { data: bannerAll } = useGetBannerListQuery();
-  const { data: sideBanner } = useGetCatogarySideBannerListQuery();
-  const { data: bottomBanner } = useGetCatogaryBottomBannerListQuery();
-  const { data: middleBanner } = useGetCatogaryMiddleBannerListQuery();
-  const { data: scrollBanner } = useGetCatogaryScrollBannerListQuery();
+  const { data: categoryListdata } = useGetCategoryListQuery({
+    ecomAdmintoken,
+  });
+  const [getSubCategory] = useSubCategoryListMutation();
+  const [getSubSubCategory] = useSubSubCategoryListMutation();
+
+  const { data: bannerAll } = useGetBannerListQuery({
+    ecomAdmintoken,
+  });
+  const { data: sideBanner } = useGetCatogarySideBannerListQuery({
+    ecomAdmintoken,
+  });
+  const { data: bottomBanner } = useGetCatogaryBottomBannerListQuery({
+    ecomAdmintoken,
+  });
+  const { data: middleBanner } = useGetCatogaryMiddleBannerListQuery({
+    ecomAdmintoken,
+  });
+  const { data: scrollBanner } = useGetCatogaryScrollBannerListQuery({
+    ecomAdmintoken,
+  });
   const [deleteTopBanner] = useDeleteCategoryTopBannerMutation();
   const [deleteMiddleBanner] = useDeleteCategoryMiddleBannerMutation();
   const [deleteBottomBanner] = useDeleteCategoryBottomBannerMutation();
@@ -66,8 +87,6 @@ function Banners(props) {
     subCategoryPic: null,
     bannerPic: null,
   });
-  axios.defaults.headers.common["x-auth-token-user"] =
-    localStorage.getItem("token");
 
   useEffect(() => {
     if (sideBanner) {
@@ -289,13 +308,7 @@ function Banners(props) {
           title: "Banner Created",
           text: "The Banner has been created successfully.",
         });
-        // setSubCategory({
-        //   nameEn: "",
-        //   nameAr: "",
-        //   categoryId: "",
-        //   subCategoryPic: null,
-        // });
-        // subCategoryManagementList();
+
         setTimeout(() => {
           window?.location?.reload();
         }, 500);
@@ -345,50 +358,33 @@ function Banners(props) {
   };
 
   useEffect(() => {
-    fetchData();
-  }, []);
-
-  const fetchData = async () => {
-    try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_APIENDPOINT}admin/category/category/list`
-      );
-      setCategories(response?.data?.results?.list);
-      console.log(response?.data?.results?.list);
-    } catch (error) {
-      console.error(error);
+    if (categoryListdata) {
+      setCategories(categoryListdata?.results?.list);
     }
+  }, [categoryListdata]);
+
+  useEffect(() => {
+    if (subCategory.categoryId) {
+      handleGetSubCategory(subCategory.categoryId);
+    }
+  }, [subCategory.categoryId]);
+  useEffect(() => {
+    if (subCategory.categoryId1) {
+      handleGetSubSubCategory(subCategory.categoryId1);
+    }
+  }, [subCategory.categoryId1]);
+
+  const handleGetSubCategory = async (id) => {
+    const res = await getSubCategory({ id, ecomAdmintoken });
+    console.log("res", res);
+    setSubCategories(res?.data?.results?.categoryData);
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.post(
-          `${process.env.REACT_APP_APIENDPOINT}admin/category/subCategory/selectCategory/${subCategory.categoryId}`
-        );
-        setSubCategories(response.data.results.categoryData);
-        console.log(response.data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    fetchData();
-  }, [subCategory.categoryId]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.post(
-          `${process.env.REACT_APP_APIENDPOINT}admin/category/subSubCategory/selectSubCategory/${subCategory.categoryId1}`
-        );
-        setSubSubCategories(response.data.results.subCategoryData);
-        console.log(response.data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    fetchData();
-  }, [subCategory.categoryId1]);
+  const handleGetSubSubCategory = async (id) => {
+    const res = await getSubSubCategory({ id, ecomAdmintoken });
+    console.log("res", res);
+    setSubSubCategories(res?.data?.results?.subCategoryData);
+  };
 
   const handleTypes = () => {
     setAddBanner(false);

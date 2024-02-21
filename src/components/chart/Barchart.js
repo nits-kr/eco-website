@@ -1,102 +1,211 @@
+// import React from "react";
+
+// import {
+//   BarChart,
+//   Bar,
+//   Rectangle,
+//   XAxis,
+//   YAxis,
+//   CartesianGrid,
+//   Tooltip,
+//   Legend,
+//   ResponsiveContainer,
+// } from "recharts";
+// import { useSelector } from "react-redux";
+
+// const Barchart = () => {
+//   const barChartData = useSelector((state) => state?.charts?.charts);
+
+//   console.log("barChartData", barChartData);
+
+//   const sortedData = barChartData?.salesDAy?.slice()?.sort((a, b) => {
+//     const dateA = new Date(a.createdAt?.slice(0, 10));
+//     const dateB = new Date(b.createdAt?.slice(0, 10));
+//     return dateA - dateB;
+//   });
+
+//   const totalCartsTotal = sortedData?.reduce(
+//     (acc, curr) => acc + curr.cartsTotal,
+//     0
+//   );
+
+//   const chartData = sortedData?.map((item) => ({
+//     date: new Date(item.createdAt).toLocaleDateString(),
+//     total: totalCartsTotal, // Use the total sum for all bars
+//   }));
+
+//   const customTickFormatter = (tick) => {
+//     const date = new Date(tick);
+//     const day = date.getDate().toString().padStart(2, "0");
+//     const month = date.toLocaleString("default", { month: "short" });
+//     return `${day} ${month}`;
+//   };
+
+//   return (
+//     <>
+//       <div
+//         style={{
+//           display: "flex",
+//           alignItems: "center",
+//           justifyContent: "center",
+//         }}
+//       >
+//         <strong
+//           style={{
+//             textTransform: "uppercase",
+//             fontWeight: "900",
+//             fontSize: "22px",
+//             height: "35px",
+//             textShadow:
+//               "0px 0px 0px rgba(0, 0, 0, 0), 1px 1px 2px rgba(0, 0, 0, 0.2)",
+//           }}
+//         >
+//           Daily Sales
+//         </strong>
+//       </div>
+
+//       <ResponsiveContainer width="100%" height={300}>
+//         <BarChart
+//           data={chartData}
+//           margin={{ top: 10, right: 30, left: 30, bottom: 0 }}
+//         >
+//           <defs>
+//             <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
+//               <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8} />
+//               <stop offset="95%" stopColor="#8884d8" stopOpacity={0} />
+//             </linearGradient>
+//           </defs>
+//           <XAxis
+//             dataKey="createdAt"
+//             tickFormatter={customTickFormatter}
+//             type="category"
+//           />
+//           <YAxis
+//             tickFormatter={(value) => `$${value.toFixed(2)}`}
+//             label={{
+//               angle: -90,
+//               position: "insideLeft",
+//             }}
+//           />
+//           <CartesianGrid strokeDasharray="3 3" />
+//           <Tooltip
+//             formatter={(value) => [`$${value.toFixed(2)}k`, "Y Value"]}
+//             labelFormatter={(label) => customTickFormatter(label)}
+//           />
+//           <Bar
+//             type="monotone"
+//             dataKey="total"
+//             stroke="#8884d8"
+//             fillOpacity={1}
+//             fill="url(#colorUv)"
+//           />
+//         </BarChart>
+//       </ResponsiveContainer>
+//     </>
+//   );
+// };
+
+// export default Barchart;
+
 import React from "react";
-import CanvasJSReact from "@canvasjs/react-charts";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
 import { useSelector } from "react-redux";
 
-const CanvasJSChart = CanvasJSReact.CanvasJSChart;
-
 const Barchart = () => {
-  const selector = useSelector((state) => state?.charts?.charts);
-  const options = {
-    title: {
-      text: " Daily Sales",
+  const barChartData = useSelector((state) => state?.charts?.charts);
+
+  console.log("barChartData", barChartData);
+
+  const sortedData = barChartData?.salesDAy?.slice()?.sort((a, b) => {
+    const dateA = new Date(a.createdAt?.slice(0, 10));
+    const dateB = new Date(b.createdAt?.slice(0, 10));
+    return dateA - dateB;
+  });
+
+  const totalCartsTotal = sortedData?.reduce(
+    (acc, curr) => acc + curr.cartsTotal,
+    0
+  );
+
+  // Prepare data for the chart - ensure only one item in the array
+  const chartData = [
+    {
+      date: new Date(sortedData?.[0]?.createdAt)?.toLocaleDateString(),
+      total: totalCartsTotal, // Use the total sum for all bars
     },
-    height: 300,
-    dataPointWidth: 10,
-    data: [
-      {
-        type: "column",
-        dataPoints: [
-          { label: "Apple", y: 10 },
-          { label: "Orange", y: 15 },
-          { label: "Banana", y: 5 },
-          { label: "Mango", y: 10 },
-          { label: "Grape", y: 18 },
-          { label: "Mango", y: 10 },
-          { label: "Grape", y: 8 },
-        ],
-      },
-    ],
+  ];
+
+  const customTickFormatter = (tick) => {
+    const date = new Date(tick);
+    const day = date.getDate().toString().padStart(2, "0");
+    const month = date.toLocaleString("default", { month: "short" });
+    return `${day} ${month}`;
   };
 
   return (
-    <div>
-      <CanvasJSChart options={options} />
-    </div>
+    <>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <strong
+          style={{
+            textTransform: "uppercase",
+            fontWeight: "900",
+            fontSize: "22px",
+            height: "35px",
+            textShadow:
+              "0px 0px 0px rgba(0, 0, 0, 0), 1px 1px 2px rgba(0, 0, 0, 0.2)",
+          }}
+        >
+          Daily Sales
+        </strong>
+      </div>
+
+      <ResponsiveContainer width="100%" height={300}>
+        <BarChart
+          data={chartData}
+          margin={{ top: 10, right: 30, left: 30, bottom: 0 }}
+        >
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis
+            dataKey="date"
+            tickFormatter={customTickFormatter}
+            type="category"
+          />
+          <YAxis
+            tickFormatter={(value) => `$${value.toFixed(2)}`}
+            label={{
+              angle: -90,
+              position: "insideLeft",
+            }}
+          />
+          <Tooltip
+            formatter={(value) => [`$${value.toFixed(2)}k`, "Y Value"]}
+            labelFormatter={(label) => customTickFormatter(label)}
+          />
+          <Bar
+            type="monotone"
+            dataKey="total"
+            stroke="#8884d8"
+            fillOpacity={1}
+            fill="#8884d8"
+          />
+        </BarChart>
+      </ResponsiveContainer>
+    </>
   );
 };
 
 export default Barchart;
-
-// import React from "react";
-// import {
-//   Chart as ChartJS,
-//   CategoryScale,
-//   LinearScale,
-//   BarElement,
-//   Title,
-//   Tooltip,
-//   Legend,
-// } from "chart.js";
-// import { Bar } from "react-chartjs-2";
-// // import faker from "faker";
-
-// ChartJS.register(
-//   CategoryScale,
-//   LinearScale,
-//   BarElement,
-//   Title,
-//   Tooltip,
-//   Legend
-// );
-
-// const options = {
-//   responsive: true,
-//   plugins: {
-//     legend: {
-//       position: "top",
-//     },
-//     title: {
-//       display: true,
-//       text: "Chart.js Bar Chart",
-//     },
-//   },
-// };
-
-// const labels = ["January", "February", "March", "April", "May", "June", "July"];
-
-// const generateRandomData = () => {
-//   // return labels.map(() => faker.datatype.number({ min: 0, max: 1000 }));
-//   return labels.map(() => Math.floor(Math.random() * 1000));
-// };
-
-// const data = {
-//   labels,
-//   datasets: [
-//     {
-//       label: "Dataset 1",
-//       data: generateRandomData(),
-//       backgroundColor: "rgba(255, 99, 132, 0.5)",
-//     },
-//     {
-//       label: "Dataset 2",
-//       data: generateRandomData(),
-//       backgroundColor: "rgba(53, 162, 235, 0.5)",
-//     },
-//   ],
-// };
-
-// function Barchart() {
-//   return <Bar options={options} data={data} />;
-// }
-
-// export default Barchart;

@@ -6,10 +6,14 @@ import Swal from "sweetalert2";
 import { useGetContentListQuery } from "../services/Post";
 import { useUpdateContentMutation } from "../services/Post";
 import { useCreateContentMutation } from "../services/Post";
+import { useSelector } from "react-redux";
 
 function ContentManagement() {
+  const ecomAdmintoken = useSelector((data) => data?.local?.token);
   const [createContent, responseInfo] = useCreateContentMutation();
-  const contentListItems = useGetContentListQuery();
+  const { data: contentListItems } = useGetContentListQuery({
+    ecomAdmintoken,
+  });
   const [contentList, setContentList] = useState([]);
   const [update, res] = useUpdateContentMutation();
   const [titleEn, setTitleEn] = useState("");
@@ -26,11 +30,9 @@ function ContentManagement() {
   const [titleAr3, setTitleNameAr3] = useState("");
   const [descriptionAr3, setDescriptionAr3] = useState("");
   console.log("content item id ", itemId);
-  axios.defaults.headers.common["x-auth-token-user"] =
-    localStorage.getItem("token");
+
   useEffect(() => {
-    const reversedList =
-      contentListItems?.data?.results?.list?.slice().reverse() ?? [];
+    const reversedList = contentListItems?.results?.list ?? [];
     setContentList(reversedList);
     // subContent();
   }, [contentListItems]);

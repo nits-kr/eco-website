@@ -1,18 +1,23 @@
 // localSlice.js
 import { createSlice } from "@reduxjs/toolkit";
 
-const localSlice = createSlice({
+export const localSlice = createSlice({
   name: "local",
   initialState: {
-    token: localStorage.getItem("token") || null,
+    token: localStorage.getItem("ecoAdmintoken") || null,
+    modules: localStorage.getItem("adminModules") || null,
   },
   reducers: {
     setToken: (state, action) => {
       state.token = action.payload;
-      localStorage.setItem("token", action.payload);
+      localStorage.setItem("ecoAdmintoken", action.payload);
+    },
+    setModules: (state, action) => {
+      state.modules = action.payload;
+      localStorage.setItem("adminModules", action.payload);
     },
   },
 });
 
-export const { setToken } = localSlice.actions;
+export const { setToken, setModules } = localSlice.actions;
 export default localSlice.reducer;

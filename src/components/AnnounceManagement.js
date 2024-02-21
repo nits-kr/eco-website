@@ -12,9 +12,18 @@ import {
   faDownload,
   faFileExport,
 } from "@fortawesome/free-solid-svg-icons";
-import { useDeleteAnnouncementListMutation } from "../services/Post";
+import {
+  useDeleteAnnouncementListMutation,
+  useGetAnnounceListQuery,
+} from "../services/Post";
+import { useSelector } from "react-redux";
 
 function AnnounceManagement() {
+  const ecomAdmintoken = useSelector((data) => data?.local?.token);
+
+  const { data: announceListdata } = useGetAnnounceListQuery({
+    ecomAdmintoken,
+  });
   const [deleteAnnounce, response] = useDeleteAnnouncementListMutation();
   const [announcementList, setAnnouncementList] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -26,63 +35,12 @@ function AnnounceManagement() {
     nameArText: "",
     categoryPic: null,
   });
-  axios.defaults.headers.common["x-auth-token-user"] =
-    localStorage.getItem("token");
-  const url = `${process.env.REACT_APP_APIENDPOINT}admin/announcement/announcement/list`;
-  const url2 = `${process.env.REACT_APP_APIENDPOINT}admin/announcement/announcement/search`;
-  useEffect(() => {
-    userList();
-  }, []);
-  const userList = async () => {
-    const { data } = await axios.post(url);
-    setAnnouncementList(data?.results?.list?.reverse());
-    console.log(data);
-  };
 
-  const userList2 = async () => {
-    if (!startDate1) return;
-    try {
-      const { data } = await axios.post(url, {
-        startDate1,
-      });
-      const filteredUsers = data?.results?.list?.filter(
-        (user) =>
-          new Date(user?.createdAt?.slice(0, 10)).toISOString().slice(0, 10) ===
-          new Date(startDate1).toISOString().slice(0, 10)
-      );
-      if (filteredUsers.length === 0) {
-        setAnnouncementList([]);
-        await Swal.fire({
-          title: "No List Found",
-          text: "No list is available for the selected date.",
-          icon: "warning",
-          confirmButtonText: "OK",
-        }).then((result) => {
-          if (result.isConfirmed) {
-            userList();
-          }
-        });
-      } else if (filteredUsers.length > 0) {
-        await Swal.fire({
-          title: "List Found!",
-          text: "list is available for the selected date.",
-          icon: "success",
-          confirmButtonText: "OK",
-        }).then((result) => {
-          if (result.isConfirmed) {
-            setAnnouncementList(filteredUsers);
-          }
-        });
-      }
-      setAnnouncementList(filteredUsers);
-      console.log(data);
-    } catch (error) {
-      console.error("Error fetching user list:", error);
-    }
-  };
   useEffect(() => {
-    userList2();
-  }, [startDate1]);
+    if (announceListdata) {
+      setAnnouncementList(announceListdata?.results?.list);
+    }
+  }, [announceListdata]);
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -119,7 +77,7 @@ function AnnounceManagement() {
         //     window.location.reload();
         //   }
         // });
-        userList();
+        // userList();
       }
     } catch (error) {
       console.error(error);
@@ -129,62 +87,6 @@ function AnnounceManagement() {
         title: "Error",
         text: "An error occurred while saving the list.",
       });
-    }
-  };
-
-  useEffect(() => {
-    handleSearch1();
-  }, [searchQuery]);
-
-  const handleSearch1 = async () => {
-    try {
-      const url1 = searchQuery !== "" ? url2 : url;
-      const response = await axios.post(url1, {
-        heading: searchQuery,
-      });
-      const { error, results } = response.data;
-      if (error) {
-        setAnnouncementList([]);
-        Swal.fire({
-          title: "Error!",
-          // text: error.response.data,
-          text: "Error searching for products. Data is not found",
-          icon: "error",
-          confirmButtonText: "OK",
-        }).then((result) => {
-          if (result.isConfirmed) {
-            userList();
-          }
-        });
-        // throw new Error("Error searching for products. Data is not found.");
-      } else {
-        setAnnouncementList(
-          searchQuery !== "" ? results?.searchData : results?.list?.reverse()
-        );
-      }
-    } catch (error) {
-      if (error.response) {
-        Swal.fire({
-          title: "Error!",
-          text: error.response.data,
-          icon: "error",
-          confirmButtonText: "OK",
-        });
-      } else if (error.request) {
-        Swal.fire({
-          title: "Error!",
-          text: "Network error. Please try again later.",
-          icon: "error",
-          confirmButtonText: "OK",
-        });
-      } else {
-        Swal.fire({
-          title: "Error!",
-          text: error.message,
-          icon: "error",
-          confirmButtonText: "OK",
-        });
-      }
     }
   };
 
@@ -340,7 +242,7 @@ function AnnounceManagement() {
                         <form
                           className="form-design"
                           action=""
-                          onSubmit={handleSearch1}
+                          // onSubmit={handleSearch1}
                         >
                           <div className="form-group mb-0 position-relative icons_set">
                             <input
@@ -354,7 +256,7 @@ function AnnounceManagement() {
                             />
                             <i
                               className="far fa-search"
-                              onClick={handleSearch1}
+                              // onClick={handleSearch1}
                             ></i>
                           </div>
                         </form>
@@ -422,7 +324,7 @@ function AnnounceManagement() {
                                             `${data?.heading}  item has been deleted.`,
                                             "success"
                                           ).then(() => {
-                                            userList();
+                                            // userList();
                                           });
                                         }
                                       });
