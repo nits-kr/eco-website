@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import {
+  useCreateTopBannerMutation,
   useDeleteCategoryBottomBannerMutation,
   useDeleteCategoryMiddleBannerMutation,
   useDeleteCategoryScrollBannerMutation,
@@ -47,6 +48,9 @@ function Banners(props) {
   const { data: scrollBanner } = useGetCatogaryScrollBannerListQuery({
     ecomAdmintoken,
   });
+
+  const [addTop] = useCreateTopBannerMutation();
+
   const [deleteTopBanner] = useDeleteCategoryTopBannerMutation();
   const [deleteMiddleBanner] = useDeleteCategoryMiddleBannerMutation();
   const [deleteBottomBanner] = useDeleteCategoryBottomBannerMutation();
@@ -170,20 +174,17 @@ function Banners(props) {
   const handleonSaveTop = async (event) => {
     // event.preventDefault();
     try {
-      const data = new FormData();
+      const alldata = new FormData();
       if (subCategory.subCategoryId) {
-        data.append("subSubCategory_Id", subCategory.categoryId2);
+        alldata.append("subSubCategory_Id", subCategory.categoryId2);
       }
       if (subCategory.categoryId1) {
-        data.append("subCategory_Id", subCategory.categoryId1);
+        alldata.append("subCategory_Id", subCategory.categoryId1);
       }
-      data.append("category_Id", subCategory.categoryId);
-      data.append("categoryBanner", formData.bannerPic);
+      alldata.append("category_Id", subCategory.categoryId);
+      alldata.append("categoryBanner", formData.bannerPic);
 
-      const response = await axios.post(
-        `${process.env.REACT_APP_APIENDPOINT}admin/home/homeScreen/category-banner`,
-        data
-      );
+      const response = await addTop({ alldata, ecomAdmintoken });
 
       if (!response.data.error) {
         Swal.fire({
@@ -198,9 +199,9 @@ function Banners(props) {
         //   subCategoryPic: null,
         // });
         // subCategoryManagementList();
-        setTimeout(() => {
-          window?.location?.reload();
-        }, 500);
+        // setTimeout(() => {
+        //   window?.location?.reload();
+        // }, 500);
       }
     } catch (error) {
       console.error(error);
@@ -377,13 +378,13 @@ function Banners(props) {
   const handleGetSubCategory = async (id) => {
     const res = await getSubCategory({ id, ecomAdmintoken });
     console.log("res", res);
-    setSubCategories(res?.data?.results?.categoryData);
+    setSubCategories(res?.data?.results?.subCategoryData);
   };
 
   const handleGetSubSubCategory = async (id) => {
     const res = await getSubSubCategory({ id, ecomAdmintoken });
     console.log("res", res);
-    setSubSubCategories(res?.data?.results?.subCategoryData);
+    setSubSubCategories(res?.data?.results?.subSubCategoryData);
   };
 
   const handleTypes = () => {
@@ -408,6 +409,7 @@ function Banners(props) {
 
   const handleSelectChange = (e) => {
     const selectedValue = e.target.value;
+    console.log("selectedValue", selectedValue);
     setSelectedValue(selectedValue);
     if (selectedValue !== "" && !selectedOptions.includes(selectedValue)) {
       setSelectedOptions([...selectedOptions, selectedValue]);
@@ -488,6 +490,7 @@ function Banners(props) {
                               className="btn btn-primary"
                               style={{
                                 cursor: "not-allowed",
+                                height: "40px",
                               }}
                               disabled
                             >
@@ -502,6 +505,7 @@ function Banners(props) {
                               data-bs-toggle="modal"
                               data-bs-target="#staticBackdrop"
                               className="btn btn-primary"
+                              style={{ height: "40px" }}
                             >
                               <FontAwesomeIcon icon={faPlus} /> Upload Category
                               Banner

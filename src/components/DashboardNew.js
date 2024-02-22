@@ -279,8 +279,8 @@ function DashboardNew(props) {
         ?.map((list, index) => {
           const returnData = {};
           const totalStockQuantity =
-            list.addVarient.length > 0
-              ? list.addVarient.reduce(
+            list?.addVarient?.length > 0
+              ? list?.addVarient?.reduce(
                   (sum, variant) => sum + (variant.stockQuantity || 0),
                   0
                 )
@@ -292,7 +292,7 @@ function DashboardNew(props) {
             .join(" ");
           returnData.id = list?._id;
           returnData.date = moment(list?.publishDate).format("L");
-          returnData.price = list?.addVarient[0]?.Price?.toLocaleString();
+          returnData.price = list?.varient?.[0]?.Price?.toLocaleString();
           returnData.status = (
             <div
               style={{

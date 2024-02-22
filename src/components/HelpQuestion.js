@@ -7,7 +7,7 @@ import { useCreateQuestionMutation } from "../services/Post";
 import { useForm } from "react-hook-form";
 import classNames from "classnames";
 
-export default function HelpQuestion() {
+export default function HelpQuestion({ questionList }) {
   const ecomAdmintoken = useSelector((data) => data?.local?.token);
   const [createQuestion] = useCreateQuestionMutation();
   const [questions, setQuestions] = useState({
@@ -48,7 +48,9 @@ export default function HelpQuestion() {
         confirmButtonText: "OK",
       }).then((result) => {
         if (result.isConfirmed) {
-          window.location.reload();
+          // window.location.reload();
+          document?.getElementById("questionmodalclose").click();
+          questionList();
         }
       });
     }
@@ -77,6 +79,7 @@ export default function HelpQuestion() {
                 className="btn-close"
                 data-bs-dismiss="modal"
                 aria-label="Close"
+                id="questionmodalclose"
               ></button>
             </div>
             <div className="modal-body">
@@ -96,7 +99,10 @@ export default function HelpQuestion() {
                   </label>
                 </div>
                 <div className="form-group col-6">
-                  <label htmlFor="questionEn">Question</label>
+                  <label htmlFor="questionEn">
+                    Question
+                    <span className="required-field text-danger">*</span>
+                  </label>
                   <input
                     className={classNames("form-control", {
                       "is-invalid": errors.questionEn,
@@ -108,10 +114,9 @@ export default function HelpQuestion() {
                     {...register("questionEn", {
                       required: "Question(En) is required!",
                       pattern: {
-                        value: /^[A-Za-z\s]{1,}[\.]{0,1}[A-Za-z\s]{0,}$/,
-                        message: "Special Character not allowed!",
+                        value: /^[A-Za-z].*$/,
+                        message: "Must start with a letter!",
                       },
-
                       maxLength: {
                         value: 100,
                         message: "Max length is 100 characters!",
@@ -127,6 +132,7 @@ export default function HelpQuestion() {
                 <div className="form-group col-6 text-end">
                   <label className="text-end" htmlFor="questionAr">
                     Question
+                    <span className="required-field text-danger">*</span>
                   </label>
                   <input
                     className="form-control text-end"
@@ -136,11 +142,14 @@ export default function HelpQuestion() {
                     placeholder="الرجاء إدخال سؤالك"
                     {...register("questionAr", {
                       required: "Question(Ar) is required!",
+                      // pattern: {
+                      //   value: /^[A-Za-z\s]{1,}[\.]{0,1}[A-Za-z\s]{0,}$/,
+                      //   message: "Special Character not allowed!",
+                      // },
                       pattern: {
-                        value: /^[A-Za-z\s]{1,}[\.]{0,1}[A-Za-z\s]{0,}$/,
-                        message: "Special Character not allowed!",
+                        value: /^[A-Za-z].*$/,
+                        message: "Must start with a letter!",
                       },
-
                       maxLength: {
                         value: 100,
                         message: "Max length is 100 characters!",
@@ -154,22 +163,24 @@ export default function HelpQuestion() {
                   )}
                 </div>
                 <div className="form-group col-6">
-                  <label htmlFor="answerEn">Answer</label>
+                  <label htmlFor="answerEn">
+                    Answer<span className="required-field text-danger">*</span>
+                  </label>
 
                   <textarea
                     className="form-control"
                     name="answerEn"
                     id="answerEn"
                     style={{ height: "150px" }}
-                    // value={questions.message}
                     {...register("answerEn", {
                       required: "Answer (EN) is required",
-
                       pattern: {
                         value: /^(?=.*[a-zA-Z]).{50,}$/s,
-                        message:
-                          "Please enter at least 50 characters with at least one letter.",
+                        message: "Please enter at least 50 words .",
                       },
+                      validate: (value) =>
+                        value.split(/\s+/).filter(Boolean).length >= 50 ||
+                        "Please enter at least 50 words.",
                     })}
                   />
                   {errors?.answerEn && (
@@ -180,7 +191,7 @@ export default function HelpQuestion() {
                 </div>
                 <div className="form-group col-6 text-end">
                   <label className="text-end" htmlFor="answerAr">
-                    Answer
+                    Answer<span className="required-field text-danger">*</span>
                   </label>
 
                   <textarea
@@ -197,6 +208,9 @@ export default function HelpQuestion() {
                         message:
                           "Please enter at least 50 characters with at least one letter.",
                       },
+                      validate: (value) =>
+                        value.split(/\s+/).filter(Boolean).length >= 50 ||
+                        "Please enter at least 50 words.",
                     })}
                   />
                   {errors?.answerAr && (

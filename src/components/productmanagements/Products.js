@@ -41,6 +41,7 @@ function Products(props) {
   const [productDetails] = useProductDetailsMutation();
   const [updateProduct] = useEditProductListMutation();
 
+  const [varientId, setVarientId] = useState("");
   const [loading, setLoading] = useState(false);
   const [selectedImage, setSelectedImage] = useState([]);
   const [formData, setFormData] = useState([]);
@@ -93,6 +94,8 @@ function Products(props) {
 
   console.log("state id", id);
 
+  console.log("varientId", varientId);
+
   const {
     register,
     handleSubmit,
@@ -108,6 +111,24 @@ function Products(props) {
     formState: { errors: errors2 },
     trigger2,
   } = useForm();
+
+  const [variantDetails, setvariantDetails] = useState("");
+
+  const handleVarient = (item) => {
+    setShowAddButton2(true);
+
+    setvariantDetails(item);
+
+    setVarientId(item?._id);
+    reset2({
+      SKUEn: item?.SKU,
+      SKUAr: item?.SKU_ar,
+      stockQuantity: item?.stockQuantity,
+      Price: item?.Price,
+      oldPrice: item?.oldPrice,
+      dollar: item?.dollarPrice,
+    });
+  };
 
   useEffect(() => {
     if (id) {
@@ -248,22 +269,24 @@ function Products(props) {
   };
 
   useEffect(() => {
-    if (
-      subSubCategory.categoryId ||
-      subSubCategory.categoryId1 ||
-      subSubCategory.attributeId
-    ) {
+    if (subSubCategory.categoryId || subSubCategory.categoryId1) {
       handleGetSubCategory(subSubCategory.categoryId);
       handleGrtBrandList(subSubCategory.categoryId);
       handleGetSubSubCategory(subSubCategory.categoryId1);
       handleGetAttributes(subSubCategory.categoryId);
+    }
+  }, [subSubCategory.categoryId, subSubCategory.categoryId1]);
+
+  useEffect(() => {
+    if (subSubCategory.attributeId) {
       handleGetValues(subSubCategory.attributeId);
     }
-  }, [
-    subSubCategory.categoryId,
-    subSubCategory.categoryId1,
-    subSubCategory.attributeId,
-  ]);
+  }, [subSubCategory.attributeId]);
+  useEffect(() => {
+    if (details) {
+      handleGetAttributes(details?.category_Id?._id);
+    }
+  }, [details]);
 
   const handleGetSubCategory = async (id) => {
     const res = await getSubCategory({ id, ecomAdmintoken });
@@ -405,7 +428,6 @@ function Products(props) {
 
   const handleOnSave1 = async (data) => {
     console.log("data", data);
-    console.log("subSubCategory.attributeId", subSubCategory.attributeId);
     const imageInputs = document.querySelectorAll('input[type="file"]');
     let imageSelected = false;
     imageInputs.forEach((input) => {
@@ -414,14 +436,26 @@ function Products(props) {
       }
     });
 
+    // if (!imageSelected) {
+    //   Swal.fire({
+    //     title: "Error!",
+    //     text: "Please upload at least one image.",
+    //     icon: "error",
+    //     confirmButtonColor: "#3085d6",
+    //     confirmButtonText: "OK",
+    //   });
+    //   return;
+    // }
     if (!imageSelected) {
-      Swal.fire({
-        title: "Error!",
-        text: "Please upload at least one image.",
-        icon: "error",
-        confirmButtonColor: "#3085d6",
-        confirmButtonText: "OK",
-      });
+      if (!varientId) {
+        Swal.fire({
+          title: "Error!",
+          text: "Please upload at least one image.",
+          icon: "error",
+          confirmButtonColor: "#3085d6",
+          confirmButtonText: "OK",
+        });
+      }
       return;
     }
 
@@ -1161,7 +1195,7 @@ function Products(props) {
                           action=""
                           onSubmit={handleSubmit2(handleOnSave1)}
                         >
-                          <div className="form-group col-6">
+                          {/* <div className="form-group col-6">
                             <label htmlFor="attributeId">
                               {" "}
                               Select Attribute
@@ -1194,8 +1228,47 @@ function Products(props) {
                                 {errors.attributeId?.message}
                               </small>
                             )}
-                          </div>
+                          </div> */}
 
+                          <div className="form-group col-6">
+                            <label htmlFor="attributeId">
+                              Select Attribute
+                            </label>
+                            <select
+                              // className="select form-control"
+                              className={`select form-control signup_fields  mt-1 ${
+                                errors2.attributeId &&
+                                !subSubCategory.attributeId
+                                  ? "is-invalid"
+                                  : ""
+                              }`}
+                              multiple=""
+                              name="attributeId"
+                              id="attributeId"
+                              // value={subSubCategory.valueId}
+                              {...register2("attributeId", {
+                                required: "Attribute is Required*",
+                              })}
+                              onChange={handleInputChange3}
+                            >
+                              <option value="">Select Attribute</option>
+                              {Array.isArray(attribute) &&
+                                attribute.map((subCategory) => (
+                                  <option
+                                    key={subCategory._id}
+                                    value={subCategory._id}
+                                  >
+                                    {subCategory.attributeName_en}
+                                  </option>
+                                ))}
+                            </select>
+                            {errors2.attributeId &&
+                              !subSubCategory.attributeId && (
+                                <small className="errorText mx-0 fw-bold text-danger">
+                                  {errors2.attributeId?.message}
+                                </small>
+                              )}
+                          </div>
                           <div className="form-group col-6">
                             <label htmlFor="valueId">Select Values</label>
                             <select
@@ -1396,9 +1469,12 @@ function Products(props) {
                                   height: "150px",
                                 }}
                               >
-                                {selectedImage1 ? (
+                                {selectedImage1 || variantDetails ? (
                                   <img
-                                    src={selectedImage1}
+                                    src={
+                                      selectedImage1 ||
+                                      variantDetails?.product_Pic[0]
+                                    }
                                     className="img-fluid"
                                     alt="..."
                                   />
@@ -1442,9 +1518,12 @@ function Products(props) {
                                   height: "150px",
                                 }}
                               >
-                                {selectedImage2 ? (
+                                {selectedImage2 || variantDetails ? (
                                   <img
-                                    src={selectedImage2}
+                                    src={
+                                      selectedImage2 ||
+                                      variantDetails?.product_Pic[1]
+                                    }
                                     className="img-fluid"
                                     alt="..."
                                   />
@@ -1488,9 +1567,12 @@ function Products(props) {
                                   height: "150px",
                                 }}
                               >
-                                {selectedImage3 ? (
+                                {selectedImage3 || variantDetails ? (
                                   <img
-                                    src={selectedImage3}
+                                    src={
+                                      selectedImage3 ||
+                                      variantDetails?.product_Pic[2]
+                                    }
                                     className="img-fluid"
                                     alt="..."
                                   />
@@ -1534,9 +1616,12 @@ function Products(props) {
                                   height: "150px",
                                 }}
                               >
-                                {selectedImage4 ? (
+                                {selectedImage4 || variantDetails ? (
                                   <img
-                                    src={selectedImage4}
+                                    src={
+                                      selectedImage4 ||
+                                      variantDetails?.product_Pic[3]
+                                    }
                                     className="img-fluid"
                                     alt="..."
                                   />
@@ -1569,7 +1654,10 @@ function Products(props) {
                             </div>
                           </div>
 
-                          <div className="form-group col-4 choose_file position-relative">
+                          <div
+                            className="form-group col-4 choose_file position-relative"
+                            style={{ display: varientId ? "none" : "" }}
+                          >
                             <span>Upload Image</span>
                             <label htmlFor="gallery_images">
                               <i className="fal fa-camera me-1" />
@@ -1590,7 +1678,9 @@ function Products(props) {
                             />
                           </div>
                           <div
-                            className="col-4"
+                            className={`col-${varientId ? "12" : "4"} mt-${
+                              varientId ? "3" : ""
+                            }`}
                             style={{ display: "flex", justifyContent: "end" }}
                           >
                             <button
@@ -1638,6 +1728,7 @@ function Products(props) {
                         <th>Stock</th>
                         <th>Attribute</th>
                         <th>Value</th>
+                        {/* <th>Action</th> */}
 
                         {/* <th>Action</th> */}
                       </tr>
@@ -1690,6 +1781,27 @@ function Products(props) {
                               {item?.attribute_Id?.attributeName_en || "N/A"}
                             </td>
                             <td>{item?.values_Id?.valuesName_en || "N/A"}</td>
+                            {/* <td>
+                              <>
+                                <Link
+                                  className="comman_btn table_viewbtn"
+                                  // to="/product-management"
+                                  state={{ variantid: item?._id }}
+                                  onClick={() => handleVarient(item)}
+                                >
+                                  View
+                                </Link>
+                                <Link
+                                  className="comman_btn2 table_viewbtn ms-2"
+                                  to="#"
+                                  // onClick={() => {
+                                  //   handleDeleteProduct(item._id, list);
+                                  // }}
+                                >
+                                  Delete
+                                </Link>
+                              </>
+                            </td> */}
                           </tr>
                         );
                       })}

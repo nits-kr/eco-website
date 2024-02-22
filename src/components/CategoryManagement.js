@@ -8,7 +8,7 @@ import Value from "./Value";
 
 import Swal from "sweetalert2";
 import Sidebar from "./Sidebar";
-import Spinner from "./Spinner";
+// import Spinner from "./Spinner";
 import {
   useCatogaryStatusMutation,
   useCreateCategoryMutation,
@@ -21,9 +21,12 @@ import { toast } from "react-toastify";
 import { MDBDataTable } from "mdbreact";
 import { useForm } from "react-hook-form";
 import classNames from "classnames";
+import { Spinner } from "react-bootstrap";
 
 function CategoryManagement(props) {
   const ecomAdmintoken = useSelector((data) => data?.local?.token);
+
+  const [loader, setLoader] = useState(false);
 
   const [categoryListdata] = useGetCategoryListMutation();
   const [updateStatus] = useCatogaryStatusMutation();
@@ -137,72 +140,71 @@ function CategoryManagement(props) {
     if (categoryList?.length > 0) {
       const newRows = [];
 
-      categoryList
-        ?.slice()
-        ?.reverse()
-        ?.map((list, index) => {
-          const returnData = {};
-          returnData.sn = index + 1 + ".";
-          returnData.name_cate = list?.category?.name_en;
-          returnData.name_en = list?.categoryName_en;
-          returnData.name_ar = list?.categoryName_ar;
-          returnData.pic = (
-            <div className="">
-              <img className="table_img" src={list?.categoryPic} alt="" />
+      categoryList?.map((list, index) => {
+        const returnData = {};
+        returnData.sn = index + 1 + ".";
+        returnData.name_cate = list?.category?.name_en;
+        returnData.name_en = list?.categoryName_en;
+        returnData.name_ar = list?.categoryName_ar;
+        returnData.pic = (
+          <div className="">
+            <img className="table_img" src={list?.categoryPic} alt="" />
+          </div>
+        );
+        returnData.status = (
+          <form
+            className="table_btns d-flex align-items-center"
+            key={list?._id}
+          >
+            <div className="check_toggle">
+              <input
+                className="d-none"
+                defaultChecked={list?.status}
+                type="checkbox"
+                name={`status_${list?._id}`}
+                id={`status_${list?._id}`}
+                onChange={(e) => handleCheckboxChange(e, list?._id)}
+              />
+              <label htmlFor={`status_${list?._id}`}></label>
             </div>
-          );
-          returnData.status = (
-            <form
-              className="table_btns d-flex align-items-center"
-              key={list?._id}
+          </form>
+        );
+        returnData.action = (
+          <>
+            <Link
+              data-bs-toggle="modal"
+              data-bs-target="#staticBackdropeditCat"
+              className="comman_btn2 table_viewbtn me-2"
+              to=""
+              onClick={() => handleUpdate(list)}
             >
-              <div className="check_toggle">
-                <input
-                  className="d-none"
-                  defaultChecked={list?.status}
-                  type="checkbox"
-                  name={`status_${list?._id}`}
-                  id={`status_${list?._id}`}
-                  onChange={(e) => handleCheckboxChange(e, list?._id)}
-                />
-                <label htmlFor={`status_${list?._id}`}></label>
-              </div>
-            </form>
-          );
-          returnData.action = (
-            <>
-              <Link
-                data-bs-toggle="modal"
-                data-bs-target="#staticBackdropeditCat"
-                className="comman_btn2 table_viewbtn me-2"
-                to=""
-                onClick={() => handleUpdate(list)}
-              >
-                Edit
-              </Link>
-              <Link
-                className="comman_btn2 table_viewbtn"
-                to="#"
-                onClick={() => handleDeleteCate(list?._id)}
-              >
-                Delete
-              </Link>
-            </>
-          );
-          newRows.push(returnData);
-        });
+              Edit
+            </Link>
+            <Link
+              className="comman_btn2 table_viewbtn"
+              to="#"
+              onClick={() => handleDeleteCate(list?._id)}
+            >
+              Delete
+            </Link>
+          </>
+        );
+        newRows.push(returnData);
+      });
       setCategory({ ...category, rows: newRows });
     }
   }, [categoryList]);
 
   console.log("set form data pic", formData.categoryPic);
   const handleOnSave = async (data) => {
+    setLoader(true);
     try {
       const alldata = new FormData();
       alldata.append("categoryName_en", data.Category_name);
       alldata.append("categoryName_ar", data.Category_nameAr);
       alldata.append("categoryPic", formData.categoryPic);
       const res = await createCategory({ alldata, ecomAdmintoken });
+      setLoader(false);
 
       console.log("res,", res);
       if (res?.data?.message === "Category Create Successfully") {
@@ -548,7 +550,17 @@ function CategoryManagement(props) {
                                       className="comman_btn2"
                                       type="submit"
                                     >
-                                      Save
+                                      {loader ? (
+                                        <Spinner
+                                          style={{
+                                            height: "20px",
+                                            width: "20px",
+                                          }}
+                                        />
+                                      ) : (
+                                        "Save"
+                                      )}
+                                      {/* Save */}
                                     </button>
                                   </div>
                                 </form>

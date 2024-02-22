@@ -2,12 +2,15 @@ import React from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 import Sidebar from "./Sidebar";
+import { useSelector } from "react-redux";
+import { useUpdateQuestionMutation } from "../services/Post";
 
 const HelpEditModelEn = (props) => {
+  const ecomAdmintoken = useSelector((data) => data?.local?.token);
+
   const { formData, setFormData, refreshList, selectedQuestionId } = props;
 
-  axios.defaults.headers.common["x-auth-token-user"] =
-    localStorage.getItem("token");
+  const [updateQA] = useUpdateQuestionMutation();
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -16,13 +19,16 @@ const HelpEditModelEn = (props) => {
   const handleFormSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await axios.patch(
-        `${process.env.REACT_APP_APIENDPOINT}admin/help/help/updateQuestion/${selectedQuestionId}`,
-        {
-          Question: formData.questions,
-          Answer: formData.answers,
-        }
-      );
+      const data = {
+        Question: formData.questions,
+        Answer: formData.answers,
+        ecomAdmintoken: ecomAdmintoken,
+        selectedQuestionId: selectedQuestionId,
+      };
+      const response = await updateQA(data);
+
+      console.log("response", response);
+
       const updatedData = response.data.results.updateData;
       setFormData(updatedData);
       refreshList();
@@ -37,7 +43,8 @@ const HelpEditModelEn = (props) => {
           confirmButtonText: "OK",
         });
 
-        window.location.reload(true);
+        // window.location.reload(true);
+        document?.getElementById("qenmodal").click();
       }
     } catch (error) {
       console.error(error);
@@ -67,6 +74,7 @@ const HelpEditModelEn = (props) => {
                 className="btn-close"
                 data-bs-dismiss="modal"
                 aria-label="Close"
+                id="qenmodal"
               ></button>
             </div>
             <div className="modal-body">

@@ -29,7 +29,6 @@ import TransactionManagement from "./components/TransactionManagement";
 import TransactionDetails from "./components/TransactionDetails";
 import ThoughtsManagement from "./components/ThoughtsManagement";
 import StaffManagement from "./components/StaffManagement";
-import EditValues from "./components/EditValues";
 import CoupanList from "./components/CoupanList";
 import CreatCoupan from "./components/CreatCoupan";
 import VerificationModal from "./components/VerificationModal";
@@ -372,12 +371,7 @@ function App() {
             path="/offerDetails"
             element={<OfferDetails />}
           />
-          <Route
-            exact
-            className="active"
-            path="/editValues"
-            element={<EditValues />}
-          />
+
           <Route
             exact
             className="active"

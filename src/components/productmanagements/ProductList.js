@@ -119,17 +119,23 @@ function ProductList(props) {
     if (ecomAdmintoken) {
       handleProductList();
     }
-  }, [ecomAdmintoken, searchQuery, startDate1]);
+  }, [ecomAdmintoken, searchQuery]);
 
-  const handleProductList = async () => {
+  const handleProductList = async (e) => {
     const data = {
-      from: startDate1,
+      from: startDate,
+      to: endDate,
       search: searchQuery,
       ecomAdmintoken: ecomAdmintoken,
     };
     const res = await productLists(data);
-    console.log("res pro cate", res);
+
     setProductList(res?.data?.results?.list);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    handleProductList();
   };
 
   useEffect(() => {
@@ -359,6 +365,7 @@ function ProductList(props) {
                     <form
                       className="form-design py-4 px-3 help-support-form row align-items-end justify-content-between"
                       action=""
+                      onSubmit={handleSubmit}
                     >
                       <div className="form-group mb-0 col-5">
                         <label htmlFor="">From</label>
@@ -384,6 +391,7 @@ function ProductList(props) {
                         <button
                           className="comman_btn2"
                           disabled={startDate > endDate}
+                          // onClick={(e) => handleProductList(e)}
                         >
                           Search
                         </button>

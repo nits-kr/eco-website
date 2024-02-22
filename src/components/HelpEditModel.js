@@ -2,11 +2,14 @@ import React from "react";
 import Sidebar from "./Sidebar";
 import axios from "axios";
 import Swal from "sweetalert2";
+import { useSelector } from "react-redux";
+import { useUpdateQuestionMutation } from "../services/Post";
 
 export default function HelpEditModel(props) {
+  const ecomAdmintoken = useSelector((data) => data?.local?.token);
+
   const { formData, setFormData, refreshList, selectedQuestionId } = props;
-  axios.defaults.headers.common["x-auth-token-user"] =
-    localStorage.getItem("token");
+  const [updateQA] = useUpdateQuestionMutation();
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -15,13 +18,16 @@ export default function HelpEditModel(props) {
   const handleFormSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await axios.patch(
-        `${process.env.REACT_APP_APIENDPOINT}admin/help/help/updateQuestion/${selectedQuestionId}`,
-        {
-          Question_ar: formData.questions,
-          Answer_ar: formData.answers,
-        }
-      );
+      const data = {
+        Question_ar: formData.questions,
+        Answer_ar: formData.answers,
+        ecomAdmintoken: ecomAdmintoken,
+        selectedQuestionId: selectedQuestionId,
+      };
+      const response = await updateQA(data);
+
+      console.log("response", response);
+
       const updatedData = response.data.results.updateData;
       setFormData(updatedData);
       refreshList();
@@ -36,7 +42,8 @@ export default function HelpEditModel(props) {
           confirmButtonText: "OK",
         });
 
-        window.location.reload(true);
+        // window.location.reload(true);
+        document?.getElementById("qarmodal").click();
       }
     } catch (error) {
       console.error(error);
@@ -66,6 +73,7 @@ export default function HelpEditModel(props) {
                 className="btn-close"
                 data-bs-dismiss="modal"
                 aria-label="Close"
+                id="qarmodal"
               ></button>
             </div>
             <div className="modal-body">

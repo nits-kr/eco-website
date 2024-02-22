@@ -911,6 +911,20 @@ export const PostApi = createApi({
         };
       },
     }),
+    updateQuestion: builder.mutation({
+      query: (body) => {
+        const { ecomAdmintoken, selectedQuestionId, ...data } = body;
+
+        return {
+          url: `admin/help/help/updateQuestion/${selectedQuestionId}`,
+          method: "patch",
+          body: data,
+          headers: {
+            "x-auth-token-user": ecomAdmintoken,
+          },
+        };
+      },
+    }),
     subCatogaryStatus: builder.mutation({
       query: (body) => {
         console.log("update category", body);
@@ -1287,6 +1301,16 @@ export const PostApi = createApi({
         },
       }),
     }),
+    createTopBanner: builder.mutation({
+      query: ({ alldata, ecomAdmintoken }) => ({
+        url: `admin/home/homeScreen/category-banner`,
+        method: "POST",
+        body: alldata,
+        headers: {
+          "x-auth-token-user": ecomAdmintoken,
+        },
+      }),
+    }),
     createSubCategory: builder.mutation({
       query: ({ alldata, ecomAdmintoken }) => ({
         url: `admin/category/subCategory/createSubCategory`,
@@ -1475,4 +1499,6 @@ export const {
   useGetBrandListMutation,
   useValueListforAttributesMutation,
   useGetProductListSearchMutation,
+  useUpdateQuestionMutation,
+  useCreateTopBannerMutation,
 } = PostApi;
