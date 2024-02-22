@@ -16,8 +16,11 @@ import { MDBDataTable } from "mdbreact";
 import { useForm } from "react-hook-form";
 import classNames from "classnames";
 import { toast } from "react-toastify";
+import { Spinner } from "react-bootstrap";
 
 function Attribute() {
+  const [loader, setLoader] = useState(false);
+
   const ecomAdmintoken = useSelector((data) => data?.local?.token);
 
   const { data: categoryListdata, refetch: fetchcategoryListData } =
@@ -172,62 +175,59 @@ function Attribute() {
       // setAttributesList(attributesListdata?.results?.list);
       const newRows = [];
 
-      subAttributesList
-        ?.slice()
-        ?.reverse()
-        ?.map((list, index) => {
-          const returnData = {};
-          returnData.sn = index + 1 + ".";
-          returnData.name_cate = list?.category_Id?.categoryName_en;
-          returnData.name_subcate = list?.subCategory_Id?.subCategoryName_en;
-          returnData.name_subSubcate =
-            list?.subSubCategory_Id?.subSubCategoryName_en;
-          returnData.name_en = list?.attributeName_en;
-          returnData.name_ar = list?.attributeName_ar;
-          returnData.pic = (
-            <div className="">
-              <img className="table_img" src={list?.subCategoryPic} alt="" />
+      subAttributesList?.map((list, index) => {
+        const returnData = {};
+        returnData.sn = index + 1 + ".";
+        returnData.name_cate = list?.category_Id?.categoryName_en;
+        returnData.name_subcate = list?.subCategory_Id?.subCategoryName_en;
+        returnData.name_subSubcate =
+          list?.subSubCategory_Id?.subSubCategoryName_en;
+        returnData.name_en = list?.attributeName_en;
+        returnData.name_ar = list?.attributeName_ar;
+        returnData.pic = (
+          <div className="">
+            <img className="table_img" src={list?.subCategoryPic} alt="" />
+          </div>
+        );
+        returnData.status = (
+          <form className="table_btns d-flex align-items-center">
+            <div className="check_toggle">
+              <input
+                defaultChecked={list?.status}
+                type="checkbox"
+                name={`status_${list._id}`}
+                id={`status_${list._id}`}
+                className="d-none"
+                // data-bs-toggle="modal"
+                // data-bs-target="#staticBackdrop3"
+                disabled
+              />
+              <label htmlFor={`status_${list._id}`}></label>
             </div>
-          );
-          returnData.status = (
-            <form className="table_btns d-flex align-items-center">
-              <div className="check_toggle">
-                <input
-                  defaultChecked={list?.status}
-                  type="checkbox"
-                  name={`status_${list._id}`}
-                  id={`status_${list._id}`}
-                  className="d-none"
-                  // data-bs-toggle="modal"
-                  // data-bs-target="#staticBackdrop3"
-                  disabled
-                />
-                <label htmlFor={`status_${list._id}`}></label>
-              </div>
-            </form>
-          );
-          returnData.action = (
-            <>
-              <Link
-                data-bs-toggle="modal"
-                data-bs-target="#staticBackdropattributes"
-                className="comman_btn2 table_viewbtn me-2"
-                to=""
-                onClick={() => handleUpdate(list)}
-              >
-                Edit
-              </Link>
-              <Link
-                className="comman_btn2 table_viewbtn"
-                to="#"
-                onClick={() => handleDeleteAttribute(list?._id)}
-              >
-                Delete
-              </Link>
-            </>
-          );
-          newRows.push(returnData);
-        });
+          </form>
+        );
+        returnData.action = (
+          <>
+            <Link
+              data-bs-toggle="modal"
+              data-bs-target="#staticBackdropattributes"
+              className="comman_btn2 table_viewbtn me-2"
+              to=""
+              onClick={() => handleUpdate(list)}
+            >
+              Edit
+            </Link>
+            <Link
+              className="comman_btn2 table_viewbtn"
+              to="#"
+              onClick={() => handleDeleteAttribute(list?._id)}
+            >
+              Delete
+            </Link>
+          </>
+        );
+        newRows.push(returnData);
+      });
       setAttribute({ ...attribute, rows: newRows });
     }
   }, [subAttributesList]);
@@ -270,7 +270,12 @@ function Attribute() {
         alldata.subSubCategory_Id = data.categoryId2;
       }
 
+      setLoader(true);
+
       const response = await createAttributes({ alldata, ecomAdmintoken });
+
+      setLoader(false);
+
       console.log("response", response);
       if (response?.data?.message === "Success") {
         toast.success("Attribute Created Successfully");
@@ -296,7 +301,12 @@ function Attribute() {
         id: itemId,
       };
 
+      setLoader(true);
+
       const response = await updateAttributes(alldata);
+
+      setLoader(false);
+
       console.log("response", response);
       if (response?.data?.message === "Success") {
         toast.success("Attribute Updated Successfully");
@@ -538,8 +548,24 @@ function Attribute() {
                 <button className="comman_btn">Add More Row</button>
               </div> */}
               <div className="form-group mb-0 col-12 text-center">
-                <button type="submit" className="comman_btn2">
-                  Save
+                <button
+                  type="submit"
+                  className="comman_btn2"
+                  disabled={loader ? true : ""}
+                  style={{
+                    cursor: loader ? "not-allowed" : "pointer",
+                  }}
+                >
+                  {loader ? (
+                    <Spinner
+                      style={{
+                        height: "20px",
+                        width: "20px",
+                      }}
+                    />
+                  ) : (
+                    "Save"
+                  )}
                 </button>
               </div>
             </form>
@@ -817,8 +843,24 @@ function Attribute() {
                   />
                 </div>
                 <div className="form-group mb-0 col-auto">
-                  <button type="submit" className="comman_btn2">
-                    Save
+                  <button
+                    type="submit"
+                    className="comman_btn2"
+                    disabled={loader ? true : ""}
+                    style={{
+                      cursor: loader ? "not-allowed" : "pointer",
+                    }}
+                  >
+                    {loader ? (
+                      <Spinner
+                        style={{
+                          height: "20px",
+                          width: "20px",
+                        }}
+                      />
+                    ) : (
+                      "Save"
+                    )}
                   </button>
                 </div>
               </form>

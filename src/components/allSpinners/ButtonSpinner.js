@@ -1,4 +1,5 @@
 import React from "react";
+// import Loadings from "../Loadings.gif";
 import loading from "../loading.gif";
 
 function ButtonSpinner() {

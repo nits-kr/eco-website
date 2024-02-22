@@ -23,8 +23,11 @@ import {
 } from "../../services/Post";
 import classNames from "classnames";
 import { useForm } from "react-hook-form";
+import { Spinner } from "react-bootstrap";
 
 function Products(props) {
+  const [loader, setLoader] = useState(false);
+
   const ecomAdmintoken = useSelector((data) => data?.local?.token);
   const { data: categoryListdata, refetch: fetchcategoryListData } =
     useGetSelectCategoryListQuery({
@@ -387,8 +390,12 @@ function Products(props) {
       });
     }
 
+    setLoader(true);
+
     const res = id
       ? await updateProduct({ alldata, ecomAdmintoken, id }).then((res) => {
+          setLoader(false);
+
           Swal.fire({
             title: "Product Updated!",
             text: "Your  product has been Updated successfully.",
@@ -402,6 +409,8 @@ function Products(props) {
           });
         })
       : await createProduct({ alldata, ecomAdmintoken }).then((res) => {
+          setLoader(false);
+
           setFormData(res.data.results.saveProduct);
           console.log(res.data.results.saveProduct);
           localStorage?.setItem(
@@ -490,8 +499,12 @@ function Products(props) {
 
     console.log("alldata", alldata);
 
+    setLoader(true);
+
     try {
       const res = await addVariant({ alldata, ecomAdmintoken, productId });
+      setLoader(false);
+
       if (res) {
         setFormData(res?.data?.results?.saveVarient);
 
@@ -1018,8 +1031,27 @@ function Products(props) {
                               justifyContent: "center",
                             }}
                           >
-                            <button className="comman_btn" type="submit">
-                              {id ? "Update" : "Save"}
+                            <button
+                              className="comman_btn"
+                              type="submit"
+                              disabled={loader ? true : ""}
+                              style={{
+                                cursor: loader ? "not-allowed" : "pointer",
+                              }}
+                            >
+                              {loader ? (
+                                <Spinner
+                                  style={{
+                                    height: "20px",
+                                    width: "20px",
+                                  }}
+                                />
+                              ) : id ? (
+                                "Update"
+                              ) : (
+                                "Save"
+                              )}
+                              {/* {id ? "Update" : "Save"} */}
                             </button>
                           </div>
                         </div>
@@ -1691,8 +1723,21 @@ function Products(props) {
                               //   handleClick3();
                               //   handleOnSave1(e);
                               // }}
+                              disabled={loader ? true : ""}
+                              style={{
+                                cursor: loader ? "not-allowed" : "pointer",
+                              }}
                             >
-                              Save
+                              {loader ? (
+                                <Spinner
+                                  style={{
+                                    height: "20px",
+                                    width: "20px",
+                                  }}
+                                />
+                              ) : (
+                                "Save"
+                              )}
                             </button>
                           </div>
                         </form>

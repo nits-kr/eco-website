@@ -16,7 +16,10 @@ import { MDBDataTable } from "mdbreact";
 import { useForm } from "react-hook-form";
 import classNames from "classnames";
 import { toast } from "react-toastify";
+import { Spinner } from "react-bootstrap";
 function Value() {
+  const [loader, setLoader] = useState(false);
+
   const ecomAdmintoken = useSelector((data) => data?.local?.token);
 
   const { data: categoryListdata } = useGetSelectCategoryListQuery({
@@ -283,9 +286,9 @@ function Value() {
       if (data.categoryId2) {
         alldata.subSubCategory_Id = data.categoryId2;
       }
-
+      setLoader(true);
       const res = await createValues({ alldata, ecomAdmintoken });
-
+      setLoader(false);
       console.log("res", res);
 
       if (res?.data?.message === "Success") {
@@ -314,9 +317,9 @@ function Value() {
         ecomAdmintoken: ecomAdmintoken,
         id: itemId,
       };
-
+      setLoader(true);
       const res = await update(alldata);
-
+      setLoader(false);
       console.log("res", res);
 
       if (res?.data?.message === "Success") {
@@ -591,8 +594,24 @@ function Value() {
               </div>
 
               <div className="form-group mb-0 col-12 text-center">
-                <button type="submit" className="comman_btn2">
-                  Save
+                <button
+                  type="submit"
+                  className="comman_btn2"
+                  disabled={loader ? true : ""}
+                  style={{
+                    cursor: loader ? "not-allowed" : "pointer",
+                  }}
+                >
+                  {loader ? (
+                    <Spinner
+                      style={{
+                        height: "20px",
+                        width: "20px",
+                      }}
+                    />
+                  ) : (
+                    "Save"
+                  )}
                 </button>
               </div>
             </form>
@@ -811,8 +830,24 @@ function Value() {
                   />
                 </div>
                 <div className="form-group mb-0 col-auto">
-                  <button type="submit" className="comman_btn2">
-                    Save
+                  <button
+                    type="submit"
+                    className="comman_btn2"
+                    disabled={loader ? true : ""}
+                    style={{
+                      cursor: loader ? "not-allowed" : "pointer",
+                    }}
+                  >
+                    {loader ? (
+                      <Spinner
+                        style={{
+                          height: "20px",
+                          width: "20px",
+                        }}
+                      />
+                    ) : (
+                      "Save"
+                    )}
                   </button>
                 </div>
               </form>

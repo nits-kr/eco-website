@@ -73,13 +73,6 @@ function CoupanLists() {
     reset,
   } = useForm();
 
-  const deleteConfirm = (_id) => {
-    const data = axios.delete(
-      `${process.env.REACT_APP_APIENDPOINT}admin/coupan/coupan/delete/${_id}`
-    );
-    console.log("deleted coupan list item", data?.results?.deleteData);
-    setCoupanList([]);
-  };
   const onSubmit = async (data) => {
     try {
       const alldata = {
@@ -354,7 +347,7 @@ function CoupanLists() {
                     className="comman_btn mx-2"
                     data-bs-dismiss="modal"
                     to=""
-                    onClick={deleteConfirm}
+                    // onClick={deleteConfirm}
                   >
                     Yes
                   </Link>

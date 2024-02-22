@@ -518,6 +518,15 @@ function Banners(props) {
     }
   };
 
+  const handleClick = () => {
+    Swal.fire({
+      title: "Select Banner Type",
+      icon: "info",
+      text: "Please select a banner type.",
+      confirmButtonText: "OK",
+    });
+  };
+
   return (
     <>
       {loading}
@@ -562,7 +571,8 @@ function Banners(props) {
                       <div className="col-xxl-4">
                         {addBanner ? (
                           <span className="col-auto d-flex justify-content-end mt-3">
-                            <Link
+                            <button
+                            type="button"
                               to="#"
                               title="First Select Banner Type"
                               // data-bs-toggle="modal"
@@ -572,11 +582,12 @@ function Banners(props) {
                                 cursor: "not-allowed",
                                 height: "40px",
                               }}
-                              disabled
+                              // disabled
+                              onClick={handleClick}
                             >
                               <FontAwesomeIcon icon={faPlus} /> Upload Category
                               Banner
-                            </Link>
+                            </button>
                           </span>
                         ) : (
                           <span className="col-auto d-flex justify-content-end mt-3">
@@ -1311,13 +1322,13 @@ function Banners(props) {
                     </form>
                   </div>
 
-                  <div className="row">
-                    <hr
+                  <div className="row mt-3">
+                    {/* <hr
                       style={{
                         borderTop: "1px solid #6c757d",
                         margin: "10px 0",
                       }}
-                    />
+                    /> */}
 
                     <div
                       style={{

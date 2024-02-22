@@ -8,14 +8,17 @@ import {
   useUpdateSubCategoryMutation,
 } from "../services/Post";
 import { useDeleteSubCategoryListMutation } from "../services/Post";
-import Spinner from "./Spinner";
+// import Spinner from "./Spinner";
 import { useSelector } from "react-redux";
 import { MDBDataTable } from "mdbreact";
 import { useForm } from "react-hook-form";
 import classNames from "classnames";
 import { toast } from "react-toastify";
+import { Spinner } from "react-bootstrap";
 
 function SubCategory(props) {
+  const [loader, setLoader] = useState(false);
+
   const ecomAdmintoken = useSelector((data) => data?.local?.token);
 
   const { data: categoryListdata, refetch: fetchcategoryListData } =
@@ -188,59 +191,56 @@ function SubCategory(props) {
     if (subCategoryList?.length > 0) {
       const newRows = [];
 
-      subCategoryList
-        ?.slice()
-        ?.reverse()
-        ?.map((list, index) => {
-          const returnData = {};
-          returnData.sn = index + 1 + ".";
-          returnData.name_cate = list?.category_Id?.categoryName_en;
-          returnData.name_en = list?.subCategoryName_en;
-          returnData.name_ar = list?.subCategoryName_ar;
-          returnData.pic = (
-            <div className="">
-              <img className="table_img" src={list?.subCategoryPic} alt="" />
+      subCategoryList?.map((list, index) => {
+        const returnData = {};
+        returnData.sn = index + 1 + ".";
+        returnData.name_cate = list?.category_Id?.categoryName_en;
+        returnData.name_en = list?.subCategoryName_en;
+        returnData.name_ar = list?.subCategoryName_ar;
+        returnData.pic = (
+          <div className="">
+            <img className="table_img" src={list?.subCategoryPic} alt="" />
+          </div>
+        );
+        returnData.status = (
+          <form className="table_btns d-flex align-items-center">
+            <div className="check_toggle">
+              <input
+                defaultChecked={list?.status}
+                type="checkbox"
+                name={`r${index}`}
+                id={`r${index}`}
+                className="d-none"
+                // data-bs-toggle="modal"
+                // data-bs-target="#staticBackdrop3"
+                disabled
+              />
+              <label htmlFor={`r${index}`}></label>
             </div>
-          );
-          returnData.status = (
-            <form className="table_btns d-flex align-items-center">
-              <div className="check_toggle">
-                <input
-                  defaultChecked={list?.status}
-                  type="checkbox"
-                  name={`r${index}`}
-                  id={`r${index}`}
-                  className="d-none"
-                  // data-bs-toggle="modal"
-                  // data-bs-target="#staticBackdrop3"
-                  disabled
-                />
-                <label htmlFor={`r${index}`}></label>
-              </div>
-            </form>
-          );
-          returnData.action = (
-            <>
-              <Link
-                data-bs-toggle="modal"
-                data-bs-target="#staticBackdrop10"
-                className="comman_btn2 table_viewbtn me-2"
-                to=""
-                onClick={() => handleUpdate(list)}
-              >
-                Edit
-              </Link>
-              <Link
-                className="comman_btn2 table_viewbtn"
-                to="#"
-                onClick={() => handleDeleteSubCate(list?._id)}
-              >
-                Delete
-              </Link>
-            </>
-          );
-          newRows.push(returnData);
-        });
+          </form>
+        );
+        returnData.action = (
+          <>
+            <Link
+              data-bs-toggle="modal"
+              data-bs-target="#staticBackdrop10"
+              className="comman_btn2 table_viewbtn me-2"
+              to=""
+              onClick={() => handleUpdate(list)}
+            >
+              Edit
+            </Link>
+            <Link
+              className="comman_btn2 table_viewbtn"
+              to="#"
+              onClick={() => handleDeleteSubCate(list?._id)}
+            >
+              Delete
+            </Link>
+          </>
+        );
+        newRows.push(returnData);
+      });
       setSubCategories({ ...subCategories, rows: newRows });
     }
   }, [subCategoryList]);
@@ -294,7 +294,10 @@ function SubCategory(props) {
       alldata.append("category_Id", data.categoryId);
       alldata.append("subCategoryPic", subCategory.subCategoryPic);
 
+      setLoader(true);
+
       const response = await createSubCategory({ alldata, ecomAdmintoken });
+      setLoader(false);
 
       console.log("response from server ", response);
 
@@ -328,11 +331,15 @@ function SubCategory(props) {
         alldata.append("subCategoryPic", formData1.pic);
       }
       console.log("formData1.pic)", formData1.pic);
+
+      setLoader(true);
+
       const response = await updateSubCategory({
         alldata,
         itemId,
         ecomAdmintoken,
       });
+      setLoader(false);
 
       console.log("response from server ", response);
 
@@ -505,8 +512,24 @@ function SubCategory(props) {
                 </div>
               )}
               <div className="form-group col-auto">
-                <button type="submit" className="comman_btn2">
-                  Save
+                <button
+                  type="submit"
+                  className="comman_btn2"
+                  disabled={loader ? true : ""}
+                  style={{
+                    cursor: loader ? "not-allowed" : "pointer",
+                  }}
+                >
+                  {loader ? (
+                    <Spinner
+                      style={{
+                        height: "20px",
+                        width: "20px",
+                      }}
+                    />
+                  ) : (
+                    "Save"
+                  )}
                 </button>
               </div>
             </form>
@@ -720,8 +743,24 @@ function SubCategory(props) {
                   />
                 </div> */}
                 <div className="form-group mb-0 col-auto">
-                  <button className="comman_btn2" type="submit">
-                    Save
+                  <button
+                    className="comman_btn2"
+                    type="submit"
+                    disabled={loader ? true : ""}
+                    style={{
+                      cursor: loader ? "not-allowed" : "pointer",
+                    }}
+                  >
+                    {loader ? (
+                      <Spinner
+                        style={{
+                          height: "20px",
+                          width: "20px",
+                        }}
+                      />
+                    ) : (
+                      "Save"
+                    )}
                   </button>
                 </div>
               </form>

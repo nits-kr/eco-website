@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
 import Sidebar from "../Sidebar";
-import Spinner from "../Spinner";
+// import Spinner from "../Spinner";
 import {
   useCatogaryStatusMutation,
   useCreateBrandMutation,
@@ -20,8 +20,11 @@ import { useForm } from "react-hook-form";
 import classNames from "classnames";
 import { MDBDataTable } from "mdbreact";
 import { toast } from "react-toastify";
+import { Spinner } from "react-bootstrap";
 
 function BrandManagement(props) {
+  const [loader, setLoader] = useState(false);
+
   const ecomAdmintoken = useSelector((data) => data?.local?.token);
 
   // const { data: brandListdata, refetch: refetchbrandList } =
@@ -97,7 +100,11 @@ function BrandManagement(props) {
 
     formData.append("category_Id", data.categoryId1);
 
+    setLoader(true);
+
     const res = await updateBrand({ formData, id1, ecomAdmintoken });
+
+    setLoader(false);
     Swal.fire({
       title: "Updated!",
       text: "Your have been updated the list successfully.",
@@ -271,7 +278,11 @@ function BrandManagement(props) {
       alldata.append("brandName_ar", data.brandAr);
       alldata.append("brandPic", formData?.uploadImage);
 
+      setLoader(true);
+
       const response = await addBrand({ alldata, ecomAdmintoken });
+
+      setLoader(false);
 
       console.log(response);
       if (!response.data.error) {
@@ -497,8 +508,23 @@ function BrandManagement(props) {
                                     <button
                                       className="comman_btn2"
                                       type="submit"
+                                      disabled={loader ? true : ""}
+                                      style={{
+                                        cursor: loader
+                                          ? "not-allowed"
+                                          : "pointer",
+                                      }}
                                     >
-                                      Save
+                                      {loader ? (
+                                        <Spinner
+                                          style={{
+                                            height: "20px",
+                                            width: "20px",
+                                          }}
+                                        />
+                                      ) : (
+                                        "Save"
+                                      )}
                                     </button>
                                   </div>
                                 </form>
@@ -699,8 +725,24 @@ function BrandManagement(props) {
                 </div>
 
                 <div className="form-group mb-0 col-auto">
-                  <button type="submit" className="comman_btn2">
-                    Save
+                  <button
+                    type="submit"
+                    className="comman_btn2"
+                    disabled={loader ? true : ""}
+                    style={{
+                      cursor: loader ? "not-allowed" : "pointer",
+                    }}
+                  >
+                    {loader ? (
+                      <Spinner
+                        style={{
+                          height: "20px",
+                          width: "20px",
+                        }}
+                      />
+                    ) : (
+                      "Save"
+                    )}
                   </button>
                 </div>
               </form>

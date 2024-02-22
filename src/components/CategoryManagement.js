@@ -27,6 +27,7 @@ function CategoryManagement(props) {
   const ecomAdmintoken = useSelector((data) => data?.local?.token);
 
   const [loader, setLoader] = useState(false);
+  const [loadings, setLoadings] = useState(false);
 
   const [categoryListdata] = useGetCategoryListMutation();
   const [updateStatus] = useCatogaryStatusMutation();
@@ -239,7 +240,11 @@ function CategoryManagement(props) {
       // Log the content of the FormData object before submitting
       console.log("FormData content:", alldata);
 
+      setLoader(true);
+
       const res = await updateCategory({ alldata, ecomAdmintoken, itemId });
+
+      setLoader(false);
 
       console.log("res,", res);
       if (res?.data?.message === "Success") {
@@ -549,6 +554,12 @@ function CategoryManagement(props) {
                                     <button
                                       className="comman_btn2"
                                       type="submit"
+                                      disabled={loader ? true : ""}
+                                      style={{
+                                        cursor: loader
+                                          ? "not-allowed"
+                                          : "pointer",
+                                      }}
                                     >
                                       {loader ? (
                                         <Spinner
@@ -863,8 +874,24 @@ function CategoryManagement(props) {
                   />
                 </div> */}
                 <div className="form-group mb-0 col-auto">
-                  <button className="comman_btn2" type="submit">
-                    Save
+                  <button
+                    className="comman_btn2"
+                    type="submit"
+                    disabled={loader ? true : ""}
+                    style={{
+                      cursor: loader ? "not-allowed" : "pointer",
+                    }}
+                  >
+                    {loader ? (
+                      <Spinner
+                        style={{
+                          height: "20px",
+                          width: "20px",
+                        }}
+                      />
+                    ) : (
+                      "Save"
+                    )}
                   </button>
                 </div>
               </form>
