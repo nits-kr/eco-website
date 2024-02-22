@@ -6,12 +6,15 @@ import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import {
+  useCreateBannersMutation,
   useCreateTopBannerMutation,
+  useDeleteBannerAllListMutation,
   useDeleteCategoryBottomBannerMutation,
   useDeleteCategoryMiddleBannerMutation,
   useDeleteCategoryScrollBannerMutation,
   useDeleteCategorySideBannerMutation,
   useDeleteCategoryTopBannerMutation,
+  useGetBannerListAllQuery,
   useGetBannerListQuery,
   useGetCatogaryBottomBannerListQuery,
   useGetCatogaryMiddleBannerListQuery,
@@ -21,12 +24,16 @@ import {
   useSubCategoryListMutation,
   useSubSubCategoryListMutation,
 } from "../../services/Post";
-import Spinner from "../Spinner";
+// import Spinner from "../Spinner";
 import { useSelector } from "react-redux";
+import ButtonSpinner from "../allSpinners/ButtonSpinner";
+import "../allSpinners/spinner.css";
+import { Spinner } from "react-bootstrap";
 
 function Banners(props) {
   const ecomAdmintoken = useSelector((data) => data?.local?.token);
   const [loading, setLoading] = useState(true);
+  const [loadings, setLoadings] = useState(false);
   const { data: categoryListdata } = useGetSelectCategoryListQuery({
     ecomAdmintoken,
   });
@@ -36,6 +43,10 @@ function Banners(props) {
   const { data: bannerAll } = useGetBannerListQuery({
     ecomAdmintoken,
   });
+  const { data: bannerListAll, refetch: fetchBannerList } =
+    useGetBannerListAllQuery({
+      ecomAdmintoken,
+    });
   const { data: sideBanner } = useGetCatogarySideBannerListQuery({
     ecomAdmintoken,
   });
@@ -50,8 +61,9 @@ function Banners(props) {
   });
 
   const [addTop] = useCreateTopBannerMutation();
+  const [addAllTypesBanner] = useCreateBannersMutation();
 
-  const [deleteTopBanner] = useDeleteCategoryTopBannerMutation();
+  const [deleteTopBanner] = useDeleteBannerAllListMutation();
   const [deleteMiddleBanner] = useDeleteCategoryMiddleBannerMutation();
   const [deleteBottomBanner] = useDeleteCategoryBottomBannerMutation();
   const [deleteSideBanner] = useDeleteCategorySideBannerMutation();
@@ -78,6 +90,7 @@ function Banners(props) {
   console.log("selectedValue", selectedValue);
   const [showModal, setShowModal] = useState(false);
   console.log("selectedOptions", selectedOptions);
+  const [selectedValueUrl, setSelectedValueUrl] = useState("");
   const [formData, setFormData] = useState({
     bannerPic: null,
   });
@@ -119,6 +132,20 @@ function Banners(props) {
     }
   }, [bottomBanner]);
 
+  const [bannerListData, setBannerListData] = useState([]);
+
+  useEffect(() => {
+    if (bannerListAll) {
+      console.log("bannerListAll", bannerListAll?.results?.banners);
+      props.setProgress(10);
+      setLoading(true);
+      setTimeout(() => {
+        setBannerListData(bannerListAll?.results?.banners);
+        setLoading(false);
+        props.setProgress(100);
+      }, 1000);
+    }
+  }, [bannerListAll]);
   useEffect(() => {
     if (bannerAll) {
       console.log(bannerAll);
@@ -171,6 +198,42 @@ function Banners(props) {
     setSubCategory({ ...subCategory, [name]: value });
   };
 
+  const handleonSaveAll = async (event) => {
+    event.preventDefault();
+    try {
+      const alldata = new FormData();
+      if (subCategory.subCategoryId) {
+        alldata.append("subSubCategory_Id", subCategory.categoryId2);
+      }
+      if (subCategory.categoryId1) {
+        alldata.append("subCategory_Id", subCategory.categoryId1);
+      }
+      if (subCategory.product_Id) {
+        alldata.append("product_Id", subCategory.product_Id);
+      }
+      alldata.append("URLType", selectedValueUrl);
+      alldata.append("category_Id", subCategory.categoryId);
+      alldata.append("area", selectedValue);
+      alldata.append("image", formData.bannerPic);
+      setLoadings(true);
+
+      const response = await addAllTypesBanner({ alldata, ecomAdmintoken });
+      setLoadings(false);
+      fetchBannerList();
+
+      document.getElementById("bannermodalclose").click();
+
+      if (!response.data.error) {
+        Swal.fire({
+          icon: "success",
+          title: "Banner Created",
+          text: "The Banner has been created successfully.",
+        });
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
   const handleonSaveTop = async (event) => {
     // event.preventDefault();
     try {
@@ -392,7 +455,7 @@ function Banners(props) {
   };
 
   const handleUpdate = (item) => {
-    setBannerToShow(item?.categoryBanner[0] || null);
+    setBannerToShow(item?.image || null);
   };
   const handleUpdateSide = (item) => {
     setSideBannerToShow(item?.sideBanner[0] || null);
@@ -419,6 +482,21 @@ function Banners(props) {
     } else {
       setShowModal(false);
     }
+  };
+
+  console.log("selectedValueUrl", selectedValueUrl);
+  const handleSelectChangeuRL = (e) => {
+    const selectedValueUrl = e.target.value;
+    console.log("selectedValue", selectedValueUrl);
+    setSelectedValueUrl(selectedValueUrl);
+    // if (selectedValue !== "" && !selectedOptions.includes(selectedValue)) {
+    //   setSelectedOptions([...selectedOptions, selectedValue]);
+    // }
+    // if (selectedValue !== "") {
+    //   setShowModal(true);
+    // } else {
+    //   setShowModal(false);
+    // }
   };
 
   const handleBannersApi = () => {
@@ -471,11 +549,13 @@ function Banners(props) {
                             }}
                           >
                             <option value="">Banner Type</option>
-                            <option value="Top">Top Banner</option>
-                            <option value="Bottom">Bottom Banner</option>
-                            <option value="Side">Side Banner</option>
-                            <option value="Middle">Middle Banner</option>
-                            <option value="Scrolling">Scrolling Banner</option>
+                            <option value="Top Banner">Top Banner</option>
+                            <option value="Bottom Banner">Bottom Banner</option>
+                            <option value="Side Banner">Side Banner</option>
+                            <option value="Middle Banner">Middle Banner</option>
+                            <option value="Scrolling Banner">
+                              Scrolling Banner
+                            </option>
                           </select>
                         </form>
                       </div>
@@ -517,7 +597,7 @@ function Banners(props) {
 
                     <div className="row mt-2">
                       <div className=" d-flex justify-content-start align-items-center my-1">
-                        <strong className=" fs-4">Top Banners</strong>
+                        <strong className=" fs-4">Banners</strong>
                       </div>
                       {/* <hr /> */}
                       <div className="col-12 comman_table_design px-0">
@@ -526,7 +606,8 @@ function Banners(props) {
                             <thead>
                               <tr>
                                 <th>S.No.</th>
-                                <th>Category Name</th>
+                                <th>URL Type</th>
+                                <th>Banner Type</th>
                                 <th>Media</th>
                                 <th>Action</th>
                               </tr>
@@ -536,21 +617,19 @@ function Banners(props) {
                                 className="d-flex align-items-end justify-content-end "
                                 style={{ marginLeft: "250px" }}
                               >
-                                <Spinner />
+                                <ButtonSpinner />
                               </div>
                             ) : (
                               <tbody>
-                                {(bannerList || [])?.map((item, index) => (
+                                {(bannerListData || [])?.map((item, index) => (
                                   <tr key={index}>
                                     <td> {index + 1} </td>
-                                    <td>
-                                      {" "}
-                                      {item?.category_Id?.categoryName_en}{" "}
-                                    </td>
+                                    <td> {item?.URLType} </td>
+                                    <td> {item?.area} </td>
                                     <td>
                                       <img
                                         className="table_img"
-                                        src={item?.categoryBanner[0]}
+                                        src={item?.image}
                                         alt=""
                                       />
                                     </td>
@@ -584,18 +663,16 @@ function Banners(props) {
                                               "Yes, delete it!",
                                           }).then((result) => {
                                             if (result.isConfirmed) {
-                                              deleteTopBanner(item?._id);
+                                              deleteTopBanner({
+                                                id: item?._id,
+                                                ecomAdmintoken,
+                                              });
                                               Swal.fire(
                                                 "Deleted!",
-                                                `${item?.category_Id?.categoryName_en}  item has been deleted.`,
+                                                `${item?.area}  item has been deleted.`,
                                                 "success"
                                               ).then(() => {
-                                                const updatedOfferList =
-                                                  bannerList.filter(
-                                                    (offer) =>
-                                                      offer._id !== item?._id
-                                                  );
-                                                setBannerList(updatedOfferList);
+                                                fetchBannerList();
                                               });
                                             }
                                           });
@@ -612,7 +689,7 @@ function Banners(props) {
                         </div>
                       </div>
                     </div>
-                    <div className="row mt-5">
+                    <div className="row mt-5 d-none">
                       <div className=" d-flex justify-content-start align-items-center my-1">
                         <strong className=" fs-4">Side Banners</strong>
                       </div>
@@ -711,7 +788,7 @@ function Banners(props) {
                         </div>
                       </div>
                     </div>
-                    <div className="row mt-5">
+                    <div className="row mt-5 d-none">
                       <div className=" d-flex justify-content-start align-items-start my-1">
                         <strong className=" fs-4">Middle Banners</strong>
                       </div>
@@ -825,7 +902,7 @@ function Banners(props) {
                         </div>
                       </div>
                     </div>
-                    <div className="row mt-5">
+                    <div className="row mt-5 d-none">
                       <div className=" d-flex justify-content-start align-items-start my-1">
                         <strong className=" fs-4">Scroll Banners</strong>
                       </div>
@@ -939,7 +1016,7 @@ function Banners(props) {
                         </div>
                       </div>
                     </div>
-                    <div className="row mt-5">
+                    <div className="row mt-5 d-none">
                       <div className=" d-flex justify-content-start align-items-start my-1">
                         <strong className=" fs-4">Bottom Banners</strong>
                       </div>
@@ -1074,30 +1151,20 @@ function Banners(props) {
           <div className="modal-content border-0">
             <div className="modal-header">
               <h5 className="modal-title" id="staticBackdropLabel">
-                Add Primary Banner Image
+                Add Banner Image
               </h5>
               <button
                 type="button"
                 className="btn-close"
                 data-bs-dismiss="modal"
                 aria-label="Close"
+                id="bannermodalclose"
               ></button>
             </div>
             <div className="modal-body py-4">
               <div className="chatpart_main">
                 <div className="banner_sliders_box">
                   <div className="row Onboarding_box mb-4 mx-0">
-                    {/* <span className="head_spann">Home Screen 1</span> */}
-                    {/* <div className="check_toggle">
-                      <input
-                        type="checkbox"
-                        defaultChecked=""
-                        name="check1"
-                        id="check1"
-                        className="d-none"
-                      />
-                      <label htmlFor="check1" />
-                    </div> */}
                     <div className="form-group mb-0 col-12">
                       {/* <div className="form-group mb-0 col-3"> */}
                       <div className="banner-profile position-relative">
@@ -1129,8 +1196,6 @@ function Banners(props) {
                               <div>720 X 250</div>
                             </>
                           )}
-                          {/* <img src="..." className="img-fluid" alt="..." />{" "}
-                          <div>720 X 250</div> */}
                         </div>
                         <div className="p-image">
                           <label htmlFor="file">
@@ -1197,7 +1262,7 @@ function Banners(props) {
                   ) : null}
 
                   {subSubCategories?.length > 0 ? (
-                    <div className="form-group col-12 mt-2">
+                    <div className="form-group col-12 mt-2 mb-2">
                       <label htmlFor="" className="ms-1">
                         Sub Sub Category
                       </label>
@@ -1223,6 +1288,29 @@ function Banners(props) {
                     </div>
                   ) : null}
 
+                  <div className="col-xxl-12 mt-3">
+                    <form>
+                      <select
+                        className="form-select"
+                        id="floatingSelect1"
+                        aria-label="Floating label select example"
+                        defaultValue=" "
+                        onChange={(e) => {
+                          // setBanner(e.target.value);
+                          // handleTypes();
+                          handleSelectChangeuRL(e);
+                        }}
+                      >
+                        <option value="">URL Type</option>
+                        <option value="Product">Product</option>
+                        <option value="Category">Category</option>
+                        <option value="SubCategory">SubCategory</option>
+                        <option value="SubSubCategory">SubSubCategory</option>
+                        <option value="NoURL">NoURL</option>
+                      </select>
+                    </form>
+                  </div>
+
                   <div className="row">
                     <hr
                       style={{
@@ -1242,15 +1330,36 @@ function Banners(props) {
                         type="button"
                         className="comman_btn table_viewbtn me-1"
                         style={{ fontSize: "15px" }}
-                        onClick={handleBannersApi}
+                        onClick={(e) => handleonSaveAll(e)}
                         // onClick={handleonSave}
                       >
-                        Save
+                        {loadings ? (
+                          <Spinner style={{ height: "20px", width: "20px" }} />
+                        ) : (
+                          // <div className="lds-spinner">
+                          //   <div />
+                          //   <div />
+                          //   <div />
+                          //   <div />
+                          //   <div />
+                          //   <div />
+                          //   <div />
+                          //   <div />
+                          //   <div />
+                          //   <div />
+                          //   <div />
+                          //   <div />
+                          // </div>
+                          "Save"
+                        )}
                       </button>
                       <button
                         type="button"
                         className="comman_btn2 table_viewbtn ms-1"
                         style={{ fontSize: "15px" }}
+                        onClick={() =>
+                          document.getElementById("bannermodalclose").click()
+                        }
                       >
                         Close
                       </button>

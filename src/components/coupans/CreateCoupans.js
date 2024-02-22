@@ -5,32 +5,39 @@ import { useForm } from "react-hook-form";
 import Sidebar from "../Sidebar";
 import { useCreateCoupanMutation } from "../../services/Post";
 import classNames from "classnames";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 export default function CreatCoupans() {
+  const ecomAdmintoken = useSelector((data) => data?.local?.token);
   const [discountType, setDiscountType] = useState("");
   const [show, setShow] = useState(false);
   const [createCoupan] = useCreateCoupanMutation();
+
+  console.log("discountType", discountType);
+
+  const navigate = useNavigate();
 
   const {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm();
-
-  axios.defaults.headers.common["x-auth-token-user"] =
-    localStorage.getItem("token");
 
   const onSubmit = async (data) => {
     try {
-      // Perform submission logic
       const alldata = {
         coupanTitle_en: data.coupanTitle,
+        coupanTitle_ar: data.coupanTitleAr,
         coupanCode: data.coupanCode,
         startdate: data.startDate,
         enddate: data.endDate,
-        Quantity: data.quantity,
-        DiscountType: data.discount,
+        quantity: data.quantity,
+        DiscountType: discountType,
         status: data.c1,
+        ecomAdmintoken: ecomAdmintoken,
+        discount: data.discount,
       };
       console.log(data);
       const res = await createCoupan(alldata);
@@ -44,7 +51,8 @@ export default function CreatCoupans() {
           confirmButtonText: "OK",
         }).then((result) => {
           if (result.isConfirmed) {
-            window.location.href = "/coupanList";
+            navigate("/coupanList");
+            // window.location.href = "/coupanList";
           }
         });
       }
@@ -112,7 +120,7 @@ export default function CreatCoupans() {
                           >
                             <div className="form-group col-4">
                               <label htmlFor="coupanTitle">
-                                Coupon Title
+                                Coupon Title(EN)
                                 <span className="required-field text-danger">
                                   *
                                 </span>
@@ -126,6 +134,29 @@ export default function CreatCoupans() {
                                 id="coupanTitle"
                               />
                               {errors.coupanTitle && (
+                                <span className="invalid-feedback">
+                                  This field is required
+                                </span>
+                              )}
+                            </div>
+                            <div className="form-group col-4">
+                              <label htmlFor="coupanTitleAr">
+                                Coupon Title(AR)
+                                <span className="required-field text-danger">
+                                  *
+                                </span>
+                              </label>
+                              <input
+                                type="text"
+                                className={`form-control ${
+                                  errors.coupanTitleAr ? "is-invalid" : ""
+                                }`}
+                                {...register("coupanTitleAr", {
+                                  required: true,
+                                })}
+                                id="coupanTitleAr"
+                              />
+                              {errors.coupanTitleAr && (
                                 <span className="invalid-feedback">
                                   This field is required
                                 </span>
@@ -216,7 +247,7 @@ export default function CreatCoupans() {
                               )}
                             </div>
 
-                            <div className="form-group col-4">
+                            <div className="form-group col-6">
                               <label htmlFor="discountType">
                                 Discount Type
                               </label>
@@ -238,7 +269,7 @@ export default function CreatCoupans() {
                               >
                                 <option value="">Select Discount Type</option>
                                 <option value="Fixed">Fixed</option>
-                                <option value="%">Percentage</option>
+                                <option value="Percent">Percentage</option>
                               </select>
                               {errors.discountType && (
                                 <span className="invalid-feedback">
@@ -247,44 +278,8 @@ export default function CreatCoupans() {
                               )}
                             </div>
 
-                            {/* {discountType && (
-                              <div className="input-group mb-3">
-                                <input
-                                  type="text"
-                                  className={`form-control ${
-                                    errors.discount ? "is-invalid" : ""
-                                  }`}
-                                  placeholder="Discount Value"
-                                  aria-label="Discount Value"
-                                  aria-describedby="button-addon2"
-                                  {...register("discount", {
-                                    required: true,
-                                  })}
-                                />
-                                {discountType === "Fixed" && (
-                                  <div className="input-group-append">
-                                    <span
-                                      className="input-group-text"
-                                      style={{ height: "50px" }}
-                                    >
-                                      $
-                                    </span>
-                                  </div>
-                                )}
-                                {discountType === "%" && (
-                                  <div className="input-group-append">
-                                    <span
-                                      className="input-group-text"
-                                      style={{ height: "50px" }}
-                                    >
-                                      %
-                                    </span>
-                                  </div>
-                                )}
-                              </div>
-                            )} */}
                             <div
-                              className="input-group mb-3"
+                              className="form-group col-6"
                               style={{ display: show ? "" : "none" }}
                             >
                               <input
@@ -324,14 +319,7 @@ export default function CreatCoupans() {
                                 <label htmlFor="c1">Enable the Coupon </label>
                               </div>
                             </div>
-                            {/* {errors.c1 && (
-                              <span
-                                className="invalid-feedback"
-                                style={{ display: "block", marginTop: "-20px" }}
-                              >
-                                Please Select
-                              </span>
-                            )} */}
+
                             <div className="form-group mb-0 mt-3 col-12 text-center">
                               <button type="submit" className="comman_btn2">
                                 Create

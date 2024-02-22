@@ -56,6 +56,7 @@ import CreatCoupans from "./components/coupans/CreateCoupans";
 import Products from "./components/productmanagements/Products";
 import ProductEdit from "./components/productmanagements/ProductEdit";
 import ProductList from "./components/productmanagements/ProductList";
+import CoupanLists from "./components/coupans/CoupanLists";
 
 function App() {
   const [progress, setProgress] = useState(0);
@@ -376,8 +377,15 @@ function App() {
             exact
             className="active"
             path="/coupanList"
-            element={<CoupanList />}
+            element={<CoupanLists />}
           />
+
+          {/* <Route
+            exact
+            className="active"
+            path="/coupanList"
+            element={<CoupanList />}
+          /> */}
           <Route
             exact
             className="active"

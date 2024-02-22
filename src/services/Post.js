@@ -36,12 +36,26 @@ export const PostApi = createApi({
         body,
       }),
     }),
+    // createCoupan: builder.mutation({
+    //   query: (body) => ({
+    //     url: `admin/coupan/coupan/create`,
+    //     method: "POST",
+    //     body,
+    //   }),
+    // }),
     createCoupan: builder.mutation({
-      query: (body) => ({
-        url: `admin/coupan/coupan/create`,
-        method: "POST",
-        body,
-      }),
+      query: (body) => {
+        const { ecomAdmintoken, ...data } = body;
+
+        return {
+          url: "admin/coupan/coupan/create",
+          method: "post",
+          body: data,
+          headers: {
+            "x-auth-token-user": ecomAdmintoken,
+          },
+        };
+      },
     }),
     createInformation: builder.mutation({
       query: (body) => ({
@@ -121,6 +135,15 @@ export const PostApi = createApi({
       query: ({ ecomAdmintoken }) => ({
         url: "admin/product/productList",
         method: "post",
+        headers: {
+          "x-auth-token-user": ecomAdmintoken,
+        },
+      }),
+    }),
+    getBannerListAll: builder.query({
+      query: ({ ecomAdmintoken }) => ({
+        url: "admin/home/homeScreen/getBanners",
+        method: "get",
         headers: {
           "x-auth-token-user": ecomAdmintoken,
         },
@@ -245,14 +268,28 @@ export const PostApi = createApi({
     //     },
     //   }),
     // }),
-    getCoupanList: builder.query({
-      query: ({ ecomAdmintoken }) => ({
-        url: "admin/coupan/coupan/list",
-        method: "post",
-        headers: {
-          "x-auth-token-user": ecomAdmintoken,
-        },
-      }),
+    // getCoupanList: builder.query({
+    //   query: ({ ecomAdmintoken }) => ({
+    //     url: "admin/coupan/coupan/list",
+    //     method: "post",
+    //     headers: {
+    //       "x-auth-token-user": ecomAdmintoken,
+    //     },
+    //   }),
+    // }),
+    getCoupanListAll: builder.mutation({
+      query: (body) => {
+        const { ecomAdmintoken, ...data } = body;
+
+        return {
+          url: "admin/coupan/coupan/list",
+          method: "post",
+          body: data,
+          headers: {
+            "x-auth-token-user": ecomAdmintoken,
+          },
+        };
+      },
     }),
     getInfoList: builder.query({
       query: ({ ecomAdmintoken }) => ({
@@ -815,14 +852,15 @@ export const PostApi = createApi({
 
     updateCoupan: builder.mutation({
       query: (body) => {
-        console.log("update category", body);
-        const { id, ...data } = body;
-        console.log("update Sub category body data", data);
-        console.log("update Sub category body id", id);
+        const { id, ecomAdmintoken, ...data } = body;
+
         return {
           url: `admin/coupan/coupan/updateCoupan/${id}`,
-          method: "post",
+          method: "patch",
           body: data,
+          headers: {
+            "x-auth-token-user": ecomAdmintoken,
+          },
         };
       },
     }),
@@ -1005,9 +1043,12 @@ export const PostApi = createApi({
       }),
     }),
     deleteCoupanList: builder.mutation({
-      query: (id) => ({
-        url: `/admin/coupan/coupan/delete/${id}`,
+      query: ({ id, ecomAdmintoken }) => ({
+        url: `admin/coupan/coupan/delete/${id}`,
         method: "DELETE",
+        headers: {
+          "x-auth-token-user": ecomAdmintoken,
+        },
       }),
     }),
     deleteHelpList: builder.mutation({
@@ -1104,6 +1145,15 @@ export const PostApi = createApi({
       query: ({ id, ecomAdmintoken }) => ({
         url: `admin/category/values/delete-values/${id}`,
         method: "post",
+        headers: {
+          "x-auth-token-user": ecomAdmintoken,
+        },
+      }),
+    }),
+    deleteBannerAllList: builder.mutation({
+      query: ({ id, ecomAdmintoken }) => ({
+        url: `admin/home/homeScreen/deleteBanner/${id}`,
+        method: "DELETE",
         headers: {
           "x-auth-token-user": ecomAdmintoken,
         },
@@ -1351,6 +1401,16 @@ export const PostApi = createApi({
         },
       }),
     }),
+    createBanners: builder.mutation({
+      query: ({ alldata, ecomAdmintoken }) => ({
+        url: "admin/home/homeScreen/ScreenOne",
+        method: "POST",
+        body: alldata,
+        headers: {
+          "x-auth-token-user": ecomAdmintoken,
+        },
+      }),
+    }),
     addNewVariant: builder.mutation({
       query: ({ productId, alldata, ecomAdmintoken }) => ({
         url: `admin/product/new-varient/${productId}`,
@@ -1501,4 +1561,8 @@ export const {
   useGetProductListSearchMutation,
   useUpdateQuestionMutation,
   useCreateTopBannerMutation,
+  useCreateBannersMutation,
+  useGetBannerListAllQuery,
+  useDeleteBannerAllListMutation,
+  useGetCoupanListAllMutation,
 } = PostApi;
