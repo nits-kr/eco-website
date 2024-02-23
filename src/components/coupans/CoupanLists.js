@@ -84,7 +84,7 @@ function CoupanLists() {
         startdate: data.startDate,
         enddate: data.endDate,
         quantity: data.quantity,
-        DiscountType: discountType,
+        DiscountType: data.discountType,
         status: data.c1,
         ecomAdmintoken: ecomAdmintoken,
         discount: data.discount,
