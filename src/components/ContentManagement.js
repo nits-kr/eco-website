@@ -7,13 +7,16 @@ import { useGetContentListQuery } from "../services/Post";
 import { useUpdateContentMutation } from "../services/Post";
 import { useCreateContentMutation } from "../services/Post";
 import { useSelector } from "react-redux";
+import { Spinner } from "react-bootstrap";
 
 function ContentManagement() {
+  const [loader, setLoader] = useState(false);
   const ecomAdmintoken = useSelector((data) => data?.local?.token);
   const [createContent, responseInfo] = useCreateContentMutation();
-  const { data: contentListItems } = useGetContentListQuery({
-    ecomAdmintoken,
-  });
+  const { data: contentListItems, refetch: fetchContentList } =
+    useGetContentListQuery({
+      ecomAdmintoken,
+    });
   const [contentList, setContentList] = useState([]);
   const [update, res] = useUpdateContentMutation();
   const [titleEn, setTitleEn] = useState("");
@@ -34,7 +37,6 @@ function ContentManagement() {
   useEffect(() => {
     const reversedList = contentListItems?.results?.list ?? [];
     setContentList(reversedList);
-    // subContent();
   }, [contentListItems]);
 
   const handleSaveChanges1 = async (e) => {
@@ -44,9 +46,12 @@ function ContentManagement() {
       id: itemId,
       title: titleEn,
       Description: descriptionEn,
+      ecomAdmintoken: ecomAdmintoken,
     };
+    setLoader(true);
     try {
       await update(editAddress);
+      setLoader(false);
       Swal.fire({
         icon: "success",
         title: "Changes Saved",
@@ -55,7 +60,8 @@ function ContentManagement() {
         confirmButtonText: "OK",
       }).then((result) => {
         if (result.isConfirmed) {
-          window.location.reload();
+          document.getElementById("editModalCloseBtnEn").click();
+          fetchContentList();
         }
       });
     } catch (error) {
@@ -73,9 +79,12 @@ function ContentManagement() {
       id: itemId,
       title_ar: titleAr,
       Description_ar: descriptionAr,
+      ecomAdmintoken: ecomAdmintoken,
     };
+    setLoader(true);
     try {
       await update(editAddress);
+      setLoader(false);
       Swal.fire({
         icon: "success",
         title: "Changes Saved",
@@ -84,7 +93,8 @@ function ContentManagement() {
         confirmButtonText: "OK",
       }).then((result) => {
         if (result.isConfirmed) {
-          window.location.reload();
+          document.getElementById("editModalCloseBtnAr").click();
+          fetchContentList();
         }
       });
     } catch (error) {
@@ -98,16 +108,21 @@ function ContentManagement() {
   const handleItem = (item) => {
     setTitleEn2(item?.title || "");
     setDescriptionEn2(item?.Description || "");
+    setTitleAr2(item?.title_ar || "");
+    setDescriptionAr2(item?.Description_ar || "");
   };
-  const handleSaveChanges = (e) => {
+  const handleSaveChanges = async (e) => {
     e.preventDefault();
     const newContact = {
       title: titleEn3,
       title_ar: titleAr3,
       Description: descriptionEn3,
       Description_ar: descriptionAr3,
+      ecomAdmintoken: ecomAdmintoken,
     };
-    createContent(newContact);
+    setLoader(true);
+    const res = await createContent(newContact);
+    setLoader(false);
     Swal.fire({
       title: "Changes Saved",
       text: "The Content has been created successfully.",
@@ -115,8 +130,8 @@ function ContentManagement() {
       confirmButtonText: "OK",
     }).then((result) => {
       if (result.isConfirmed) {
-        window.location.reload();
-        // informationList();
+        document.getElementById("createcontentclose").click();
+        fetchContentList();
       }
     });
   };
@@ -205,6 +220,7 @@ function ContentManagement() {
                 className="btn-close"
                 data-bs-dismiss="modal"
                 aria-label="Close"
+                id="editModalCloseBtnEn"
               ></button>
             </div>
             <div className="modal-body">
@@ -236,8 +252,16 @@ function ContentManagement() {
                     type="submit"
                     className="comman_btn2"
                     onClick={handleSaveChanges1}
+                    disabled={loader ? true : false}
+                    style={{
+                      cursor: loader ? "not-allowed" : "pointer",
+                    }}
                   >
-                    Update
+                    {loader ? (
+                      <Spinner style={{ height: "20px", width: "20px" }} />
+                    ) : (
+                      "Update"
+                    )}
                   </button>
                 </div>
               </form>
@@ -266,6 +290,7 @@ function ContentManagement() {
                 className="btn-close"
                 data-bs-dismiss="modal"
                 aria-label="Close"
+                id="editModalCloseBtnAr"
               ></button>
             </div>
             <div className="modal-body">
@@ -302,8 +327,16 @@ function ContentManagement() {
                     type="submit"
                     className="comman_btn2"
                     onClick={handleSaveChanges2}
+                    disabled={loader ? true : false}
+                    style={{
+                      cursor: loader ? "not-allowed" : "pointer",
+                    }}
                   >
-                    Update
+                    {loader ? (
+                      <Spinner style={{ height: "20px", width: "20px" }} />
+                    ) : (
+                      "Update"
+                    )}
                   </button>
                 </div>
               </form>
@@ -332,6 +365,7 @@ function ContentManagement() {
                 className="btn-close"
                 data-bs-dismiss="modal"
                 aria-label="Close"
+                id="createcontentclose"
               ></button>
             </div>
             <div className="modal-body">
@@ -407,7 +441,20 @@ function ContentManagement() {
                   ></textarea>
                 </div>
                 <div className="form-group col-12 text-center">
-                  <button className="comman_btn2 mt-4">Create</button>
+                  <button
+                    type="submit"
+                    className="comman_btn2 mt-4"
+                    disabled={loader ? true : false}
+                    style={{
+                      cursor: loader ? "not-allowed" : "pointer",
+                    }}
+                  >
+                    {loader ? (
+                      <Spinner style={{ height: "20px", width: "20px" }} />
+                    ) : (
+                      "Create"
+                    )}
+                  </button>
                 </div>
               </form>
             </div>

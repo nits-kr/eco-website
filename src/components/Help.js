@@ -8,8 +8,10 @@ import {
   useGetHelpListQuery,
 } from "../services/Post";
 import { useSelector } from "react-redux";
+import { Spinner } from "react-bootstrap";
 
 function Help() {
+  const [loader, setLoader] = useState(false);
   const ecomAdmintoken = useSelector((data) => data?.local?.token);
 
   const { data: helpListdata, refetch: fetchHelpList } = useGetHelpListQuery({
@@ -59,13 +61,18 @@ function Help() {
       subCategoryName_ar: subCategory.nameAr,
       ecomAdmintoken: ecomAdmintoken,
     };
-
+    setLoader(true);
     try {
       const response = await addHelp(data);
+      setLoader(false);
       console.log(response.data.results.helpData);
       if (!response.data.error) {
-        alert("Saved!");
-        // handleSave();
+        Swal.fire({
+          icon: "success",
+          title: "List Saved!",
+          showConfirmButton: false,
+          timer: 1500,
+        });
         fetchHelpList();
       }
     } catch (error) {
@@ -157,7 +164,22 @@ function Help() {
                         />
                       </div>
                       <div className="form-group mb-0 col-auto">
-                        <button className="comman_btn2">Add</button>
+                        <button
+                          type="submit"
+                          className="comman_btn2"
+                          disabled={loader ? true : false}
+                          style={{
+                            cursor: loader ? "not-allowed" : "pointer",
+                          }}
+                        >
+                          {loader ? (
+                            <Spinner
+                              style={{ height: "20px", width: "20px" }}
+                            />
+                          ) : (
+                            "Add"
+                          )}
+                        </button>
                       </div>
                     </form>
                   </div>

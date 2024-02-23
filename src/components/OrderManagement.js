@@ -7,6 +7,7 @@ import { faEye, faPencil, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import Sidebar from "./Sidebar";
 import {
   useGetFileQuery,
+  useGetOrderListAllMutation,
   useGetOrderListQuery,
   useGetUserListQuery,
 } from "../services/Post";
@@ -25,13 +26,12 @@ function OrderManagement() {
   const ecomAdmintoken = useSelector((data) => data?.local?.token);
 
   const [deleteOrder, response] = useDeleteOrderListMutation();
-  const {
-    data: download,
-    isLoading,
-    isError,
-  } = useGetFileQuery({ ecomAdmintoken });
-  const { data: orderListdata, refetch: refetchOrderList } =
-    useGetOrderListQuery({ ecomAdmintoken });
+  const { data: download } = useGetFileQuery({ ecomAdmintoken });
+  // const { data: orderListdata, refetch: refetchOrderList } =
+  //   useGetOrderListQuery({ ecomAdmintoken });
+
+  const [orderListdata] = useGetOrderListAllMutation();
+
   const { data: userListdata } = useGetUserListQuery({ ecomAdmintoken });
 
   const [updateOrder] = useEditOrderListMutation();
@@ -83,7 +83,7 @@ function OrderManagement() {
           confirmButtonText: "OK",
         }).then((result) => {
           if (result.isConfirmed) {
-            refetchOrderList();
+            handleOrderList();
           }
         });
       } else {
@@ -125,7 +125,7 @@ function OrderManagement() {
           showConfirmButton: false,
         });
 
-        refetchOrderList();
+        handleOrderList();
       } catch (error) {
         console.error("Error deleting order:", error);
         Swal.fire({
@@ -193,11 +193,29 @@ function OrderManagement() {
   });
 
   useEffect(() => {
-    if (orderListdata) {
-      setOrderList(orderListdata?.results?.list);
+    if (ecomAdmintoken) {
+      handleOrderList();
+    }
+  }, [ecomAdmintoken, searchQuery]);
+
+  const handleOrderList = async () => {
+    const data = {
+      from: startDate,
+      to: endDate,
+      search: searchQuery,
+      ecomAdmintoken: ecomAdmintoken,
+    };
+    const res = await orderListdata(data);
+    console.log("res cate", res);
+    setOrderList(res?.data?.results?.list);
+  };
+
+  useEffect(() => {
+    if (orderList?.length > 0) {
+      // setOrderList(orderListdata?.results?.list);
       // calculateTotalCartsTotal(orderListdata?.results?.list);
       const newRows = [];
-      orderListdata?.results?.list?.map((list, index) => {
+      orderList?.map((list, index) => {
         const returnData = {};
 
         returnData.sn = index + 1;
@@ -340,7 +358,7 @@ function OrderManagement() {
 
       setOrder({ ...order, rows: newRows });
     }
-  }, [orderListdata]);
+  }, [orderList]);
 
   const url = `${process.env.REACT_APP_APIENDPOINT}admin/order/order/list`;
   const url2 = `${process.env.REACT_APP_APIENDPOINT}admin/order/order/search`;
@@ -428,14 +446,6 @@ function OrderManagement() {
     }
   };
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
-  if (isError) {
-    return <div>Error occurred while fetching the file.</div>;
-  }
-
   const handleSaveChanges1 = async (data) => {
     // e.preventDefault();
     const editOffer = {
@@ -456,7 +466,7 @@ function OrderManagement() {
           confirmButtonText: "OK",
         }).then((result) => {
           if (result.isConfirmed) {
-            refetchOrderList();
+            handleOrderList();
             document?.getElementById("EditModalCloseBtn").click();
           }
         });

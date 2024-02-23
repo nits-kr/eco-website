@@ -16,7 +16,7 @@ function ReactGoogleMap() {
     ecomAdmintoken,
   });
   const [location, setLocation] = useState([]);
-  console.log(location);
+  // console.log(location);
 
   const [markers, setMarkers] = useState([]);
   const [center, setCenter] = useState({

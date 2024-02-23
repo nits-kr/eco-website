@@ -6,8 +6,10 @@ import { useSelector } from "react-redux";
 import { useCreateQuestionMutation } from "../services/Post";
 import { useForm } from "react-hook-form";
 import classNames from "classnames";
+import { Spinner } from "react-bootstrap";
 
 export default function HelpQuestion({ questionList }) {
+  const [loader, setLoader] = useState(false);
   const ecomAdmintoken = useSelector((data) => data?.local?.token);
   const [createQuestion] = useCreateQuestionMutation();
   const [questions, setQuestions] = useState({
@@ -37,7 +39,10 @@ export default function HelpQuestion({ questionList }) {
       ecomAdmintoken: ecomAdmintoken,
     };
 
+    setLoader(true);
+
     const res = await createQuestion(alldata);
+    setLoader(false);
     if (res) {
       setQuestions(res?.data?.results?.questionData);
       Swal.fire({
@@ -223,9 +228,16 @@ export default function HelpQuestion({ questionList }) {
                   <button
                     type="submit"
                     className="comman_btn"
-                    // onClick={handleOnAdd}
+                    disabled={loader ? true : false}
+                    style={{
+                      cursor: loader ? "not-allowed" : "pointer",
+                    }}
                   >
-                    Add
+                    {loader ? (
+                      <Spinner style={{ height: "20px", width: "20px" }} />
+                    ) : (
+                      "Add"
+                    )}
                   </button>
                 </div>
               </form>

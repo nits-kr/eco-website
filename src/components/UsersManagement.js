@@ -5,7 +5,9 @@ import Swal from "sweetalert2";
 import Sidebar from "./Sidebar";
 import {
   useGetFileQuery,
+  useGetFileUserMutation,
   useGetUserListAllQuery,
+  useGetUserListAllSearchMutation,
   useGetUserListQuery,
 } from "../services/Post";
 import Spinner from "./Spinner";
@@ -18,13 +20,12 @@ function UsersManagement(props) {
   const ecomAdmintoken = useSelector((data) => data?.local?.token);
 
   const [createMap, res] = useCreateMapMutation();
-  const { data: userListdata } = useGetUserListAllQuery({ ecomAdmintoken });
+  const [userListdata] = useGetUserListAllSearchMutation();
+  // const { data: userListdata } = useGetUserListAllQuery({ ecomAdmintoken });
 
-  const {
-    data: download,
-    isLoading,
-    isError,
-  } = useGetFileQuery({ ecomAdmintoken });
+  // const { data: download } = useGetFileQuery({ ecomAdmintoken });
+
+  const [getFiles] = useGetFileUserMutation();
 
   const [loading, setLoading] = useState(false);
 
@@ -33,209 +34,64 @@ function UsersManagement(props) {
   const [startDate1, setStartDate1] = useState("");
   const [endDate, setEndDate] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
-  axios.defaults.headers.common["x-auth-token-user"] =
-    localStorage.getItem("token");
 
-  console.log("userListdata", userListdata);
-
-  useEffect(() => {
-    if (userListdata) {
-      setUsersList(userListdata?.results?.createData);
-    }
-  }, [userListdata]);
-  const handleId = (id) => {};
-  const url = `${process.env.REACT_APP_APIENDPOINT}admin/user/userList`;
-  const url2 = `${process.env.REACT_APP_APIENDPOINT}admin/user/user-search`;
-  // useEffect(() => {
-  //   userManagementList();
-  // }, []);
-  // const userManagementList = () => {
-  //   props.setProgress(10);
-  //   setLoading(true);
-  //   axios
-  //     .post(url)
-  //     .then((response) => {
-  //       setUsersList(response?.data?.results?.createData?.reverse());
-  //       props.setProgress(100);
-  //       setLoading(false);
-  //     })
-  //     .catch((error) => {
-  //       console.log(error.response.data);
-  //     });
-  // };
-  const userList2 = async () => {
-    if (!startDate1) return;
-    try {
-      const { data } = await axios.post(url, {
-        startDate1,
-      });
-      const filteredUsers = data?.results?.createData?.filter(
-        (user) =>
-          new Date(user?.createdAt?.slice(0, 10)).toISOString().slice(0, 10) ===
-          new Date(startDate1).toISOString().slice(0, 10)
-      );
-      if (filteredUsers.length === 0) {
-        setUsersList([]);
-        await Swal.fire({
-          title: "No List Found",
-          text: "No list is available for the selected date.",
-          icon: "warning",
-          confirmButtonText: "OK",
-        }).then((result) => {
-          if (result.isConfirmed) {
-            // userManagementList();
-          }
-        });
-      } else if (filteredUsers.length > 0) {
-        await Swal.fire({
-          title: "List Found!",
-          text: "list is available for the selected date.",
-          icon: "success",
-          confirmButtonText: "OK",
-        }).then((result) => {
-          if (result.isConfirmed) {
-            setUsersList(filteredUsers);
-          }
-        });
-      }
-      setUsersList(filteredUsers);
-      console.log(data);
-    } catch (error) {
-      console.error("Error fetching user list:", error);
-    }
-  };
-  useEffect(() => {
-    userList2();
-  }, [startDate1]);
-
-  const handleSearch = (e) => {
+  const handleDownload = async (e) => {
     e.preventDefault();
-    axios
-      .post(url, {
-        from: startDate,
-        to: endDate,
-      })
-      .then((response) => {
-        const list = response?.data?.results?.createData?.reverse();
-        if (list && list.length > 0) {
-          Swal.fire({
-            title: "List Found!",
-            text: "list is available for the selected date.",
-            icon: "success",
-            confirmButtonText: "OK",
-          }).then((result) => {
-            if (result.isConfirmed) {
-              setUsersList(list);
-            }
-          });
-          // setUsersList(list);
-        } else {
-          setUsersList([]);
-          Swal.fire({
-            icon: "warning",
-            title: "No data found!",
-            text: "There is no list between the selected dates.",
-            confirmButtonText: "OK",
-          }).then((result) => {
-            if (result.isConfirmed) {
-              // userManagementList();
-            }
-          });
-        }
-      })
-      .catch((error) => {
-        console.log(error.response.data);
-      });
-  };
+    const data = {
+      ecomAdmintoken: ecomAdmintoken,
+    };
+    const res = await getFiles(data);
 
-  // useEffect(() => {
-  //   handleSearch1();
-  // }, [searchQuery]);
-
-  // const handleSearch1 = async () => {
-  //   try {
-  //     const url1 = searchQuery !== "" ? url2 : url;
-  //     const response = await axios.post(url1, {
-  //       userName: searchQuery,
-  //     });
-  //     const { error, results } = response.data;
-  //     if (error) {
-  //       setUsersList([]);
-  //       Swal.fire({
-  //         title: "Error!",
-  //         // text: error.response.data,
-  //         text: "Error searching for products. Data is not found",
-  //         icon: "error",
-  //         confirmButtonText: "OK",
-  //       }).then((result) => {
-  //         if (result.isConfirmed) {
-  //           // userManagementList();
-  //         }
-  //       });
-  //       // throw new Error("Error searching for products. Data is not found.");
-  //     } else {
-  //       setUsersList(
-  //         searchQuery !== ""
-  //           ? results?.userData
-  //           : results?.createData?.reverse()
-  //       );
-  //     }
-  //   } catch (error) {
-  //     if (error.response) {
-  //       Swal.fire({
-  //         title: "Error!",
-  //         text: error.response.data,
-  //         icon: "error",
-  //         confirmButtonText: "OK",
-  //       });
-  //     } else if (error.request) {
-  //       Swal.fire({
-  //         title: "Error!",
-  //         text: "Network error. Please try again later.",
-  //         icon: "error",
-  //         confirmButtonText: "OK",
-  //       });
-  //     } else {
-  //       Swal.fire({
-  //         title: "Error!",
-  //         text: error.message,
-  //         icon: "error",
-  //         confirmButtonText: "OK",
-  //       });
-  //     }
-  //   }
-  // };
-
-  const handleDownload = () => {
-    if (download) {
-      const blob = new Blob([download]);
-      const downloadUrl = URL.createObjectURL(blob);
+    // if (res) {
+    //   const blob = new Blob([res]);
+    //   const downloadUrl = URL.createObjectURL(blob);
+    //   const link = document.createElement("a");
+    //   link.href = downloadUrl;
+    //   link.download = "file.xlsx";
+    //   link.click();
+    // }
+    if (res) {
       const link = document.createElement("a");
-      link.href = downloadUrl;
-      link.download = "file.xlsx";
+      link.href = res;
+      link.target = "_blank";
+      link.download = "file.pdf";
       link.click();
     }
   };
-  // const handleDownload = () => {
-  //   if (data && data.results && data.results.file) {
-  //     const downloadUrl = data.results.file;
+  useEffect(() => {
+    if (ecomAdmintoken) {
+      handleUserList();
+    }
+  }, [ecomAdmintoken, searchQuery, startDate1]);
+
+  const handleUserList = async () => {
+    const data = {
+      from: startDate,
+      to: endDate,
+      search: searchQuery,
+      ecomAdmintoken: ecomAdmintoken,
+    };
+    const res = await userListdata(data);
+    console.log("res brand cate", res);
+    setUsersList(res?.data?.results?.userData);
+  };
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    handleUserList();
+  };
+
+  // const handleDownload = (e) => {
+  //   e.preventDefault();
+  //   if (download) {
+  //     const blob = new Blob([download]);
+  //     const downloadUrl = URL.createObjectURL(blob);
   //     const link = document.createElement("a");
   //     link.href = downloadUrl;
   //     link.download = "file.xlsx";
   //     link.click();
   //   }
   // };
-  // const handleSaveMap = (latitude, longitude) => {
-  //   const newAddress = {
-  //     longitude: latitude,
-  //     latitude: longitude,
-  //   };
-  //   createMap(newAddress);
-  // };
-  // usersList.forEach(user => {
-  //   const { latitude, longitude } = user;
-  //   handleSaveMap(latitude, longitude);
-  // });
 
   return (
     <>
@@ -281,7 +137,7 @@ function UsersManagement(props) {
                       <div className="col-auto">
                         <button
                           className="comman_btn2"
-                          onClick={handleDownload}
+                          onClick={(e) => handleDownload(e)}
                         >
                           <i className="fal fa-download me-2"></i>Excel
                         </button>
@@ -301,7 +157,7 @@ function UsersManagement(props) {
                       onSubmit={handleSearch}
                     >
                       <div className="form-group mb-0 col-5">
-                        <label htmlFor="">From</label>
+                        <label htmlFor="startDate">From</label>
                         <input
                           type="date"
                           className="form-control"
@@ -310,7 +166,7 @@ function UsersManagement(props) {
                         />
                       </div>
                       <div className="form-group mb-0 col-5">
-                        <label htmlFor="">To</label>
+                        <label htmlFor="endDate">To</label>
                         <input
                           type="date"
                           className="form-control"

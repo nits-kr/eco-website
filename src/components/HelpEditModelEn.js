@@ -1,11 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 import Sidebar from "./Sidebar";
 import { useSelector } from "react-redux";
 import { useUpdateQuestionMutation } from "../services/Post";
+import { Spinner } from "react-bootstrap";
 
 const HelpEditModelEn = (props) => {
+  const [loader, setLoader] = useState(false);
   const ecomAdmintoken = useSelector((data) => data?.local?.token);
 
   const { formData, setFormData, refreshList, selectedQuestionId } = props;
@@ -25,10 +27,11 @@ const HelpEditModelEn = (props) => {
         ecomAdmintoken: ecomAdmintoken,
         selectedQuestionId: selectedQuestionId,
       };
+      setLoader(true);
       const response = await updateQA(data);
 
       console.log("response", response);
-
+      setLoader(false);
       const updatedData = response.data.results.updateData;
       setFormData(updatedData);
       refreshList();
@@ -106,8 +109,19 @@ const HelpEditModelEn = (props) => {
                   ></textarea>
                 </div>
                 <div className="form-group col-12 text-center mb-0">
-                  <button type="submit" className="comman_btn2">
-                    Update
+                  <button
+                    type="submit"
+                    className="comman_btn2"
+                    disabled={loader ? true : false}
+                    style={{
+                      cursor: loader ? "not-allowed" : "pointer",
+                    }}
+                  >
+                    {loader ? (
+                      <Spinner style={{ height: "20px", width: "20px" }} />
+                    ) : (
+                      "Update"
+                    )}
                   </button>
                 </div>
               </form>
