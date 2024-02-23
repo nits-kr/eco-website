@@ -12,8 +12,10 @@ import { useDeleteCoupanListMutation } from "../../services/Post";
 import { useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import classNames from "classnames";
+import { Spinner } from "react-bootstrap";
 
 function CoupanLists() {
+  const [loader, setLoader] = useState(false);
   const ecomAdmintoken = useSelector((data) => data?.local?.token);
 
   //   const { data: coupanListdata } = useGetCoupanListQuery({
@@ -88,9 +90,11 @@ function CoupanLists() {
         discount: data.discount,
         id: itemId,
       };
-      console.log(data);
+
+      setLoader(true);
       const res = await update(alldata);
-      console.log("res", res);
+      setLoader(false);
+
       if (res?.data?.message === "Success") {
         Swal.fire({
           title: "Coupan Updated!",
@@ -101,6 +105,7 @@ function CoupanLists() {
         }).then((result) => {
           if (result.isConfirmed) {
             handleCategoryList();
+            document.getElementById("updatecoupanmodalclose").click();
           }
         });
       }
@@ -119,11 +124,14 @@ function CoupanLists() {
       coupanCode: data?.coupanCode,
       startDate: data?.startdate?.slice(0, 10),
       endDate: data?.enddate?.slice(0, 10),
-      quantity: data?.redeemableTime,
+      quantity: data?.quantity,
       discountType: data?.DiscountType,
       c1: data?.status,
       discount: data?.discount,
     });
+    if (data?.DiscountType) {
+      setShow(true);
+    }
   };
 
   const handleSubmits = (e) => {
@@ -227,6 +235,7 @@ function CoupanLists() {
                             </th> */}
                             <th>Title</th>
                             <th>Code</th>
+                            <th>Discount Type</th>
                             <th>Discount</th>
                             <th>Status</th>
                             <th>Valid UpTo</th>
@@ -256,10 +265,15 @@ function CoupanLists() {
                               </td>
                               <td>{item?.coupanCode}</td>
                               <td>{item?.DiscountType}</td>
+                              {/* <td>{item?.discount}</td> */}
                               <td>
-                                {item?.status === "true"
-                                  ? "Active"
-                                  : "In Active"}
+                                {item?.DiscountType === "Percent"
+                                  ? `${item?.discount}%`
+                                  : item?.discount}
+                              </td>
+
+                              <td>
+                                {item?.status === true ? "Active" : "In Active"}
                               </td>
                               <td> {item?.enddate?.slice(0, 10)} </td>
                               <td>
@@ -385,6 +399,7 @@ function CoupanLists() {
                 className="btn-close"
                 data-bs-dismiss="modal"
                 aria-label="Close"
+                id="updatecoupanmodalclose"
               ></button>
             </div>
             <div className="modal-body">
@@ -576,8 +591,19 @@ function CoupanLists() {
                 </div>
 
                 <div className="form-group mb-0 mt-3 col-12 text-center">
-                  <button type="submit" className="comman_btn2">
-                    Create
+                  <button
+                    type="submit"
+                    className="comman_btn2"
+                    disabled={loader ? true : false}
+                    style={{
+                      cursor: loader ? "not-allowed" : "pointer",
+                    }}
+                  >
+                    {loader ? (
+                      <Spinner style={{ height: "20px", width: "20px" }} />
+                    ) : (
+                      "Update"
+                    )}
                   </button>
                 </div>
               </form>

@@ -7,8 +7,10 @@ import { useCreateCoupanMutation } from "../../services/Post";
 import classNames from "classnames";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { Spinner } from "react-bootstrap";
 
 export default function CreatCoupans() {
+  const [loader, setLoader] = useState(false);
   const ecomAdmintoken = useSelector((data) => data?.local?.token);
   const [discountType, setDiscountType] = useState("");
   const [show, setShow] = useState(false);
@@ -40,8 +42,10 @@ export default function CreatCoupans() {
         discount: data.discount,
       };
       console.log(data);
+      setLoader(true);
       const res = await createCoupan(alldata);
       console.log("res", res);
+      setLoader(false);
       if (res?.data?.message === "Success") {
         Swal.fire({
           title: "Coupan Created!",
@@ -321,8 +325,21 @@ export default function CreatCoupans() {
                             </div>
 
                             <div className="form-group mb-0 mt-3 col-12 text-center">
-                              <button type="submit" className="comman_btn2">
-                                Create
+                              <button
+                                type="submit"
+                                className="comman_btn2"
+                                disabled={loader ? true : false}
+                                style={{
+                                  cursor: loader ? "not-allowed" : "pointer",
+                                }}
+                              >
+                                {loader ? (
+                                  <Spinner
+                                    style={{ height: "20px", width: "20px" }}
+                                  />
+                                ) : (
+                                  "Create"
+                                )}
                               </button>
                             </div>
                           </form>

@@ -856,7 +856,7 @@ export const PostApi = createApi({
 
         return {
           url: `admin/coupan/coupan/updateCoupan/${id}`,
-          method: "patch",
+          method: "post",
           body: data,
           headers: {
             "x-auth-token-user": ecomAdmintoken,

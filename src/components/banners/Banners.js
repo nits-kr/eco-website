@@ -211,9 +211,30 @@ function Banners(props) {
       if (subCategory.product_Id) {
         alldata.append("product_Id", subCategory.product_Id);
       }
+      if (!selectedValueUrl) {
+        Swal.fire({
+          icon: "error",
+          title: "No URL type Selected",
+          text: "Please select an URL.",
+        });
+        return;
+      }
       alldata.append("URLType", selectedValueUrl);
-      alldata.append("category_Id", subCategory.categoryId);
+      if (subCategory.categoryId) {
+        alldata.append("category_Id", subCategory.categoryId);
+      }
+
       alldata.append("area", selectedValue);
+
+      if (!formData.bannerPic) {
+        Swal.fire({
+          icon: "error",
+          title: "No Image Selected",
+          text: "Please select an image.",
+        });
+        return;
+      }
+
       alldata.append("image", formData.bannerPic);
       setLoadings(true);
 
@@ -572,7 +593,7 @@ function Banners(props) {
                         {addBanner ? (
                           <span className="col-auto d-flex justify-content-end mt-3">
                             <button
-                            type="button"
+                              type="button"
                               to="#"
                               title="First Select Banner Type"
                               // data-bs-toggle="modal"
@@ -1194,7 +1215,7 @@ function Banners(props) {
                               src={selectedImage}
                               className="img-fluid"
                               alt="..."
-                              style={{ height: "auto" }}
+                              style={{ height: "200px" }}
                             />
                           ) : (
                             <>
@@ -1202,9 +1223,9 @@ function Banners(props) {
                                 src="..."
                                 className="img-fluid"
                                 alt="..."
-                                style={{ height: "auto" }}
+                                style={{ height: "auto", minHeight: "200px" }}
                               />{" "}
-                              <div>720 X 250</div>
+                              {/* <div>720 X 250</div> */}
                             </>
                           )}
                         </div>
@@ -1223,6 +1244,28 @@ function Banners(props) {
                         </div>
                       </div>
                     </div>
+                  </div>
+                  <div className="col-xxl-12 mt-3">
+                    <form>
+                      <select
+                        className="form-select"
+                        id="floatingSelect1"
+                        aria-label="Floating label select example"
+                        defaultValue=" "
+                        onChange={(e) => {
+                          // setBanner(e.target.value);
+                          // handleTypes();
+                          handleSelectChangeuRL(e);
+                        }}
+                      >
+                        <option value="">URL Type</option>
+                        <option value="Product">Product</option>
+                        <option value="Category">Category</option>
+                        <option value="SubCategory">SubCategory</option>
+                        <option value="SubSubCategory">SubSubCategory</option>
+                        <option value="NoURL">NoURL</option>
+                      </select>
+                    </form>
                   </div>
                   <div className="form-group col-12 my-3">
                     <label htmlFor="" className="ms-1">
@@ -1299,29 +1342,6 @@ function Banners(props) {
                     </div>
                   ) : null}
 
-                  <div className="col-xxl-12 mt-3">
-                    <form>
-                      <select
-                        className="form-select"
-                        id="floatingSelect1"
-                        aria-label="Floating label select example"
-                        defaultValue=" "
-                        onChange={(e) => {
-                          // setBanner(e.target.value);
-                          // handleTypes();
-                          handleSelectChangeuRL(e);
-                        }}
-                      >
-                        <option value="">URL Type</option>
-                        <option value="Product">Product</option>
-                        <option value="Category">Category</option>
-                        <option value="SubCategory">SubCategory</option>
-                        <option value="SubSubCategory">SubSubCategory</option>
-                        <option value="NoURL">NoURL</option>
-                      </select>
-                    </form>
-                  </div>
-
                   <div className="row mt-3">
                     {/* <hr
                       style={{
@@ -1340,9 +1360,13 @@ function Banners(props) {
                       <button
                         type="button"
                         className="comman_btn table_viewbtn me-1"
-                        style={{ fontSize: "15px" }}
+                        style={{
+                          fontSize: "15px",
+                          cursor: loadings ? "not-allowed" : "pointer",
+                        }}
                         onClick={(e) => handleonSaveAll(e)}
                         // onClick={handleonSave}
+                        disabled={loadings ? true : false}
                       >
                         {loadings ? (
                           <Spinner style={{ height: "20px", width: "20px" }} />
