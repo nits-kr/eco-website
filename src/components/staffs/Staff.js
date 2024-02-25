@@ -20,6 +20,8 @@ import {
 import Sidebar from "../Sidebar";
 import { FadeLoader } from "react-spinners";
 import { useSelector } from "react-redux";
+import FadeSpinner from "../allSpinners/FadeSpinner";
+import { Spinner } from "react-bootstrap";
 
 function Staff() {
   const ecomAdmintoken = useSelector((data) => data?.local?.token);
@@ -49,12 +51,18 @@ function Staff() {
     { value: "order", label: "Orders Management" },
     { value: "staff", label: "Staff Management" },
     { value: "transaction", label: "Transaction Management" },
-    { value: "report", label: "Reports Management" },
+    { value: "addproduct", label: "Add New Product" },
+    { value: "productlist", label: "Product List" },
+    { value: "banners", label: "Banner Management" },
+    { value: "brand", label: "Brand Management" },
+    { value: "agent", label: "Agent Management" },
     { value: "notification", label: "Notifications Management" },
     { value: "announcement", label: "Announcements Management" },
     { value: "thoughts", label: "Thoughts Management" },
     { value: "content", label: "Content Management" },
+    { value: "coupan", label: "Coupan Management" },
     { value: "information", label: "Information Management" },
+    { value: "configure", label: "Configurations" },
     { value: "contactus", label: "Contact-Us" },
     { value: "help", label: "Help&Support Management" },
   ];
@@ -602,11 +610,8 @@ function Staff() {
                       <div className="form-group  col-auto mt-4">
                         <button className="comman_btn2 mt-1" type="submit">
                           {loading ? (
-                            <FadeLoader
-                              loading={loading}
-                              // size={150}
-                              aria-label="Loading Spinner"
-                              data-testid="loader"
+                            <Spinner
+                              style={{ height: "20px", width: "20px" }}
                             />
                           ) : (
                             "Submit"

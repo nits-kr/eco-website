@@ -7,10 +7,17 @@ import { useSelector } from "react-redux";
 function Sidebar({ Dash }) {
   const modules = useSelector((data) => data?.local?.modules);
 
+  console.log("modules", modules);
+
   const storedPic = localStorage.getItem("profilePic");
 
   const isAccessAllowed = (accessItem) => {
     return modules?.includes(accessItem);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("ecoAdmintoken");
+    localStorage.removeItem("admin-data");
   };
 
   return (
@@ -363,7 +370,11 @@ function Sidebar({ Dash }) {
                       </Link>
                     </li>
                     <li>
-                      <Link className="dropdown-item" to="/">
+                      <Link
+                        className="dropdown-item"
+                        to="/"
+                        onClick={handleLogout}
+                      >
                         Logout
                       </Link>
                     </li>
