@@ -49,7 +49,7 @@ import ProductManagementEdit2 from "./components/ProductManagementEdit2";
 import DashboardNew from "./components/DashboardNew";
 import StoreSettings from "./components/configurations/StoreSettings";
 import Banners from "./components/banners/Banners";
-import ProductBanner from "./components/banners/ProductBanner";
+// import ProductBanner from "./components/banners/ProductBanner";
 import AddAgents from "./components/AddAgents";
 import Staff from "./components/staffs/Staff";
 import CreatCoupans from "./components/coupans/CreateCoupans";
@@ -240,20 +240,6 @@ function App() {
             path="/Home-Screen-banners"
             element={<Banners setProgress={setProgress} />}
           />
-          <Route
-            exact
-            className="active"
-            path="/Home-Screen-banners-product"
-            element={<ProductBanner setProgress={setProgress} />}
-          />
-
-          {/* <Route
-            exact
-            className="active"
-            path="/Home-Screen-banners"
-            element={<HomeScreenBanner2 />}
-          /> */}
-          {/* <HomeScreenBanner2/> */}
 
           <Route
             exact

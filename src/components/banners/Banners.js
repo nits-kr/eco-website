@@ -34,6 +34,8 @@ function Banners(props) {
   const ecomAdmintoken = useSelector((data) => data?.local?.token);
   const [loading, setLoading] = useState(true);
   const [loadings, setLoadings] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+
   const { data: categoryListdata } = useGetSelectCategoryListQuery({
     ecomAdmintoken,
   });
@@ -46,6 +48,7 @@ function Banners(props) {
   const { data: bannerListAll, refetch: fetchBannerList } =
     useGetBannerListAllQuery({
       ecomAdmintoken,
+      search: searchQuery,
     });
   const { data: sideBanner } = useGetCatogarySideBannerListQuery({
     ecomAdmintoken,
@@ -562,6 +565,29 @@ function Banners(props) {
                     <div className="row comman_header justify-content-between">
                       <div className="col-auto">
                         <h2>Category Banner Management </h2>
+                      </div>
+                      <div className="col-3">
+                        <form
+                          className="form-design"
+                          action=""
+                          // onSubmit={handleSearch1}
+                        >
+                          <div className="form-group mb-0 position-relative icons_set d-none">
+                            <input
+                              type="text"
+                              className="form-control"
+                              placeholder="Search"
+                              name="name"
+                              id="name"
+                              value={searchQuery}
+                              onChange={(e) => setSearchQuery(e.target.value)}
+                            />
+                            <i
+                              className="far fa-search"
+                              // onClick={handleSearch1}
+                            ></i>
+                          </div>
+                        </form>
                       </div>
                     </div>
                     <div className="row comman_header justify-content-between">
@@ -1369,22 +1395,25 @@ function Banners(props) {
                         disabled={loadings ? true : false}
                       >
                         {loadings ? (
-                          <Spinner style={{ height: "20px", width: "20px" }} />
+                          // <Spinner style={{ height: "20px", width: "20px" }} />
+                          <div
+                            className="lds-spinner"
+                            style={{ marginTop: "-25px" }}
+                          >
+                            <div />
+                            <div />
+                            <div />
+                            <div />
+                            <div />
+                            <div />
+                            <div />
+                            <div />
+                            <div />
+                            <div />
+                            <div />
+                            <div />
+                          </div>
                         ) : (
-                          // <div className="lds-spinner">
-                          //   <div />
-                          //   <div />
-                          //   <div />
-                          //   <div />
-                          //   <div />
-                          //   <div />
-                          //   <div />
-                          //   <div />
-                          //   <div />
-                          //   <div />
-                          //   <div />
-                          //   <div />
-                          // </div>
                           "Save"
                         )}
                       </button>

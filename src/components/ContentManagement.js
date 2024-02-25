@@ -170,6 +170,39 @@ function ContentManagement() {
                         >
                           <i className="far fa-edit me-2"></i>Edit
                         </Link>
+                        <Link
+                          className="edit_content_btn comman_btn text-end d-none"
+                          to="#"
+                          style={{ marginLeft: "25vh" }}
+                          onClick={() => {
+                            Swal.fire({
+                              title: "Are you sure?",
+                              text: "You won't be able to revert this!",
+                              icon: "warning",
+                              showCancelButton: true,
+                              confirmButtonColor: "#3085d6",
+                              cancelButtonColor: "#d33",
+                              confirmButtonText: "Yes, delete it!",
+                            }).then((result) => {
+                              if (result.isConfirmed) {
+                                // deleteHelp({
+                                //   id: data?._id,
+                                //   ecomAdmintoken,
+                                // });
+                                Swal.fire(
+                                  "Deleted!",
+                                  `${data?.categoryName}  item has been deleted.`,
+                                  "success"
+                                ).then(() => {
+                                  fetchContentList();
+                                });
+                              }
+                            });
+                          }}
+                        >
+                          <i className="far fa-trash-alt me-2"></i>
+                          Delete
+                        </Link>
                         <p>{data?.Description}</p>
                       </div>
                     </div>
