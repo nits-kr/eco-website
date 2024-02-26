@@ -171,7 +171,7 @@ function ContentManagement() {
                           <i className="far fa-edit me-2"></i>Edit
                         </Link>
                         <Link
-                          className="edit_content_btn comman_btn text-end d-none"
+                          className="edit_content_btn comman_btn text-end"
                           to="#"
                           style={{ marginLeft: "25vh" }}
                           onClick={() => {

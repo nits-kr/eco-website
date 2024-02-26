@@ -6,19 +6,23 @@ import Sidebar from "./Sidebar";
 import {
   useCreateInformationMutation,
   useGetInfoListQuery,
+  useUpdateInfoMutation,
 } from "../services/Post";
 import Spinner from "./Spinner";
 import { useSelector } from "react-redux";
 function Informations(props) {
   const ecomAdmintoken = useSelector((data) => data?.local?.token);
 
-  const { data: infoListdata } = useGetInfoListQuery({
+  const { data: infoListdata, refetch: fetchInfiList } = useGetInfoListQuery({
     ecomAdmintoken,
   });
 
   const [loading, setLoading] = useState(false);
   const [informationListItems, setInformationListItems] = useState([]);
-  const [createInformation, responseInfo] = useCreateInformationMutation();
+
+  const [createInformation] = useCreateInformationMutation();
+  const [updateInfo] = useUpdateInfoMutation();
+
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [titleEn3, setTitleNameEn3] = useState("");
@@ -45,14 +49,15 @@ function Informations(props) {
 
   const handleUpdate = async (e) => {
     e.preventDefault();
-    await axios
-      .patch(
-        `${process.env.REACT_APP_APIENDPOINT}admin/information/info/update/${itemId}`,
-        {
-          title_en: titleEn,
-          Description_en: descriptionEn,
-        }
-      )
+    const data = {};
+
+    if (titleEn) data.title_en = titleEn;
+    if (descriptionEn) data.Description_en = descriptionEn;
+    if (titleAr) data.title_ar = titleAr;
+    if (descriptionAr) data.Description_ar = descriptionAr;
+    data.ecomAdmintoken = ecomAdmintoken;
+    data.itemId = itemId;
+    const response = await updateInfo(data)
       .then((response) => {
         console.log(response);
         if (!response.data.error) {
@@ -64,7 +69,9 @@ function Informations(props) {
             confirmButtonText: "OK",
           }).then((result) => {
             if (result.isConfirmed) {
-              window.location.reload();
+              fetchInfiList();
+              document.getElementById("Edit_close").click();
+              document.getElementById("Edit_closear").click();
             }
           });
         }
@@ -73,36 +80,7 @@ function Informations(props) {
         console.log(error);
       });
   };
-  const handleUpdate1 = async (e) => {
-    e.preventDefault();
-    await axios
-      .patch(
-        `${process.env.REACT_APP_APIENDPOINT}admin/information/info/update/${itemId}`,
-        {
-          title_ar: titleAr,
-          Description_ar: descriptionAr,
-        }
-      )
-      .then((response) => {
-        console.log(response);
-        if (!response.data.error) {
-          Swal.fire({
-            title: "Updated!",
-            text: "Your have been updated the list successfully.",
-            icon: "success",
-            confirmButtonColor: "#3085d6",
-            confirmButtonText: "OK",
-          }).then((result) => {
-            if (result.isConfirmed) {
-              window.location.reload();
-            }
-          });
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
+
   const handleItem = (item) => {
     setTitleEn2(item?.title_en || "");
     setDescriptionEn2(item?.Description_en || "");
@@ -116,6 +94,7 @@ function Informations(props) {
       title_ar: titleAr3,
       Description_en: descriptionEn3,
       Description_ar: descriptionAr3,
+      ecomAdmintoken: ecomAdmintoken,
     };
     createInformation(newContact);
     Swal.fire({
@@ -125,8 +104,7 @@ function Informations(props) {
       confirmButtonText: "OK",
     }).then((result) => {
       if (result.isConfirmed) {
-        window.location.reload();
-        // informationList();
+        fetchInfiList();
       }
     });
   };
@@ -225,6 +203,7 @@ function Informations(props) {
                 className="btn-close"
                 data-bs-dismiss="modal"
                 aria-label="Close"
+                id="Edit_close"
               ></button>
             </div>
             <div className="modal-body">
@@ -255,7 +234,7 @@ function Informations(props) {
                   <button
                     type="submit"
                     className="comman_btn2"
-                    onClick={handleUpdate}
+                    onClick={(e) => handleUpdate(e)}
                   >
                     Update
                   </button>
@@ -286,6 +265,7 @@ function Informations(props) {
                 className="btn-close"
                 data-bs-dismiss="modal"
                 aria-label="Close"
+                id="Edit_closear"
               ></button>
             </div>
             <div className="modal-body">
@@ -320,7 +300,7 @@ function Informations(props) {
                   <button
                     type="submit"
                     className="comman_btn2"
-                    onClick={handleUpdate1}
+                    onClick={(e) => handleUpdate(e)}
                   >
                     Update
                   </button>

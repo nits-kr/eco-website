@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
 import Swal from "sweetalert2";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faPencil, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import Sidebar from "./Sidebar";
 import {
-  useGetFileQuery,
+  useGetFileUserMutation,
   useGetOrderListAllMutation,
-  useGetOrderListQuery,
   useGetUserListQuery,
 } from "../services/Post";
 import { useEditOrderListMutation } from "../services/Post";
@@ -25,10 +23,9 @@ function OrderManagement() {
   const [loader, setLoader] = useState(false);
   const ecomAdmintoken = useSelector((data) => data?.local?.token);
 
-  const [deleteOrder, response] = useDeleteOrderListMutation();
-  const { data: download } = useGetFileQuery({ ecomAdmintoken });
-  // const { data: orderListdata, refetch: refetchOrderList } =
-  //   useGetOrderListQuery({ ecomAdmintoken });
+  const [deleteOrder] = useDeleteOrderListMutation();
+
+  const [getFiles] = useGetFileUserMutation();
 
   const [orderListdata] = useGetOrderListAllMutation();
 
@@ -43,7 +40,7 @@ function OrderManagement() {
   const [startDate1, setStartDate1] = useState("");
   const [itemId, setItemId] = useState("");
   const [itemId2, setItemId2] = useState("");
-  const [brands, setBrands] = useState([]);
+  const [agents, setAgents] = useState([]);
   const [selectedBrandIds, setSelectedBrandIds] = useState([]);
 
   const {
@@ -94,9 +91,11 @@ function OrderManagement() {
     }
   };
 
+  console.log("userListdata", userListdata);
+
   useEffect(() => {
     if (userListdata) {
-      setBrands(userListdata?.results?.list);
+      setAgents(userListdata?.results?.list);
     }
   }, [userListdata]);
 
@@ -202,7 +201,7 @@ function OrderManagement() {
     const data = {
       from: startDate,
       to: endDate,
-      search: searchQuery,
+      orderStatus: searchQuery,
       ecomAdmintoken: ecomAdmintoken,
     };
     const res = await orderListdata(data);
@@ -210,10 +209,13 @@ function OrderManagement() {
     setOrderList(res?.data?.results?.list);
   };
 
+  const handleSearch = (e) => {
+    e.preventDefault();
+    handleOrderList();
+  };
+
   useEffect(() => {
-    if (orderList?.length > 0) {
-      // setOrderList(orderListdata?.results?.list);
-      // calculateTotalCartsTotal(orderListdata?.results?.list);
+    if (orderList) {
       const newRows = [];
       orderList?.map((list, index) => {
         const returnData = {};
@@ -227,8 +229,8 @@ function OrderManagement() {
         returnData.date = moment(list?.publishDate).format("L");
         returnData.customer = list?.user_Id?.userName;
         returnData.paymentIntent = list?.paymentIntent;
-        returnData.total = list?.cartsTotal
-          ? list?.cartsTotal?.toFixed(2)
+        returnData.total = list?.totalAmount
+          ? list?.totalAmount?.toFixed(2)
           : "N/A";
         returnData.status = (
           <div
@@ -337,14 +339,14 @@ function OrderManagement() {
                   <option value="" style={{ textAlign: "center" }}>
                     Assign
                   </option>
-                  {Array.isArray(brands) &&
-                    brands.map((subCategory) => (
+                  {Array.isArray(agents) &&
+                    agents.map((agent) => (
                       <option
-                        key={subCategory._id}
-                        value={subCategory._id}
+                        key={agent._id}
+                        value={agent._id}
                         style={{ textAlign: "center" }}
                       >
-                        {subCategory.name}
+                        {agent?.name}
                       </option>
                     ))}
                 </select>
@@ -435,13 +437,18 @@ function OrderManagement() {
   //   }
   // };
 
-  const handleDownload = () => {
-    if (download) {
-      const blob = new Blob([download]);
-      const downloadUrl = URL.createObjectURL(blob);
+  const handleDownload = async (e) => {
+    e.preventDefault();
+    const data = {
+      ecomAdmintoken: ecomAdmintoken,
+    };
+    const res = await getFiles(data);
+
+    if (res) {
       const link = document.createElement("a");
-      link.href = downloadUrl;
-      link.download = "file.xlsx";
+      link.href = res;
+      link.target = "_blank";
+      link.download = "file.pdf";
       link.click();
     }
   };
@@ -533,6 +540,7 @@ function OrderManagement() {
                     <form
                       className="form-design py-4 px-3 help-support-form row align-items-end justify-content-between"
                       action=""
+                      onSubmit={handleSearch}
                     >
                       <div className="form-group mb-0 col-5">
                         <label htmlFor="">From</label>

@@ -58,12 +58,26 @@ export const PostApi = createApi({
       },
     }),
     createInformation: builder.mutation({
-      query: (body) => ({
-        url: `/admin/information/info/create`,
-        method: "POST",
-        body,
-      }),
+      query: (body) => {
+        const { ecomAdmintoken, ...data } = body;
+
+        return {
+          url: "admin/information/info/create",
+          method: "post",
+          body: data,
+          headers: {
+            "x-auth-token-user": ecomAdmintoken,
+          },
+        };
+      },
     }),
+    // createInformation: builder.mutation({
+    //   query: (body) => ({
+    //     url: `admin/information/info/create`,
+    //     method: "POST",
+    //     body,
+    //   }),
+    // }),
     // createContent: builder.mutation({
     //   query: (body) => ({
     //     url: `admin/content/content/createContent`,
@@ -1020,6 +1034,20 @@ export const PostApi = createApi({
         };
       },
     }),
+    updateInfo: builder.mutation({
+      query: (body) => {
+        const { ecomAdmintoken, itemId, ...data } = body;
+
+        return {
+          url: `admin/information/info/update/${itemId}`,
+          method: "PATCH",
+          body: data,
+          headers: {
+            "x-auth-token-user": ecomAdmintoken,
+          },
+        };
+      },
+    }),
     subCatogaryStatus: builder.mutation({
       query: (body) => {
         console.log("update category", body);
@@ -1625,4 +1653,5 @@ export const {
   useGetUserListAllSearchMutation,
   useGetFileUserMutation,
   useGetOrderListAllMutation,
+  useUpdateInfoMutation,
 } = PostApi;
