@@ -10,6 +10,7 @@ import Barchart from "./chart/Barchart";
 import DashboardDiscountedChart from "./chart/DashboardDiscountedChart";
 import {
   useGetDashboardCountQuery,
+  useGetOrderListAllMutation,
   useGetOrderListQuery,
   useGetProductListQuery,
 } from "../services/Post";
@@ -23,7 +24,10 @@ function DashboardNew(props) {
   const [loading, setLoading] = useState(false);
   const { data: dashboard, refetch: refetchdashboard } =
     useGetDashboardCountQuery({ ecomAdmintoken });
-  const { data: orderListdata } = useGetOrderListQuery({ ecomAdmintoken });
+  // const { data: orderListdata } = useGetOrderListQuery({ ecomAdmintoken });
+
+  const [orderListdata] = useGetOrderListAllMutation();
+
   const { data: productListdata } = useGetProductListQuery({ ecomAdmintoken });
   const [orderList, setOrderList] = useState([]);
   const [productList, setProductList] = useState([]);
@@ -169,93 +173,106 @@ function DashboardNew(props) {
   });
 
   useEffect(() => {
-    if (orderListdata) {
-      setOrderList(orderListdata?.results?.list);
-      calculateTotalCartsTotal(orderListdata?.results?.list);
-      const newRows = [];
-      orderListdata?.results?.list
-        ?.slice()
-        ?.reverse()
-        ?.map((list, index) => {
-          const returnData = {};
-          // const totalStockQuantity =
-          //   list.addVarient.length > 0
-          //     ? list.addVarient.reduce(
-          //         (sum, variant) => sum + (variant.stockQuantity || 0),
-          //         0
-          //       )
-          //     : 0;
-          returnData.sn = index + 1;
-          returnData.title = list?.products[0]?.product_Id?.productName_en
-            ?.split(/\s+/)
-            .slice(0, 2)
-            .join(" ");
-          returnData.id = list?._id;
-          returnData.del_to = <strong>{list?.user_Id?.userName}</strong>;
-          returnData.pic = (
-            <>
-              <img
-                src={
-                  list?.products[0]?.product_Id?.addVarient[0]?.product_Pic[0]
-                }
-                alt=""
-                height={50}
-                width={50}
-              />
-            </>
-          );
-          returnData.date = moment(list?.publishDate).format("L");
-          returnData.customer = list?.user_Id?.userName;
-          returnData.total = list?.cartsTotal
-            ? list?.cartsTotal?.toFixed(2)
-            : "N/A";
-          returnData.status = (
-            <div
-              className={
-                list?.orderStatus === "Cancelled"
-                  ? "text-danger"
-                  : list?.orderStatus === "Pending"
-                  ? "text-warning"
-                  : list?.orderStatus === "Packed"
-                  ? "text-info"
-                  : list?.orderStatus === "Approved"
-                  ? "text-success"
-                  : list?.orderStatus === "Inprogress"
-                  ? "text-primary"
-                  : list?.orderStatus === "Delivered"
-                  ? "text-secondary"
-                  : "text-default"
-              }
-              style={{
-                background:
-                  list?.orderStatus === "Cancelled"
-                    ? "#ffe5e5"
-                    : list?.orderStatus === "Pending"
-                    ? "#fff6e5"
-                    : list?.orderStatus === "Packed"
-                    ? "#e5f0ff"
-                    : list?.orderStatus === "Approved"
-                    ? "#e5ffe5"
-                    : list?.orderStatus === "Inprogress"
-                    ? "#e5e5ff"
-                    : list?.orderStatus === "Delivered"
-                    ? "#f3f3f3"
-                    : "#f9f9f9",
-                borderRadius: "5px",
-                padding: "2px 5px",
-              }}
-            >
-              {list?.orderStatus}
-            </div>
-          );
-          // returnData.quantity = totalStockQuantity;
+    if (ecomAdmintoken) {
+      handleOrderList();
+    }
+  }, [ecomAdmintoken]);
 
-          newRows.push(returnData);
-        });
+  const handleOrderList = async () => {
+    const data = {
+      from: "",
+      to: "",
+      orderStatus: "",
+      ecomAdmintoken: ecomAdmintoken,
+    };
+    const res = await orderListdata(data);
+    console.log("res cate", res);
+    setOrderList(res?.data?.results?.orders);
+  };
+
+  useEffect(() => {
+    if (orderList) {
+      // setOrderList(orderListdata?.results?.orders);
+      // calculateTotalCartsTotal(orderListdata?.results?.orders);
+      const newRows = [];
+      orderList?.map((list, index) => {
+        const returnData = {};
+        // const totalStockQuantity =
+        //   list.addVarient.length > 0
+        //     ? list.addVarient.reduce(
+        //         (sum, variant) => sum + (variant.stockQuantity || 0),
+        //         0
+        //       )
+        //     : 0;
+        returnData.sn = index + 1;
+        returnData.title = list?.products[0]?.product_Id?.productName_en
+          ?.split(/\s+/)
+          .slice(0, 2)
+          .join(" ");
+        returnData.id = list?._id;
+        returnData.del_to = <strong>{list?.user_Id?.userName}</strong>;
+        returnData.pic = (
+          <>
+            <img
+              src={list?.products[0]?.product_Id?.addVarient[0]?.product_Pic[0]}
+              alt=""
+              height={50}
+              width={50}
+            />
+          </>
+        );
+        returnData.date = moment(list?.publishDate).format("L");
+        returnData.customer = list?.user_Id?.userName;
+        returnData.total = list?.cartsTotal
+          ? list?.cartsTotal?.toFixed(2)
+          : "N/A";
+        returnData.status = (
+          <div
+            className={
+              list?.orderStatus === "Cancelled"
+                ? "text-danger"
+                : list?.orderStatus === "Pending"
+                ? "text-warning"
+                : list?.orderStatus === "Packed"
+                ? "text-info"
+                : list?.orderStatus === "Approved"
+                ? "text-success"
+                : list?.orderStatus === "Inprogress"
+                ? "text-primary"
+                : list?.orderStatus === "Delivered"
+                ? "text-secondary"
+                : "text-default"
+            }
+            style={{
+              background:
+                list?.orderStatus === "Cancelled"
+                  ? "#ffe5e5"
+                  : list?.orderStatus === "Pending"
+                  ? "#fff6e5"
+                  : list?.orderStatus === "Packed"
+                  ? "#e5f0ff"
+                  : list?.orderStatus === "Approved"
+                  ? "#e5ffe5"
+                  : list?.orderStatus === "Inprogress"
+                  ? "#e5e5ff"
+                  : list?.orderStatus === "Delivered"
+                  ? "#f3f3f3"
+                  : "#f9f9f9",
+              borderRadius: "5px",
+              padding: "2px 5px",
+            }}
+          >
+            {list?.orderStatus}
+          </div>
+        );
+        // returnData.quantity = totalStockQuantity;
+
+        newRows.push(returnData);
+      });
 
       setOrder({ ...order, rows: newRows });
     }
-  }, [orderListdata]);
+  }, [orderList]);
 
   useEffect(() => {
     if (productListdata) {

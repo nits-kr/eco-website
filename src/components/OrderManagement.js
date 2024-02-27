@@ -206,7 +206,7 @@ function OrderManagement() {
     };
     const res = await orderListdata(data);
     console.log("res cate", res);
-    setOrderList(res?.data?.results?.list);
+    setOrderList(res?.data?.results?.orders);
   };
 
   const handleSearch = (e) => {
@@ -226,7 +226,7 @@ function OrderManagement() {
           .slice(0, 2)
           .join(" ");
         returnData.id = list?._id;
-        returnData.date = moment(list?.publishDate).format("L");
+        returnData.date = moment(list?.createdAt).format("L");
         returnData.customer = list?.user_Id?.userName;
         returnData.paymentIntent = list?.paymentIntent;
         returnData.total = list?.totalAmount

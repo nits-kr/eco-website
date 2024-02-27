@@ -1244,6 +1244,15 @@ export const PostApi = createApi({
         },
       }),
     }),
+    deleteContent: builder.mutation({
+      query: ({ id, ecomAdmintoken }) => ({
+        url: `admin/content/content/delete/${id}`,
+        method: "DELETE",
+        headers: {
+          "x-auth-token-user": ecomAdmintoken,
+        },
+      }),
+    }),
     deleteNotificationList: builder.mutation({
       query: (id) => ({
         url: `/admin/notification/notification/delete-notification/${id}`,
@@ -1654,4 +1663,5 @@ export const {
   useGetFileUserMutation,
   useGetOrderListAllMutation,
   useUpdateInfoMutation,
+  useDeleteContentMutation,
 } = PostApi;

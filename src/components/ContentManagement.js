@@ -3,7 +3,10 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import Sidebar from "./Sidebar";
 import Swal from "sweetalert2";
-import { useGetContentListQuery } from "../services/Post";
+import {
+  useDeleteContentMutation,
+  useGetContentListQuery,
+} from "../services/Post";
 import { useUpdateContentMutation } from "../services/Post";
 import { useCreateContentMutation } from "../services/Post";
 import { useSelector } from "react-redux";
@@ -19,6 +22,8 @@ function ContentManagement() {
     });
   const [contentList, setContentList] = useState([]);
   const [update, res] = useUpdateContentMutation();
+  const [deleteContent] = useDeleteContentMutation();
+
   const [titleEn, setTitleEn] = useState("");
   const [descriptionEn, setDescriptionEn] = useState("");
   const [titleAr, setTitleAr] = useState("");
@@ -185,10 +190,10 @@ function ContentManagement() {
                               confirmButtonText: "Yes, delete it!",
                             }).then((result) => {
                               if (result.isConfirmed) {
-                                // deleteHelp({
-                                //   id: data?._id,
-                                //   ecomAdmintoken,
-                                // });
+                                deleteContent({
+                                  id: data?._id,
+                                  ecomAdmintoken,
+                                });
                                 Swal.fire(
                                   "Deleted!",
                                   `${data?.categoryName}  item has been deleted.`,

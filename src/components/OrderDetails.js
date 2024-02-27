@@ -114,7 +114,7 @@ function OrderDetails() {
                               data-bs-ride="carousel"
                             >
                               <div className="carousel-inner">
-                                {productId?.addVarient?.[0]?.product_Pic?.map(
+                                {productId?.varient?.product_Pic?.map(
                                   (item, index) => (
                                     <div
                                       className={`carousel-item ${
@@ -135,7 +135,7 @@ function OrderDetails() {
                                 )}
                               </div>
                               <div className="carousel-indicators">
-                                {productId?.addVarient?.[0]?.product_Pic?.map(
+                                {productId?.varient?.product_Pic?.map(
                                   (item, index) => (
                                     <button
                                       type="button"
