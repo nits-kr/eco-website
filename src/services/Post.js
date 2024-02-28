@@ -597,13 +597,6 @@ export const PostApi = createApi({
         body,
       }),
     }),
-    // createStaff: builder.mutation({
-    //   query: (body) => ({
-    //     url: `admin/staff/staff/createStaff`,
-    //     method: "post",
-    //     body,
-    //   }),
-    // }),
 
     createStaff: builder.mutation({
       query: (body) => {
@@ -1407,8 +1400,8 @@ export const PostApi = createApi({
       query: (body) => {
         const { ecomAdmintoken, id } = body;
         return {
-          url: `admin/order/order/order-Details/${id}`,
-          method: "post",
+          url: `admin/order/order/getOrder/${id}`,
+          method: "get",
           headers: {
             "x-auth-token-user": ecomAdmintoken,
           },

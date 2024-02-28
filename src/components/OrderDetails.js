@@ -39,9 +39,7 @@ function OrderDetails() {
     const response = await orderDetails(userdetailId);
     setDetails(response?.data?.results?.orderDetails);
     setAddress(response?.data?.results?.orderDetails?.address_Id);
-    setProductId(
-      response?.data?.results?.orderDetails?.products[0]?.product_Id
-    );
+    // setProductId(response?.data?.results?.orderDetails);
   };
 
   // const position = {
@@ -114,45 +112,41 @@ function OrderDetails() {
                               data-bs-ride="carousel"
                             >
                               <div className="carousel-inner">
-                                {productId?.varient?.product_Pic?.map(
-                                  (item, index) => (
-                                    <div
-                                      className={`carousel-item ${
-                                        index === 0 ? "active" : ""
-                                      }`}
-                                      key={index}
-                                    >
-                                      <img
-                                        src={item}
-                                        className="d-block w-100"
-                                        alt={`Slide ${index + 1}`}
-                                      />
-                                      <span className="label_s">
-                                        {item.label}
-                                      </span>
-                                    </div>
-                                  )
-                                )}
+                                {details?.products?.map((item, index) => (
+                                  <div
+                                    className={`carousel-item ${
+                                      index === 0 ? "active" : ""
+                                    }`}
+                                    key={index}
+                                  >
+                                    <img
+                                      src={item?.varient_Id?.product_Pic[0]}
+                                      className="d-block w-100"
+                                      alt={`Slide ${index + 1}`}
+                                    />
+                                    <span className="label_s">
+                                      {item.label}
+                                    </span>
+                                  </div>
+                                ))}
                               </div>
                               <div className="carousel-indicators">
-                                {productId?.varient?.product_Pic?.map(
-                                  (item, index) => (
-                                    <button
-                                      type="button"
-                                      data-bs-target="#carouselExampleIndicators"
-                                      data-bs-slide-to={index}
-                                      key={index}
-                                      aria-label={`Slide ${index + 1}`}
-                                      className={index === 0 ? "active" : ""}
-                                    >
-                                      <img
-                                        src={item}
-                                        className="thumnail_img"
-                                        alt={`Slide ${index + 1}`}
-                                      />
-                                    </button>
-                                  )
-                                )}
+                                {details?.products?.map((item, index) => (
+                                  <button
+                                    type="button"
+                                    data-bs-target="#carouselExampleIndicators"
+                                    data-bs-slide-to={index}
+                                    key={index}
+                                    aria-label={`Slide ${index + 1}`}
+                                    className={index === 0 ? "active" : ""}
+                                  >
+                                    <img
+                                      src={item?.varient_Id?.product_Pic[0]}
+                                      className="thumnail_img"
+                                      alt={`Slide ${index + 1}`}
+                                    />
+                                  </button>
+                                ))}
                               </div>
                             </div>
                           </div>

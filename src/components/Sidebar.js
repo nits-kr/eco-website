@@ -41,113 +41,153 @@ function Sidebar({ Dash }) {
                     <i className="fal fa-home"></i>Dashboard
                   </Link>
                 </li> */}
-                <li
-                  className={
-                    Dash === "dashboard" ? "nav-link active" : "nav-link"
-                  }
-                >
-                  <Link className="" to="/dashboard">
-                    <i className="fal fa-box-full"></i>Dashboard
-                  </Link>
-                </li>
-                <li
-                  className={Dash === "users" ? "nav-link active" : "nav-link"}
-                >
-                  <Link className="" to="/users">
-                    <i className="fal fa-user"></i>Users Management
-                  </Link>
-                </li>
-                <li
-                  className={Dash === "orders" ? "nav-link active" : "nav-link"}
-                >
-                  <Link className="" to="/orders">
-                    <i className="fal fa-box-full"></i>Order Management
-                  </Link>
-                </li>
-                <li
-                  className={
-                    Dash === "categories" ? "nav-link active" : "nav-link"
-                  }
-                >
-                  <div className="d-flex">
-                    <Link to="/categories">
-                      <i className="fas fa-list-ol"></i>
-                      Category Management
-                    </Link>
-                  </div>
-                </li>
-
-                <li
-                  className={
-                    Dash === "product-management"
-                      ? "nav-link active"
-                      : "nav-link"
-                  }
-                >
-                  <Link className="ms-link " to="/product-management">
-                    <i className="fas fa-cogs"></i>
-                    <span>Add New Product</span>
-                  </Link>
-                </li>
-                <li
-                  className={
-                    Dash === "products" ? "nav-link active" : "nav-link"
-                  }
-                >
-                  <Link
-                    className="ms-link"
-                    to="/products"
-                    // onClick={() => handleItemClick("products")}
+                {isAccessAllowed("dashboard") && (
+                  <li
+                    className={
+                      Dash === "dashboard" ? "nav-link active" : "nav-link"
+                    }
                   >
-                    <i className="fas fa-check-square"></i>
-                    <span> Product List</span>
-                  </Link>
-                </li>
-                <li
-                  className={
-                    Dash === "Home-Screen-banners"
-                      ? "nav-link active"
-                      : "nav-link"
-                  }
-                >
-                  <Link className="" to="/Home-Screen-banners">
-                    <i className="fal fa-sign-in-alt"></i>Banner Management
-                  </Link>
-                </li>
-                <li
-                  className={
-                    Dash === "brand-management" ? "nav-link active" : "nav-link"
-                  }
-                >
-                  <Link className="ms-link " to="/brand-management">
-                    <i className="fas fa-cogs"></i>
-                    <span>Brand Management</span>
-                  </Link>
-                </li>
+                    <Link className="" to="/dashboard">
+                      <i className="fal fa-box-full"></i>Dashboard
+                    </Link>
+                  </li>
+                )}
 
-                <li
-                  className={Dash === "agents" ? "nav-link active" : "nav-link"}
-                >
-                  <Link className="" to="/agents">
-                    <i className="fal fa-users"></i>Agent Management
-                  </Link>
-                </li>
-                <li
-                  className={Dash === "staff" ? "nav-link active" : "nav-link"}
-                >
-                  <Link className="" to="/staff">
-                    <i className="fal fa-clipboard-user"></i>Staff Management
-                  </Link>
-                </li>
-                <li
-                  className={
-                    Dash === "transactions" ? "nav-link active" : "nav-link"
-                  }
-                >
-                  <Link className=" " to="/transactions">
-                    <i className="far fa-repeat-1"></i>Transaction Management
-                  </Link>
-                </li>
+                {isAccessAllowed("user") && (
+                  <li
+                    className={
+                      Dash === "users" ? "nav-link active" : "nav-link"
+                    }
+                  >
+                    <Link className="" to="/users">
+                      <i className="fal fa-user"></i>Users Management
+                    </Link>
+                  </li>
+                )}
+
+                {isAccessAllowed("order") && (
+                  <li
+                    className={
+                      Dash === "orders" ? "nav-link active" : "nav-link"
+                    }
+                  >
+                    <Link className="" to="/orders">
+                      <i className="fal fa-box-full"></i>Order Management
+                    </Link>
+                  </li>
+                )}
+
+                {isAccessAllowed("category") && (
+                  <li
+                    className={
+                      Dash === "categories" ? "nav-link active" : "nav-link"
+                    }
+                  >
+                    <div className="d-flex">
+                      <Link to="/categories">
+                        <i className="fas fa-list-ol"></i>
+                        Category Management
+                      </Link>
+                    </div>
+                  </li>
+                )}
+
+                {isAccessAllowed("addproduct") && (
+                  <li
+                    className={
+                      Dash === "product-management"
+                        ? "nav-link active"
+                        : "nav-link"
+                    }
+                  >
+                    <Link className="ms-link " to="/product-management">
+                      <i className="fas fa-cogs"></i>
+                      <span>Add New Product</span>
+                    </Link>
+                  </li>
+                )}
+
+                {isAccessAllowed("productlist") && (
+                  <li
+                    className={
+                      Dash === "products" ? "nav-link active" : "nav-link"
+                    }
+                  >
+                    <Link
+                      className="ms-link"
+                      to="/products"
+                      // onClick={() => handleItemClick("products")}
+                    >
+                      <i className="fas fa-check-square"></i>
+                      <span> Product List</span>
+                    </Link>
+                  </li>
+                )}
+
+                {isAccessAllowed("banners") && (
+                  <li
+                    className={
+                      Dash === "Home-Screen-banners"
+                        ? "nav-link active"
+                        : "nav-link"
+                    }
+                  >
+                    <Link className="" to="/Home-Screen-banners">
+                      <i className="fal fa-sign-in-alt"></i>Banner Management
+                    </Link>
+                  </li>
+                )}
+
+                {isAccessAllowed("brand") && (
+                  <li
+                    className={
+                      Dash === "brand-management"
+                        ? "nav-link active"
+                        : "nav-link"
+                    }
+                  >
+                    <Link className="ms-link " to="/brand-management">
+                      <i className="fas fa-cogs"></i>
+                      <span>Brand Management</span>
+                    </Link>
+                  </li>
+                )}
+
+                {isAccessAllowed("agent") && (
+                  <li
+                    className={
+                      Dash === "agents" ? "nav-link active" : "nav-link"
+                    }
+                  >
+                    <Link className="" to="/agents">
+                      <i className="fal fa-users"></i>Agent Management
+                    </Link>
+                  </li>
+                )}
+
+                {isAccessAllowed("staff") && (
+                  <li
+                    className={
+                      Dash === "staff" ? "nav-link active" : "nav-link"
+                    }
+                  >
+                    <Link className="" to="/staff">
+                      <i className="fal fa-clipboard-user"></i>Staff Management
+                    </Link>
+                  </li>
+                )}
+
+                {isAccessAllowed("transaction") && (
+                  <li
+                    className={
+                      Dash === "transactions" ? "nav-link active" : "nav-link"
+                    }
+                  >
+                    <Link className=" " to="/transactions">
+                      <i className="far fa-repeat-1"></i>Transaction Management
+                    </Link>
+                  </li>
+                )}
                 {/* <li
                   className={
                     Dash === "reports" ? "nav-link active" : "nav-link"
@@ -209,28 +249,33 @@ function Sidebar({ Dash }) {
                     </ul>
                   </div>
                 </li> */}
-                <li
-                  className={
-                    Dash === "notification-management"
-                      ? "nav-link active"
-                      : "nav-link"
-                  }
-                >
-                  <Link className="" to="/notification-management">
-                    <i className="far fa-bell"></i>Notification Management
-                  </Link>
-                </li>
-                <li
-                  className={
-                    Dash === "announcement-management"
-                      ? "nav-link active"
-                      : "nav-link"
-                  }
-                >
-                  <Link className="" to="/announcement-management">
-                    <i className="far fa-bullhorn"></i> Announcement Management
-                  </Link>
-                </li>
+                {isAccessAllowed("notification") && (
+                  <li
+                    className={
+                      Dash === "notification-management"
+                        ? "nav-link active"
+                        : "nav-link"
+                    }
+                  >
+                    <Link className="" to="/notification-management">
+                      <i className="far fa-bell"></i>Notification Management
+                    </Link>
+                  </li>
+                )}
+                {isAccessAllowed("announcement") && (
+                  <li
+                    className={
+                      Dash === "announcement-management"
+                        ? "nav-link active"
+                        : "nav-link"
+                    }
+                  >
+                    <Link className="" to="/announcement-management">
+                      <i className="far fa-bullhorn"></i> Announcement
+                      Management
+                    </Link>
+                  </li>
+                )}
                 {/* <li
                   className={
                     Dash === "thoughts-management"
@@ -242,26 +287,30 @@ function Sidebar({ Dash }) {
                     <i className="fal fa-lightbulb-on"></i> Thoughts Management
                   </Link>
                 </li> */}
-                <li
-                  className={
-                    Dash === "content-management"
-                      ? "nav-link active"
-                      : "nav-link"
-                  }
-                >
-                  <Link className="" to="/content-management">
-                    <i className="fal fa-user-edit"></i>Content Management
-                  </Link>
-                </li>
-                <li
-                  className={
-                    Dash === "coupanList" ? "nav-link active" : "nav-link"
-                  }
-                >
-                  <Link className="" to="/coupanList">
-                    <i className="fal fa-user-edit"></i>Coupan Management
-                  </Link>
-                </li>
+                {isAccessAllowed("content") && (
+                  <li
+                    className={
+                      Dash === "content-management"
+                        ? "nav-link active"
+                        : "nav-link"
+                    }
+                  >
+                    <Link className="" to="/content-management">
+                      <i className="fal fa-user-edit"></i>Content Management
+                    </Link>
+                  </li>
+                )}
+                {isAccessAllowed("coupan") && (
+                  <li
+                    className={
+                      Dash === "coupanList" ? "nav-link active" : "nav-link"
+                    }
+                  >
+                    <Link className="" to="/coupanList">
+                      <i className="fal fa-user-edit"></i>Coupan Management
+                    </Link>
+                  </li>
+                )}
                 <li
                   className={
                     Dash === "informations" ? "nav-link active" : "nav-link"

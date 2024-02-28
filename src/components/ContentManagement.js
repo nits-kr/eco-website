@@ -196,7 +196,7 @@ function ContentManagement() {
                                 });
                                 Swal.fire(
                                   "Deleted!",
-                                  `${data?.categoryName}  item has been deleted.`,
+                                  "item has been deleted.",
                                   "success"
                                 ).then(() => {
                                   fetchContentList();

@@ -358,7 +358,7 @@ function DashboardNew(props) {
   };
 
   let totalDeliveredItems = 0;
-  orderList.forEach((data) => {
+  orderList?.forEach((data) => {
     if (data.orderStatus === "Shipped") {
       totalDeliveredItems++;
     }

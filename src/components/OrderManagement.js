@@ -201,7 +201,7 @@ function OrderManagement() {
     const data = {
       from: startDate,
       to: endDate,
-      orderStatus: searchQuery,
+      search: searchQuery,
       ecomAdmintoken: ecomAdmintoken,
     };
     const res = await orderListdata(data);
@@ -239,7 +239,7 @@ function OrderManagement() {
                 ? "text-danger"
                 : list?.orderStatus === "Pending"
                 ? "text-warning"
-                : list?.orderStatus === "Packed"
+                : list?.orderStatus === "Shipped"
                 ? "text-info"
                 : list?.orderStatus === "Approved"
                 ? "text-success"
@@ -255,7 +255,7 @@ function OrderManagement() {
                   ? "#ffe5e5"
                   : list?.orderStatus === "Pending"
                   ? "#fff6e5"
-                  : list?.orderStatus === "Packed"
+                  : list?.orderStatus === "Shipped"
                   ? "#e5f0ff"
                   : list?.orderStatus === "Approved"
                   ? "#e5ffe5"
@@ -268,13 +268,13 @@ function OrderManagement() {
               padding: "2px 5px",
             }}
           >
-            {list?.orderStatus}
+            {list?.status}
           </div>
         );
         returnData.action = (
           <div>
             {" "}
-            {list.orderStatus === "Delivered" ? (
+            {list.status === "Delivered" ? (
               <Link
                 className="comman_btn table_viewbtn"
                 title="Can't Edit"
@@ -361,81 +361,6 @@ function OrderManagement() {
       setOrder({ ...order, rows: newRows });
     }
   }, [orderList]);
-
-  const url = `${process.env.REACT_APP_APIENDPOINT}admin/order/order/list`;
-  const url2 = `${process.env.REACT_APP_APIENDPOINT}admin/order/order/search`;
-  // useEffect(() => {
-  //   subOrderList();
-  // }, []);
-  // const subOrderList = async (e) => {
-  //   await axios
-  //     .post(url)
-  //     .then((response) => {
-  //       setOrderList(response?.data?.results?.list);
-  //     })
-  //     .catch((error) => {
-  //       console.log(error.response.data);
-  //       Swal.fire({
-  //         icon: "error",
-  //         title: "Network Error",
-  //         text: "Failed to fetch recent order list data. Please try again later.",
-  //       });
-  //     });
-  // };
-
-  // useEffect(() => {
-  //   handleSearch1();
-  // }, [searchQuery]);
-
-  // const handleSearch1 = async () => {
-  //   try {
-  //     const url1 = searchQuery !== "" ? url2 : url;
-  //     const response = await axios.post(url1, {
-  //       orderStatus: searchQuery,
-  //     });
-  //     const { error, results } = response.data;
-  //     if (error) {
-  //       setOrderList([]);
-  //       Swal.fire({
-  //         title: "Error!",
-  //         // text: error.response.data,
-  //         text: "Error searching for products. Data is not found",
-  //         icon: "error",
-  //         confirmButtonText: "OK",
-  //       }).then((result) => {
-  //         if (result.isConfirmed) {
-  //           // subOrderList();
-  //         }
-  //       });
-  //       // throw new Error("Error searching for products. Data is not found.");
-  //     } else {
-  //       setOrderList(searchQuery !== "" ? results?.orderData : results?.list);
-  //     }
-  //   } catch (error) {
-  //     if (error.response) {
-  //       Swal.fire({
-  //         title: "Error!",
-  //         text: error.response.data,
-  //         icon: "error",
-  //         confirmButtonText: "OK",
-  //       });
-  //     } else if (error.request) {
-  //       Swal.fire({
-  //         title: "Error!",
-  //         text: "Network error. Please try again later.",
-  //         icon: "error",
-  //         confirmButtonText: "OK",
-  //       });
-  //     } else {
-  //       Swal.fire({
-  //         title: "Error!",
-  //         text: error.message,
-  //         icon: "error",
-  //         confirmButtonText: "OK",
-  //       });
-  //     }
-  //   }
-  // };
 
   const handleDownload = async (e) => {
     e.preventDefault();
@@ -639,13 +564,13 @@ function OrderManagement() {
                         {...register("orderStatus", { required: true })}
                       >
                         <option value="">Order Status</option>
-                        <option value="Approved">Approved</option>
-                        <option value="Packed">Packed</option>
+                        {/* <option value="Approved">Approved</option> */}
+                        {/* <option value="Packed">Packed</option> */}
                         <option value="Shipped">Shipped</option>
                         <option value="Delivered">Delivered</option>
                         <option value="Cancelled">Cancelled</option>
-                        <option value="Pending">Pending</option>
-                        <option value="Inprogress">Inprogress</option>
+                        {/* <option value="Pending">Pending</option> */}
+                        <option value="Processing">Processing</option>
                       </select>
                     </div>
                     {errors.orderStatus && (
@@ -674,9 +599,9 @@ function OrderManagement() {
                         <option value="معباه">معباه</option>
                         <option value="شحنها">شحنها</option>
                         <option value="تم التوصيل">تم التوصيل</option>
-                        <option value="ألغيت">ألغيت</option>
+                        {/* <option value="ألغيت">ألغيت</option>
                         <option value="قيد الانتظار">قيد الانتظار</option>
-                        <option value="في تَقَدم">في تَقَدم</option>
+                        <option value="في تَقَدم">في تَقَدم</option> */}
                       </select>
                     </div>
                     {errors.orderStatusAr && (
