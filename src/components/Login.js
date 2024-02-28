@@ -3,17 +3,26 @@ import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 // import axios from "axios";
 import { useUserLoginMutation } from "../services/Post";
-import { useDispatch } from "react-redux";
-import { setModules, setToken } from "../app/localSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { setLoginType, setModules, setToken } from "../app/localSlice";
 import { useForm } from "react-hook-form";
 import classNames from "classnames";
 
 function Login() {
+  const modules = useSelector((data) => data?.local?.modules);
+  const loginType = useSelector((data) => data?.local?.loginType);
   const [loginData, res] = useUserLoginMutation();
 
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
+
+  const isAccessAllowed = (accessItem) => {
+    return modules?.includes(accessItem);
+  };
+
+  console.log("loginType", loginType);
+  console.log("modules", modules);
 
   const {
     register,
@@ -31,8 +40,9 @@ function Login() {
         password: data?.password,
       });
       console.log("response login", response);
-      if (response?.data?.message === "Successs") {
-        dispatch(setModules(response?.data?.results?.login?.modules));
+      if (response?.data?.message === "Logged in") {
+        dispatch(setModules(response?.data?.results?.admin?.modules));
+        dispatch(setLoginType(response?.data?.results?.admin?.type));
         dispatch(setToken(response?.data?.results?.token));
         Swal.fire({
           title: "Login Successful!",
@@ -41,12 +51,64 @@ function Login() {
           showConfirmButton: false,
           timer: 500,
         }).then(() => {
-          navigate("/dashboard");
+          if (response?.data?.results?.admin?.type !== "Admin") {
+            if (modules[0] === "dashboard") {
+              navigate("/dashboard");
+            } else if (modules[0] === "user") {
+              navigate("/users");
+            } else if (modules[0] === "category") {
+              navigate("/categories");
+            } else if (modules[0] === "offer") {
+              navigate("/offers");
+            } else if (modules[0] === "order") {
+              navigate("/orders");
+            } else if (modules[0] === "staff") {
+              navigate("/staff");
+            } else if (modules[0] === "transaction") {
+              navigate("/transactions");
+            } else if (modules[0] === "addproduct") {
+              navigate("/product-management");
+            } else if (modules[0] === "productlist") {
+              navigate("/products");
+            } else if (modules[0] === "banners") {
+              navigate("/Home-Screen-banners");
+            } else if (modules[0] === "brand") {
+              navigate("/brand-management");
+            } else if (modules[0] === "agent") {
+              navigate("/agents");
+            } else if (modules[0] === "notification") {
+              navigate("/notification-management");
+            } else if (modules[0] === "announcement") {
+              navigate("/announcement-management");
+            } else if (modules[0] === "thoughts") {
+              navigate("/thoughts-management");
+            } else if (modules[0] === "content") {
+              navigate("/content-management");
+            } else if (modules[0] === "coupan") {
+              navigate("/coupanList");
+            } else if (modules[0] === "information") {
+              navigate("/informations");
+            } else if (modules[0] === "configure") {
+              navigate("/store-settings");
+            } else if (modules[0] === "help") {
+              navigate("/help");
+            }
+          } else {
+            navigate("/dashboard");
+          }
+        });
+      } else if (response?.data?.message === "Wrong Password") {
+        Swal.fire({
+          title: "Wrong Password!",
+          icon: "error",
+          text: "You have entered wrong password.",
+          showConfirmButton: false,
+          timer: 500,
         });
       }
     } catch (error) {
       console.error("Login error:", error);
-      // Show a generic error message if something goes wrong
+
       Swal.fire({
         title: "Login Failed!",
         icon: "error",

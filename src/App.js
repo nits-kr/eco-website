@@ -57,9 +57,17 @@ import Products from "./components/productmanagements/Products";
 import ProductEdit from "./components/productmanagements/ProductEdit";
 import ProductList from "./components/productmanagements/ProductList";
 import CoupanLists from "./components/coupans/CoupanLists";
+import { useSelector } from "react-redux";
 
 function App() {
+  const modules = useSelector((data) => data?.local?.modules);
+  const loginType = useSelector((data) => data?.local?.loginType);
   const [progress, setProgress] = useState(0);
+
+  const isAccessAllowed = (accessItem) => {
+    return modules?.includes(accessItem);
+  };
+
   useEffect(() => {
     const timeout = setTimeout(() => {
       // Increment the progress value
@@ -79,15 +87,36 @@ function App() {
             exact
             className="active"
             path="/dashboard"
-            element={<DashboardNew setProgress={setProgress} />}
+            element={
+              loginType !== "Admin" ? (
+                isAccessAllowed("dashboard") ? (
+                  <DashboardNew setProgress={setProgress} />
+                ) : (
+                  <Login />
+                )
+              ) : (
+                <DashboardNew setProgress={setProgress} />
+              )
+            }
           />
 
           <Route
             exact
             className="active"
             path="/users"
-            element={<UsersManagement setProgress={setProgress} />}
+            element={
+              loginType !== "Admin" ? (
+                isAccessAllowed("user") ? (
+                  <UsersManagement setProgress={setProgress} />
+                ) : (
+                  <Login />
+                )
+              ) : (
+                <UsersManagement setProgress={setProgress} />
+              )
+            }
           />
+
           <Route
             exact
             className="active"
@@ -105,65 +134,119 @@ function App() {
             exact
             className="active"
             path="/agents"
-            element={<Agent setProgress={setProgress} />}
+            element={
+              loginType !== "Admin" ? (
+                isAccessAllowed("agent") ? (
+                  <Agent setProgress={setProgress} />
+                ) : (
+                  <Login />
+                )
+              ) : (
+                <Agent setProgress={setProgress} />
+              )
+            }
           />
+
           <Route
             exact
             className="active"
             path="/add-agents"
-            element={<AddAgents setProgress={setProgress} />}
+            element={
+              loginType !== "Admin" ? (
+                isAccessAllowed("agent") ? (
+                  <AddAgents setProgress={setProgress} />
+                ) : (
+                  <Login />
+                )
+              ) : (
+                <AddAgents setProgress={setProgress} />
+              )
+            }
           />
 
           <Route
             exact
             className="active"
             path="/agents-information/:id"
-            element={<AgentDetailsAll />}
+            element={
+              loginType !== "Admin" ? (
+                isAccessAllowed("agent") ? (
+                  <AgentDetailsAll />
+                ) : (
+                  <Login />
+                )
+              ) : (
+                <AgentDetailsAll />
+              )
+            }
           />
-          {/* <Route
-            exact
-            className="active"
-            path="/agents-information/:id"
-            element={<AgentInformation />}
-          /> */}
-
-          {/* <Route
-            exact
-            className="active"
-            path="/categories"
-            element={<Category setProgress={setProgress} />}
-          /> */}
 
           <Route
             exact
             className="active"
             path="/categories"
-            element={<CategoryManagement setProgress={setProgress} />}
+            element={
+              loginType !== "Admin" ? (
+                isAccessAllowed("category") ? (
+                  <CategoryManagement setProgress={setProgress} />
+                ) : (
+                  <Login />
+                )
+              ) : (
+                <CategoryManagement setProgress={setProgress} />
+              )
+            }
           />
+
           <Route
             exact
             className="active"
             path="/sub-categories"
-            element={<SubCategory setProgress={setProgress} />}
+            element={
+              loginType !== "Admin" ? (
+                isAccessAllowed("category") ? (
+                  <SubCategory setProgress={setProgress} />
+                ) : (
+                  <Login />
+                )
+              ) : (
+                <SubCategory setProgress={setProgress} />
+              )
+            }
           />
+
           <Route
             exact
             className="active"
             path="/product-management"
-            element={<Products setProgress={setProgress} />}
+            element={
+              loginType !== "Admin" ? (
+                isAccessAllowed("addproduct") ? (
+                  <Products setProgress={setProgress} />
+                ) : (
+                  <Login />
+                )
+              ) : (
+                <Products setProgress={setProgress} />
+              )
+            }
           />
 
-          {/* <Route
-            exact
-            className="active"
-            path="/product-management"
-            element={<ProductManagement2 setProgress={setProgress} />}
-          /> */}
           <Route
             exact
             className="active"
             path="/brand-management"
-            element={<BrandManagement />}
+            element={
+              loginType !== "Admin" ? (
+                isAccessAllowed("brand") ? (
+                  <BrandManagement />
+                ) : (
+                  <Login />
+                )
+              ) : (
+                <BrandManagement />
+              )
+            }
           />
 
           <Route
@@ -173,35 +256,23 @@ function App() {
             element={<ProductEdit setProgress={setProgress} />}
           />
 
-          {/* <Route
-            exact
-            className="active"
-            path="/product-management-edit/:id"
-            element={<ProductManagementEdit2 setProgress={setProgress} />}
-          /> */}
-          {/* <Route
-            exact
-            className="active"
-            path="/product-management-edit/:id"
-            element={<ProductManagementEdit />}
-          /> */}
-          {/* <ProductManagement2/> */}
-          {/* <ProductManagementEdit2/> */}
-
           <Route
             exact
             className="active"
             path="/products"
-            element={<ProductList setProgress={setProgress} />}
+            element={
+              loginType !== "Admin" ? (
+                isAccessAllowed("productlist") ? (
+                  <ProductList setProgress={setProgress} />
+                ) : (
+                  <Login />
+                )
+              ) : (
+                <ProductList setProgress={setProgress} />
+              )
+            }
           />
 
-          {/* <Route
-            exact
-            className="active"
-            path="/products"
-            element={<ProductList2 setProgress={setProgress} />}
-          /> */}
-          {/* <ProductList2/> */}
           <Route
             exact
             className="active"
@@ -212,22 +283,53 @@ function App() {
             exact
             className="active"
             path="/orders"
-            element={<OrderManagement />}
+            element={
+              loginType !== "Admin" ? (
+                isAccessAllowed("order") ? (
+                  <OrderManagement />
+                ) : (
+                  <Login />
+                )
+              ) : (
+                <OrderManagement />
+              )
+            }
           />
-          <Route exact className="active" path="/staff" element={<Staff />} />
-          {/* <Route
+
+          <Route
             exact
             className="active"
             path="/staff"
-            element={<StaffManagement />}
-          /> */}
+            element={
+              loginType !== "Admin" ? (
+                isAccessAllowed("staff") ? (
+                  <Staff />
+                ) : (
+                  <Login />
+                )
+              ) : (
+                <Staff />
+              )
+            }
+          />
 
           <Route
             exact
             className="active"
             path="/transactions"
-            element={<TransactionManagement />}
+            element={
+              loginType !== "Admin" ? (
+                isAccessAllowed("transaction") ? (
+                  <TransactionManagement />
+                ) : (
+                  <Login />
+                )
+              ) : (
+                <TransactionManagement />
+              )
+            }
           />
+
           <Route
             exact
             className="active"
@@ -238,46 +340,154 @@ function App() {
             exact
             className="active"
             path="/Home-Screen-banners"
-            element={<Banners setProgress={setProgress} />}
+            element={
+              loginType !== "Admin" ? (
+                isAccessAllowed("banners") ? (
+                  <Banners setProgress={setProgress} />
+                ) : (
+                  <Login />
+                )
+              ) : (
+                <Banners setProgress={setProgress} />
+              )
+            }
           />
 
           <Route
             exact
             className="active"
             path="/notification-management"
-            element={<NotificationManagement />}
+            element={
+              loginType !== "Admin" ? (
+                isAccessAllowed("notification") ? (
+                  <NotificationManagement />
+                ) : (
+                  <Login />
+                )
+              ) : (
+                <NotificationManagement />
+              )
+            }
           />
+
           <Route
             exact
             className="active"
             path="/announcement-management"
-            element={<AnnounceManagement />}
+            element={
+              loginType !== "Admin" ? (
+                isAccessAllowed("announcement") ? (
+                  <AnnounceManagement />
+                ) : (
+                  <Login />
+                )
+              ) : (
+                <AnnounceManagement />
+              )
+            }
           />
+
           <Route
             exact
             className="active"
             path="/thoughts-management"
-            element={<ThoughtsManagement />}
+            element={
+              loginType !== "Admin" ? (
+                isAccessAllowed("thoughts") ? (
+                  <ThoughtsManagement />
+                ) : (
+                  <Login />
+                )
+              ) : (
+                <ThoughtsManagement />
+              )
+            }
           />
+
           <Route
             exact
             className="active"
             path="/content-management"
-            element={<ContentManagement />}
+            element={
+              loginType !== "Admin" ? (
+                isAccessAllowed("content") ? (
+                  <ContentManagement />
+                ) : (
+                  <Login />
+                )
+              ) : (
+                <ContentManagement />
+              )
+            }
           />
+
           <Route
             exact
             className="active"
             path="/informations"
-            element={<Informations setProgress={setProgress} />}
+            element={
+              loginType !== "Admin" ? (
+                isAccessAllowed("information") ? (
+                  <Informations setProgress={setProgress} />
+                ) : (
+                  <Login />
+                )
+              ) : (
+                <Informations setProgress={setProgress} />
+              )
+            }
           />
+
           <Route
             exact
             className="active"
             path="/contact-us"
-            element={<ContactUs />}
+            element={
+              loginType !== "Admin" ? (
+                isAccessAllowed("contactus") ? (
+                  <ContactUs />
+                ) : (
+                  <Login />
+                )
+              ) : (
+                <ContactUs />
+              )
+            }
           />
-          <Route exact className="active" path="/help" element={<Help />} />
+
+          <Route
+            exact
+            className="active"
+            path="/help"
+            element={
+              loginType !== "Admin" ? (
+                isAccessAllowed("help") ? (
+                  <Help />
+                ) : (
+                  <Login />
+                )
+              ) : (
+                <Help />
+              )
+            }
+          />
+
+          <Route
+            exact
+            className="active"
+            path="/help-view"
+            element={
+              loginType !== "Admin" ? (
+                isAccessAllowed("help") ? (
+                  <HelpView />
+                ) : (
+                  <Login />
+                )
+              ) : (
+                <HelpView />
+              )
+            }
+          />
 
           <Route
             exact
@@ -285,18 +495,7 @@ function App() {
             path="/reset"
             element={<ResetPassword />}
           />
-          {/* <Route
-            exact
-            className="active"
-            path="/recent-order"
-            element={<RecentOrderDetails />}
-          /> */}
-          <Route
-            exact
-            className="active"
-            path="/help-view"
-            element={<HelpView />}
-          />
+
           <Route
             exact
             className="active"
@@ -321,24 +520,14 @@ function App() {
             path="/editProfile"
             element={<EditProfile />}
           />
-          {/* <Route
-            exact
-            className="active"
-            path="/changePassword"
-            element={<ChangePassword />}
-          /> */}
+
           <Route
             exact
             className="active"
             path="/varification"
             element={<Varification />}
           />
-          {/* <Route
-            exact
-            className="active"
-            path="/userDetails/:id"
-            element={<UserDetails2 />}
-          /> */}
+
           <Route
             exact
             className="active"
@@ -349,12 +538,6 @@ function App() {
           <Route
             exact
             className="active"
-            path="/transactionDetails"
-            element={<TransactionDetails />}
-          />
-          <Route
-            exact
-            className="active"
             path="/offerDetails"
             element={<OfferDetails />}
           />
@@ -362,40 +545,76 @@ function App() {
           <Route
             exact
             className="active"
-            path="/coupanList"
-            element={<CoupanLists />}
-          />
-
-          {/* <Route
-            exact
-            className="active"
-            path="/coupanList"
-            element={<CoupanList />}
-          /> */}
-          <Route
-            exact
-            className="active"
-            path="/creatCoupan"
-            element={<CreatCoupans />}
-          />
-
-          {/* <Route
-            exact
-            className="active"
-            path="/creatCoupan"
-            element={<CreatCoupan />}
-          /> */}
-          <Route
-            exact
-            className="active"
             path="/verificationModal"
             element={<VerificationModal />}
           />
+
+          <Route
+            exact
+            className="active"
+            path="/transactionDetails"
+            element={
+              loginType !== "Admin" ? (
+                isAccessAllowed("transaction") ? (
+                  <TransactionDetails />
+                ) : (
+                  <Login />
+                )
+              ) : (
+                <TransactionDetails />
+              )
+            }
+          />
+
+          <Route
+            exact
+            className="active"
+            path="/coupanList"
+            element={
+              loginType !== "Admin" ? (
+                isAccessAllowed("coupan") ? (
+                  <CoupanLists />
+                ) : (
+                  <Login />
+                )
+              ) : (
+                <CoupanLists />
+              )
+            }
+          />
+
+          <Route
+            exact
+            className="active"
+            path="/creatCoupan"
+            element={
+              loginType !== "Admin" ? (
+                isAccessAllowed("coupan") ? (
+                  <CreatCoupans />
+                ) : (
+                  <Login />
+                )
+              ) : (
+                <CreatCoupans />
+              )
+            }
+          />
+
           <Route
             exact
             className="active"
             path="/store-settings"
-            element={<StoreSettings />}
+            element={
+              loginType !== "Admin" ? (
+                isAccessAllowed("configure") ? (
+                  <StoreSettings />
+                ) : (
+                  <Login />
+                )
+              ) : (
+                <StoreSettings />
+              )
+            }
           />
         </Routes>
       </BrowserRouter>

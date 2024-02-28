@@ -14,10 +14,9 @@ export const PostApi = createApi({
   endpoints: (builder) => ({
     userLogin: builder.mutation({
       query: (body) => {
-        console.log("update login data", body);
         return {
-          url: "/admin/user/login",
-          method: "post",
+          url: "admin/login",
+          method: "PATCH",
           body,
         };
       },
