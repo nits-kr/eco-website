@@ -51,7 +51,8 @@ function Login() {
           showConfirmButton: false,
           timer: 500,
         }).then(() => {
-          if (response?.data?.results?.admin?.type !== "Admin") {
+          if (response?.data?.results?.admin?.type === "Staff") {
+            const modules = response?.data?.results?.admin?.modules;
             if (modules[0] === "dashboard") {
               navigate("/dashboard");
             } else if (modules[0] === "user") {
