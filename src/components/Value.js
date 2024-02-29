@@ -186,7 +186,7 @@ function Value() {
   };
 
   useEffect(() => {
-    if (subValueList?.length > 0) {
+    if (subValueList) {
       // setValueList(valueLists?.results?.list);
       const newRows = [];
 

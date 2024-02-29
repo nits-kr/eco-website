@@ -56,6 +56,20 @@ export const PostApi = createApi({
         };
       },
     }),
+    createNotification: builder.mutation({
+      query: (body) => {
+        const { ecomAdmintoken, ...data } = body;
+
+        return {
+          url: "admin/notification/notification/createNotification",
+          method: "post",
+          body: data,
+          headers: {
+            "x-auth-token-user": ecomAdmintoken,
+          },
+        };
+      },
+    }),
     createInformation: builder.mutation({
       query: (body) => {
         const { ecomAdmintoken, ...data } = body;
@@ -567,15 +581,30 @@ export const PostApi = createApi({
         },
       }),
     }),
-    getNotificationList: builder.query({
-      query: ({ ecomAdmintoken }) => ({
-        url: "admin/notification/notification/list",
-        method: "post",
-        headers: {
-          "x-auth-token-user": ecomAdmintoken,
-        },
-      }),
+
+    getNotificationList: builder.mutation({
+      query: (body) => {
+        const { ecomAdmintoken, ...data } = body;
+
+        return {
+          url: "admin/notification/notification/list",
+          method: "PATCH",
+          body: data,
+          headers: {
+            "x-auth-token-user": ecomAdmintoken,
+          },
+        };
+      },
     }),
+    // getNotificationList: builder.query({
+    //   query: ({ ecomAdmintoken }) => ({
+    //     url: "admin/notification/notification/list",
+    //     method: "PATCH",
+    //     headers: {
+    //       "x-auth-token-user": ecomAdmintoken,
+    //     },
+    //   }),
+    // }),
     searchOffer: builder.mutation({
       query: (body) => ({
         url: `admin/offer/search-offer`,
@@ -1246,11 +1275,20 @@ export const PostApi = createApi({
       }),
     }),
     deleteNotificationList: builder.mutation({
-      query: (id) => ({
-        url: `/admin/notification/notification/delete-notification/${id}`,
+      query: ({ id, ecomAdmintoken }) => ({
+        url: `admin/notification/notification/delete-notification/${id}`,
         method: "post",
+        headers: {
+          "x-auth-token-user": ecomAdmintoken,
+        },
       }),
     }),
+    // deleteNotificationList: builder.mutation({
+    //   query: (id) => ({
+    //     url: `/admin/notification/notification/delete-notification/${id}`,
+    //     method: "post",
+    //   }),
+    // }),
     deleteAnnouncementList: builder.mutation({
       query: (id) => ({
         url: `/admin/announcement/announcement/delete-announcement/${id}`,
@@ -1656,4 +1694,6 @@ export const {
   useGetOrderListAllMutation,
   useUpdateInfoMutation,
   useDeleteContentMutation,
+  useGetNotificationListMutation,
+  useCreateNotificationMutation,
 } = PostApi;

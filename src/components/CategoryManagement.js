@@ -138,7 +138,7 @@ function CategoryManagement(props) {
   };
 
   useEffect(() => {
-    if (categoryList?.length > 0) {
+    if (categoryList) {
       const newRows = [];
 
       categoryList?.map((list, index) => {

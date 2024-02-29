@@ -188,7 +188,7 @@ function SubCategory(props) {
   };
 
   useEffect(() => {
-    if (subCategoryList?.length > 0) {
+    if (subCategoryList) {
       const newRows = [];
 
       subCategoryList?.map((list, index) => {

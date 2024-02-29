@@ -139,7 +139,7 @@ function ProductList(props) {
   };
 
   useEffect(() => {
-    if (productList?.length > 0) {
+    if (productList) {
       // setProductList(productLists?.results?.list);
       const newRows = [];
 

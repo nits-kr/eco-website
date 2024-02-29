@@ -171,7 +171,7 @@ function Attribute() {
   };
 
   useEffect(() => {
-    if (subAttributesList?.length > 0) {
+    if (subAttributesList) {
       // setAttributesList(attributesListdata?.results?.list);
       const newRows = [];
 

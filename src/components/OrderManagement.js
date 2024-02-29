@@ -206,7 +206,7 @@ function OrderManagement() {
     };
     const res = await orderListdata(data);
     console.log("res cate", res);
-    setOrderList(res?.data?.results?.orders);
+    setOrderList(res?.data?.results?.list);
   };
 
   const handleSearch = (e) => {

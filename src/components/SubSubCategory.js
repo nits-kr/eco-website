@@ -146,7 +146,7 @@ function SubSubCategory() {
     setSubSubCategoryListDatas(res?.data?.results?.list);
   };
   useEffect(() => {
-    if (subSubCategoryListDatas?.length > 0) {
+    if (subSubCategoryListDatas) {
       // setSubSubCategoryList(subSubcategoryListdata?.results?.list);
       const newRows = [];
 

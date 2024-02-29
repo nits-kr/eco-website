@@ -4,7 +4,13 @@ import Swal from "sweetalert2";
 // import axios from "axios";
 import { useUserLoginMutation } from "../services/Post";
 import { useDispatch, useSelector } from "react-redux";
-import { setLoginType, setModules, setToken } from "../app/localSlice";
+import {
+  setEcomLoginId,
+  setLoginId,
+  setLoginType,
+  setModules,
+  setToken,
+} from "../app/localSlice";
 import { useForm } from "react-hook-form";
 import classNames from "classnames";
 
@@ -44,6 +50,7 @@ function Login() {
         dispatch(setModules(response?.data?.results?.admin?.modules));
         dispatch(setLoginType(response?.data?.results?.admin?.type));
         dispatch(setToken(response?.data?.results?.token));
+        dispatch(setEcomLoginId(response?.data?.results?.admin?._id));
         Swal.fire({
           title: "Login Successful!",
           icon: "success",

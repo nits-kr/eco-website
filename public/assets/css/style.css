@@ -2105,7 +2105,7 @@ strong.box_tag_left {
   background-color: #fff;
   height: 25px;
   width: 30px;
-  display: flex;
+  display: block;
   align-items: center;
   justify-content: center;
   border-radius: 4px;

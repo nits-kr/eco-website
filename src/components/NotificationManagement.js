@@ -6,17 +6,26 @@ import Sidebar from "./Sidebar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import {
+  useCreateNotificationMutation,
   useDeleteNotificationListMutation,
+  useGetNotificationListMutation,
   useGetNotificationListQuery,
 } from "../services/Post";
 import { useSelector } from "react-redux";
+import { useForm } from "react-hook-form";
+import { Spinner } from "react-bootstrap";
 
 function NotificationManagement() {
+  const [loader, setLoader] = useState(false);
   const ecomAdmintoken = useSelector((data) => data?.local?.token);
+  const loginId = useSelector((data) => data?.local?.ecomadminloginId);
 
-  const { data: notificationListData } = useGetNotificationListQuery({
-    ecomAdmintoken,
-  });
+  // const { data: notificationListData } = useGetNotificationListQuery({
+  //   ecomAdmintoken,
+  // });
+
+  const [notificationListData] = useGetNotificationListMutation();
+  const [createNotification] = useCreateNotificationMutation();
 
   const [deleteNotification, response] = useDeleteNotificationListMutation();
   const [startDate1, setStartDate1] = useState("");
@@ -33,11 +42,28 @@ function NotificationManagement() {
     categoryId: "",
   });
 
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm();
+
   useEffect(() => {
-    if (notificationListData) {
-      setNotificationList(notificationListData?.results?.listData);
+    if (ecomAdmintoken) {
+      handleNotificationList();
     }
-  }, [notificationListData]);
+  }, [ecomAdmintoken, searchQuery, startDate1]);
+
+  const handleNotificationList = async () => {
+    const data = {
+      from: startDate1,
+      search: searchQuery,
+      ecomAdmintoken: ecomAdmintoken,
+    };
+    const res = await notificationListData(data);
+    setNotificationList(res?.data?.results?.listData);
+  };
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -48,23 +74,42 @@ function NotificationManagement() {
     setCustomNotification({ ...customNotification, [name]: value });
   };
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+  const onSubmit = async (data) => {
     try {
-      const response = await axios.post(
-        "http://ec2-65-2-108-172.ap-south-1.compute.amazonaws.com:5000/admin/notification/notification/createReport",
-        {
-          text_en: reportNotification.reports,
-        }
-      );
-      console.log(response.data.results.reportData);
-      if (!response.data.error) {
-        alert("Saved!");
+      const alldata = {
+        title: data.titleEn,
+        message: data.reports,
+        user: [loginId],
+
+        ecomAdmintoken: ecomAdmintoken,
+      };
+      console.log(data);
+      setLoader(true);
+      const res = await createNotification(alldata);
+      console.log("res", res);
+      setLoader(false);
+      if (res?.data?.message === "Success") {
+        Swal.fire({
+          title: "Notification Created!",
+          text: "Your have been created notification successfully.",
+          icon: "success",
+          confirmButtonColor: "#3085d6",
+          confirmButtonText: "OK",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            handleNotificationList();
+          }
+        });
       }
     } catch (error) {
-      console.error(error);
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Something went wrong!",
+      });
     }
   };
+
   const handleSubmit1 = async (event) => {
     event.preventDefault();
     try {
@@ -92,7 +137,7 @@ function NotificationManagement() {
             <div className="row transaction-management justify-content-center">
               <div className="col-12">
                 <div className="row mx-0">
-                  {/* <div className="col-12 design_outter_comman shadow mb-4">
+                  <div className="col-12 design_outter_comman shadow mb-4">
                     <div className="row comman_header justify-content-between">
                       <div className="col-auto">
                         <h2>Notifications</h2>
@@ -100,7 +145,7 @@ function NotificationManagement() {
                     </div>
                     <div className="row">
                       <div className="col-12 px-0">
-                        <nav>
+                        {/* <nav>
                           <div
                             className="nav nav-tabs comman_tabs"
                             id="nav-tab"
@@ -131,7 +176,7 @@ function NotificationManagement() {
                               Custom Notification
                             </button>
                           </div>
-                        </nav>
+                        </nav> */}
                         <div className="tab-content" id="nav-tabContent">
                           <div
                             className="tab-pane fade show active"
@@ -142,45 +187,112 @@ function NotificationManagement() {
                             <div className="row p-4 mx-0">
                               <form
                                 className="form-design help-support-form row align-items-end justify-content-between"
-                                action=""
-                                onSubmit={handleSubmit}
+                                onSubmit={handleSubmit(onSubmit)}
                               >
-                                <div className="form-group mb-0 col">
-                                  <label htmlFor="">
+                                <div className="form-group mb-2 col-6">
+                                  <label htmlFor="titleEn">
+                                    Title (En)
+                                    <span className="required-field text-danger">
+                                      *
+                                    </span>
+                                  </label>
+                                  <input
+                                    {...register("titleEn", { required: true })}
+                                    className={`form-control ${
+                                      errors.titleEn ? "is-invalid" : ""
+                                    }`}
+                                  />
+                                  {errors.titleEn && (
+                                    <span className="invalid-feedback">
+                                      This field is required
+                                    </span>
+                                  )}
+                                </div>
+                                <div className="form-group mb-2 col-6">
+                                  <label htmlFor="titleAr">
+                                    Title (Ar)
+                                    <span className="required-field text-danger">
+                                      *
+                                    </span>
+                                  </label>
+                                  <input
+                                    {...register("titleAr", {
+                                      required: true,
+                                    })}
+                                    className={`form-control ${
+                                      errors.titleAr ? "is-invalid" : ""
+                                    }`}
+                                  />
+                                  {errors.titleAr && (
+                                    <span className="invalid-feedback">
+                                      This field is required
+                                    </span>
+                                  )}
+                                </div>
+                                <div className="form-group mb-2 col-6">
+                                  <label htmlFor="reports">
                                     Enter Text Here (En)
                                     <span className="required-field text-danger">
                                       *
                                     </span>
                                   </label>
                                   <textarea
-                                    className="form-control"
-                                    name="reports"
-                                    id="reports"
+                                    {...register("reports", { required: true })}
+                                    className={`form-control ${
+                                      errors.reports ? "is-invalid" : ""
+                                    }`}
                                     style={{ height: "120px" }}
-                                    value={reportNotification.reports}
-                                    onChange={handleInputChange}
-                                    required
-                                  ></textarea>
+                                  />
+                                  {errors.reports && (
+                                    <span className="invalid-feedback">
+                                      This field is required
+                                    </span>
+                                  )}
                                 </div>
-                                <div className="form-group mb-0 col">
-                                  <label htmlFor="">
+                                <div className="form-group mb-2 col-6">
+                                  <label htmlFor="reportsAr">
                                     Enter Text Here (Ar)
                                     <span className="required-field text-danger">
                                       *
                                     </span>
                                   </label>
                                   <textarea
-                                    className="form-control"
-                                    name="reportsAr"
-                                    id="reportsAr"
+                                    {...register("reportsAr", {
+                                      required: true,
+                                    })}
+                                    className={`form-control ${
+                                      errors.reportsAr ? "is-invalid" : ""
+                                    }`}
                                     style={{ height: "120px" }}
-                                    value={reportNotification.reportsAr}
-                                    onChange={handleInputChange}
-                                    required
-                                  ></textarea>
+                                  />
+                                  {errors.reportsAr && (
+                                    <span className="invalid-feedback">
+                                      This field is required
+                                    </span>
+                                  )}
                                 </div>
-                                <div className="form-group mb-0 col-auto">
-                                  <button className="comman_btn2">Save</button>
+                                <div className="form-group my-3 d-flex align-items-center justify-content-center">
+                                  <button
+                                    type="submit"
+                                    className="comman_btn2"
+                                    disabled={loader ? true : false}
+                                    style={{
+                                      cursor: loader
+                                        ? "not-allowed"
+                                        : "pointer",
+                                    }}
+                                  >
+                                    {loader ? (
+                                      <Spinner
+                                        style={{
+                                          height: "20px",
+                                          width: "20px",
+                                        }}
+                                      />
+                                    ) : (
+                                      "Create"
+                                    )}
+                                  </button>
                                 </div>
                               </form>
                             </div>
@@ -240,12 +352,12 @@ function NotificationManagement() {
                         </div>
                       </div>
                     </div>
-                  </div> */}
+                  </div>
                   <div className="col-12 design_outter_comman shadow">
                     <div className="row comman_header justify-content-between">
                       <div className="col">
                         <h2>
-                          Report Notification{" "}
+                          Notifications{" "}
                           <span> ({notificationList?.length}) </span>
                         </h2>
                       </div>
@@ -275,7 +387,7 @@ function NotificationManagement() {
                       <div className="col-auto">
                         <input
                           type="date"
-                          className="custom_date"
+                          className="custom_date d-block"
                           value={startDate1}
                           onChange={(e) => setStartDate1(e.target.value)}
                         />
@@ -339,13 +451,16 @@ function NotificationManagement() {
                                         confirmButtonText: "Yes, delete it!",
                                       }).then((result) => {
                                         if (result.isConfirmed) {
-                                          deleteNotification(data?._id);
+                                          deleteNotification({
+                                            id: data?._id,
+                                            ecomAdmintoken,
+                                          });
                                           Swal.fire(
                                             "Deleted!",
                                             `${data?._id}  item has been deleted.`,
                                             "success"
                                           ).then(() => {
-                                            // subNotificationList();
+                                            handleNotificationList();
                                           });
                                         }
                                       });
@@ -356,9 +471,7 @@ function NotificationManagement() {
                                   <span className="">
                                     {data?.createdAt?.slice(0, 10)}
                                   </span>
-                                  <p>
-                                    {data?.text_en ? data?.text_en : data?.text}
-                                  </p>
+                                  <p>{data?.title}</p>
                                 </div>
                               </div>
                             </div>

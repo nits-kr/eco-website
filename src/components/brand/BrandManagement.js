@@ -190,7 +190,7 @@ function BrandManagement(props) {
   };
 
   useEffect(() => {
-    if (brandListData?.length > 0) {
+    if (brandListData) {
       const newRows = [];
 
       brandListData?.map((list, index) => {
