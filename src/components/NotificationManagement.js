@@ -62,7 +62,7 @@ function NotificationManagement() {
       ecomAdmintoken: ecomAdmintoken,
     };
     const res = await notificationListData(data);
-    setNotificationList(res?.data?.results?.listData);
+    setNotificationList(res?.data?.results?.list);
   };
 
   const handleInputChange = (event) => {
