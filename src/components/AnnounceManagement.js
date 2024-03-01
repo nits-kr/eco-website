@@ -13,7 +13,9 @@ import {
   faFileExport,
 } from "@fortawesome/free-solid-svg-icons";
 import {
+  useCreateAnnouncementMutation,
   useDeleteAnnouncementListMutation,
+  useGetAnnounceListMutation,
   useGetAnnounceListQuery,
 } from "../services/Post";
 import { useSelector } from "react-redux";
@@ -21,10 +23,10 @@ import { useSelector } from "react-redux";
 function AnnounceManagement() {
   const ecomAdmintoken = useSelector((data) => data?.local?.token);
 
-  const { data: announceListdata } = useGetAnnounceListQuery({
-    ecomAdmintoken,
-  });
   const [deleteAnnounce, response] = useDeleteAnnouncementListMutation();
+  const [getAnnouncement] = useGetAnnounceListMutation();
+  const [createAnnounce] = useCreateAnnouncementMutation();
+
   const [announcementList, setAnnouncementList] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [startDate1, setStartDate1] = useState("");
@@ -37,10 +39,21 @@ function AnnounceManagement() {
   });
 
   useEffect(() => {
-    if (announceListdata) {
-      setAnnouncementList(announceListdata?.results?.list);
+    if (ecomAdmintoken) {
+      handleAnnounceList();
     }
-  }, [announceListdata]);
+  }, [ecomAdmintoken, searchQuery, startDate1]);
+
+  const handleAnnounceList = async () => {
+    const data = {
+      from: startDate1,
+      search: searchQuery,
+      ecomAdmintoken: ecomAdmintoken,
+    };
+    const res = await getAnnouncement(data);
+    console.log("res brand cate", res);
+    setAnnouncementList(res?.data?.results?.announcements);
+  };
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -53,35 +66,27 @@ function AnnounceManagement() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const data = new FormData();
-      data.append("heading", formData.nameEn);
-      data.append("heading_ar", formData.nameAr);
-      data.append("pic", formData.categoryPic);
-      data.append("text", formData.nameEnText);
-      data.append("text_ar", formData.nameArText);
-      const response = await axios.post(
-        `${process.env.REACT_APP_APIENDPOINT}admin/announcement/announcement/create`,
-        data
-      );
-
-      if (!response.data.error) {
-        // Show SweetAlert success message
+      const alldata = new FormData();
+      alldata.append("heading_en", formData.nameEn);
+      alldata.append("heading_ar", formData.nameAr);
+      alldata.append("image", formData.categoryPic);
+      alldata.append("text_en", formData.nameEnText);
+      alldata.append("type", "All");
+      alldata.append("text_ar", formData.nameArText);
+      // users:["65d73df67c6a31ca3e728c85","65d86782da9210fd5d0bcbdf"]
+      const response = await createAnnounce({ alldata, ecomAdmintoken });
+      if (response) {
         Swal.fire({
           icon: "success",
           title: "Success",
           text: "Announcement Created!",
           confirmButtonText: "OK",
         });
-        // .then((result) => {
-        //   if (result.isConfirmed) {
-        //     window.location.reload();
-        //   }
-        // });
-        // userList();
+        handleAnnounceList();
       }
     } catch (error) {
       console.error(error);
-      // Show SweetAlert error message
+
       Swal.fire({
         icon: "error",
         title: "Error",
@@ -235,7 +240,7 @@ function AnnounceManagement() {
                     <div className="row comman_header justify-content-between">
                       <div className="col">
                         <h2>
-                          Announcement <span>({announcementList.length})</span>
+                          Announcement <span>({announcementList?.length})</span>
                         </h2>
                       </div>
                       <div className="col-3 Searchbox">
@@ -281,14 +286,14 @@ function AnnounceManagement() {
                               <div className="col-2">
                                 <div className="notification_icon">
                                   {/* <i className="fa fa-image" style={{width:"50px", height:"50px"}}> {data.pic} </i> */}
-                                  <img src={data.pic} alt="" />
+                                  <img src={data?.image} alt="" />
                                 </div>
                               </div>
                               <div className="col">
                                 <div className="notification-box-content announcement-contnt position-relative">
                                   <h2>
                                     <i className="far fa-bullhorn fs-5"></i>{" "}
-                                    {data?.heading}
+                                    {data?.heading_en}
                                   </h2>
                                   {/* <div className="check_toggle home_toggle d-flex align-items-center'">
                                     <div className="text_home">
@@ -318,13 +323,16 @@ function AnnounceManagement() {
                                         confirmButtonText: "Yes, delete it!",
                                       }).then((result) => {
                                         if (result.isConfirmed) {
-                                          deleteAnnounce(data?._id);
+                                          deleteAnnounce({
+                                            id: data?._id,
+                                            ecomAdmintoken,
+                                          });
                                           Swal.fire(
                                             "Deleted!",
-                                            `${data?.heading}  item has been deleted.`,
+                                            "item has been deleted.",
                                             "success"
                                           ).then(() => {
-                                            // userList();
+                                            handleAnnounceList();
                                           });
                                         }
                                       });
@@ -336,7 +344,7 @@ function AnnounceManagement() {
                                   <span className="">
                                     {data?.createdAt?.slice(0, 10)}
                                   </span>
-                                  <p>{data.text}</p>
+                                  <p>{data?.text_en}</p>
                                 </div>
                               </div>
                             </div>

@@ -3,32 +3,29 @@ import { Link, useNavigate } from "react-router-dom";
 //import Swal from "sweetalert2";
 import axios from "axios";
 import Sidebar from "./Sidebar";
+import { useForgetPasswordMutation } from "../services/Post";
+import { useDispatch } from "react-redux";
+import { setEmailauthecomadmin } from "../app/localSlice";
 
 function ForgetPassword() {
   const [email, setEmail] = useState("");
-  axios.defaults.headers.common["x-auth-token-user"] =
-    localStorage.getItem("token");
+
+  const [forgetPassword] = useForgetPasswordMutation();
 
   localStorage?.setItem("emailduringotp", email);
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    axios
-      .post(`${process.env.REACT_APP_APIENDPOINT}admin/user/sendmail`, {
-        userEmail: email,
-      })
-      .then((response) => {
-        console.log(response.data.results);
-        navigate("/varification");
-        if (response.data.results.userEmail) {
-          setEmail(response.data.results.userEmail);
-        }
-      })
-      .catch((error) => {
-        console.log(error.response.data);
-      });
+    const res = await forgetPassword({
+      userEmail: email,
+    });
+    if (res) {
+      navigate("/varification");
+      dispatch(setEmailauthecomadmin(email));
+    }
   };
   const handleInputChange = (event) => {
     setEmail(event.target.value);

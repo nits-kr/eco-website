@@ -8,14 +8,41 @@ export const PostApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: "https://euser.techgropsedev.com:2087/",
     // headers: {
-    //   "x-auth-token-user": localStorage.getItem("token"),
+    //   "x-auth-token-admin": localStorage.getItem("token"),
     // },
   }),
   endpoints: (builder) => ({
     userLogin: builder.mutation({
       query: (body) => {
         return {
-          url: "admin/login",
+          url: "api/admin/login",
+          method: "PATCH",
+          body,
+        };
+      },
+    }),
+    forgetPassword: builder.mutation({
+      query: (body) => {
+        return {
+          url: "api/admin/forgetPassword",
+          method: "PATCH",
+          body,
+        };
+      },
+    }),
+    verifyOtp: builder.mutation({
+      query: (body) => {
+        return {
+          url: "api/admin/verifyOtp",
+          method: "PATCH",
+          body,
+        };
+      },
+    }),
+    resetPassword: builder.mutation({
+      query: (body) => {
+        return {
+          url: "api/admin/updatePassword",
           method: "PATCH",
           body,
         };
@@ -51,7 +78,7 @@ export const PostApi = createApi({
           method: "post",
           body: data,
           headers: {
-            "x-auth-token-user": ecomAdmintoken,
+            "x-auth-token-admin": ecomAdmintoken,
           },
         };
       },
@@ -65,7 +92,7 @@ export const PostApi = createApi({
           method: "post",
           body: data,
           headers: {
-            "x-auth-token-user": ecomAdmintoken,
+            "x-auth-token-admin": ecomAdmintoken,
           },
         };
       },
@@ -79,7 +106,7 @@ export const PostApi = createApi({
           method: "post",
           body: data,
           headers: {
-            "x-auth-token-user": ecomAdmintoken,
+            "x-auth-token-admin": ecomAdmintoken,
           },
         };
       },
@@ -107,7 +134,7 @@ export const PostApi = createApi({
           method: "post",
           body: data,
           headers: {
-            "x-auth-token-user": ecomAdmintoken,
+            "x-auth-token-admin": ecomAdmintoken,
           },
         };
       },
@@ -118,12 +145,21 @@ export const PostApi = createApi({
         method: "post",
       }),
     }),
+    getAdminData: builder.query({
+      query: ({ ecomAdmintoken }) => ({
+        url: "api/admin/getAdminData",
+        method: "get",
+        headers: {
+          "x-auth-token-admin": ecomAdmintoken,
+        },
+      }),
+    }),
     getBannerList: builder.query({
       query: ({ ecomAdmintoken }) => ({
         url: "admin/home/homeScreen/category-banner-list",
         method: "post",
         headers: {
-          "x-auth-token-user": ecomAdmintoken,
+          "x-auth-token-admin": ecomAdmintoken,
         },
       }),
     }),
@@ -132,7 +168,7 @@ export const PostApi = createApi({
         url: "admin/dashboards/count/order-dashboards",
         method: "post",
         headers: {
-          "x-auth-token-user": ecomAdmintoken,
+          "x-auth-token-admin": ecomAdmintoken,
         },
       }),
     }),
@@ -141,7 +177,7 @@ export const PostApi = createApi({
         url: "admin/order/order/list",
         method: "post",
         headers: {
-          "x-auth-token-user": ecomAdmintoken,
+          "x-auth-token-admin": ecomAdmintoken,
         },
       }),
     }),
@@ -154,7 +190,7 @@ export const PostApi = createApi({
           method: "post",
           body: data,
           headers: {
-            "x-auth-token-user": ecomAdmintoken,
+            "x-auth-token-admin": ecomAdmintoken,
           },
         };
       },
@@ -164,7 +200,7 @@ export const PostApi = createApi({
         url: "admin/agent/agent/user-List",
         method: "post",
         headers: {
-          "x-auth-token-user": ecomAdmintoken,
+          "x-auth-token-admin": ecomAdmintoken,
         },
       }),
     }),
@@ -173,7 +209,7 @@ export const PostApi = createApi({
         url: "admin/agent/agent/user-List",
         method: "post",
         headers: {
-          "x-auth-token-user": ecomAdmintoken,
+          "x-auth-token-admin": ecomAdmintoken,
         },
       }),
     }),
@@ -182,7 +218,7 @@ export const PostApi = createApi({
         url: "admin/user/userList",
         method: "post",
         headers: {
-          "x-auth-token-user": ecomAdmintoken,
+          "x-auth-token-admin": ecomAdmintoken,
         },
       }),
     }),
@@ -195,7 +231,7 @@ export const PostApi = createApi({
           method: "post",
           body: data,
           headers: {
-            "x-auth-token-user": ecomAdmintoken,
+            "x-auth-token-admin": ecomAdmintoken,
           },
         };
       },
@@ -205,7 +241,7 @@ export const PostApi = createApi({
         url: "admin/product/productList",
         method: "post",
         headers: {
-          "x-auth-token-user": ecomAdmintoken,
+          "x-auth-token-admin": ecomAdmintoken,
         },
       }),
     }),
@@ -214,7 +250,7 @@ export const PostApi = createApi({
         url: "admin/home/homeScreen/getBanners",
         method: "get",
         headers: {
-          "x-auth-token-user": ecomAdmintoken,
+          "x-auth-token-admin": ecomAdmintoken,
         },
       }),
     }),
@@ -227,7 +263,7 @@ export const PostApi = createApi({
           method: "post",
           body: data,
           headers: {
-            "x-auth-token-user": ecomAdmintoken,
+            "x-auth-token-admin": ecomAdmintoken,
           },
         };
       },
@@ -237,7 +273,7 @@ export const PostApi = createApi({
         url: "admin/user/location",
         method: "post",
         headers: {
-          "x-auth-token-user": ecomAdmintoken,
+          "x-auth-token-admin": ecomAdmintoken,
         },
       }),
     }),
@@ -258,7 +294,7 @@ export const PostApi = createApi({
         url: `admin/transacation/list`,
         method: "post",
         headers: {
-          "x-auth-token-user": ecomAdmintoken,
+          "x-auth-token-admin": ecomAdmintoken,
         },
       }),
     }),
@@ -273,7 +309,7 @@ export const PostApi = createApi({
         url: `admin/content/content/list`,
         method: "get",
         headers: {
-          "x-auth-token-user": ecomAdmintoken,
+          "x-auth-token-admin": ecomAdmintoken,
         },
       }),
     }),
@@ -282,7 +318,7 @@ export const PostApi = createApi({
         url: "admin/home/homeScreen/side-banner-list",
         method: "post",
         headers: {
-          "x-auth-token-user": ecomAdmintoken,
+          "x-auth-token-admin": ecomAdmintoken,
         },
       }),
     }),
@@ -291,7 +327,7 @@ export const PostApi = createApi({
         url: "admin/home/homeScreen/bottom-banner-list",
         method: "post",
         headers: {
-          "x-auth-token-user": ecomAdmintoken,
+          "x-auth-token-admin": ecomAdmintoken,
         },
       }),
     }),
@@ -300,7 +336,7 @@ export const PostApi = createApi({
         url: "admin/home/homeScreen/middle-banner-list",
         method: "post",
         headers: {
-          "x-auth-token-user": ecomAdmintoken,
+          "x-auth-token-admin": ecomAdmintoken,
         },
       }),
     }),
@@ -309,7 +345,7 @@ export const PostApi = createApi({
         url: "admin/home/homeScreen/scroll-banner-list",
         method: "post",
         headers: {
-          "x-auth-token-user": ecomAdmintoken,
+          "x-auth-token-admin": ecomAdmintoken,
         },
       }),
     }),
@@ -323,7 +359,7 @@ export const PostApi = createApi({
           method: "post",
           body: data,
           headers: {
-            "x-auth-token-user": ecomAdmintoken,
+            "x-auth-token-admin": ecomAdmintoken,
           },
         };
       },
@@ -333,7 +369,7 @@ export const PostApi = createApi({
     //     url: "admin/product/brand-list",
     //     method: "post",
     //     headers: {
-    //       "x-auth-token-user": ecomAdmintoken,
+    //       "x-auth-token-admin": ecomAdmintoken,
     //     },
     //   }),
     // }),
@@ -342,7 +378,7 @@ export const PostApi = createApi({
     //     url: "admin/coupan/coupan/list",
     //     method: "post",
     //     headers: {
-    //       "x-auth-token-user": ecomAdmintoken,
+    //       "x-auth-token-admin": ecomAdmintoken,
     //     },
     //   }),
     // }),
@@ -355,7 +391,7 @@ export const PostApi = createApi({
           method: "post",
           body: data,
           headers: {
-            "x-auth-token-user": ecomAdmintoken,
+            "x-auth-token-admin": ecomAdmintoken,
           },
         };
       },
@@ -365,7 +401,7 @@ export const PostApi = createApi({
         url: "admin/information/info/list",
         method: "post",
         headers: {
-          "x-auth-token-user": ecomAdmintoken,
+          "x-auth-token-admin": ecomAdmintoken,
         },
       }),
     }),
@@ -374,7 +410,7 @@ export const PostApi = createApi({
         url: "admin/contact/contact/contactList",
         method: "post",
         headers: {
-          "x-auth-token-user": ecomAdmintoken,
+          "x-auth-token-admin": ecomAdmintoken,
         },
       }),
     }),
@@ -383,7 +419,7 @@ export const PostApi = createApi({
         url: "admin/help/help/list",
         method: "post",
         headers: {
-          "x-auth-token-user": ecomAdmintoken,
+          "x-auth-token-admin": ecomAdmintoken,
         },
       }),
     }),
@@ -423,7 +459,7 @@ export const PostApi = createApi({
         url: "admin/user/download",
         method: "post",
         headers: {
-          "x-auth-token-user": ecomAdmintoken,
+          "x-auth-token-admin": ecomAdmintoken,
         },
       }),
     }),
@@ -436,7 +472,7 @@ export const PostApi = createApi({
           method: "post",
           // body: data,
           headers: {
-            "x-auth-token-user": ecomAdmintoken,
+            "x-auth-token-admin": ecomAdmintoken,
           },
         };
       },
@@ -446,7 +482,7 @@ export const PostApi = createApi({
         url: "admin/category/listing/selectCategory",
         method: "get",
         headers: {
-          "x-auth-token-user": ecomAdmintoken,
+          "x-auth-token-admin": ecomAdmintoken,
         },
       }),
     }),
@@ -460,7 +496,7 @@ export const PostApi = createApi({
           method: "PATCH",
           body: data,
           headers: {
-            "x-auth-token-user": ecomAdmintoken,
+            "x-auth-token-admin": ecomAdmintoken,
           },
         };
       },
@@ -474,7 +510,7 @@ export const PostApi = createApi({
           method: "post",
           // body: data,
           headers: {
-            "x-auth-token-user": ecomAdmintoken,
+            "x-auth-token-admin": ecomAdmintoken,
           },
         };
       },
@@ -489,7 +525,7 @@ export const PostApi = createApi({
           method: "PATCH",
           body: data,
           headers: {
-            "x-auth-token-user": ecomAdmintoken,
+            "x-auth-token-admin": ecomAdmintoken,
           },
         };
       },
@@ -499,7 +535,7 @@ export const PostApi = createApi({
     //     url: "admin/category/subCategory/SubCategoryList",
     //     method: "post",
     //     headers: {
-    //       "x-auth-token-user": ecomAdmintoken,
+    //       "x-auth-token-admin": ecomAdmintoken,
     //     },
     //   }),
     // }),
@@ -508,7 +544,7 @@ export const PostApi = createApi({
     //     url: "admin/category/subSubCategory/subSubCategoryList",
     //     method: "post",
     //     headers: {
-    //       "x-auth-token-user": ecomAdmintoken,
+    //       "x-auth-token-admin": ecomAdmintoken,
     //     },
     //   }),
     // }),
@@ -521,7 +557,7 @@ export const PostApi = createApi({
           method: "PATCH",
           body: data,
           headers: {
-            "x-auth-token-user": ecomAdmintoken,
+            "x-auth-token-admin": ecomAdmintoken,
           },
         };
       },
@@ -535,7 +571,7 @@ export const PostApi = createApi({
           method: "PATCH",
           body: data,
           headers: {
-            "x-auth-token-user": ecomAdmintoken,
+            "x-auth-token-admin": ecomAdmintoken,
           },
         };
       },
@@ -545,7 +581,7 @@ export const PostApi = createApi({
     //     url: "admin/category/attribute/attributeList",
     //     method: "post",
     //     headers: {
-    //       "x-auth-token-user": ecomAdmintoken,
+    //       "x-auth-token-admin": ecomAdmintoken,
     //     },
     //   }),
     // }),
@@ -558,7 +594,7 @@ export const PostApi = createApi({
           method: "PATCH",
           body: data,
           headers: {
-            "x-auth-token-user": ecomAdmintoken,
+            "x-auth-token-admin": ecomAdmintoken,
           },
         };
       },
@@ -568,20 +604,35 @@ export const PostApi = createApi({
     //     url: "admin/category/values/valuesList",
     //     method: "post",
     //     headers: {
-    //       "x-auth-token-user": ecomAdmintoken,
+    //       "x-auth-token-admin": ecomAdmintoken,
     //     },
     //   }),
     // }),
-    getAnnounceList: builder.query({
-      query: ({ ecomAdmintoken }) => ({
-        url: "admin/announcement/announcement/list",
-        method: "post",
-        headers: {
-          "x-auth-token-user": ecomAdmintoken,
-        },
-      }),
-    }),
+    // getAnnounceList: builder.query({
+    //   query: ({ ecomAdmintoken, search }) => ({
+    //     url: "api/admin/announcementLists",
+    //     method: "PATCH",
+    //     body: search,
+    //     headers: {
+    //       "x-auth-token-admin": ecomAdmintoken,
+    //     },
+    //   }),
+    // }),
 
+    getAnnounceList: builder.mutation({
+      query: (body) => {
+        const { ecomAdmintoken, ...data } = body;
+
+        return {
+          url: "api/admin/announcementLists",
+          method: "PATCH",
+          body: data,
+          headers: {
+            "x-auth-token-admin": ecomAdmintoken,
+          },
+        };
+      },
+    }),
     getNotificationList: builder.mutation({
       query: (body) => {
         const { ecomAdmintoken, ...data } = body;
@@ -591,7 +642,7 @@ export const PostApi = createApi({
           method: "PATCH",
           body: data,
           headers: {
-            "x-auth-token-user": ecomAdmintoken,
+            "x-auth-token-admin": ecomAdmintoken,
           },
         };
       },
@@ -601,7 +652,7 @@ export const PostApi = createApi({
     //     url: "admin/notification/notification/list",
     //     method: "PATCH",
     //     headers: {
-    //       "x-auth-token-user": ecomAdmintoken,
+    //       "x-auth-token-admin": ecomAdmintoken,
     //     },
     //   }),
     // }),
@@ -635,7 +686,7 @@ export const PostApi = createApi({
           method: "post",
           body: data,
           headers: {
-            "x-auth-token-user": ecomAdmintoken,
+            "x-auth-token-admin": ecomAdmintoken,
           },
         };
       },
@@ -649,7 +700,7 @@ export const PostApi = createApi({
           method: "post",
           body: data,
           headers: {
-            "x-auth-token-user": ecomAdmintoken,
+            "x-auth-token-admin": ecomAdmintoken,
           },
         };
       },
@@ -800,7 +851,17 @@ export const PostApi = createApi({
         method: "PATCH",
         body: alldata,
         headers: {
-          "x-auth-token-user": ecomAdmintoken,
+          "x-auth-token-admin": ecomAdmintoken,
+        },
+      }),
+    }),
+    updateProfile: builder.mutation({
+      query: ({ alldata, ecomAdmintoken }) => ({
+        url: "api/admin/editProfile",
+        method: "PUT",
+        body: alldata,
+        headers: {
+          "x-auth-token-admin": ecomAdmintoken,
         },
       }),
     }),
@@ -810,7 +871,7 @@ export const PostApi = createApi({
         method: "PATCH",
         body: alldata,
         headers: {
-          "x-auth-token-user": ecomAdmintoken,
+          "x-auth-token-admin": ecomAdmintoken,
         },
       }),
     }),
@@ -822,7 +883,19 @@ export const PostApi = createApi({
           method: "post",
           body: formData,
           headers: {
-            "x-auth-token-user": ecomAdmintoken,
+            "x-auth-token-admin": ecomAdmintoken,
+          },
+        };
+      },
+    }),
+    createAnnouncement: builder.mutation({
+      query: ({ alldata, ecomAdmintoken }) => {
+        return {
+          url: "api/admin/createAnnouncement",
+          method: "post",
+          body: alldata,
+          headers: {
+            "x-auth-token-admin": ecomAdmintoken,
           },
         };
       },
@@ -837,7 +910,7 @@ export const PostApi = createApi({
           method: "PATCH",
           body: data,
           headers: {
-            "x-auth-token-user": ecomAdmintoken,
+            "x-auth-token-admin": ecomAdmintoken,
           },
         };
       },
@@ -852,7 +925,7 @@ export const PostApi = createApi({
           method: "PATCH",
           body: data,
           headers: {
-            "x-auth-token-user": ecomAdmintoken,
+            "x-auth-token-admin": ecomAdmintoken,
           },
         };
       },
@@ -866,7 +939,7 @@ export const PostApi = createApi({
           method: "post",
           body: data,
           headers: {
-            "x-auth-token-user": ecomAdmintoken,
+            "x-auth-token-admin": ecomAdmintoken,
           },
         };
       },
@@ -880,7 +953,7 @@ export const PostApi = createApi({
           method: "PATCH",
           body: data,
           headers: {
-            "x-auth-token-user": ecomAdmintoken,
+            "x-auth-token-admin": ecomAdmintoken,
           },
         };
       },
@@ -894,7 +967,7 @@ export const PostApi = createApi({
           method: "PATCH",
           body: data,
           headers: {
-            "x-auth-token-user": ecomAdmintoken,
+            "x-auth-token-admin": ecomAdmintoken,
           },
         };
       },
@@ -908,7 +981,7 @@ export const PostApi = createApi({
           method: "PATCH",
           body: data,
           headers: {
-            "x-auth-token-user": ecomAdmintoken,
+            "x-auth-token-admin": ecomAdmintoken,
           },
         };
       },
@@ -922,7 +995,7 @@ export const PostApi = createApi({
           method: "post",
           body: data,
           headers: {
-            "x-auth-token-user": ecomAdmintoken,
+            "x-auth-token-admin": ecomAdmintoken,
           },
         };
       },
@@ -936,7 +1009,7 @@ export const PostApi = createApi({
           method: "post",
           body: data,
           headers: {
-            "x-auth-token-user": ecomAdmintoken,
+            "x-auth-token-admin": ecomAdmintoken,
           },
         };
       },
@@ -951,7 +1024,7 @@ export const PostApi = createApi({
           method: "post",
           body: data,
           headers: {
-            "x-auth-token-user": ecomAdmintoken,
+            "x-auth-token-admin": ecomAdmintoken,
           },
         };
       },
@@ -962,7 +1035,7 @@ export const PostApi = createApi({
         method: "PATCH",
         body: alldata,
         headers: {
-          "x-auth-token-user": ecomAdmintoken,
+          "x-auth-token-admin": ecomAdmintoken,
         },
       }),
     }),
@@ -986,7 +1059,7 @@ export const PostApi = createApi({
           method: "post",
           body: data,
           headers: {
-            "x-auth-token-user": ecomAdmintoken,
+            "x-auth-token-admin": ecomAdmintoken,
           },
         };
       },
@@ -1011,7 +1084,7 @@ export const PostApi = createApi({
           method: "post",
           body: data,
           headers: {
-            "x-auth-token-user": ecomAdmintoken,
+            "x-auth-token-admin": ecomAdmintoken,
           },
         };
       },
@@ -1022,7 +1095,7 @@ export const PostApi = createApi({
         method: "POST",
         body: formData,
         headers: {
-          "x-auth-token-user": ecoAdminToken,
+          "x-auth-token-admin": ecoAdminToken,
         },
       }),
     }),
@@ -1036,7 +1109,7 @@ export const PostApi = createApi({
           method: "post",
           body: data,
           headers: {
-            "x-auth-token-user": ecomAdmintoken,
+            "x-auth-token-admin": ecomAdmintoken,
           },
         };
       },
@@ -1050,7 +1123,7 @@ export const PostApi = createApi({
           method: "post",
           body: data,
           headers: {
-            "x-auth-token-user": ecomAdmintoken,
+            "x-auth-token-admin": ecomAdmintoken,
           },
         };
       },
@@ -1064,7 +1137,7 @@ export const PostApi = createApi({
           method: "PATCH",
           body: data,
           headers: {
-            "x-auth-token-user": ecomAdmintoken,
+            "x-auth-token-admin": ecomAdmintoken,
           },
         };
       },
@@ -1110,7 +1183,7 @@ export const PostApi = createApi({
         url: `admin/product/addRecommendedProduct/${productId}`,
         method: "post",
         headers: {
-          "x-auth-token-user": ecoAdminToken,
+          "x-auth-token-admin": ecoAdminToken,
         },
       }),
     }),
@@ -1144,7 +1217,7 @@ export const PostApi = createApi({
         url: `admin/product/delete-product/${id}`,
         method: "DELETE",
         headers: {
-          "x-auth-token-user": ecomAdmintoken,
+          "x-auth-token-admin": ecomAdmintoken,
         },
       }),
     }),
@@ -1153,7 +1226,7 @@ export const PostApi = createApi({
         url: `admin/coupan/coupan/delete/${id}`,
         method: "DELETE",
         headers: {
-          "x-auth-token-user": ecomAdmintoken,
+          "x-auth-token-admin": ecomAdmintoken,
         },
       }),
     }),
@@ -1168,7 +1241,7 @@ export const PostApi = createApi({
         url: `admin/product/delete-brand/${categoryId}`,
         method: "post",
         headers: {
-          "x-auth-token-user": ecomAdmintoken,
+          "x-auth-token-admin": ecomAdmintoken,
         },
       }),
     }),
@@ -1183,7 +1256,7 @@ export const PostApi = createApi({
         url: `admin/agent/agent/delete-user/${id}`,
         method: "DELETE",
         headers: {
-          "x-auth-token-user": ecomAdmintoken,
+          "x-auth-token-admin": ecomAdmintoken,
         },
       }),
     }),
@@ -1192,7 +1265,7 @@ export const PostApi = createApi({
         url: `admin/help/help/delete-help/${id}`,
         method: "post",
         headers: {
-          "x-auth-token-user": ecomAdmintoken,
+          "x-auth-token-admin": ecomAdmintoken,
         },
       }),
     }),
@@ -1207,7 +1280,7 @@ export const PostApi = createApi({
         url: `admin/order/order/delete-order/${id}`,
         method: "DELETE",
         headers: {
-          "x-auth-token-user": ecomAdmintoken,
+          "x-auth-token-admin": ecomAdmintoken,
         },
       }),
     }),
@@ -1216,7 +1289,7 @@ export const PostApi = createApi({
         url: `admin/category/category/delete-category/${id}`,
         method: "post",
         headers: {
-          "x-auth-token-user": ecomAdmintoken,
+          "x-auth-token-admin": ecomAdmintoken,
         },
       }),
     }),
@@ -1225,7 +1298,7 @@ export const PostApi = createApi({
         url: `admin/category/Subcategory/delete-SubCategory/${id}`,
         method: "post",
         headers: {
-          "x-auth-token-user": ecomAdmintoken,
+          "x-auth-token-admin": ecomAdmintoken,
         },
       }),
     }),
@@ -1234,7 +1307,7 @@ export const PostApi = createApi({
         url: `admin/category/subSubcategory/delete-subSubCategory/${id}`,
         method: "post",
         headers: {
-          "x-auth-token-user": ecomAdmintoken,
+          "x-auth-token-admin": ecomAdmintoken,
         },
       }),
     }),
@@ -1243,7 +1316,7 @@ export const PostApi = createApi({
         url: `admin/category/attribute/delete-attribute/${id}`,
         method: "post",
         headers: {
-          "x-auth-token-user": ecomAdmintoken,
+          "x-auth-token-admin": ecomAdmintoken,
         },
       }),
     }),
@@ -1252,7 +1325,7 @@ export const PostApi = createApi({
         url: `admin/category/values/delete-values/${id}`,
         method: "post",
         headers: {
-          "x-auth-token-user": ecomAdmintoken,
+          "x-auth-token-admin": ecomAdmintoken,
         },
       }),
     }),
@@ -1261,7 +1334,7 @@ export const PostApi = createApi({
         url: `admin/home/homeScreen/deleteBanner/${id}`,
         method: "DELETE",
         headers: {
-          "x-auth-token-user": ecomAdmintoken,
+          "x-auth-token-admin": ecomAdmintoken,
         },
       }),
     }),
@@ -1270,7 +1343,7 @@ export const PostApi = createApi({
         url: `admin/content/content/delete/${id}`,
         method: "DELETE",
         headers: {
-          "x-auth-token-user": ecomAdmintoken,
+          "x-auth-token-admin": ecomAdmintoken,
         },
       }),
     }),
@@ -1279,7 +1352,7 @@ export const PostApi = createApi({
         url: `admin/notification/notification/delete-notification/${id}`,
         method: "post",
         headers: {
-          "x-auth-token-user": ecomAdmintoken,
+          "x-auth-token-admin": ecomAdmintoken,
         },
       }),
     }),
@@ -1289,10 +1362,19 @@ export const PostApi = createApi({
     //     method: "post",
     //   }),
     // }),
+    // deleteAnnouncementList: builder.mutation({
+    //   query: (id) => ({
+    //     url: `/admin/announcement/announcement/delete-announcement/${id}`,
+    //     method: "post",
+    //   }),
+    // }),
     deleteAnnouncementList: builder.mutation({
-      query: (id) => ({
-        url: `/admin/announcement/announcement/delete-announcement/${id}`,
-        method: "post",
+      query: ({ id, ecomAdmintoken }) => ({
+        url: `api/admin/deleteAnnouncement/${id}`,
+        method: "DELETE",
+        headers: {
+          "x-auth-token-admin": ecomAdmintoken,
+        },
       }),
     }),
     deleteOrder: builder.mutation({
@@ -1319,7 +1401,7 @@ export const PostApi = createApi({
           url: `admin/user/details/${id}`,
           method: "post",
           headers: {
-            "x-auth-token-user": ecomAdmintoken,
+            "x-auth-token-admin": ecomAdmintoken,
           },
         };
       },
@@ -1331,7 +1413,7 @@ export const PostApi = createApi({
           url: `admin/category/product/product-details/${id}`,
           method: "post",
           headers: {
-            "x-auth-token-user": ecomAdmintoken,
+            "x-auth-token-admin": ecomAdmintoken,
           },
         };
       },
@@ -1343,7 +1425,7 @@ export const PostApi = createApi({
           url: `admin/category/listing/selectSubCategory/${id}`,
           method: "get",
           headers: {
-            "x-auth-token-user": ecomAdmintoken,
+            "x-auth-token-admin": ecomAdmintoken,
           },
         };
       },
@@ -1355,7 +1437,7 @@ export const PostApi = createApi({
           url: `admin/category/listing/selectSubSubCategory/${id}`,
           method: "get",
           headers: {
-            "x-auth-token-user": ecomAdmintoken,
+            "x-auth-token-admin": ecomAdmintoken,
           },
         };
       },
@@ -1367,7 +1449,7 @@ export const PostApi = createApi({
           url: `admin/category/listing/selectAttribute/${id}`,
           method: "get",
           headers: {
-            "x-auth-token-user": ecomAdmintoken,
+            "x-auth-token-admin": ecomAdmintoken,
           },
         };
       },
@@ -1379,7 +1461,7 @@ export const PostApi = createApi({
           url: `admin/category/values/selectAttribute/${id}`,
           method: "post",
           headers: {
-            "x-auth-token-user": ecomAdmintoken,
+            "x-auth-token-admin": ecomAdmintoken,
           },
         };
       },
@@ -1391,7 +1473,7 @@ export const PostApi = createApi({
           url: `admin/category/listing/selectValues/${id}`,
           method: "get",
           headers: {
-            "x-auth-token-user": ecomAdmintoken,
+            "x-auth-token-admin": ecomAdmintoken,
           },
         };
       },
@@ -1403,7 +1485,7 @@ export const PostApi = createApi({
           url: `admin/product/select-brand/${id}`,
           method: "post",
           headers: {
-            "x-auth-token-user": ecomAdmintoken,
+            "x-auth-token-admin": ecomAdmintoken,
           },
         };
       },
@@ -1415,7 +1497,7 @@ export const PostApi = createApi({
           url: `admin/staff/staff/StaffDetails/${i}`,
           method: "post",
           headers: {
-            "x-auth-token-user": ecomAdmintoken,
+            "x-auth-token-admin": ecomAdmintoken,
           },
         };
       },
@@ -1428,7 +1510,7 @@ export const PostApi = createApi({
           url: `admin/agent/agent/user-details/${id}`,
           method: "post",
           headers: {
-            "x-auth-token-user": ecomAdmintoken,
+            "x-auth-token-admin": ecomAdmintoken,
           },
         };
       },
@@ -1440,7 +1522,7 @@ export const PostApi = createApi({
           url: `admin/order/order/getOrder/${id}`,
           method: "get",
           headers: {
-            "x-auth-token-user": ecomAdmintoken,
+            "x-auth-token-admin": ecomAdmintoken,
           },
         };
       },
@@ -1451,7 +1533,7 @@ export const PostApi = createApi({
         method: "POST",
         body: alldata,
         headers: {
-          "x-auth-token-user": ecomAdmintoken,
+          "x-auth-token-admin": ecomAdmintoken,
         },
       }),
     }),
@@ -1461,7 +1543,7 @@ export const PostApi = createApi({
         method: "POST",
         body: alldata,
         headers: {
-          "x-auth-token-user": ecomAdmintoken,
+          "x-auth-token-admin": ecomAdmintoken,
         },
       }),
     }),
@@ -1471,7 +1553,7 @@ export const PostApi = createApi({
         method: "POST",
         body: alldata,
         headers: {
-          "x-auth-token-user": ecomAdmintoken,
+          "x-auth-token-admin": ecomAdmintoken,
         },
       }),
     }),
@@ -1481,7 +1563,7 @@ export const PostApi = createApi({
         method: "POST",
         body: alldata,
         headers: {
-          "x-auth-token-user": ecomAdmintoken,
+          "x-auth-token-admin": ecomAdmintoken,
         },
       }),
     }),
@@ -1491,7 +1573,7 @@ export const PostApi = createApi({
         method: "POST",
         body: alldata,
         headers: {
-          "x-auth-token-user": ecomAdmintoken,
+          "x-auth-token-admin": ecomAdmintoken,
         },
       }),
     }),
@@ -1501,7 +1583,7 @@ export const PostApi = createApi({
         method: "POST",
         body: alldata,
         headers: {
-          "x-auth-token-user": ecomAdmintoken,
+          "x-auth-token-admin": ecomAdmintoken,
         },
       }),
     }),
@@ -1511,7 +1593,7 @@ export const PostApi = createApi({
         method: "POST",
         body: alldata,
         headers: {
-          "x-auth-token-user": ecomAdmintoken,
+          "x-auth-token-admin": ecomAdmintoken,
         },
       }),
     }),
@@ -1521,7 +1603,7 @@ export const PostApi = createApi({
         method: "POST",
         body: alldata,
         headers: {
-          "x-auth-token-user": ecomAdmintoken,
+          "x-auth-token-admin": ecomAdmintoken,
         },
       }),
     }),
@@ -1531,7 +1613,7 @@ export const PostApi = createApi({
         method: "POST",
         body: alldata,
         headers: {
-          "x-auth-token-user": ecomAdmintoken,
+          "x-auth-token-admin": ecomAdmintoken,
         },
       }),
     }),
@@ -1541,7 +1623,7 @@ export const PostApi = createApi({
         method: "POST",
         body: alldata,
         headers: {
-          "x-auth-token-user": ecomAdmintoken,
+          "x-auth-token-admin": ecomAdmintoken,
         },
       }),
     }),
@@ -1696,4 +1778,11 @@ export const {
   useDeleteContentMutation,
   useGetNotificationListMutation,
   useCreateNotificationMutation,
+  useForgetPasswordMutation,
+  useVerifyOtpMutation,
+  useGetAnnounceListMutation,
+  useCreateAnnouncementMutation,
+  useResetPasswordMutation,
+  useUpdateProfileMutation,
+  useGetAdminDataQuery,
 } = PostApi;

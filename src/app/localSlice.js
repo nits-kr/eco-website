@@ -8,6 +8,7 @@ export const localSlice = createSlice({
     modules: localStorage.getItem("adminModules") || null,
     loginType: localStorage.getItem("loginType") || null,
     ecomadminloginId: localStorage.getItem("ecomadminloginId") || null,
+    emailauthecomadmin: localStorage.getItem("emailauthecomadmin") || null,
   },
   reducers: {
     setToken: (state, action) => {
@@ -26,9 +27,18 @@ export const localSlice = createSlice({
       state.ecomadminloginId = action.payload;
       localStorage.setItem("ecomadminloginId", action.payload);
     },
+    setEmailauthecomadmin: (state, action) => {
+      state.emailauthecomadmin = action.payload;
+      localStorage.setItem("emailauthecomadmin", action.payload);
+    },
   },
 });
 
-export const { setToken, setModules, setLoginType, setEcomLoginId } =
-  localSlice.actions;
+export const {
+  setToken,
+  setModules,
+  setLoginType,
+  setEcomLoginId,
+  setEmailauthecomadmin,
+} = localSlice.actions;
 export default localSlice.reducer;

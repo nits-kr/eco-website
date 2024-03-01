@@ -3,13 +3,27 @@ import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import axios from "axios";
 import Sidebar from "./Sidebar";
+import { useResetPasswordMutation } from "../services/Post";
+import { useSelector } from "react-redux";
+import { useForm } from "react-hook-form";
 
 function ResetPassword() {
+  const emailauthecomadmin = useSelector(
+    (data) => data?.local?.emailauthecomadmin
+  );
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    trigger,
+    watch,
+  } = useForm();
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  axios.defaults.headers.common["x-auth-token-user"] =
-    localStorage.getItem("token");
+
+  const [reset] = useResetPasswordMutation();
+
   const [formData, setFormData] = useState([]);
   const [otp, setOtp] = useState(["", "", "", ""]);
   const [userName, setUserName] = useState([]);
@@ -83,30 +97,28 @@ function ResetPassword() {
   const storedUserEmail = localStorage.getItem("userLoginEmail");
   const emailduringotp = localStorage?.getItem("emailduringotp");
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+  const onSubmit = async (data) => {
     try {
-      await axios.post(
-        `${process.env.REACT_APP_APIENDPOINT}admin/user/reset-password`,
-        {
-          password: password,
-          confirmPassword: confirmPassword,
-          userEmail: emailduringotp,
-        }
-      );
-      setErrorMessage("");
-      Swal.fire({
-        title: "Resetted Password!",
-        text: "Your have been Resetted Password successfully.",
-        icon: "success",
-        confirmButtonColor: "#3085d6",
-        confirmButtonText: "OK",
-      }).then((result) => {
-        if (result.isConfirmed) {
-          // window.location.href = "/";
-          navigate("/");
-        }
+      const res = await reset({
+        password: data?.password,
+        userEmail: emailauthecomadmin,
       });
+      console.log("res", res);
+      if (res) {
+        Swal.fire({
+          title: "Password  Reset Successfully!",
+          text: "Your have been resetted password and redirected to login page.",
+          icon: "success",
+          confirmButtonColor: "#3085d6",
+          confirmButtonText: "OK",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            navigate("/");
+          }
+        });
+      }
+      setErrorMessage("");
+      // Show success message
     } catch (error) {
       setErrorMessage(error?.response?.data?.results?.createPassword);
     }
@@ -129,57 +141,74 @@ function ResetPassword() {
                     <p>Enter New Password</p>
                   </div>
                   <div className="col-12">
-                    <form className="row form-design" onSubmit={handleSubmit}>
+                    <form
+                      className="row form-design"
+                      onSubmit={handleSubmit(onSubmit)}
+                    >
                       <div className="form-group col-12">
                         <label htmlFor="password">New Password</label>
                         <input
                           type="password"
-                          className="form-control"
+                          className={`form-control ${
+                            errors.password ? "is-invalid" : ""
+                          }`}
                           placeholder="**********"
                           name="password"
                           id="password"
-                          // value={password}
-                          onChange={(e) => setPassword(e.target.value)}
+                          {...register("password", {
+                            required: "Password is required*",
+                            minLength: {
+                              value: 8,
+                              message:
+                                "Password must be at least 8 characters long",
+                            },
+                            maxLength: {
+                              value: 20,
+                              message:
+                                "Password must be maximum 20 characters long",
+                            },
+                            pattern: {
+                              value:
+                                /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])(?=.*[A-Z])[A-Za-z\d@$!%*#?&]+$/,
+                              message:
+                                "Password must contain at least one lowercase letter, one uppercase letter, one number, and one special character",
+                            },
+                          })}
                         />
+                        {errors.password && (
+                          <small className="errorText mx-1 fw-bold text-danger">
+                            {errors.password.message}
+                          </small>
+                        )}
                       </div>
                       <div className="form-group col-12">
                         <label htmlFor="confirmPassword">
-                          Confirm New Password
+                          Confirm Password
                         </label>
                         <input
                           type="password"
-                          className="form-control"
+                          className={`form-control ${
+                            errors.confirmPassword ? "is-invalid" : ""
+                          }`}
                           placeholder="**********"
                           name="confirmPassword"
                           id="confirmPassword"
-                          // value={confirmPassword}
-                          onChange={(e) => setConfirmPassword(e.target.value)}
+                          {...register("confirmPassword", {
+                            required: "Please confirm your password*",
+                            validate: (value) =>
+                              value === watch("password", "") ||
+                              "Passwords do not match",
+                          })}
                         />
+                        {errors.confirmPassword && (
+                          <small className="errorText mx-1 fw-bold text-danger">
+                            {errors.confirmPassword.message}
+                          </small>
+                        )}
                       </div>
+
                       <div className="form-group col-12">
-                        <label htmlFor="confirmPassword">Email</label>
-                        <input
-                          type="email"
-                          className="form-control"
-                          placeholder="**********"
-                          name="userEmail"
-                          id="userEmail"
-                          // value={userEmail}
-                          onChange={(e) => setUserEmail(e.target.value)}
-                        />
-                      </div>
-                      {errorMessage && (
-                        <div className="form-group col-12">
-                          <p className="text-danger">{errorMessage}</p>
-                        </div>
-                      )}
-                      <div className="form-group col-12">
-                        <button
-                          type="submit"
-                          className="comman_btn"
-                          // data-bs-toggle="modal"
-                          // data-bs-target="#staticBackdrop"
-                        >
+                        <button type="submit" className="comman_btn">
                           Save
                         </button>
                       </div>

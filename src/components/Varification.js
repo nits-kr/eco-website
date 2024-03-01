@@ -1,48 +1,50 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import axios from "axios";
 import Sidebar from "./Sidebar";
+import {
+  useForgetPasswordMutation,
+  useVerifyOtpMutation,
+} from "../services/Post";
+import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
 
 function Varification() {
+  const emailauthecomadmin = useSelector(
+    (data) => data?.local?.emailauthecomadmin
+  );
+
   const [otp, setOtp] = useState(["", "", "", ""]);
   const refs = [useRef(), useRef(), useRef(), useRef()];
 
-  const [counter, setCounter] = useState(30);
+  const [verifyOtp] = useVerifyOtpMutation();
+
+  const [forgetPassword] = useForgetPasswordMutation();
+
+  const navigate = useNavigate();
+
+  const [counter, setCounter] = useState(60);
   const [intervalId, setIntervalId] = useState(null);
   axios.defaults.headers.common["x-auth-token-user"] =
     localStorage.getItem("token");
 
   const emailduringotp = localStorage?.getItem("emailduringotp");
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const otp =
       event.target[0].value +
       event.target[1].value +
       event.target[2].value +
       event.target[3].value;
-    axios
-      .post(`${process.env.REACT_APP_APIENDPOINT}admin/user/verifyOtp`, {
-        userEmail: emailduringotp,
-        otp: otp,
-      })
-      .then((response) => {
-        console.log(response.data);
-        Swal.fire({
-          title: "OTP submitted!",
-          text: "Your have been Submitted OTP successfully.",
-          icon: "success",
-          confirmButtonColor: "#3085d6",
-          confirmButtonText: "OK",
-        }).then((result) => {
-          if (result.isConfirmed) {
-            window.location.href = "/reset";
-          }
-        });
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+
+    const res = await verifyOtp({
+      userEmail: emailduringotp,
+      otp: otp,
+    });
+    if (res) {
+      navigate("/reset");
+    }
   };
 
   const handleInputChange = (event, index) => {
@@ -62,13 +64,34 @@ function Varification() {
     }
   };
 
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     setCounter((prevCounter) => prevCounter - 1);
+  //   }, 1000);
+  //   setIntervalId(interval);
+  //   return () => clearInterval(interval);
+  // }, []);
   useEffect(() => {
-    const interval = setInterval(() => {
-      setCounter((prevCounter) => prevCounter - 1);
-    }, 1000);
-    setIntervalId(interval);
-    return () => clearInterval(interval);
-  }, []);
+    counter > 0 && setTimeout(() => setCounter(counter - 1), 1000);
+  }, [counter]);
+
+  const resendOtp = async (e) => {
+    setOtp(["", "", "", ""]);
+    setCounter(60);
+    e.preventDefault();
+
+    try {
+      const res = await forgetPassword({
+        userEmail: emailauthecomadmin,
+      });
+      console.log("res", res);
+      if (res) {
+        toast.success(`Your OTP is: ${res?.data?.results?.otp}`);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <>
       <section className="login_page">
@@ -134,15 +157,18 @@ function Varification() {
                       </div>
                       <div className="form-group col-12 text-center">
                         <span className="count_Sec">
-                          {counter > 0
+                          {/* {counter > 0
                             ? `00:${counter.toString().padStart(2, "0")}`
-                            : "Time's up!"}
+                            : "Time's up!"} */}
+                          {counter ? <p>00:{counter}</p> : null}
                         </span>
                       </div>
                       <div className="form-group col-12 text-center">
                         <label className="text-center" htmlFor="">
                           Didn't receive the OTP?{" "}
-                          <Link to="/forget-password">Request again</Link>
+                          <Link to="#" onClick={(e) => resendOtp(e)}>
+                            Request again
+                          </Link>
                         </label>
                       </div>
                       <div className="form-group col-12">

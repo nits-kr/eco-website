@@ -3,11 +3,25 @@ import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import axios from "axios";
 import Sidebar from "./Sidebar";
+import { useSelector } from "react-redux";
+import {
+  useGetAdminDataQuery,
+  useUpdateProfileMutation,
+} from "../services/Post";
 
 function EditProfile() {
+  const ecomAdmintoken = useSelector((data) => data?.local?.token);
+  const emailauthecomadmin = useSelector(
+    (data) => data?.local?.emailauthecomadmin
+  );
+
+  const { data: adminDetails } = useGetAdminDataQuery({ ecomAdmintoken });
+
+  const [editProfile] = useUpdateProfileMutation();
   const [formData, setFormData] = useState([]);
   const [otp, setOtp] = useState(["", "", "", ""]);
   const [userName, setUserName] = useState([]);
+  const [mobile, setMobile] = useState([]);
   const [userEmail, setUserEmail] = useState([]);
   const refs = [useRef(), useRef(), useRef(), useRef()];
   const [selectedImage1, setSelectedImage1] = useState(null);
@@ -28,38 +42,42 @@ function EditProfile() {
   };
   const storedId = localStorage.getItem("loginId");
   const storedPic = localStorage.getItem("profilePic");
-  const handleOnSave = () => {
-    const data = new FormData();
-    data.append("userName", userName);
-    data.append("userEmail", userEmail);
-    data.append("profile_Pic", formData.uploadImage);
-    axios
-      .post(
-        `${process.env.REACT_APP_APIENDPOINT}admin/user/editProfile/${storedId}`,
-        data
-      )
-      .then((response) => {
-        setFormData(response.data.results);
-        localStorage.setItem(
-          "profilePic",
-          response?.data?.results?.profileData?.profile_Pic
-        );
-        console.log(response.data.results);
-        Swal.fire({
-          title: "Profile Updated!",
-          text: "Your Profile has been updated successfully.",
-          icon: "success",
-          confirmButtonColor: "#3085d6",
-          confirmButtonText: "OK",
-        }).then((result) => {
-          if (result.isConfirmed) {
-            navigate("/dashboard");
-          }
-        });
-      })
-      .catch((error) => {
-        console.log(error.response.data);
+
+  const [details, setDetails] = useState("");
+  console.log("details", details);
+
+  useEffect(() => {
+    if (adminDetails) {
+      setDetails(adminDetails?.results?.admin);
+    }
+  }, [adminDetails]);
+
+  const handleOnSave = async () => {
+    const alldata = new FormData();
+    if (userName) {
+      alldata.append("userName", userName);
+    }
+    if (mobile) {
+      alldata.append("mobileNumber", mobile);
+    }
+    if (formData.bannerPic1) {
+      alldata.append("image", formData.bannerPic1);
+    }
+
+    const res = await editProfile({ alldata, ecomAdmintoken });
+    if (res) {
+      Swal.fire({
+        title: "Profile Updated!",
+        text: "Your Profile has been updated successfully.",
+        icon: "success",
+        confirmButtonColor: "#3085d6",
+        confirmButtonText: "OK",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          navigate("/dashboard");
+        }
       });
+    }
   };
 
   const handleSubmit = (event) => {
@@ -139,35 +157,15 @@ function EditProfile() {
                       <div className="form-group col-auto">
                         <div className="account_profile position-relative">
                           <div className="circle">
-                            {/* <img
-                              className="profile-pic"
-                              src="assets/img/profile_img1.jpg"
-                              alt=""
-                            /> */}
-                            {/* {storedPic ? (
-                              <img src={storedPic} alt="" />
-                            ) : (
-                              <img src="../assets/img/saudi_flag1.png" alt="" />
-                            )} */}
                             {selectedImage1 ? (
                               <img
                                 src={selectedImage1}
                                 alt=""
                                 style={{ height: "150px" }}
                               />
-                            ) : storedPic ? (
-                              <img
-                                src={storedPic}
-                                alt=""
-                                style={{
-                                  height: "100px",
-                                  width: "100px",
-                                  borderRadius: "50%",
-                                }}
-                              />
                             ) : (
                               <img
-                                src="../assets/img/profile_img1.jpg"
+                                src={details?.profile_Pic}
                                 alt=""
                                 style={{
                                   height: "100px",
@@ -197,10 +195,23 @@ function EditProfile() {
                         <input
                           type="text"
                           className="form-control"
-                          defaultValue="Ajay Sharma"
+                          defaultValue={details?.userName}
+                          placeholder="Enter full name"
                           name="nameEn"
                           id="nameEn"
                           onChange={(e) => setUserName(e.target.value)}
+                        />
+                      </div>
+                      <div className="form-group col-12">
+                        <label htmlFor="mobile">Mobile Number</label>
+                        <input
+                          type="text"
+                          className="form-control"
+                          defaultValue={details?.mobileNumber}
+                          name="mobile"
+                          id="mobile"
+                          placeholder="Enter mobile number"
+                          onChange={(e) => setMobile(e.target.value)}
                         />
                       </div>
                       <div className="form-group col-12">
@@ -211,8 +222,9 @@ function EditProfile() {
                           defaultValue=""
                           name="email"
                           id="email"
-                          placeholder="user@gmail.com"
-                          onChange={(e) => setUserEmail(e.target.value)}
+                          placeholder={emailauthecomadmin}
+                          // onChange={(e) => setUserEmail(e.target.value)}
+                          readOnly
                         />
                       </div>
                       <div className="form-group col-12 mt-2 text-center">

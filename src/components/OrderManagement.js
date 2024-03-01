@@ -229,7 +229,7 @@ function OrderManagement() {
         returnData.date = moment(list?.createdAt).format("L");
         returnData.customer = list?.user_Id?.userName;
         returnData.paymentIntent = list?.paymentIntent;
-        returnData.total = list?.totalAmount
+        returnData.total = list?.grandTotal
           ? list?.totalAmount?.toFixed(2)
           : "N/A";
         returnData.status = (
