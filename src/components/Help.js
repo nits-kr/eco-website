@@ -13,6 +13,7 @@ import { Spinner } from "react-bootstrap";
 function Help() {
   const [loader, setLoader] = useState(false);
   const ecomAdmintoken = useSelector((data) => data?.local?.token);
+  const ml = useSelector((data) => data?.local?.header);
 
   const { data: helpListdata, refetch: fetchHelpList } = useGetHelpListQuery({
     ecomAdmintoken,
@@ -83,7 +84,7 @@ function Help() {
   return (
     <>
       <Sidebar Dash={"help"} />
-      <div className="admin_main">
+      <div className={`admin_main ${ml ? "admin_full" : ""}`}>
         <div className="admin_main_inner">
           <div className="admin_panel_data height_adjust">
             <div className="row help&support-management justify-content-center">

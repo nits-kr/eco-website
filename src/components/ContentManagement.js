@@ -15,6 +15,7 @@ import { Spinner } from "react-bootstrap";
 function ContentManagement() {
   const [loader, setLoader] = useState(false);
   const ecomAdmintoken = useSelector((data) => data?.local?.token);
+  const ml = useSelector((data) => data?.local?.header);
   const [createContent, responseInfo] = useCreateContentMutation();
   const { data: contentListItems, refetch: fetchContentList } =
     useGetContentListQuery({
@@ -143,7 +144,7 @@ function ContentManagement() {
   return (
     <>
       <Sidebar Dash={"content-management"} />
-      <div className="admin_main">
+      <div className={`admin_main ${ml ? "admin_full" : ""}`}>
         <div className="admin_main_inner">
           <div className="admin_panel_data height_adjust">
             <div className="row content_management justify-content-center">

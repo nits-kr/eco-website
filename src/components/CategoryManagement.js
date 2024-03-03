@@ -25,6 +25,7 @@ import { Spinner } from "react-bootstrap";
 
 function CategoryManagement(props) {
   const ecomAdmintoken = useSelector((data) => data?.local?.token);
+  const ml = useSelector((data) => data?.local?.header);
 
   const [loader, setLoader] = useState(false);
   const [loadings, setLoadings] = useState(false);
@@ -342,7 +343,7 @@ function CategoryManagement(props) {
     <>
       {loading}
       <Sidebar Dash={"categories"} />
-      <div className="admin_main">
+      <div className={`admin_main ${ml ? "admin_full" : ""}`}>
         <div className="admin_main_inner">
           <div className="admin_panel_data height_adjust">
             <div className="row category-management justify-content-center">

@@ -26,6 +26,7 @@ function BrandManagement(props) {
   const [loader, setLoader] = useState(false);
 
   const ecomAdmintoken = useSelector((data) => data?.local?.token);
+  const ml = useSelector((data) => data?.local?.header);
 
   // const { data: brandListdata, refetch: refetchbrandList } =
   //   useGetBrandListQuery({
@@ -316,7 +317,7 @@ function BrandManagement(props) {
     <>
       {loading}
       <Sidebar Dash={"brand-management"} />
-      <div className="admin_main">
+      <div className={`admin_main ${ml ? "admin_full" : ""}`}>
         <div className="admin_main_inner">
           <div className="admin_panel_data height_adjust">
             <div className="row category-management justify-content-center">

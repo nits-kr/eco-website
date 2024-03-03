@@ -58,6 +58,7 @@ import ProductEdit from "./components/productmanagements/ProductEdit";
 import ProductList from "./components/productmanagements/ProductList";
 import CoupanLists from "./components/coupans/CoupanLists";
 import { useSelector } from "react-redux";
+import ChangePassword from "./components/ChangePassword";
 
 function App() {
   const modules = useSelector((data) => data?.local?.modules);
@@ -502,6 +503,13 @@ function App() {
             path="/forget-password"
             element={<ForgetPassword />}
           />
+          <Route
+            exact
+            className="active"
+            path="/change-password"
+            element={<ChangePassword />}
+          />
+
           <Route
             exact
             className="active"

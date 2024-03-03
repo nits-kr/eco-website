@@ -21,6 +21,8 @@ import moment from "moment";
 
 function DashboardNew(props) {
   const ecomAdmintoken = useSelector((data) => data?.local?.token);
+  const ml = useSelector((data) => data?.local?.header);
+  console.log("ml", ml);
   const [loading, setLoading] = useState(false);
   const { data: dashboard, refetch: refetchdashboard } =
     useGetDashboardCountQuery({ ecomAdmintoken });
@@ -424,7 +426,7 @@ function DashboardNew(props) {
     <>
       {loading}
       <Sidebar Dash={"dashboard"} />
-      <div className="admin_main">
+      <div className={`admin_main ${ml ? "admin_full" : ""}`}>
         <div className="admin_main_inner">
           <div className="admin_panel_data height_adjust">
             <div className="row dashboard_part justify-content-center">

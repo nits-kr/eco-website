@@ -12,6 +12,7 @@ import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 function TransactionManagement() {
   const ecomAdmintoken = useSelector((data) => data?.local?.token);
+  const ml = useSelector((data) => data?.local?.header);
 
   const { data, isLoading, isError } = useGetFileQuery("file-id");
   const { data: transactionList } = useGetTransactionListQuery({
@@ -46,7 +47,7 @@ function TransactionManagement() {
   return (
     <>
       <Sidebar Dash={"transactions"} />
-      <div className="admin_main">
+      <div className={`admin_main ${ml ? "admin_full" : ""}`}>
         <div className="admin_main_inner">
           <div className="admin_panel_data height_adjust">
             <div className="row transaction-management justify-content-center">

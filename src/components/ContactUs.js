@@ -11,6 +11,7 @@ import { useCreateContactMutation } from "../services/Post";
 import { useSelector } from "react-redux";
 function ContactUs() {
   const ecomAdmintoken = useSelector((data) => data?.local?.token);
+  const ml = useSelector((data) => data?.local?.header);
 
   const { data: contactListdata } = useGetContactListQuery({
     ecomAdmintoken,
@@ -79,7 +80,7 @@ function ContactUs() {
   return (
     <>
       <Sidebar Dash={"contact-us"} />
-      <div className="admin_main">
+      <div className={`admin_main ${ml ? "admin_full" : ""}`}>
         <div className="admin_main_inner">
           <div className="admin_panel_data height_adjust">
             <div className="row help&support-management justify-content-center">

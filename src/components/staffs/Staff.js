@@ -25,6 +25,8 @@ import { Spinner } from "react-bootstrap";
 
 function Staff() {
   const ecomAdmintoken = useSelector((data) => data?.local?.token);
+  const ml = useSelector((data) => data?.local?.header);
+
   let [loading, setLoading] = useState(false);
 
   const [values, setValues] = useState({ from: "", to: "" });
@@ -455,8 +457,8 @@ function Staff() {
 
   return (
     <>
-      <Sidebar getBarClick={getBarClick} />
-      <div className={sideBar === "click" ? "expanded_main" : "admin_main"}>
+      <Sidebar Dash={"staff"} />
+      <div className={`admin_main ${ml ? "admin_full" : ""}`}>
         <div className="admin_main_inner">
           <div className="admin_panel_data height_adjust">
             <div className="row staff-management justify-content-center">

@@ -12,6 +12,7 @@ import { Spinner } from "react-bootstrap";
 export default function CreatCoupans() {
   const [loader, setLoader] = useState(false);
   const ecomAdmintoken = useSelector((data) => data?.local?.token);
+  const ml = useSelector((data) => data?.local?.header);
   const [discountType, setDiscountType] = useState("");
   const [show, setShow] = useState(false);
   const [createCoupan] = useCreateCoupanMutation();
@@ -78,7 +79,7 @@ export default function CreatCoupans() {
   return (
     <>
       <Sidebar />
-      <div className="admin_main">
+      <div className={`admin_main ${ml ? "admin_full" : ""}`}>
         <div className="admin_main_inner">
           <div className="admin_panel_data height_adjust">
             <div className="row coupan_page justify-content-center">

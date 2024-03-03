@@ -22,6 +22,7 @@ import { toast } from "react-toastify";
 
 function Agent(props) {
   const ecomAdmintoken = useSelector((data) => data?.local?.token);
+  const ml = useSelector((data) => data?.local?.header);
   const { data: userListdata, refetch: agentListData } = useGetAgentListQuery({
     ecomAdmintoken,
   });
@@ -66,7 +67,7 @@ function Agent(props) {
     <>
       {loading}
       <Sidebar Dash={"agents"} />
-      <div className="admin_main">
+      <div className={`admin_main ${ml ? "admin_full" : ""}`}>
         <div className="admin_main_inner">
           <div className="admin_panel_data height_adjust">
             <div className="row dashboard_part justify-content-center">

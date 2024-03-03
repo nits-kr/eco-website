@@ -10,6 +10,8 @@ import { faEye, faPencil, faCopy } from "@fortawesome/free-solid-svg-icons";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import { BiEdit } from "react-icons/bi";
+
 import {
   useAddReccomdedMutation,
   useEditProductListMutation,
@@ -22,6 +24,7 @@ import { MDBDataTable } from "mdbreact";
 
 function ProductList(props) {
   const ecomAdmintoken = useSelector((data) => data?.local?.token);
+  const ml = useSelector((data) => data?.local?.header);
   // const { data: productLists, refetch: productListsData } =
   //   useGetProductListQuery({ ecomAdmintoken });
 
@@ -43,8 +46,15 @@ function ProductList(props) {
   const [searchQuery, setSearchQuery] = useState("");
   const [productList, setProductList] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
+  const importInput = document.getElementById("fileID");
+
   const [itemId, setItemId] = useState("");
   const [copiedSlug, setCopiedSlug] = useState(null);
+  const [impFile, setImpFile] = useState([]);
+  const [set, setSet] = useState(true);
+
+  const [ux, setUx] = useState("");
+  const [uE, setUE] = useState("");
   const handleSelectAll = () => {
     setSelectAll(!selectAll);
   };
@@ -56,6 +66,78 @@ function ProductList(props) {
     speed: 500,
     slidesToShow: 1,
     slidesToScroll: 1,
+  };
+
+  const onFileSelection = (e) => {
+    let file = e.target.files[0];
+    setImpFile(file);
+    setUx("uploaded");
+  };
+
+  const onUpload = async () => {
+    // setLoader2(true);
+    const formData = new FormData();
+    formData.append("csvFilePath", impFile);
+    // await axios
+    //   .post(importInvent, formData)
+    //   .then((res) => {
+    //     if (res?.data.error) {
+    //       setLoader2(false);
+    //       Swal.fire({
+    //         title: res?.data?.message,
+    //         icon: "error",
+    //         confirmButtonText: "okay",
+    //       });
+    //     }
+    //     if (res?.error) {
+    //       Swal.fire({
+    //         title: "Error in File",
+    //         icon: "error",
+    //         confirmButtonText: "ok",
+    //       });
+    //       setLoader2(false);
+    //     }
+    //     if (res?.data.message === "Imported Successfully") {
+    //       setLoader2(false);
+
+    //       Swal.fire({
+    //         title: "Products Imported successfully",
+    //         icon: "success",
+    //         confirmButtonText: "ok",
+    //       });
+    //       window.location.reload(false);
+    //     } else if (res?.data.message === "Error in File") {
+    //       setLoader2(false);
+
+    //       Swal.fire({
+    //         title: "Item Number or Product Name Error in CSV",
+    //         text: res?.data.results?.catError.map((item) => item),
+    //         icon: "error",
+    //         focusConfirm: false,
+    //       });
+    //     } else if (res?.data.message === "Error in file") {
+    //       setLoader2(false);
+
+    //       Swal.fire({
+    //         title: "Item Number or Product Name Error in CSV",
+    //         text: res?.data.results?.itemNumErr.map((item) => item),
+    //         icon: "error",
+    //         focusConfirm: false,
+    //       });
+    //     }
+    //   })
+    //   .catch((err) => {
+    //     setLoader2(false);
+
+    //     if (err) {
+    //       Swal.fire({
+    //         title: "Error in csv!",
+    //         icon: "error",
+    //         focusConfirm: false,
+    //       });
+    //     }
+    //   });
+    document.getElementById("reUpload").hidden = false;
   };
 
   const [product, setProduct] = useState({
@@ -300,7 +382,7 @@ function ProductList(props) {
       {loading}
       <Sidebar Dash={"products"} />
 
-      <div className="admin_main">
+      <div className={`admin_main ${ml ? "admin_full" : ""}`}>
         <div className="admin_main_inner">
           <div className="admin_panel_data height_adjust">
             <div className="row dashboard_part justify-content-center">
@@ -316,17 +398,20 @@ function ProductList(props) {
                     marginBottom: "15px",
                   }}
                 >
-                  <Link
-                    to="#"
+                  <button
+                    // to="#"
+                    data-bs-toggle="modal"
+                    id="modal-toggle66"
+                    data-bs-target="#staticBackdrop66"
                     className="btn btn-secondary "
-                    style={{ marginRight: "10px" }}
+                    style={{ marginRight: "10px", height: "40px" }}
                   >
-                    Export
-                  </Link>
+                    Import New Inventory
+                  </button>
                   <Link
                     to="/product-management"
                     className="btn btn-primary"
-                    style={{ marginRight: "24px" }}
+                    style={{ marginRight: "24px", height: "40px" }}
                   >
                     Add Product
                   </Link>
@@ -539,6 +624,109 @@ function ProductList(props) {
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        className="modal fade Edit_modal"
+        id="staticBackdrop66"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+        tabIndex="-1"
+        aria-labelledby="staticBackdropLabel"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog modal-dialog-centered">
+          <div
+            className="modal-content "
+            style={{ width: "100vh", marginLeft: "30vh" }}
+          >
+            <div className="modal-header ">
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+                onClick={() => {
+                  window.location.reload(false);
+                }}
+                id="modal-close66"
+                // style={{ backgroundColor: "red" }}
+              />
+            </div>
+            <div className="modal-body">
+              <form className="form-design p-3 help-support-form row align-items-end justify-content-center container">
+                <div className="">
+                  {set ? (
+                    <div className="drop_box p-5">
+                      <header>
+                        <h4>Choose File here</h4>
+                      </header>
+                      <p>Files Supported: CSV</p>
+                      <p className="text-dark bg-light p-2">
+                        {impFile?.name}{" "}
+                        <button
+                          hidden
+                          className="btn"
+                          id="reUpload"
+                          accept=".csv/*"
+                          onClick={() => {
+                            importInput.click();
+                          }}
+                        >
+                          <BiEdit />
+                        </button>
+                      </p>
+                      {/* <p className="text-danger fw-bold">uploadError</p> */}
+                      <input
+                        type="file"
+                        accept=".csv"
+                        id="fileID"
+                        style={{ display: "none" }}
+                        onChange={onFileSelection}
+                      />
+                      {ux !== "" ? (
+                        <button
+                          className="comman_btn"
+                          // loading={loader2}
+                          style={{
+                            backgroundColor: "#eb3237",
+                            color: "#fff",
+                            fontSize: "20px",
+                            position: "relative",
+                            top: "-2px",
+                          }}
+                          onClick={onUpload}
+                        >
+                          Upload
+                        </button>
+                      ) : (
+                        <button
+                          className="comman_btn2"
+                          htmlFor=""
+                          onClick={() => {
+                            importInput.click();
+                          }}
+                        >
+                          Import
+                        </button>
+                      )}
+                      <div className="text-secondary mt-2">
+                        *Large files may take longer time.
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="drop_box p-5">
+                      <h1 className="fs-5">CSV Imported</h1>
+                      <p> {impFile?.name} </p>
+                      <button className="comman_btn mt-3">
+                        Generate Passwords
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </form>
             </div>
           </div>
         </div>

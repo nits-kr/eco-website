@@ -19,6 +19,7 @@ function NotificationManagement() {
   const [loader, setLoader] = useState(false);
   const ecomAdmintoken = useSelector((data) => data?.local?.token);
   const loginId = useSelector((data) => data?.local?.ecomadminloginId);
+  const ml = useSelector((data) => data?.local?.header);
 
   // const { data: notificationListData } = useGetNotificationListQuery({
   //   ecomAdmintoken,
@@ -131,7 +132,7 @@ function NotificationManagement() {
   return (
     <>
       <Sidebar Dash={"notification-management"} />
-      <div className="admin_main">
+      <div className={`admin_main ${ml ? "admin_full" : ""}`}>
         <div className="admin_main_inner">
           <div className="admin_panel_data height_adjust">
             <div className="row transaction-management justify-content-center">

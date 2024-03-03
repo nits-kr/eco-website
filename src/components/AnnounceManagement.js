@@ -22,6 +22,7 @@ import { useSelector } from "react-redux";
 
 function AnnounceManagement() {
   const ecomAdmintoken = useSelector((data) => data?.local?.token);
+  const ml = useSelector((data) => data?.local?.header);
 
   const [deleteAnnounce, response] = useDeleteAnnouncementListMutation();
   const [getAnnouncement] = useGetAnnounceListMutation();
@@ -98,7 +99,7 @@ function AnnounceManagement() {
   return (
     <>
       <Sidebar Dash={"announcement-management"} />
-      <div className="admin_main">
+      <div className={`admin_main ${ml ? "admin_full" : ""}`}>
         <div className="admin_main_inner">
           <div className="admin_panel_data height_adjust">
             <div className="row transaction-management justify-content-center">

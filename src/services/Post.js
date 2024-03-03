@@ -48,6 +48,19 @@ export const PostApi = createApi({
         };
       },
     }),
+    changePassword: builder.mutation({
+      query: (body) => {
+        const { ecomAdmintoken, ...data } = body;
+        return {
+          url: "api/admin/changePassword",
+          method: "PATCH",
+          body: data,
+          headers: {
+            "x-auth-token-admin": ecomAdmintoken,
+          },
+        };
+      },
+    }),
     createOffer: builder.mutation({
       query: (body) => ({
         url: `admin/offer/add-offer`,
@@ -1785,4 +1798,5 @@ export const {
   useResetPasswordMutation,
   useUpdateProfileMutation,
   useGetAdminDataQuery,
+  useChangePasswordMutation,
 } = PostApi;

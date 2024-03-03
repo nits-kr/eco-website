@@ -22,6 +22,7 @@ import { useSelector } from "react-redux";
 
 function AgentDetailsAll() {
   const ecomAdmintoken = useSelector((data) => data?.local?.token);
+  const ml = useSelector((data) => data?.local?.header);
 
   const { id } = useParams();
   const [agentDetails, isLoading] = useAgentDetailsAllMutation();
@@ -134,7 +135,7 @@ function AgentDetailsAll() {
       {isLoading ? (
         <div>Loading! Please wait...</div>
       ) : (
-        <div className="admin_main">
+        <div className={`admin_main ${ml ? "admin_full" : ""}`}>
           <div className="admin_main_inner">
             <div className="admin_panel_data height_adjust">
               <div className="row offer-management justify-content-center">

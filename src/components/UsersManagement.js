@@ -18,6 +18,8 @@ import { useGetLatLongitudeQuery } from "../services/Post";
 import { useSelector } from "react-redux";
 function UsersManagement(props) {
   const ecomAdmintoken = useSelector((data) => data?.local?.token);
+  const ml = useSelector((data) => data?.local?.header);
+  console.log("ml", ml);
 
   const [createMap, res] = useCreateMapMutation();
   const [userListdata] = useGetUserListAllSearchMutation();
@@ -97,7 +99,7 @@ function UsersManagement(props) {
     <>
       {loading}
       <Sidebar Dash={"users"} />
-      <div className="admin_main">
+      <div className={`admin_main ${ml ? "admin_full" : ""}`}>
         <div className="admin_main_inner">
           <div className="admin_panel_data height_adjust">
             <div className="row dashboard_part justify-content-center">

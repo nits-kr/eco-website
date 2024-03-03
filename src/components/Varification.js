@@ -42,8 +42,20 @@ function Varification() {
       userEmail: emailduringotp,
       otp: otp,
     });
+    console.log("res", res);
+
     if (res) {
       navigate("/reset");
+      toast.success(
+        `${
+          res?.data?.message === "OTP Verified"
+            ? "OTP Varified"
+            : "Incorrect OTP"
+        }`,
+        {
+          autoClose: 1000,
+        }
+      );
     }
   };
 

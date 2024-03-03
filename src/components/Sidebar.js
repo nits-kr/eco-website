@@ -1,15 +1,29 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCog } from "@fortawesome/free-solid-svg-icons";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { useGetAdminDataQuery } from "../services/Post";
+import { setHeader } from "../app/localSlice";
 
 function Sidebar({ Dash }) {
+  const ecomAdmintoken = useSelector((data) => data?.local?.token);
+
   const modules = useSelector((data) => data?.local?.modules);
   const loginType = useSelector((data) => data?.local?.loginType);
 
+  const { data: adminData } = useGetAdminDataQuery({ ecomAdmintoken });
+
   console.log("modules", modules);
   console.log("loginType", loginType);
+
+  const [adminDetails, setAdminDetails] = useState("");
+
+  useEffect(() => {
+    if (adminData) {
+      setAdminDetails(adminData?.results?.admin);
+    }
+  }, [adminData]);
 
   const storedPic = localStorage.getItem("profilePic");
 
@@ -22,10 +36,37 @@ function Sidebar({ Dash }) {
     localStorage.removeItem("admin-data");
   };
 
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [show, setShow] = useState(true);
+
+  const dispatch = useDispatch();
+
+  const toggleSidebar = () => {
+    setSidebarCollapsed(!sidebarCollapsed);
+    dispatch(setHeader("ml"));
+    setShow(false);
+  };
+  const toggleSidebarcol = () => {
+    setSidebarCollapsed(!sidebarCollapsed);
+    dispatch(setHeader(""));
+    setShow(true);
+  };
+  const toggleSidebar1 = () => {
+    dispatch(setHeader(""));
+  };
+
+  const handleLinkDoubleClick = (event) => {
+    event.preventDefault();
+  };
+
   return (
     <>
-      <div className="admin_main">
-        <div className="siderbar_section">
+      <div className={`admin_main ${sidebarCollapsed ? "admin_full" : ""}`}>
+        <div
+          className={`siderbar_section ${
+            sidebarCollapsed ? "hide_sidebar" : ""
+          }`}
+        >
           <div className="siderbar_inner">
             <div className="sidebar_logo">
               <Link to="javscript:;">
@@ -41,7 +82,11 @@ function Sidebar({ Dash }) {
                         Dash === "dashboard" ? "nav-link active" : "nav-link"
                       }
                     >
-                      <Link className="" to="/dashboard">
+                      <Link
+                        className=""
+                        to="/dashboard"
+                        onClick={() => toggleSidebar1()}
+                      >
                         <i className="fal fa-box-full"></i>Dashboard
                       </Link>
                     </li>
@@ -51,7 +96,11 @@ function Sidebar({ Dash }) {
                         Dash === "users" ? "nav-link active" : "nav-link"
                       }
                     >
-                      <Link className="" to="/users">
+                      <Link
+                        className=""
+                        to="/users"
+                        onClick={() => toggleSidebar1()}
+                      >
                         <i className="fal fa-user"></i>Users Management
                       </Link>
                     </li>
@@ -61,7 +110,11 @@ function Sidebar({ Dash }) {
                         Dash === "orders" ? "nav-link active" : "nav-link"
                       }
                     >
-                      <Link className="" to="/orders">
+                      <Link
+                        className=""
+                        to="/orders"
+                        onClick={() => toggleSidebar1()}
+                      >
                         <i className="fal fa-box-full"></i>Order Management
                       </Link>
                     </li>
@@ -72,7 +125,7 @@ function Sidebar({ Dash }) {
                       }
                     >
                       <div className="d-flex">
-                        <Link to="/categories">
+                        <Link to="/categories" onClick={() => toggleSidebar1()}>
                           <i className="fas fa-list-ol"></i>
                           Category Management
                         </Link>
@@ -86,7 +139,11 @@ function Sidebar({ Dash }) {
                           : "nav-link"
                       }
                     >
-                      <Link className="ms-link " to="/product-management">
+                      <Link
+                        className="ms-link "
+                        to="/product-management"
+                        onClick={() => toggleSidebar1()}
+                      >
                         <i className="fas fa-cogs"></i>
                         <span>Add New Product</span>
                       </Link>
@@ -100,7 +157,7 @@ function Sidebar({ Dash }) {
                       <Link
                         className="ms-link"
                         to="/products"
-                        // onClick={() => handleItemClick("products")}
+                        onClick={() => toggleSidebar1()}
                       >
                         <i className="fas fa-check-square"></i>
                         <span> Product List</span>
@@ -114,7 +171,11 @@ function Sidebar({ Dash }) {
                           : "nav-link"
                       }
                     >
-                      <Link className="" to="/Home-Screen-banners">
+                      <Link
+                        className=""
+                        to="/Home-Screen-banners"
+                        onClick={() => toggleSidebar1()}
+                      >
                         <i className="fal fa-sign-in-alt"></i>Banner Management
                       </Link>
                     </li>
@@ -126,7 +187,11 @@ function Sidebar({ Dash }) {
                           : "nav-link"
                       }
                     >
-                      <Link className="ms-link " to="/brand-management">
+                      <Link
+                        className="ms-link "
+                        to="/brand-management"
+                        onClick={() => toggleSidebar1()}
+                      >
                         <i className="fas fa-cogs"></i>
                         <span>Brand Management</span>
                       </Link>
@@ -137,7 +202,11 @@ function Sidebar({ Dash }) {
                         Dash === "agents" ? "nav-link active" : "nav-link"
                       }
                     >
-                      <Link className="" to="/agents">
+                      <Link
+                        className=""
+                        to="/agents"
+                        onClick={() => toggleSidebar1()}
+                      >
                         <i className="fal fa-users"></i>Agent Management
                       </Link>
                     </li>
@@ -147,7 +216,11 @@ function Sidebar({ Dash }) {
                         Dash === "staff" ? "nav-link active" : "nav-link"
                       }
                     >
-                      <Link className="" to="/staff">
+                      <Link
+                        className=""
+                        to="/staff"
+                        onClick={() => toggleSidebar1()}
+                      >
                         <i className="fal fa-clipboard-user"></i>Staff
                         Management
                       </Link>
@@ -158,7 +231,11 @@ function Sidebar({ Dash }) {
                         Dash === "transactions" ? "nav-link active" : "nav-link"
                       }
                     >
-                      <Link className=" " to="/transactions">
+                      <Link
+                        className=" "
+                        to="/transactions"
+                        onClick={() => toggleSidebar1()}
+                      >
                         <i className="far fa-repeat-1"></i>Transaction
                         Management
                       </Link>
@@ -231,7 +308,11 @@ function Sidebar({ Dash }) {
                           : "nav-link"
                       }
                     >
-                      <Link className="" to="/notification-management">
+                      <Link
+                        className=""
+                        to="/notification-management"
+                        onClick={() => toggleSidebar1()}
+                      >
                         <i className="far fa-bell"></i>Notification Management
                       </Link>
                     </li>
@@ -242,7 +323,11 @@ function Sidebar({ Dash }) {
                           : "nav-link"
                       }
                     >
-                      <Link className="" to="/announcement-management">
+                      <Link
+                        className=""
+                        to="/announcement-management"
+                        onClick={() => toggleSidebar1()}
+                      >
                         <i className="far fa-bullhorn"></i> Announcement
                         Management
                       </Link>
@@ -265,7 +350,11 @@ function Sidebar({ Dash }) {
                           : "nav-link"
                       }
                     >
-                      <Link className="" to="/content-management">
+                      <Link
+                        className=""
+                        to="/content-management"
+                        onClick={() => toggleSidebar1()}
+                      >
                         <i className="fal fa-user-edit"></i>Content Management
                       </Link>
                     </li>
@@ -274,7 +363,11 @@ function Sidebar({ Dash }) {
                         Dash === "coupanList" ? "nav-link active" : "nav-link"
                       }
                     >
-                      <Link className="" to="/coupanList">
+                      <Link
+                        className=""
+                        to="/coupanList"
+                        onClick={() => toggleSidebar1()}
+                      >
                         <i className="fal fa-user-edit"></i>Coupan Management
                       </Link>
                     </li>
@@ -283,7 +376,7 @@ function Sidebar({ Dash }) {
                         Dash === "informations" ? "nav-link active" : "nav-link"
                       }
                     >
-                      <Link to="/informations">
+                      <Link to="/informations" onClick={() => toggleSidebar1()}>
                         <i className="fas fa-info"></i>Informations Management
                       </Link>
                     </li>
@@ -292,7 +385,11 @@ function Sidebar({ Dash }) {
                         Dash === "contact-us" ? "nav-link active" : "nav-link"
                       }
                     >
-                      <Link className="" to="/contact-us">
+                      <Link
+                        className=""
+                        to="/contact-us"
+                        onClick={() => toggleSidebar1()}
+                      >
                         <i className="fas fa-cogs"></i>Contact us
                       </Link>
                     </li>
@@ -334,7 +431,11 @@ function Sidebar({ Dash }) {
                         Dash === "help" ? "nav-link active" : "nav-link"
                       }
                     >
-                      <Link className="" to="/help">
+                      <Link
+                        className=""
+                        to="/help"
+                        onClick={() => toggleSidebar1()}
+                      >
                         <i className="fal fa-hands-heart"></i>Help
                       </Link>
                     </li>
@@ -347,7 +448,11 @@ function Sidebar({ Dash }) {
                           Dash === "dashboard" ? "nav-link active" : "nav-link"
                         }
                       >
-                        <Link className="" to="/dashboard">
+                        <Link
+                          className=""
+                          to="/dashboard"
+                          onClick={() => toggleSidebar1()}
+                        >
                           <i className="fal fa-box-full"></i>Dashboard
                         </Link>
                       </li>
@@ -359,7 +464,11 @@ function Sidebar({ Dash }) {
                           Dash === "users" ? "nav-link active" : "nav-link"
                         }
                       >
-                        <Link className="" to="/users">
+                        <Link
+                          className=""
+                          to="/users"
+                          onClick={() => toggleSidebar1()}
+                        >
                           <i className="fal fa-user"></i>Users Management
                         </Link>
                       </li>
@@ -371,7 +480,11 @@ function Sidebar({ Dash }) {
                           Dash === "orders" ? "nav-link active" : "nav-link"
                         }
                       >
-                        <Link className="" to="/orders">
+                        <Link
+                          className=""
+                          to="/orders"
+                          onClick={() => toggleSidebar1()}
+                        >
                           <i className="fal fa-box-full"></i>Order Management
                         </Link>
                       </li>
@@ -384,7 +497,10 @@ function Sidebar({ Dash }) {
                         }
                       >
                         <div className="d-flex">
-                          <Link to="/categories">
+                          <Link
+                            to="/categories"
+                            onClick={() => toggleSidebar1()}
+                          >
                             <i className="fas fa-list-ol"></i>
                             Category Management
                           </Link>
@@ -400,7 +516,11 @@ function Sidebar({ Dash }) {
                             : "nav-link"
                         }
                       >
-                        <Link className="ms-link " to="/product-management">
+                        <Link
+                          className="ms-link "
+                          to="/product-management"
+                          onClick={() => toggleSidebar1()}
+                        >
                           <i className="fas fa-cogs"></i>
                           <span>Add New Product</span>
                         </Link>
@@ -416,7 +536,7 @@ function Sidebar({ Dash }) {
                         <Link
                           className="ms-link"
                           to="/products"
-                          // onClick={() => handleItemClick("products")}
+                          onClick={() => toggleSidebar1()}
                         >
                           <i className="fas fa-check-square"></i>
                           <span> Product List</span>
@@ -432,7 +552,11 @@ function Sidebar({ Dash }) {
                             : "nav-link"
                         }
                       >
-                        <Link className="" to="/Home-Screen-banners">
+                        <Link
+                          className=""
+                          to="/Home-Screen-banners"
+                          onClick={() => toggleSidebar1()}
+                        >
                           <i className="fal fa-sign-in-alt"></i>Banner
                           Management
                         </Link>
@@ -447,7 +571,11 @@ function Sidebar({ Dash }) {
                             : "nav-link"
                         }
                       >
-                        <Link className="ms-link " to="/brand-management">
+                        <Link
+                          className="ms-link "
+                          to="/brand-management"
+                          onClick={() => toggleSidebar1()}
+                        >
                           <i className="fas fa-cogs"></i>
                           <span>Brand Management</span>
                         </Link>
@@ -460,7 +588,11 @@ function Sidebar({ Dash }) {
                           Dash === "agents" ? "nav-link active" : "nav-link"
                         }
                       >
-                        <Link className="" to="/agents">
+                        <Link
+                          className=""
+                          to="/agents"
+                          onClick={() => toggleSidebar1()}
+                        >
                           <i className="fal fa-users"></i>Agent Management
                         </Link>
                       </li>
@@ -472,7 +604,11 @@ function Sidebar({ Dash }) {
                           Dash === "staff" ? "nav-link active" : "nav-link"
                         }
                       >
-                        <Link className="" to="/staff">
+                        <Link
+                          className=""
+                          to="/staff"
+                          onClick={() => toggleSidebar1()}
+                        >
                           <i className="fal fa-clipboard-user"></i>Staff
                           Management
                         </Link>
@@ -487,7 +623,11 @@ function Sidebar({ Dash }) {
                             : "nav-link"
                         }
                       >
-                        <Link className=" " to="/transactions">
+                        <Link
+                          className=" "
+                          to="/transactions"
+                          onClick={() => toggleSidebar1()}
+                        >
                           <i className="far fa-repeat-1"></i>Transaction
                           Management
                         </Link>
@@ -562,7 +702,11 @@ function Sidebar({ Dash }) {
                             : "nav-link"
                         }
                       >
-                        <Link className="" to="/notification-management">
+                        <Link
+                          className=""
+                          to="/notification-management"
+                          onClick={() => toggleSidebar1()}
+                        >
                           <i className="far fa-bell"></i>Notification Management
                         </Link>
                       </li>
@@ -575,7 +719,11 @@ function Sidebar({ Dash }) {
                             : "nav-link"
                         }
                       >
-                        <Link className="" to="/announcement-management">
+                        <Link
+                          className=""
+                          to="/announcement-management"
+                          onClick={() => toggleSidebar1()}
+                        >
                           <i className="far fa-bullhorn"></i> Announcement
                           Management
                         </Link>
@@ -600,7 +748,11 @@ function Sidebar({ Dash }) {
                             : "nav-link"
                         }
                       >
-                        <Link className="" to="/content-management">
+                        <Link
+                          className=""
+                          to="/content-management"
+                          onClick={() => toggleSidebar1()}
+                        >
                           <i className="fal fa-user-edit"></i>Content Management
                         </Link>
                       </li>
@@ -611,7 +763,11 @@ function Sidebar({ Dash }) {
                           Dash === "coupanList" ? "nav-link active" : "nav-link"
                         }
                       >
-                        <Link className="" to="/coupanList">
+                        <Link
+                          className=""
+                          to="/coupanList"
+                          onClick={() => toggleSidebar1()}
+                        >
                           <i className="fal fa-user-edit"></i>Coupan Management
                         </Link>
                       </li>
@@ -624,7 +780,10 @@ function Sidebar({ Dash }) {
                             : "nav-link"
                         }
                       >
-                        <Link to="/informations">
+                        <Link
+                          to="/informations"
+                          onClick={() => toggleSidebar1()}
+                        >
                           <i className="fas fa-info"></i>Informations Management
                         </Link>
                       </li>
@@ -635,7 +794,11 @@ function Sidebar({ Dash }) {
                           Dash === "contact-us" ? "nav-link active" : "nav-link"
                         }
                       >
-                        <Link className="" to="/contact-us">
+                        <Link
+                          className=""
+                          to="/contact-us"
+                          onClick={() => toggleSidebar1()}
+                        >
                           <i className="fas fa-cogs"></i>Contact us
                         </Link>
                       </li>
@@ -681,7 +844,11 @@ function Sidebar({ Dash }) {
                           Dash === "help" ? "nav-link active" : "nav-link"
                         }
                       >
-                        <Link className="" to="/help">
+                        <Link
+                          className=""
+                          to="/help"
+                          onClick={() => toggleSidebar1()}
+                        >
                           <i className="fal fa-hands-heart"></i>Help
                         </Link>
                       </li>
@@ -696,9 +863,23 @@ function Sidebar({ Dash }) {
           <div className="admin_header shadow">
             <div className="row align-items-center mx-0 justify-content-between w-100">
               <div className="col">
-                <Link className="sidebar_btn" to="#">
-                  <i className="far fa-bars"></i>
-                </Link>
+                {show ? (
+                  <Link
+                    className="sidebar_btn"
+                    to="#"
+                    onClick={() => toggleSidebar()}
+                  >
+                    <i className="far fa-bars"></i>
+                  </Link>
+                ) : (
+                  <Link
+                    className="sidebar_btn"
+                    to="#"
+                    onClick={() => toggleSidebarcol()}
+                  >
+                    <i className="far fa-bars"></i>
+                  </Link>
+                )}
               </div>
 
               <div className="col-auto d-flex align-items-center">
@@ -723,7 +904,15 @@ function Sidebar({ Dash }) {
                     {storedPic ? (
                       <img src={storedPic} alt="" />
                     ) : (
-                      <img src="../assets/img/profile_img1.jpg" alt="" />
+                      <img
+                        src={
+                          adminDetails
+                            ? adminDetails?.profile_Pic
+                            : "../assets/img/profile_img1.jpg"
+                        }
+                        alt=""
+                      />
+                      // <img src="../assets/img/profile_img1.jpg" alt="" />
                     )}
                   </button>
                   <ul
@@ -736,7 +925,7 @@ function Sidebar({ Dash }) {
                       </Link>
                     </li>
                     <li>
-                      <Link className="dropdown-item" to="/reset">
+                      <Link className="dropdown-item" to="/change-password">
                         Change Password
                       </Link>
                     </li>

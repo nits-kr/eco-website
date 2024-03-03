@@ -6,6 +6,7 @@ import Sidebar from "./Sidebar";
 import { useForgetPasswordMutation } from "../services/Post";
 import { useDispatch } from "react-redux";
 import { setEmailauthecomadmin } from "../app/localSlice";
+import { toast } from "react-toastify";
 
 function ForgetPassword() {
   const [email, setEmail] = useState("");
@@ -22,9 +23,13 @@ function ForgetPassword() {
     const res = await forgetPassword({
       userEmail: email,
     });
+    console.log("res", res);
     if (res) {
       navigate("/varification");
       dispatch(setEmailauthecomadmin(email));
+      toast.success(`OTP is: ${res?.data?.results?.otp}`, {
+        autoClose: 5000,
+      });
     }
   };
   const handleInputChange = (event) => {

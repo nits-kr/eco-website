@@ -12,6 +12,7 @@ import Spinner from "./Spinner";
 import { useSelector } from "react-redux";
 function Informations(props) {
   const ecomAdmintoken = useSelector((data) => data?.local?.token);
+  const ml = useSelector((data) => data?.local?.header);
 
   const { data: infoListdata, refetch: fetchInfiList } = useGetInfoListQuery({
     ecomAdmintoken,
@@ -112,7 +113,7 @@ function Informations(props) {
     <>
       {loading}
       <Sidebar Dash={"informations"} />
-      <div className="admin_main">
+      <div className={`admin_main ${ml ? "admin_full" : ""}`}>
         <div className="admin_main_inner">
           <div className="admin_panel_data height_adjust">
             <div className="row content_management justify-content-center">
