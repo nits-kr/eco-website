@@ -500,11 +500,17 @@ function CategoryManagement(props) {
                                       id="Category_nameAr"
                                       {...register("Category_nameAr", {
                                         required: "Category Name is required!",
+                                        // pattern: {
+                                        //   value:
+                                        //     /^[A-Za-z\s]{1,}[\.]{0,1}[A-Za-z\s]{0,}$/,
+                                        //   message:
+                                        //     "Special Character not allowed!",
+                                        // },
                                         pattern: {
                                           value:
-                                            /^[A-Za-z\s]{1,}[\.]{0,1}[A-Za-z\s]{0,}$/,
+                                            /^[\u0600-\u06FF\s.'",\-()&$#!@%*?<>{}[\]]{1,}[\.]{0,1}[\u0600-\u06FF\s.'",\-()&$#!@%*?<>{}[\]]{0,}$/,
                                           message:
-                                            "Special Character not allowed!",
+                                            "Special characters allowed except underscore (_)",
                                         },
                                         maxLength: {
                                           value: 100,

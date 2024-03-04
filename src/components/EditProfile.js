@@ -219,7 +219,7 @@ function EditProfile() {
                         <input
                           type="email"
                           className="form-control"
-                          defaultValue=""
+                          defaultValue={details?.userEmail}
                           name="email"
                           id="email"
                           placeholder={emailauthecomadmin}

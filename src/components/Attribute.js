@@ -522,11 +522,11 @@ function Attribute() {
                   id="attributeAr"
                   {...register("attributeAr", {
                     required: "Sub Sub Category Name(En) is required!",
-                    pattern: {
-                      value: /^[A-Za-z\s]{1,}[\.]{0,1}[A-Za-z\s]{0,}$/,
-                      message:
-                        "Please enter only letters, spaces, and an optional dot.",
-                    },
+                    // pattern: {
+                    //   value: /^[A-Za-z\s]{1,}[\.]{0,1}[A-Za-z\s]{0,}$/,
+                    //   message:
+                    //     "Please enter only letters, spaces, and an optional dot.",
+                    // },
 
                     minLength: {
                       value: 2,

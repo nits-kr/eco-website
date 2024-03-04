@@ -796,10 +796,16 @@ function Products(props) {
                               id="productNameAr"
                               {...register("productNameAr", {
                                 required: "Product Name is Required*",
+                                // pattern: {
+                                //   value: /^[a-zA-Z0-9\s\-_.,'&]+$/, // Only letters, numbers, spaces, hyphens, underscores, periods, commas, single quotes, ampersands are allowed
+                                //   message:
+                                //     "Product Name can only contain letters, numbers, spaces, and basic punctuation marks",
+                                // },
                                 pattern: {
-                                  value: /^[a-zA-Z0-9\s\-_.,'&]+$/, // Only letters, numbers, spaces, hyphens, underscores, periods, commas, single quotes, ampersands are allowed
+                                  value:
+                                    /^[\u0600-\u06FF\s.'",\-()&$#!@%*?<>{}[\]]{1,}[\.]{0,1}[\u0600-\u06FF\s.'",\-()&$#!@%*?<>{}[\]]{0,}$/,
                                   message:
-                                    "Product Name can only contain letters, numbers, spaces, and basic punctuation marks",
+                                    "Special characters allowed except underscore (_)",
                                 },
                                 minLength: {
                                   value: 2,

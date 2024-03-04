@@ -651,7 +651,7 @@ export const PostApi = createApi({
         const { ecomAdmintoken, ...data } = body;
 
         return {
-          url: "admin/notification/notification/list",
+          url: "api/admin/getNotifications",
           method: "PATCH",
           body: data,
           headers: {

@@ -138,7 +138,7 @@ function NotificationManagement() {
             <div className="row transaction-management justify-content-center">
               <div className="col-12">
                 <div className="row mx-0">
-                  <div className="col-12 design_outter_comman shadow mb-4">
+                  <div className="col-12 design_outter_comman shadow mb-4 d-none">
                     <div className="row comman_header justify-content-between">
                       <div className="col-auto">
                         <h2>Notifications</h2>

@@ -435,9 +435,10 @@ function SubSubCategory() {
                   {...register("subSubCategoryAr", {
                     required: "Sub Sub Category Name(Ar) is required!",
                     pattern: {
-                      value: /^[A-Za-z\s]{1,}[\.]{0,1}[A-Za-z\s]{0,}$/,
+                      value:
+                        /^[\u0600-\u06FF\s.'",\-()&$#!@%*?<>{}[\]]{1,}[\.]{0,1}[\u0600-\u06FF\s.'",\-()&$#!@%*?<>{}[\]]{0,}$/,
                       message:
-                        "Please enter only letters, spaces, and an optional dot.",
+                        "Special characters allowed except underscore (_)",
                     },
                     minLength: {
                       value: 2,

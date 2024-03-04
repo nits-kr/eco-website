@@ -883,11 +883,24 @@ function Sidebar({ Dash }) {
               </div>
 
               <div className="col-auto d-flex align-items-center">
-                {/* <div className="row me-2">
-                    <div className="notification_icon5">
-                      <i className="far fa-bell"></i>
-                    </div>
-                </div> */}
+                {/* <Link to="/notification-management" className="row me-2">
+                  <div
+                    className="notification_icon5"
+                    style={{ color: "#ffff", backgroundColor: "#144881" }}
+                  >
+                    <i className="far fa-bell"></i>
+                    <span
+                      className="badge text-bg-danger"
+                      style={{
+                        fontSize: "x-small",
+                        marginTop: "-30px",
+                        marginLeft: "-10px",
+                      }}
+                    >
+                      1
+                    </span>
+                  </div>
+                </Link> */}
                 {/* <Link className="change_language" to="">
                   <img src="../assets/img/saudi_flag1.png" alt="" />
                   عربى

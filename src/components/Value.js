@@ -570,11 +570,11 @@ function Value() {
                   id="valueEn"
                   {...register("valueAr", {
                     required: "Value (Ar) is required!",
-                    pattern: {
-                      value: /^[A-Za-z0-9\s]{1,}[\.]{0,1}[A-Za-z0-9\s]{0,}$/,
-                      message:
-                        "Please enter only letters, digits, spaces, and an optional dot.",
-                    },
+                    // pattern: {
+                    //   value: /^[A-Za-z0-9\s]{1,}[\.]{0,1}[A-Za-z0-9\s]{0,}$/,
+                    //   message:
+                    //     "Please enter only letters, digits, spaces, and an optional dot.",
+                    // },
 
                     minLength: {
                       value: 2,
