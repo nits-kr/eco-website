@@ -14,6 +14,7 @@ import { BiEdit } from "react-icons/bi";
 
 import {
   useAddReccomdedMutation,
+  useCreateInventoryMutation,
   useEditProductListMutation,
   useGetProductListSearchMutation,
 } from "../../services/Post";
@@ -21,6 +22,7 @@ import { useDeleteProductListMutation } from "../../services/Post";
 import { useSelector } from "react-redux";
 import { useGetProductListQuery } from "../../services/Post";
 import { MDBDataTable } from "mdbreact";
+import { Button } from "rsuite";
 
 function ProductList(props) {
   const ecomAdmintoken = useSelector((data) => data?.local?.token);
@@ -29,6 +31,7 @@ function ProductList(props) {
   //   useGetProductListQuery({ ecomAdmintoken });
 
   const [productLists] = useGetProductListSearchMutation();
+  const [uploadInvent] = useCreateInventoryMutation();
 
   const [loading, setLoading] = useState(false);
   const [selectedProducts, setSelectedProducts] = useState([]);
@@ -37,6 +40,8 @@ function ProductList(props) {
   const [startDate, setStartDate] = useState("");
   const [startDate1, setStartDate1] = useState("");
   const [endDate, setEndDate] = useState("");
+  const [loader2, setLoader2] = useState(false);
+
   //   const [searchQuery, setSearchQuery] = useState("");
   const [deleteProductList, response] = useDeleteProductListMutation();
   const [addReccomded] = useAddReccomdedMutation();
@@ -74,70 +79,61 @@ function ProductList(props) {
     setUx("uploaded");
   };
 
-  const onUpload = async () => {
-    // setLoader2(true);
+  const onUpload = async (e) => {
+    e.preventDefault();
+    setLoader2(true);
     const formData = new FormData();
-    formData.append("csvFilePath", impFile);
-    // await axios
-    //   .post(importInvent, formData)
-    //   .then((res) => {
-    //     if (res?.data.error) {
-    //       setLoader2(false);
-    //       Swal.fire({
-    //         title: res?.data?.message,
-    //         icon: "error",
-    //         confirmButtonText: "okay",
-    //       });
-    //     }
-    //     if (res?.error) {
-    //       Swal.fire({
-    //         title: "Error in File",
-    //         icon: "error",
-    //         confirmButtonText: "ok",
-    //       });
-    //       setLoader2(false);
-    //     }
-    //     if (res?.data.message === "Imported Successfully") {
-    //       setLoader2(false);
+    formData.append("file ", impFile);
+    const res = await uploadInvent({ formData, ecomAdmintoken });
 
-    //       Swal.fire({
-    //         title: "Products Imported successfully",
-    //         icon: "success",
-    //         confirmButtonText: "ok",
-    //       });
-    //       window.location.reload(false);
-    //     } else if (res?.data.message === "Error in File") {
-    //       setLoader2(false);
+    console.log("res invent", res);
 
-    //       Swal.fire({
-    //         title: "Item Number or Product Name Error in CSV",
-    //         text: res?.data.results?.catError.map((item) => item),
-    //         icon: "error",
-    //         focusConfirm: false,
-    //       });
-    //     } else if (res?.data.message === "Error in file") {
-    //       setLoader2(false);
+    if (res?.data.error) {
+      setLoader2(false);
+      Swal.fire({
+        title: res?.data?.message,
+        icon: "error",
+        confirmButtonText: "okay",
+      });
+    }
+    if (res?.error) {
+      Swal.fire({
+        title: "Error in File",
+        icon: "error",
+        confirmButtonText: "ok",
+      });
+      setLoader2(false);
+    }
+    if (res?.data.message === "Product imported successfully") {
+      setLoader2(false);
 
-    //       Swal.fire({
-    //         title: "Item Number or Product Name Error in CSV",
-    //         text: res?.data.results?.itemNumErr.map((item) => item),
-    //         icon: "error",
-    //         focusConfirm: false,
-    //       });
-    //     }
-    //   })
-    //   .catch((err) => {
-    //     setLoader2(false);
+      Swal.fire({
+        title: "Products Imported successfully",
+        icon: "success",
+        confirmButtonText: "Ok",
+      }).then((res) => {
+        document?.getElementById("modal-close66").click();
+      });
+    } else if (res?.data.message === "Error in File") {
+      setLoader2(false);
 
-    //     if (err) {
-    //       Swal.fire({
-    //         title: "Error in csv!",
-    //         icon: "error",
-    //         focusConfirm: false,
-    //       });
-    //     }
-    //   });
-    document.getElementById("reUpload").hidden = false;
+      Swal.fire({
+        title: "Item Number or Product Name Error in CSV",
+        text: res?.data.results?.catError.map((item) => item),
+        icon: "error",
+        focusConfirm: false,
+      });
+    } else if (res?.data.message === "Error in file") {
+      setLoader2(false);
+
+      Swal.fire({
+        title: "Item Number or Product Name Error in CSV",
+        text: res?.data.results?.itemNumErr.map((item) => item),
+        icon: "error",
+        focusConfirm: false,
+      });
+      document.getElementById("reUpload").hidden = false;
+    }
   };
 
   const [product, setProduct] = useState({
@@ -663,7 +659,7 @@ function ProductList(props) {
                       <header>
                         <h4>Choose File here</h4>
                       </header>
-                      <p>Files Supported: CSV</p>
+                      <p>Files Supported: EXCEL</p>
                       <p className="text-dark bg-light p-2">
                         {impFile?.name}{" "}
                         <button
@@ -687,7 +683,7 @@ function ProductList(props) {
                         onChange={onFileSelection}
                       />
                       {ux !== "" ? (
-                        <button
+                        <Button
                           className="comman_btn"
                           // loading={loader2}
                           style={{
@@ -700,9 +696,9 @@ function ProductList(props) {
                           onClick={onUpload}
                         >
                           Upload
-                        </button>
+                        </Button>
                       ) : (
-                        <button
+                        <Button
                           className="comman_btn2"
                           htmlFor=""
                           onClick={() => {
@@ -710,7 +706,7 @@ function ProductList(props) {
                           }}
                         >
                           Import
-                        </button>
+                        </Button>
                       )}
                       <div className="text-secondary mt-2">
                         *Large files may take longer time.

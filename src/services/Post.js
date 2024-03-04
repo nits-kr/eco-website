@@ -1630,6 +1630,16 @@ export const PostApi = createApi({
         },
       }),
     }),
+    createInventory: builder.mutation({
+      query: ({ formData, ecomAdmintoken }) => ({
+        url: "admin/category/product/importInventory",
+        method: "PATCH",
+        body: formData,
+        headers: {
+          "x-auth-token-admin": ecomAdmintoken,
+        },
+      }),
+    }),
     addNewVariant: builder.mutation({
       query: ({ productId, alldata, ecomAdmintoken }) => ({
         url: `admin/product/new-varient/${productId}`,
@@ -1799,4 +1809,5 @@ export const {
   useUpdateProfileMutation,
   useGetAdminDataQuery,
   useChangePasswordMutation,
+  useCreateInventoryMutation,
 } = PostApi;
