@@ -307,7 +307,9 @@ function OrderManagement() {
               to={`/order-details/${list?._id}`}
               onClick={() => {
                 // handleItem(data);
-                setItemId2(list?._id);
+                setTimeout(() => {
+                  window?.location?.reload();
+                }, 500);
               }}
             >
               View

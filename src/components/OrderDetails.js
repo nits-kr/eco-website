@@ -48,16 +48,16 @@ function OrderDetails() {
   // };
 
   const position = {
-    lat: +details?.location?.latitude ? +details?.location?.latitude : 50,
-    lng: +details?.location?.longitude ? +details?.location?.longitude : 50,
+    lat: +details?.user_Id?.latitude ? +details?.user_Id?.latitude : 50,
+    lng: +details?.user_Id?.longitude ? +details?.user_Id?.longitude : 50,
   };
   const containerStyle = {
     width: "100%",
     height: "400px",
   };
   const center = {
-    lat: +details?.location?.latitude ? +details?.location?.latitude : 50,
-    lng: +details?.location?.longitude ? +details?.location?.longitude : 50,
+    lat: +details?.user_Id?.latitude ? +details?.user_Id?.latitude : 50,
+    lng: +details?.user_Id?.longitude ? +details?.user_Id?.longitude : 50,
   };
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
@@ -163,8 +163,7 @@ function OrderDetails() {
                                       <div className="user_imgg">
                                         <img
                                           src={
-                                            details?.cartsTotal?.[0]?.[0]
-                                              ?.profile_Pic ||
+                                            details?.user_Id?.profile_Pic ||
                                             "../assets/img/profile.png"
                                           }
                                           alt=""
@@ -175,7 +174,7 @@ function OrderDetails() {
                                       <Link to="user-details.html">
                                         <strong>
                                           {" "}
-                                          {details?.address_Id?.fullName}{" "}
+                                          {details?.user_Id?.userName}{" "}
                                         </strong>
                                       </Link>
                                     </div>
@@ -198,11 +197,14 @@ function OrderDetails() {
                                     <div className="col-md-6">
                                       <span>
                                         <i className="fas fa-list-ol me-2"></i>{" "}
-                                        Status: {details?.orderStatus}
+                                        Status: {details?.status}
                                       </span>
                                       <span>
                                         <i className="fas fa-list-ol me-2"></i>{" "}
-                                        {productId?.productName_en}
+                                        {
+                                          details?.products?.[0]?.varient_Id
+                                            ?.productId?.productName_en
+                                        }
                                       </span>
                                       <span>
                                         <i className="fal fa-calendar-alt me-2"></i>{" "}
@@ -217,7 +219,7 @@ function OrderDetails() {
                                       </span>
                                       <span>
                                         <i className="fal fa-sack-dollar me-2"></i>{" "}
-                                        Price: {details?.cartsTotal}
+                                        Price: {details?.grandTotal}
                                       </span>
                                     </div>
                                   </div>
@@ -248,10 +250,7 @@ function OrderDetails() {
                               className="form-control"
                               name="productName"
                               id="productName"
-                              defaultValue={details?.address_Id?.fullName}
-                              // defaultValue={
-                              //   details?.cartsTotal?.[0]?.[0]?.userName
-                              // }
+                              defaultValue={details?.user_Id?.userName}
                               readOnly
                             />
                           </div>
@@ -262,9 +261,7 @@ function OrderDetails() {
                               className="form-control"
                               name="title"
                               id="title"
-                              defaultValue={
-                                details?.cartsTotal?.[0]?.[0]?.userEmail
-                              }
+                              defaultValue={details?.user_Id?.userEmail}
                               readOnly
                             />
                           </div>
@@ -275,7 +272,7 @@ function OrderDetails() {
                               className="form-control"
                               name="code"
                               id="code"
-                              defaultValue={details?.address_Id?.mobileNumber}
+                              defaultValue={details?.user_Id?.mobileNumber}
                               readOnly
                             />
                           </div>
@@ -292,13 +289,13 @@ function OrderDetails() {
                           action=""
                         >
                           <div className="form-group col-4">
-                            <label htmlFor="">Title </label>
+                            <label htmlFor="">Type </label>
                             <input
                               type="text"
                               className="form-control"
                               name="productName"
                               id="productName"
-                              defaultValue={address?.title}
+                              defaultValue={address?.type}
                               readOnly
                             />
                           </div>
@@ -372,7 +369,7 @@ function OrderDetails() {
                         >
                           <div className="row mx-0  product_location">
                             <div className="col-12">
-                              <iframe
+                              {/* <iframe
                                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d429154.75849258946!2d-117.38917548361756!3d32.8248175128601!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x80d9530fad921e4b%3A0xd3a21fdfd15df79!2sSan%20Diego%2C%20CA%2C%20USA!5e0!3m2!1sen!2sin!4v1669709877583!5m2!1sen!2sin"
                                 width="100%"
                                 height="350"
@@ -381,11 +378,11 @@ function OrderDetails() {
                                 loading="lazy"
                                 title="Google Maps - San Diego, California"
                                 referrerPolicy="no-referrer-when-downgrade"
-                              ></iframe>
-                              {/* {isLoaded ? (
+                              ></iframe> */}
+                              {isLoaded ? (
                                 <GoogleMap
                                   mapContainerStyle={containerStyle}
-                                  zoom={14}
+                                  zoom={5}
                                   center={center}
                                   onLoad={onLoad}
                                   // onUnmount={onUnmount}
@@ -397,7 +394,7 @@ function OrderDetails() {
                                     />
                                   </>
                                 </GoogleMap>
-                              ) : null} */}
+                              ) : null}
                             </div>
                           </div>
                         </form>

@@ -99,7 +99,12 @@ function Sidebar({ Dash }) {
                       <Link
                         className=""
                         to="/users"
-                        onClick={() => toggleSidebar1()}
+                        onClick={() => {
+                          toggleSidebar1();
+                          setTimeout(() => {
+                            window.location.reload();
+                          }, 500);
+                        }}
                       >
                         <i className="fal fa-user"></i>Users Management
                       </Link>
@@ -467,7 +472,13 @@ function Sidebar({ Dash }) {
                         <Link
                           className=""
                           to="/users"
-                          onClick={() => toggleSidebar1()}
+                          // onClick={() => toggleSidebar1()}
+                          onClick={() => {
+                            toggleSidebar1();
+                            setTimeout(() => {
+                              window.location.reload();
+                            }, 500);
+                          }}
                         >
                           <i className="fal fa-user"></i>Users Management
                         </Link>
@@ -933,7 +944,15 @@ function Sidebar({ Dash }) {
                     aria-labelledby="dropdownMenuButton1"
                   >
                     <li>
-                      <Link className="dropdown-item" to="/editProfile">
+                      <Link
+                        className="dropdown-item"
+                        to="/editProfile"
+                        onClick={() =>
+                          setTimeout(() => {
+                            window.location.reload();
+                          }, 500)
+                        }
+                      >
                         Edit Profile
                       </Link>
                     </li>
