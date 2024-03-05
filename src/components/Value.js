@@ -276,16 +276,24 @@ function Value() {
 
   const handleOnSubmit = async (data) => {
     try {
+      // const alldata = {
+      //   valuesName_en: data.valueEn,
+      //   valuesName_ar: data.valueAr,
+      //   category_Id: data.categoryId,
+      //   subCategory_Id: data.categoryId1,
+      //   attribute_Id: data.categoryId3,
+      // };
+      // if (data.categoryId2) {
+      //   alldata.subSubCategory_Id = data.categoryId2;
+      // }
       const alldata = {
-        valuesName_en: data.valueEn,
-        valuesName_ar: data.valueAr,
-        category_Id: data.categoryId,
-        subCategory_Id: data.categoryId1,
-        attribute_Id: data.categoryId3,
+        ...(data.valueEn && { valuesName_en: data.valueEn }),
+        ...(data.valueAr && { valuesName_ar: data.valueAr }),
+        ...(data.categoryId && { category_Id: data.categoryId }),
+        ...(data.categoryId1 && { subCategory_Id: data.categoryId1 }),
+        ...(data.categoryId3 && { attribute_Id: data.categoryId3 }),
+        ...(data.categoryId2 && { subSubCategory_Id: data.categoryId2 }),
       };
-      if (data.categoryId2) {
-        alldata.subSubCategory_Id = data.categoryId2;
-      }
       setLoader(true);
       const res = await createValues({ alldata, ecomAdmintoken });
       setLoader(false);
@@ -412,7 +420,7 @@ function Value() {
                   id="categoryId1"
                   // value={subSubCategory.categoryId1}
                   {...register("categoryId1", {
-                    required: "Please Select Sub Category*",
+                    // required: "Please Select Sub Category*",
                   })}
                   onChange={handleInputChange}
                 >
@@ -462,7 +470,7 @@ function Value() {
                   id="categoryId2"
                   // value={attributes.categoryId2}
                   {...register("categoryId2", {
-                    required: "Please Select Category*",
+                    // required: "Please Select Category*",
                   })}
                   onChange={handleInputChange}
                 >
@@ -498,7 +506,7 @@ function Value() {
                   id="categoryId3"
                   value={values.categoryId3}
                   {...register("categoryId3", {
-                    required: "Please Select Category*",
+                    required: "Please Select Attribute*",
                   })}
                   onChange={handleInputChange}
                 >

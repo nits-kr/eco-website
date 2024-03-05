@@ -363,10 +363,12 @@ function Products(props) {
         ? subSubCategory.categoryId
         : details?.category_Id?._id
     );
-    alldata.append(
-      "Subcategory_Id",
-      subSubCategory.categoryId1 || details?.Subcategory_Id?._id
-    );
+    if (subSubCategory.categoryId1 || details?.Subcategory_Id?._id) {
+      alldata.append(
+        "Subcategory_Id",
+        subSubCategory.categoryId1 || details?.Subcategory_Id?._id
+      );
+    }
 
     if (subSubCategory.categoryId3 || details?.subSubcategory_Id?._id) {
       alldata.append(
@@ -421,16 +423,28 @@ function Products(props) {
           );
           handleProductDetails(res?.data?.results?.saveProduct?._id);
           setShowAddButton(true);
-          Swal.fire({
-            title: "Product Created!",
-            text: "Your new product has been created successfully.",
-            icon: "success",
-            confirmButtonColor: "#3085d6",
-            confirmButtonText: "OK",
-          }).then((result) => {
-            if (result.isConfirmed) {
-            }
-          });
+          if (res?.data?.message === "Product is already stored") {
+            Swal.fire({
+              title: "Product Already Exists!",
+              text: "This product is already stored in the system. Please add another product.",
+              icon: "warning",
+              confirmButtonColor: "#3085d6",
+              confirmButtonText: "OK",
+            });
+          } else if (res?.data?.message === "Success") {
+            Swal.fire({
+              title: "Product Created!",
+              text: "Your new product has been created successfully.",
+              icon: "success",
+              confirmButtonColor: "#3085d6",
+              confirmButtonText: "OK",
+            }).then((result) => {
+              if (result.isConfirmed) {
+              }
+            });
+          } else {
+            toast.error(res.data.message);
+          }
         });
   };
   const productId = localStorage?.getItem("productId");
@@ -626,7 +640,16 @@ function Products(props) {
                           </div>
 
                           {/* Select Sub-Category */}
-                          <div className="form-group col-6">
+                          <div
+                            className="form-group col-6"
+                            style={{
+                              display:
+                                subCategories?.length > 0 ||
+                                details?.subCategory_Id?._id
+                                  ? ""
+                                  : "none",
+                            }}
+                          >
                             <label htmlFor="categoryId1">
                               Select Sub-Category
                             </label>
@@ -641,11 +664,12 @@ function Products(props) {
                               multiple=""
                               name="categoryId1"
                               id="categoryId1"
-                              {...register("categoryId1", {
-                                required: id
-                                  ? false
-                                  : "Sub Category is Required*",
-                              })}
+                              {...register("categoryId1")}
+                              // {...register("categoryId1", {
+                              //   required: id
+                              //     ? false
+                              //     : "Sub Category is Required*",
+                              // })}
                               onChange={handleInputChange1}
                             >
                               <option value="">

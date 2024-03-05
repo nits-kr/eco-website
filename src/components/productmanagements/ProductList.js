@@ -342,8 +342,8 @@ function ProductList(props) {
 
   const handleCheckboxChange = async (productId) => {
     const res = await addReccomded({ productId, ecomAdmintoken });
-    console.log("res", res?.data?.results?.Recommendedproduct?.Recommended);
-    if (res?.data?.results?.Recommendedproduct?.Recommended === true) {
+    console.log("res", res);
+    if (res?.data?.message === "Added to recommendation") {
       toast.success("Item added to recommended list!");
     } else {
       toast.error("Item removed from recommended list!");

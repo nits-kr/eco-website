@@ -260,15 +260,22 @@ function Attribute() {
 
   const handleOnSave = async (data) => {
     try {
+      // const alldata = {
+      //   attributeName_en: data?.attributeEn,
+      //   attributeName_ar: data?.attributeAr,
+      //   category_Id: data?.categoryId,
+      //   subCategory_Id: data?.categoryId1,
+      // };
+      // if (data.categoryId2) {
+      //   alldata.subSubCategory_Id = data.categoryId2;
+      // }
       const alldata = {
         attributeName_en: data?.attributeEn,
         attributeName_ar: data?.attributeAr,
         category_Id: data?.categoryId,
-        subCategory_Id: data?.categoryId1,
+        ...(data.categoryId2 && { subSubCategory_Id: data.categoryId2 }),
+        ...(data?.categoryId1 && { subCategory_Id: data?.categoryId1 }),
       };
-      if (data.categoryId2) {
-        alldata.subSubCategory_Id = data.categoryId2;
-      }
 
       setLoader(true);
 
@@ -420,7 +427,7 @@ function Attribute() {
                   id="categoryId1"
                   // value={subSubCategory.categoryId1}
                   {...register("categoryId1", {
-                    required: "Please Select Category*",
+                    // required: "Please Select Category*",
                   })}
                   onChange={handleInputChange}
                 >
