@@ -18,6 +18,7 @@ import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { FidgetSpinner } from "react-loader-spinner";
 import { useForm } from "react-hook-form";
+import { Spinner } from "react-bootstrap";
 
 function OrderManagement() {
   const [loader, setLoader] = useState(false);
@@ -43,6 +44,57 @@ function OrderManagement() {
   const [itemId2, setItemId2] = useState("");
   const [agents, setAgents] = useState([]);
   const [selectedBrandIds, setSelectedBrandIds] = useState([]);
+
+  const [orderStatus, setOrderStatus] = useState("");
+  const [orderStatusAr, setOrderStatusAr] = useState("");
+
+  const handleOrderStatusChange = (event) => {
+    const selectedValue = event.target.value;
+    setOrderStatus(selectedValue);
+
+    // Select corresponding option in orderStatusAr dropdown
+    switch (selectedValue) {
+      case "Shipped":
+        setOrderStatusAr("معباه");
+        break;
+      case "Delivered":
+        setOrderStatusAr("تم التوصيل");
+        break;
+      case "Cancelled":
+        setOrderStatusAr("ملغاة");
+        break;
+      case "Processing":
+        setOrderStatusAr("تجهيز");
+        break;
+      default:
+        setOrderStatusAr("");
+        break;
+    }
+  };
+
+  const handleOrderStatusArChange = (event) => {
+    const selectedValue = event.target.value;
+    setOrderStatusAr(selectedValue);
+
+    // Select corresponding option in orderStatus dropdown
+    switch (selectedValue) {
+      case "معباه":
+        setOrderStatus("Shipped");
+        break;
+      case "تم التوصيل":
+        setOrderStatus("Delivered");
+        break;
+      case "ملغاة":
+        setOrderStatus("Cancelled");
+        break;
+      case "تجهيز":
+        setOrderStatus("Processing");
+        break;
+      default:
+        setOrderStatus("");
+        break;
+    }
+  };
 
   const {
     register,
@@ -385,8 +437,8 @@ function OrderManagement() {
     // e.preventDefault();
     const editOffer = {
       id: itemId,
-      orderStatus: data?.orderStatus,
-      orderStatus_ar: data?.orderStatusAr,
+      orderStatus: data?.orderStatus || orderStatus,
+      orderStatus_ar: data?.orderStatusAr || orderStatusAr,
       ecomAdmintoken: ecomAdmintoken,
     };
     try {
@@ -559,25 +611,27 @@ function OrderManagement() {
                         className="form-select"
                         id="orderStatus"
                         aria-label="  select example"
-                        defaultValue=" "
+                        defaultValue=""
                         style={{
                           padding: "5px",
                         }}
-                        // onChange={(e) => setOrderStatus(e.target.value)}
-                        {...register("orderStatus", { required: true })}
+                        {...register("orderStatus", {
+                          required: orderStatus ? false : true,
+                        })}
+                        onChange={handleOrderStatusChange}
+                        value={orderStatus}
                       >
                         <option value="">Order Status</option>
-                        {/* <option value="Approved">Approved</option> */}
-                        {/* <option value="Packed">Packed</option> */}
                         <option value="Shipped">Shipped</option>
                         <option value="Delivered">Delivered</option>
                         <option value="Cancelled">Cancelled</option>
-                        {/* <option value="Pending">Pending</option> */}
                         <option value="Processing">Processing</option>
                       </select>
                     </div>
                     {errors.orderStatus && (
-                      <span className="text-danger">
+                      <span
+                        className={`text-danger ${orderStatus ? "d-none" : ""}`}
+                      >
                         This field is required
                       </span>
                     )}
@@ -590,59 +644,34 @@ function OrderManagement() {
                         className="form-select"
                         id="floatingSelect12"
                         aria-label="  select example"
-                        defaultValue=" "
+                        defaultValue=""
                         style={{
                           padding: "5px",
                         }}
-                        // onChange={(e) => setOrderStatusAr(e.target.value)}
-                        {...register("orderStatusAr", { required: true })}
+                        {...register("orderStatusAr", {
+                          required: orderStatusAr ? false : true,
+                        })}
+                        onChange={handleOrderStatusArChange}
+                        value={orderStatusAr}
                       >
                         <option value="">حالة الطلب</option>
-                        <option value="موافقة">موافقة</option>
                         <option value="معباه">معباه</option>
-                        <option value="شحنها">شحنها</option>
                         <option value="تم التوصيل">تم التوصيل</option>
-                        {/* <option value="ألغيت">ألغيت</option>
-                        <option value="قيد الانتظار">قيد الانتظار</option>
-                        <option value="في تَقَدم">في تَقَدم</option> */}
+                        <option value="ملغاة">ملغاة</option>
+                        <option value="تجهيز">تجهيز</option>
                       </select>
                     </div>
                     {errors.orderStatusAr && (
-                      <span className="text-danger">
+                      <span
+                        className={`text-danger ${
+                          orderStatusAr ? "d-none" : ""
+                        }`}
+                      >
                         This field is required
                       </span>
                     )}
                   </div>
                 </div>
-                {/* <div>
-                  <label htmlFor="orderStatus">Order Status</label>
-                  <select
-                    id="orderStatus"
-                    {...register("orderStatus", { required: true })}
-                  >
-                    <option value="">Select an option</option>
-                    <option value="Pending">Pending</option>
-                    <option value="Processing">Processing</option>
-                    <option value="Shipped">Shipped</option>
-                    <option value="Delivered">Delivered</option>
-                  </select>
-                  {errors.orderStatus && <span>This field is required</span>}
-                </div>
-
-                <div>
-                  <label htmlFor="orderStatusAr">Order Status (Arabic)</label>
-                  <select
-                    id="orderStatusAr"
-                    {...register("orderStatusAr", { required: true })}
-                  >
-                    <option value="">Select an option</option>
-                    <option value="قيد الانتظار">قيد الانتظار</option>
-                    <option value="معالجة">معالجة</option>
-                    <option value="شحن">شحن</option>
-                    <option value="تم التوصيل">تم التوصيل</option>
-                  </select>
-                  {errors.orderStatusAr && <span>This field is required</span>}
-                </div> */}
 
                 <div className="form-group mb-0 col-12 d-flex justify-content-center">
                   <button
@@ -654,7 +683,11 @@ function OrderManagement() {
                       padding: loader ? "0px" : "",
                     }}
                   >
-                    {loader ? <FidgetSpinner height={50} /> : "Update"}
+                    {loader ? (
+                      <Spinner style={{ height: "20px", width: "20px" }} />
+                    ) : (
+                      "Update"
+                    )}
                   </button>
                 </div>
               </form>
