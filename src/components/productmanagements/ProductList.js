@@ -19,10 +19,11 @@ import {
   useGetProductListSearchMutation,
 } from "../../services/Post";
 import { useDeleteProductListMutation } from "../../services/Post";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useGetProductListQuery } from "../../services/Post";
 import { MDBDataTable } from "mdbreact";
 import { Button } from "rsuite";
+import { setProductId } from "../../app/localSlice";
 
 function ProductList(props) {
   const ecomAdmintoken = useSelector((data) => data?.local?.token);
@@ -63,8 +64,9 @@ function ProductList(props) {
   const handleSelectAll = () => {
     setSelectAll(!selectAll);
   };
-  axios.defaults.headers.common["x-auth-token-user"] =
-    localStorage.getItem("token");
+
+  const dispatch = useDispatch();
+
   const sliderSettings = {
     dots: true,
     // infinite: true,
@@ -290,6 +292,7 @@ function ProductList(props) {
               className="comman_btn table_viewbtn"
               to="/product-management"
               state={{ id: list?._id }}
+              onClick={() => dispatch(setProductId(list?._id))}
             >
               View
             </Link>

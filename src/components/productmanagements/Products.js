@@ -5,7 +5,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import Sidebar from "../Sidebar";
 // import Spinner from "./Spinner";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   useAddNewVariantMutation,
   useAttributesListMutation,
@@ -24,6 +24,7 @@ import {
 import classNames from "classnames";
 import { useForm } from "react-hook-form";
 import { Spinner } from "react-bootstrap";
+import { setProductId } from "../../app/localSlice";
 
 function Products(props) {
   const [loader, setLoader] = useState(false);
@@ -100,6 +101,8 @@ function Products(props) {
   console.log("state id", id);
 
   console.log("varientId", varientId);
+
+  const dispatch = useDispatch();
 
   const {
     register,
@@ -421,6 +424,8 @@ function Products(props) {
             "productId",
             res?.data?.results?.saveProduct?._id
           );
+          dispatch(setProductId(res?.data?.results?.saveProduct?._id));
+
           handleProductDetails(res?.data?.results?.saveProduct?._id);
           setShowAddButton(true);
           if (res?.data?.message === "Product is already stored") {
@@ -448,6 +453,8 @@ function Products(props) {
         });
   };
   const productId = localStorage?.getItem("productId");
+
+  console.log("productId", productId);
 
   console.log("subSubCategory.attributeId", subSubCategory.attributeId);
 
