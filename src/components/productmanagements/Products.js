@@ -1476,8 +1476,16 @@ function Products(props) {
                               }`}
                               name="dollar"
                               id="dollar"
+                              // {...register2("dollar", {
+                              //   required: "Dollar is Required*",
+                              // })}
                               {...register2("dollar", {
                                 required: "Dollar is Required*",
+                                pattern: {
+                                  value: /^[^,]*$/,
+                                  message:
+                                    "Commas are not allowed in the dollar field",
+                                },
                               })}
                             />
                             {errors2.dollar && (
