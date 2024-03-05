@@ -89,7 +89,7 @@ function SubSubCategory() {
 
       {
         label: "SUB SUB CATEGORY (EN)",
-        field: "name_ar",
+        field: "name_en",
         sort: "asc",
         width: 100,
       },
@@ -156,7 +156,7 @@ function SubSubCategory() {
         returnData.name_cate = list?.category_Id?.categoryName_en;
         returnData.name_subcate = list?.subCategory_Id?.subCategoryName_en;
         returnData.name_en = list?.subSubCategoryName_en;
-        returnData.name_ar = list?.subSubCategoryName_en;
+        returnData.name_ar = list?.subSubCategoryName_ar;
         returnData.pic = (
           <div className="">
             <img className="table_img" src={list?.subCategoryPic} alt="" />
@@ -367,7 +367,7 @@ function SubSubCategory() {
                   id="categoryId1"
                   // value={subSubCategory.categoryId1}
                   {...register("categoryId1", {
-                    required: "Please Select Category*",
+                    // required: "Please Select Category*",
                   })}
                   onChange={handleInputChange}
                 >
@@ -434,12 +434,12 @@ function SubSubCategory() {
                   name="subSubCategoryAr"
                   {...register("subSubCategoryAr", {
                     required: "Sub Sub Category Name(Ar) is required!",
-                    pattern: {
-                      value:
-                        /^[\u0600-\u06FF\s.'",\-()&$#!@%*?<>{}[\]]{1,}[\.]{0,1}[\u0600-\u06FF\s.'",\-()&$#!@%*?<>{}[\]]{0,}$/,
-                      message:
-                        "Special characters allowed except underscore (_)",
-                    },
+                    // pattern: {
+                    //   value:
+                    //     /^[\u0600-\u06FF\s.'",\-()&$#!@%*?<>{}[\]]{1,}[\.]{0,1}[\u0600-\u06FF\s.'",\-()&$#!@%*?<>{}[\]]{0,}$/,
+                    //   message:
+                    //     "Special characters allowed except underscore (_)",
+                    // },
                     minLength: {
                       value: 2,
                       message: "Min length should be 2 characters!",

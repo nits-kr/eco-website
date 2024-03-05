@@ -36,7 +36,7 @@ export default function CreatCoupans() {
         coupanCode: data.coupanCode,
         startdate: data.startDate,
         enddate: data.endDate,
-        quantity: data.quantity,
+        Quantity: data.quantity,
         DiscountType: discountType,
         status: data.c1,
         ecomAdmintoken: ecomAdmintoken,
