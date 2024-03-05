@@ -801,12 +801,12 @@ function Products(props) {
                                 //   message:
                                 //     "Product Name can only contain letters, numbers, spaces, and basic punctuation marks",
                                 // },
-                                pattern: {
-                                  value:
-                                    /^[\u0600-\u06FF\s.'",\-()&$#!@%*?<>{}[\]]{1,}[\.]{0,1}[\u0600-\u06FF\s.'",\-()&$#!@%*?<>{}[\]]{0,}$/,
-                                  message:
-                                    "Special characters allowed except underscore (_)",
-                                },
+                                // pattern: {
+                                //   value:
+                                //     /^[\u0600-\u06FF\s.'",\-()&$#!@%*?<>{}[\]]{1,}[\.]{0,1}[\u0600-\u06FF\s.'",\-()&$#!@%*?<>{}[\]]{0,}$/,
+                                //   message:
+                                //     "Special characters allowed except underscore (_)",
+                                // },
                                 minLength: {
                                   value: 2,
                                   message:
