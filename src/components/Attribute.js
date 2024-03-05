@@ -449,9 +449,10 @@ function Attribute() {
                   name="categoryId2"
                   id="categoryId2"
                   // value={attributes.categoryId2}
-                  {...register("categoryId2", {
-                    required: "Please Select Category*",
-                  })}
+                  {...register("categoryId2")}
+                  // {...register("categoryId2", {
+                  //   required: "Please Select Category*",
+                  // })}
                   onChange={handleInputChange}
                 >
                   <option value="">Select Sub Sub Category</option>

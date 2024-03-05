@@ -20,8 +20,8 @@ function EditProfile() {
   const [editProfile] = useUpdateProfileMutation();
   const [formData, setFormData] = useState([]);
   const [otp, setOtp] = useState(["", "", "", ""]);
-  const [userName, setUserName] = useState([]);
-  const [mobile, setMobile] = useState([]);
+  const [userName, setUserName] = useState("");
+  const [mobile, setMobile] = useState("");
   const [userEmail, setUserEmail] = useState([]);
   const refs = [useRef(), useRef(), useRef(), useRef()];
   const [selectedImage1, setSelectedImage1] = useState(null);
