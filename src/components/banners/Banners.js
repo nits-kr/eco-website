@@ -206,7 +206,7 @@ function Banners(props) {
     event.preventDefault();
     try {
       const alldata = new FormData();
-      if (subCategory.subCategoryId) {
+      if (subCategory.categoryId2) {
         alldata.append("subSubCategory_Id", subCategory.categoryId2);
       }
       if (subCategory.categoryId1) {
