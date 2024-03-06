@@ -13,7 +13,10 @@ import {
   faArrowRight,
   faCreditCard,
 } from "@fortawesome/free-solid-svg-icons";
-import { useUserDetailsAllMutation } from "../services/Post";
+import {
+  useDeleteOrderListMutation,
+  useUserDetailsAllMutation,
+} from "../services/Post";
 import { useDeleteOrderMutation } from "../services/Post";
 import { useBlockUserMutation } from "../services/Post";
 import { useSelector } from "react-redux";
@@ -24,7 +27,7 @@ function UserDetailsAll() {
   const { id: routeId } = useParams();
   const [loading, setLoading] = useState(false);
   const [userDetails, isLoading] = useUserDetailsAllMutation();
-  const [deleteOrder] = useDeleteOrderMutation();
+  const [deleteOrder] = useDeleteOrderListMutation();
   const [blockUser, res] = useBlockUserMutation();
   const [address, setAddress] = useState([]);
   const [order, setOrder] = useState([]);
@@ -51,7 +54,8 @@ function UserDetailsAll() {
     console.log("response details", response);
   };
 
-  const deleteOrderList = async (orderId) => {
+  const deleteOrderList = async (e, orderId) => {
+    e.preventDefault();
     try {
       const result = await Swal.fire({
         title: "Confirm Deletion",
@@ -63,8 +67,8 @@ function UserDetailsAll() {
         confirmButtonText: "OK",
       });
       if (result.isConfirmed) {
-        await deleteOrder(orderId);
-        window.location.reload();
+        await deleteOrder({ id: orderId, ecomAdmintoken });
+        userDetail();
       }
     } catch (error) {
       console.log("Error deleting order:", error);
@@ -86,6 +90,7 @@ function UserDetailsAll() {
       const editStatus = {
         id: routeId,
         status: newStatus,
+        ecomAdmintoken,
       };
       try {
         await blockUser(editStatus);
@@ -96,7 +101,7 @@ function UserDetailsAll() {
           confirmButtonText: "OK",
         }).then((result) => {
           if (result.isConfirmed) {
-            window.location.reload();
+            userDetail();
           }
         });
       } catch (error) {}
@@ -289,21 +294,25 @@ function UserDetailsAll() {
                                         {details?.userEmail}
                                       </td>
                                     </tr>
-                                    <tr>
+                                    {/* <tr>
                                       <td style={{ textAlign: "left" }}>
                                         Wallet Amount
                                       </td>
                                       <td style={{ textAlign: "left" }}>
                                         $ 50
                                       </td>
-                                    </tr>
+                                    </tr> */}
                                   </tbody>
                                 </table>
                               </div>
                             </div>
                           </div>
                         </div>
-                        <div className="col-12 design_outter_comman mb-4 shadow">
+                        <div
+                          className={`col-12 design_outter_comman mb-4 shadow ${
+                            details?.address_Id ? "" : "d-none"
+                          }`}
+                        >
                           <div className="row comman_header justify-content-between">
                             <div className="col">
                               <h2>
@@ -366,12 +375,14 @@ function UserDetailsAll() {
                         {address?.map((item, index) => {
                           return (
                             <div
-                              className="col-12 design_outter_comman mb-4 shadow"
+                              className={`col-12 design_outter_comman mb-4 shadow ${
+                                address?.length > 0 ? "" : "d-none"
+                              }`}
                               key={index}
                             >
                               <div className="row comman_header justify-content-between">
                                 <div className="col">
-                                  <h2>Address ({item?.title})</h2>
+                                  <h2>Address ({item?.type})</h2>
                                 </div>
                               </div>
                               <div className="row">
@@ -384,7 +395,7 @@ function UserDetailsAll() {
                                             Title
                                           </td>
                                           <td style={{ textAlign: "left" }}>
-                                            {item?.title}
+                                            {item?.type}
                                           </td>
                                         </tr>
                                         <tr>
@@ -525,7 +536,7 @@ function UserDetailsAll() {
                                           <tr key={ind}>
                                             <td> {item?._id} </td>
                                             <td>
-                                              {item?.cartsTotal?.toFixed(2)}
+                                              {item?.grandTotal?.toFixed(2)}
                                               {/* {
                                                 item?.cartsTotal[0][0]
                                                   ?.totalAfterDiscount[0]
@@ -535,44 +546,40 @@ function UserDetailsAll() {
                                               {" "}
                                               <div
                                                 className={
-                                                  item?.orderStatus ===
-                                                  "Cancelled"
+                                                  item?.status === "Cancelled"
                                                     ? "text-danger"
-                                                    : item?.orderStatus ===
-                                                      "Pending"
+                                                    : item?.status === "Pending"
                                                     ? "text-warning"
-                                                    : item?.orderStatus ===
-                                                      "Packed"
+                                                    : item?.status === "Packed"
                                                     ? "text-info"
-                                                    : item?.orderStatus ===
+                                                    : item?.status ===
                                                       "Approved"
                                                     ? "text-success"
-                                                    : item?.orderStatus ===
+                                                    : item?.status ===
                                                       "Inprogress"
                                                     ? "text-primary"
-                                                    : item?.orderStatus ===
+                                                    : item?.status ===
                                                       "Delivered"
                                                     ? "text-secondary"
                                                     : "text-default"
                                                 }
                                                 style={{
                                                   background:
-                                                    item?.orderStatus ===
-                                                    "Cancelled"
+                                                    item?.status === "Cancelled"
                                                       ? "#ffe5e5"
-                                                      : item?.orderStatus ===
+                                                      : item?.status ===
                                                         "Pending"
                                                       ? "#fff6e5"
-                                                      : item?.orderStatus ===
+                                                      : item?.status ===
                                                         "Packed"
                                                       ? "#e5f0ff"
-                                                      : item?.orderStatus ===
+                                                      : item?.status ===
                                                         "Approved"
                                                       ? "#e5ffe5"
-                                                      : item?.orderStatus ===
+                                                      : item?.status ===
                                                         "Inprogress"
                                                       ? "#e5e5ff"
-                                                      : item?.orderStatus ===
+                                                      : item?.status ===
                                                         "Delivered"
                                                       ? "#f3f3f3"
                                                       : "#f9f9f9",
@@ -580,7 +587,7 @@ function UserDetailsAll() {
                                                   padding: "2px 5px",
                                                 }}
                                               >
-                                                {item?.orderStatus}
+                                                {item?.status}
                                               </div>{" "}
                                             </td>
                                             <td>
@@ -590,8 +597,8 @@ function UserDetailsAll() {
                                             <td>
                                               <button
                                                 className="comman_btn2 table_viewbtn"
-                                                onClick={() =>
-                                                  deleteOrderList(item._id)
+                                                onClick={(e) =>
+                                                  deleteOrderList(e, item._id)
                                                 }
                                               >
                                                 <FontAwesomeIcon

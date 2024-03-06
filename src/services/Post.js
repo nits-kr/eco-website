@@ -1215,13 +1215,15 @@ export const PostApi = createApi({
     blockUser: builder.mutation({
       query: (body) => {
         console.log("update category", body);
-        const { id, ...data } = body;
+        const { id, ecomAdmintoken, ...data } = body;
         console.log("update offer body data", data);
         const dataValue = data ? "false" : "true";
         return {
-          url: `/admin/user/block-user/${id}/${dataValue}`,
+          url: `admin/user/block-user/${id}/${dataValue}`,
           method: "post",
-          // body: data,
+          headers: {
+            "x-auth-token-admin": ecomAdmintoken,
+          },
         };
       },
     }),
