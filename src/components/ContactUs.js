@@ -89,7 +89,9 @@ function ContactUs() {
                   <div className="col-12 design_outter_comman mb-4 shadow">
                     <div className="row comman_header justify-content-between">
                       <div className="col">
-                        <h2>Add New Contact</h2>
+                        <h2 className="capitalize">
+                          add your contact information
+                        </h2>
                       </div>
                     </div>
                     <form
@@ -145,7 +147,7 @@ function ContactUs() {
                           minLength="3"
                         />
                       </div>
-                      <div className="form-group col-4">
+                      {/* <div className="form-group col-4">
                         <label htmlFor="">
                           Subject
                           <span className="required-field text-danger">*</span>
@@ -160,7 +162,7 @@ function ContactUs() {
                           required
                           minLength="3"
                         />
-                      </div>
+                      </div> */}
                       <div className="form-group col-4">
                         <label htmlFor="">
                           Facebook Link
@@ -177,7 +179,7 @@ function ContactUs() {
                           minLength="3"
                         />
                       </div>
-                      <div className="form-group col-4">
+                      <div className="form-group col-6">
                         <label htmlFor="">
                           Telegram Link
                           <span className="required-field text-danger">*</span>
@@ -193,7 +195,7 @@ function ContactUs() {
                           minLength="3"
                         />
                       </div>
-                      <div className="form-group col-4">
+                      <div className="form-group col-6">
                         <label htmlFor="">
                           Instagram Link
                           <span className="required-field text-danger">*</span>

@@ -65,8 +65,8 @@ function Staff() {
     { value: "coupan", label: "Coupan Management" },
     { value: "information", label: "Information Management" },
     { value: "configure", label: "Configurations" },
-    { value: "contactus", label: "Contact-Us" },
-    { value: "help", label: "Help&Support Management" },
+    { value: "contactus", label: "Useful Information" },
+    // { value: "help", label: "Help&Support Management" },
   ];
   const [selectOptions, setSelectOptions] = useState([]);
   const [expandedProductIndex, setExpandedProductIndex] = useState(null);

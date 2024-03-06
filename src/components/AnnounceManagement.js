@@ -76,7 +76,9 @@ function AnnounceManagement() {
       alldata.append("text_ar", formData.nameArText);
       // users:["65d73df67c6a31ca3e728c85","65d86782da9210fd5d0bcbdf"]
       const response = await createAnnounce({ alldata, ecomAdmintoken });
-      if (response) {
+
+      console.log("response", response);
+      if (response?.data?.message === "Success") {
         Swal.fire({
           icon: "success",
           title: "Success",
@@ -84,6 +86,15 @@ function AnnounceManagement() {
           confirmButtonText: "OK",
         });
         handleAnnounceList();
+      } else if (
+        response?.data?.message === "Please provide announcement type!"
+      ) {
+        Swal.fire({
+          icon: "error",
+          title: "Type Error",
+          text: "Please provide announcement type!",
+          confirmButtonText: "OK",
+        });
       }
     } catch (error) {
       console.error(error);

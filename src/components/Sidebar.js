@@ -395,7 +395,7 @@ function Sidebar({ Dash }) {
                         to="/contact-us"
                         onClick={() => toggleSidebar1()}
                       >
-                        <i className="fas fa-cogs"></i>Contact us
+                        <i className="fas fa-cogs"></i>Useful Information
                       </Link>
                     </li>
                     <li>
@@ -436,13 +436,13 @@ function Sidebar({ Dash }) {
                         Dash === "help" ? "nav-link active" : "nav-link"
                       }
                     >
-                      <Link
+                      {/* <Link
                         className=""
                         to="/help"
                         onClick={() => toggleSidebar1()}
                       >
                         <i className="fal fa-hands-heart"></i>Help
-                      </Link>
+                      </Link> */}
                     </li>
                   </>
                 ) : (
@@ -810,7 +810,7 @@ function Sidebar({ Dash }) {
                           to="/contact-us"
                           onClick={() => toggleSidebar1()}
                         >
-                          <i className="fas fa-cogs"></i>Contact us
+                          <i className="fas fa-cogs"></i>Useful Information
                         </Link>
                       </li>
                     )}
@@ -849,7 +849,7 @@ function Sidebar({ Dash }) {
                         </div>
                       </li>
                     )}
-                    {isAccessAllowed("help") && (
+                    {/* {isAccessAllowed("help") && (
                       <li
                         className={
                           Dash === "help" ? "nav-link active" : "nav-link"
@@ -863,7 +863,7 @@ function Sidebar({ Dash }) {
                           <i className="fal fa-hands-heart"></i>Help
                         </Link>
                       </li>
-                    )}
+                    )} */}
                   </>
                 )}
               </ul>
