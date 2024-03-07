@@ -445,7 +445,7 @@ function CategoryManagement(props) {
                                   onSubmit={handleSubmit(handleOnSave)}
                                   action=""
                                 >
-                                  <div className="form-group mb-0 col">
+                                  <div className="form-group col">
                                     <label htmlFor="name-en">
                                       Enter Category Name (En)
                                       <span className="required-field text-danger">
@@ -485,7 +485,7 @@ function CategoryManagement(props) {
                                     )}
                                   </div>
 
-                                  <div className="form-group mb-0 col">
+                                  <div className="form-group col">
                                     <label htmlFor="Category_nameAr">
                                       Enter Category Name (Ar)
                                       <span className="required-field text-danger">
@@ -526,7 +526,7 @@ function CategoryManagement(props) {
                                     )}
                                   </div>
 
-                                  <div className="form-group mb-0 col choose_file position-relative">
+                                  <div className="form-group col choose_file position-relative">
                                     <span>Upload Image</span>
                                     <label
                                       htmlFor="uploadImage"
@@ -563,7 +563,7 @@ function CategoryManagement(props) {
                                     )}
                                   </div>
 
-                                  <div className="form-group mb-0 col-auto">
+                                  <div className="form-group col-auto">
                                     <button
                                       className="comman_btn2"
                                       type="submit"

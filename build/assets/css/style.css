@@ -397,6 +397,19 @@ h6 {
 
 .form-design .form-group {
   margin-bottom: 22px;
+  /* margin-bottom: 22px; */
+  position: relative;
+}
+.errorText {
+  position: absolute;
+  bottom: -25px;
+  left: 6px;
+}
+
+.invalid-feedback {
+  position: absolute;
+  bottom: -25px;
+  left: 11px;
 }
 
 .form-design .for_got {
