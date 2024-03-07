@@ -7,19 +7,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import {
   useCreateBannersMutation,
-  useCreateTopBannerMutation,
   useDeleteBannerAllListMutation,
-  useDeleteCategoryBottomBannerMutation,
-  useDeleteCategoryMiddleBannerMutation,
-  useDeleteCategoryScrollBannerMutation,
-  useDeleteCategorySideBannerMutation,
-  useDeleteCategoryTopBannerMutation,
   useGetBannerListAllQuery,
   useGetBannerListQuery,
-  useGetCatogaryBottomBannerListQuery,
-  useGetCatogaryMiddleBannerListQuery,
-  useGetCatogaryScrollBannerListQuery,
-  useGetCatogarySideBannerListQuery,
   useGetSelectCategoryListQuery,
   useSubCategoryListMutation,
   useSubSubCategoryListMutation,
@@ -51,32 +41,11 @@ function Banners(props) {
       ecomAdmintoken,
       search: searchQuery,
     });
-  const { data: sideBanner } = useGetCatogarySideBannerListQuery({
-    ecomAdmintoken,
-  });
-  const { data: bottomBanner } = useGetCatogaryBottomBannerListQuery({
-    ecomAdmintoken,
-  });
-  const { data: middleBanner } = useGetCatogaryMiddleBannerListQuery({
-    ecomAdmintoken,
-  });
-  const { data: scrollBanner } = useGetCatogaryScrollBannerListQuery({
-    ecomAdmintoken,
-  });
 
-  const [addTop] = useCreateTopBannerMutation();
   const [addAllTypesBanner] = useCreateBannersMutation();
 
   const [deleteTopBanner] = useDeleteBannerAllListMutation();
-  const [deleteMiddleBanner] = useDeleteCategoryMiddleBannerMutation();
-  const [deleteBottomBanner] = useDeleteCategoryBottomBannerMutation();
-  const [deleteSideBanner] = useDeleteCategorySideBannerMutation();
-  const [deleteScrollBanner] = useDeleteCategoryScrollBannerMutation();
-  const [bannerList, setBannerList] = useState([]);
-  const [sideBannerList, setSideBannerList] = useState([]);
-  const [bottomBannerList, setBottomBannerList] = useState([]);
-  const [middleBannerList, setMiddleBannerList] = useState([]);
-  const [scrollBannerList, setScrollBannerList] = useState([]);
+
   const [categories, setCategories] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
   const [subSubCategories, setSubSubCategories] = useState([]);
@@ -84,10 +53,7 @@ function Banners(props) {
   const [banner, setBanner] = useState(null);
   const [addBanner, setAddBanner] = useState(true);
   const [bannerToShow, setBannerToShow] = useState([]);
-  const [sideBannerToShow, setSideBannerToShow] = useState([]);
-  const [bottomBannerToShow, setBottomBannerToShow] = useState([]);
-  const [middleBannerToShow, setMiddleBannerToShow] = useState([]);
-  const [scrollBannerToShow, setScrollBannerToShow] = useState([]);
+
   const [imageUrl, setImageUrl] = useState("");
   const [selectedOptions, setSelectedOptions] = useState([]);
   const [selectedValue, setSelectedValue] = useState("");
@@ -109,33 +75,6 @@ function Banners(props) {
     bannerPic: null,
   });
 
-  useEffect(() => {
-    if (sideBanner) {
-      console.log(sideBanner);
-      props.setProgress(10);
-      setLoading(true);
-      setTimeout(() => {
-        setSideBannerList(sideBanner?.results?.bannerList?.slice()?.reverse());
-        setLoading(false);
-        props.setProgress(100);
-      }, 1000);
-    }
-  }, [sideBanner]);
-  useEffect(() => {
-    if (bottomBanner) {
-      console.log(bottomBanner);
-      props.setProgress(10);
-      setLoading(true);
-      setTimeout(() => {
-        setBottomBannerList(
-          bottomBanner?.results?.bannerList?.slice()?.reverse()
-        );
-        setLoading(false);
-        props.setProgress(100);
-      }, 1000);
-    }
-  }, [bottomBanner]);
-
   const [bannerListData, setBannerListData] = useState([]);
 
   useEffect(() => {
@@ -150,46 +89,7 @@ function Banners(props) {
       }, 1000);
     }
   }, [bannerListAll]);
-  useEffect(() => {
-    if (bannerAll) {
-      console.log(bannerAll);
-      props.setProgress(10);
-      setLoading(true);
-      setTimeout(() => {
-        setBannerList(bannerAll?.results?.bannerList?.slice()?.reverse());
-        setLoading(false);
-        props.setProgress(100);
-      }, 1000);
-    }
-  }, [bannerAll]);
-  useEffect(() => {
-    if (middleBanner) {
-      console.log(middleBanner);
-      props.setProgress(10);
-      setLoading(true);
-      setTimeout(() => {
-        setMiddleBannerList(
-          middleBanner?.results?.bannerList?.slice()?.reverse()
-        );
-        setLoading(false);
-        props.setProgress(100);
-      }, 1000);
-    }
-  }, [middleBanner]);
-  useEffect(() => {
-    if (scrollBanner) {
-      console.log(scrollBanner);
-      props.setProgress(10);
-      setLoading(true);
-      setTimeout(() => {
-        setScrollBannerList(
-          scrollBanner?.results?.bannerList?.slice()?.reverse()
-        );
-        setLoading(false);
-        props.setProgress(100);
-      }, 1000);
-    }
-  }, [scrollBanner]);
+
   const handleImageUpload = (event) => {
     const file = event.target.files[0];
     setSelectedImage(URL.createObjectURL(file));
@@ -206,29 +106,6 @@ function Banners(props) {
     event.preventDefault();
     try {
       const alldata = new FormData();
-      if (subCategory.categoryId2) {
-        alldata.append("subSubCategory_Id", subCategory.categoryId2);
-      }
-      if (subCategory.categoryId1) {
-        alldata.append("subCategory_Id", subCategory.categoryId1);
-      }
-      if (subCategory.product_Id) {
-        alldata.append("product_Id", subCategory.product_Id);
-      }
-      if (!selectedValueUrl) {
-        Swal.fire({
-          icon: "error",
-          title: "No URL type Selected",
-          text: "Please select an URL.",
-        });
-        return;
-      }
-      alldata.append("URLType", selectedValueUrl);
-      if (subCategory.categoryId) {
-        alldata.append("category_Id", subCategory.categoryId);
-      }
-
-      alldata.append("area", selectedValue);
 
       if (!formData.bannerPic) {
         Swal.fire({
@@ -238,6 +115,65 @@ function Banners(props) {
         });
         return;
       }
+
+      if (!selectedValueUrl) {
+        Swal.fire({
+          icon: "error",
+          title: "No URL type Selected",
+          text: "Please select an URL.",
+        });
+        return;
+      }
+      if (selectedValueUrl === "Category" && !subCategory.categoryId) {
+        Swal.fire({
+          icon: "error",
+          title: "Category ID Required",
+          text: "Please select a Category.",
+        });
+        return;
+      }
+      if (selectedValueUrl === "SubCategory" && !subCategory.categoryId1) {
+        Swal.fire({
+          icon: "error",
+          title: "SubCategory ID Required",
+          text: "Please select a SubCategory.",
+        });
+        return;
+      }
+      if (selectedValueUrl === "SubSubCategory" && !subCategory.categoryId2) {
+        Swal.fire({
+          icon: "error",
+          title: "SubSubCategory ID Required",
+          text: "Please select a SubSubCategory.",
+        });
+        return;
+      }
+      if (selectedValueUrl === "Product" && !subCategory.productId) {
+        Swal.fire({
+          icon: "error",
+          title: "Product ID Required",
+          text: "Please select a Product.",
+        });
+        return;
+      }
+
+      if (subCategory.categoryId2) {
+        alldata.append("subSubCategory_Id", subCategory.categoryId2);
+      }
+      if (subCategory.categoryId1) {
+        alldata.append("subCategory_Id", subCategory.categoryId1);
+      }
+      if (subCategory.product_Id) {
+        alldata.append("product_Id", subCategory.product_Id);
+      }
+
+      alldata.append("URLType", selectedValueUrl);
+
+      if (subCategory.categoryId) {
+        alldata.append("category_Id", subCategory.categoryId);
+      }
+
+      alldata.append("area", selectedValue);
 
       alldata.append("image", formData.bannerPic);
       setLoadings(true);
@@ -254,192 +190,6 @@ function Banners(props) {
           title: "Banner Created",
           text: "The Banner has been created successfully.",
         });
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
-  const handleonSaveTop = async (event) => {
-    // event.preventDefault();
-    try {
-      const alldata = new FormData();
-      if (subCategory.subCategoryId) {
-        alldata.append("subSubCategory_Id", subCategory.categoryId2);
-      }
-      if (subCategory.categoryId1) {
-        alldata.append("subCategory_Id", subCategory.categoryId1);
-      }
-      alldata.append("category_Id", subCategory.categoryId);
-      alldata.append("categoryBanner", formData.bannerPic);
-
-      const response = await addTop({ alldata, ecomAdmintoken });
-
-      if (!response.data.error) {
-        Swal.fire({
-          icon: "success",
-          title: "Banner Created",
-          text: "The Banner has been created successfully.",
-        });
-        // setSubCategory({
-        //   nameEn: "",
-        //   nameAr: "",
-        //   categoryId: "",
-        //   subCategoryPic: null,
-        // });
-        // subCategoryManagementList();
-        // setTimeout(() => {
-        //   window?.location?.reload();
-        // }, 500);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
-  const handleonSaveBottom = async (event) => {
-    // event.preventDefault();
-    try {
-      const data = new FormData();
-      if (subCategory.subCategoryId) {
-        data.append("subSubCategory_Id", subCategory.categoryId2);
-      }
-      if (subCategory.categoryId1) {
-        data.append("subCategory_Id", subCategory.categoryId1);
-      }
-      data.append("category_Id", subCategory.categoryId);
-      data.append("bottomBanner", formData.bannerPic);
-
-      const response = await axios.post(
-        `${process.env.REACT_APP_APIENDPOINT}admin/home/homeScreen/bottom-banner`,
-        data
-      );
-
-      if (!response.data.error) {
-        Swal.fire({
-          icon: "success",
-          title: "Banner Created",
-          text: "The Banner has been created successfully.",
-        });
-        // setSubCategory({
-        //   nameEn: "",
-        //   nameAr: "",
-        //   categoryId: "",
-        //   subCategoryPic: null,
-        // });
-        // subCategoryManagementList();
-        setTimeout(() => {
-          window?.location?.reload();
-        }, 500);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
-  const handleonSaveSide = async (event) => {
-    // event.preventDefault();
-    try {
-      const data = new FormData();
-      if (subCategory.subCategoryId) {
-        data.append("subSubCategory_Id", subCategory.categoryId2);
-      }
-      if (subCategory.categoryId1) {
-        data.append("subCategory_Id", subCategory.categoryId1);
-      }
-      data.append("category_Id", subCategory.categoryId);
-      data.append("sideBanner", formData.bannerPic);
-
-      const response = await axios.post(
-        `${process.env.REACT_APP_APIENDPOINT}admin/home/homeScreen/side-banner`,
-        data
-      );
-
-      if (!response.data.error) {
-        Swal.fire({
-          icon: "success",
-          title: "Banner Created",
-          text: "The Banner has been created successfully.",
-        });
-        // setSubCategory({
-        //   nameEn: "",
-        //   nameAr: "",
-        //   categoryId: "",
-        //   subCategoryPic: null,
-        // });
-        // subCategoryManagementList();
-        setTimeout(() => {
-          window?.location?.reload();
-        }, 500);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
-  const handleonSaveMiddle = async (event) => {
-    // event.preventDefault();
-    try {
-      const data = new FormData();
-      if (subCategory.subCategoryId) {
-        data.append("subSubCategory_Id", subCategory.categoryId2);
-      }
-      if (subCategory.categoryId1) {
-        data.append("subCategory_Id", subCategory.categoryId1);
-      }
-      data.append("category_Id", subCategory.categoryId);
-      data.append("middleBanner", formData.bannerPic);
-
-      const response = await axios.post(
-        `${process.env.REACT_APP_APIENDPOINT}admin/home/homeScreen/middle-banner`,
-        data
-      );
-
-      if (!response.data.error) {
-        Swal.fire({
-          icon: "success",
-          title: "Banner Created",
-          text: "The Banner has been created successfully.",
-        });
-
-        setTimeout(() => {
-          window?.location?.reload();
-        }, 500);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
-  const handleonSaveScroll = async (event) => {
-    // event.preventDefault();
-    try {
-      const data = new FormData();
-      if (subCategory.subCategoryId) {
-        data.append("subSubCategory_Id", subCategory.categoryId2);
-      }
-      if (subCategory.categoryId1) {
-        data.append("subCategory_Id", subCategory.categoryId1);
-      }
-      data.append("category_Id", subCategory.categoryId);
-      data.append("scrollBanner", formData.bannerPic);
-
-      const response = await axios.post(
-        `${process.env.REACT_APP_APIENDPOINT}admin/home/homeScreen/scroll-banner`,
-        data
-      );
-
-      if (!response.data.error) {
-        Swal.fire({
-          icon: "success",
-          title: "Banner Created",
-          text: "The Banner has been created successfully.",
-        });
-        // setSubCategory({
-        //   nameEn: "",
-        //   nameAr: "",
-        //   categoryId: "",
-        //   subCategoryPic: null,
-        // });
-        // subCategoryManagementList();
-        setTimeout(() => {
-          window?.location?.reload();
-        }, 500);
       }
     } catch (error) {
       console.error(error);
@@ -482,18 +232,6 @@ function Banners(props) {
   const handleUpdate = (item) => {
     setBannerToShow(item?.image || null);
   };
-  const handleUpdateSide = (item) => {
-    setSideBannerToShow(item?.sideBanner[0] || null);
-  };
-  const handleUpdateBottom = (item) => {
-    setBottomBannerToShow(item?.bottomBanner[0] || null);
-  };
-  const handleUpdateMiddle = (item) => {
-    setMiddleBannerToShow(item?.middleBanner[0] || null);
-  };
-  const handleUpdateScroll = (item) => {
-    setScrollBannerToShow(item?.scrollBanner[0] || null);
-  };
 
   const handleSelectChange = (e) => {
     const selectedValue = e.target.value;
@@ -514,33 +252,6 @@ function Banners(props) {
     const selectedValueUrl = e.target.value;
     console.log("selectedValue", selectedValueUrl);
     setSelectedValueUrl(selectedValueUrl);
-    // if (selectedValue !== "" && !selectedOptions.includes(selectedValue)) {
-    //   setSelectedOptions([...selectedOptions, selectedValue]);
-    // }
-    // if (selectedValue !== "") {
-    //   setShowModal(true);
-    // } else {
-    //   setShowModal(false);
-    // }
-  };
-
-  const handleBannersApi = () => {
-    if (selectedValue === "Top") {
-      handleonSaveTop();
-      console.log("Top");
-    } else if (selectedValue === "Bottom") {
-      handleonSaveBottom();
-      console.log("Bottom");
-    } else if (selectedValue === "Middle") {
-      handleonSaveMiddle();
-      console.log("Middle");
-    } else if (selectedValue === "Scrolling") {
-      handleonSaveScroll();
-      console.log("Scrolling ");
-    } else if (selectedValue === "Side") {
-      handleonSaveSide();
-      console.log("Side");
-    }
   };
 
   const handleClick = () => {
@@ -742,447 +453,6 @@ function Banners(props) {
                                     </td>
                                   </tr>
                                 ))}
-                              </tbody>
-                            )}
-                          </table>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="row mt-5 d-none">
-                      <div className=" d-flex justify-content-start align-items-center my-1">
-                        <strong className=" fs-4">Side Banners</strong>
-                      </div>
-                      {/* <hr /> */}
-                      <div className="col-12 comman_table_design px-0">
-                        <div className="table-responsive">
-                          <table className="table mb-0">
-                            <thead>
-                              <tr>
-                                <th>S.No.</th>
-                                <th>Category Name</th>
-                                <th>Media</th>
-                                <th>Action</th>
-                              </tr>
-                            </thead>
-                            {loading ? (
-                              <div
-                                className="d-flex align-items-end justify-content-end "
-                                style={{ marginLeft: "250px" }}
-                              >
-                                <Spinner />
-                              </div>
-                            ) : (
-                              <tbody>
-                                {(sideBannerList || [])?.map((item, index) => (
-                                  <tr key={index}>
-                                    <td> {index + 1} </td>
-                                    <td>
-                                      {" "}
-                                      {item?.category_Id?.categoryName_en}{" "}
-                                    </td>
-                                    <td>
-                                      <img
-                                        className="table_img"
-                                        src={item?.sideBanner[0]}
-                                        alt=""
-                                      />
-                                    </td>
-                                    <td>
-                                      <Link
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#staticBackdrop3"
-                                        className="comman_btn table_viewbtn me-2"
-                                        to=""
-                                        onClick={() => {
-                                          handleUpdateSide(item);
-                                          // setId1(category?._id);
-                                        }}
-                                      >
-                                        View
-                                      </Link>
-                                      <Link
-                                        className="comman_btn2 table_viewbtn"
-                                        // data-bs-toggle="modal"
-                                        // data-bs-target="#delete"
-                                        to="#"
-                                        onClick={() => {
-                                          Swal.fire({
-                                            title: "Are you sure?",
-                                            text: "You won't be able to revert this!",
-                                            icon: "warning",
-                                            showCancelButton: true,
-                                            confirmButtonColor: "#3085d6",
-                                            cancelButtonColor: "#d33",
-                                            confirmButtonText:
-                                              "Yes, delete it!",
-                                          }).then((result) => {
-                                            if (result.isConfirmed) {
-                                              deleteSideBanner(item?._id);
-                                              Swal.fire(
-                                                "Deleted!",
-                                                `${item?.category_Id?.categoryName_en}  item has been deleted.`,
-                                                "success"
-                                              ).then(() => {
-                                                const updatedOfferList =
-                                                  sideBannerList.filter(
-                                                    (offer) =>
-                                                      offer._id !== item?._id
-                                                  );
-                                                setSideBannerList(
-                                                  updatedOfferList
-                                                );
-                                              });
-                                            }
-                                          });
-                                        }}
-                                      >
-                                        Delete
-                                      </Link>
-                                    </td>
-                                  </tr>
-                                ))}
-                              </tbody>
-                            )}
-                          </table>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="row mt-5 d-none">
-                      <div className=" d-flex justify-content-start align-items-start my-1">
-                        <strong className=" fs-4">Middle Banners</strong>
-                      </div>
-                      {/* <hr /> */}
-                      <div className="col-12 comman_table_design px-0">
-                        <div className="table-responsive">
-                          <table className="table mb-0">
-                            <thead>
-                              <tr>
-                                <th>S.No.</th>
-                                <th>Category Name</th>
-                                <th>Media</th>
-                                <th>Action</th>
-                              </tr>
-                            </thead>
-                            {middleBannerList?.length > 0 ? (
-                              loading ? (
-                                <tbody>
-                                  <tr>
-                                    <td colSpan="4" className="text-center">
-                                      <div className="d-flex align-items-end justify-content-center">
-                                        <Spinner />
-                                      </div>
-                                    </td>
-                                  </tr>
-                                </tbody>
-                              ) : (
-                                <tbody>
-                                  {(middleBannerList || []).map(
-                                    (item, index) => (
-                                      <tr key={index}>
-                                        <td>{index + 1}</td>
-                                        <td>
-                                          {item?.category_Id?.categoryName_en}
-                                        </td>{" "}
-                                        <td>
-                                          <img
-                                            className="table_img"
-                                            src={item?.middleBanner[0]}
-                                            alt={
-                                              item?.category_Id?.categoryName_en
-                                            }
-                                          />
-                                        </td>
-                                        <td>
-                                          <Link
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#staticBackdrop5"
-                                            className="comman_btn table_viewbtn me-2"
-                                            to=""
-                                            onClick={() => {
-                                              handleUpdateMiddle(item);
-                                            }}
-                                          >
-                                            View
-                                          </Link>
-                                          <Link
-                                            className="comman_btn2 table_viewbtn"
-                                            to="#"
-                                            onClick={() => {
-                                              Swal.fire({
-                                                title: "Are you sure?",
-                                                text: "You won't be able to revert this!",
-                                                icon: "warning",
-                                                showCancelButton: true,
-                                                confirmButtonColor: "#3085d6",
-                                                cancelButtonColor: "#d33",
-                                                confirmButtonText:
-                                                  "Yes, delete it!",
-                                              }).then((result) => {
-                                                if (result.isConfirmed) {
-                                                  deleteMiddleBanner(item?._id);
-                                                  Swal.fire(
-                                                    "Deleted!",
-                                                    `${item?.category_Id?.categoryName_en}  item has been deleted.`,
-                                                    "success"
-                                                  ).then(() => {
-                                                    const updatedOfferList =
-                                                      middleBannerList.filter(
-                                                        (offer) =>
-                                                          offer._id !==
-                                                          item?._id
-                                                      );
-                                                    setMiddleBannerList(
-                                                      updatedOfferList
-                                                    );
-                                                  });
-                                                }
-                                              });
-                                            }}
-                                          >
-                                            Delete
-                                          </Link>
-                                        </td>
-                                      </tr>
-                                    )
-                                  )}
-                                </tbody>
-                              )
-                            ) : (
-                              // If bottomBannerList is empty, display a message
-                              <tbody>
-                                <tr>
-                                  <td colSpan="4" className="text-center">
-                                    <strong>No Bottom Banner found.</strong>
-                                  </td>
-                                </tr>
-                              </tbody>
-                            )}
-                          </table>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="row mt-5 d-none">
-                      <div className=" d-flex justify-content-start align-items-start my-1">
-                        <strong className=" fs-4">Scroll Banners</strong>
-                      </div>
-                      {/* <hr /> */}
-                      <div className="col-12 comman_table_design px-0">
-                        <div className="table-responsive">
-                          <table className="table mb-0">
-                            <thead>
-                              <tr>
-                                <th>S.No.</th>
-                                <th>Category Name</th>
-                                <th>Media</th>
-                                <th>Action</th>
-                              </tr>
-                            </thead>
-                            {scrollBannerList?.length > 0 ? (
-                              loading ? (
-                                <tbody>
-                                  <tr>
-                                    <td colSpan="4" className="text-center">
-                                      <div className="d-flex align-items-end justify-content-center">
-                                        <Spinner />
-                                      </div>
-                                    </td>
-                                  </tr>
-                                </tbody>
-                              ) : (
-                                <tbody>
-                                  {(scrollBannerList || []).map(
-                                    (item, index) => (
-                                      <tr key={index}>
-                                        <td>{index + 1}</td>
-                                        <td>
-                                          {item?.category_Id?.categoryName_en}
-                                        </td>{" "}
-                                        <td>
-                                          <img
-                                            className="table_img"
-                                            src={item?.scrollBanner[0]}
-                                            alt={
-                                              item?.category_Id?.categoryName_en
-                                            }
-                                          />
-                                        </td>
-                                        <td>
-                                          <Link
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#staticBackdrop7"
-                                            className="comman_btn table_viewbtn me-2"
-                                            to=""
-                                            onClick={() => {
-                                              handleUpdateScroll(item);
-                                            }}
-                                          >
-                                            View
-                                          </Link>
-                                          <Link
-                                            className="comman_btn2 table_viewbtn"
-                                            to="#"
-                                            onClick={() => {
-                                              Swal.fire({
-                                                title: "Are you sure?",
-                                                text: "You won't be able to revert this!",
-                                                icon: "warning",
-                                                showCancelButton: true,
-                                                confirmButtonColor: "#3085d6",
-                                                cancelButtonColor: "#d33",
-                                                confirmButtonText:
-                                                  "Yes, delete it!",
-                                              }).then((result) => {
-                                                if (result.isConfirmed) {
-                                                  deleteScrollBanner(item?._id);
-                                                  Swal.fire(
-                                                    "Deleted!",
-                                                    `${item?.category_Id?.categoryName_en}  item has been deleted.`,
-                                                    "success"
-                                                  ).then(() => {
-                                                    const updatedOfferList =
-                                                      scrollBannerList.filter(
-                                                        (offer) =>
-                                                          offer._id !==
-                                                          item?._id
-                                                      );
-                                                    setScrollBannerList(
-                                                      updatedOfferList
-                                                    );
-                                                  });
-                                                }
-                                              });
-                                            }}
-                                          >
-                                            Delete
-                                          </Link>
-                                        </td>
-                                      </tr>
-                                    )
-                                  )}
-                                </tbody>
-                              )
-                            ) : (
-                              // If bottomBannerList is empty, display a message
-                              <tbody>
-                                <tr>
-                                  <td colSpan="4" className="text-center">
-                                    <strong>No Bottom Banner found.</strong>
-                                  </td>
-                                </tr>
-                              </tbody>
-                            )}
-                          </table>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="row mt-5 d-none">
-                      <div className=" d-flex justify-content-start align-items-start my-1">
-                        <strong className=" fs-4">Bottom Banners</strong>
-                      </div>
-                      {/* <hr /> */}
-                      <div className="col-12 comman_table_design px-0">
-                        <div className="table-responsive">
-                          <table className="table mb-0">
-                            <thead>
-                              <tr>
-                                <th>S.No.</th>
-                                <th>Category Name</th>
-                                <th>Media</th>
-                                <th>Action</th>
-                              </tr>
-                            </thead>
-                            {bottomBannerList?.length > 0 ? (
-                              loading ? (
-                                <tbody>
-                                  <tr>
-                                    <td colSpan="4" className="text-center">
-                                      <div className="d-flex align-items-end justify-content-center">
-                                        <Spinner />
-                                      </div>
-                                    </td>
-                                  </tr>
-                                </tbody>
-                              ) : (
-                                <tbody>
-                                  {(bottomBannerList || []).map(
-                                    (item, index) => (
-                                      <tr key={index}>
-                                        <td>{index + 1}</td>
-                                        <td>
-                                          {item?.category_Id?.categoryName_en}
-                                        </td>{" "}
-                                        <td>
-                                          <img
-                                            className="table_img"
-                                            src={item.bottomBanner[0]}
-                                            alt={
-                                              item?.category_Id?.categoryName_en
-                                            }
-                                          />
-                                        </td>
-                                        <td>
-                                          <Link
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#staticBackdrop4"
-                                            className="comman_btn table_viewbtn me-2"
-                                            to=""
-                                            onClick={() => {
-                                              handleUpdateBottom(item);
-                                            }}
-                                          >
-                                            View
-                                          </Link>
-                                          <Link
-                                            className="comman_btn2 table_viewbtn"
-                                            to="#"
-                                            onClick={() => {
-                                              Swal.fire({
-                                                title: "Are you sure?",
-                                                text: "You won't be able to revert this!",
-                                                icon: "warning",
-                                                showCancelButton: true,
-                                                confirmButtonColor: "#3085d6",
-                                                cancelButtonColor: "#d33",
-                                                confirmButtonText:
-                                                  "Yes, delete it!",
-                                              }).then((result) => {
-                                                if (result.isConfirmed) {
-                                                  deleteBottomBanner(item?._id);
-                                                  Swal.fire(
-                                                    "Deleted!",
-                                                    `${item?.category_Id?.categoryName_en}  item has been deleted.`,
-                                                    "success"
-                                                  ).then(() => {
-                                                    const updatedOfferList =
-                                                      bottomBannerList.filter(
-                                                        (offer) =>
-                                                          offer._id !==
-                                                          item?._id
-                                                      );
-                                                    setBottomBannerList(
-                                                      updatedOfferList
-                                                    );
-                                                  });
-                                                }
-                                              });
-                                            }}
-                                          >
-                                            Delete
-                                          </Link>
-                                        </td>
-                                      </tr>
-                                    )
-                                  )}
-                                </tbody>
-                              )
-                            ) : (
-                              // If bottomBannerList is empty, display a message
-                              <tbody>
-                                <tr>
-                                  <td colSpan="4" className="text-center">
-                                    <strong>No Bottom Banner found.</strong>
-                                  </td>
-                                </tr>
                               </tbody>
                             )}
                           </table>
@@ -1476,225 +746,6 @@ function Banners(props) {
                         >
                           <img
                             src={bannerToShow}
-                            className="img-fluid"
-                            alt="..."
-                          />{" "}
-                          {/* <div>720 X 250</div> */}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      {console.log("showModal", showModal)}
-
-      <div
-        className="modal fade reply_modal"
-        id="staticBackdrop3"
-        data-bs-backdrop="static"
-        data-bs-keyboard="false"
-        tabIndex="-1"
-        aria-labelledby="staticBackdropLabel"
-        aria-hidden="true"
-      >
-        <div className="modal-dialog modal-dialog-centered">
-          <div className="modal-content border-0">
-            <div className="modal-header">
-              <h5 className="modal-title" id="staticBackdropLabel">
-                Banner Image
-              </h5>
-              <button
-                type="button"
-                className="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
-            <div className="modal-body py-4">
-              <div className="chatpart_main">
-                <div className="banner_sliders_box">
-                  <div className="row Onboarding_box mb-4 mx-0">
-                    <div className="form-group mb-0 col-12">
-                      <div className="banner-profile position-relative">
-                        <div
-                          className="banner-Box bg-light"
-                          style={{
-                            display: "flex",
-                            flexDirection: "column",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            height: "auto",
-                          }}
-                        >
-                          <img
-                            src={sideBannerToShow}
-                            className="img-fluid"
-                            alt="..."
-                          />{" "}
-                          {/* <div>720 X 250</div> */}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div
-        className="modal fade reply_modal"
-        id="staticBackdrop4"
-        data-bs-backdrop="static"
-        data-bs-keyboard="false"
-        tabIndex="-1"
-        aria-labelledby="staticBackdropLabel"
-        aria-hidden="true"
-      >
-        <div className="modal-dialog modal-dialog-centered">
-          <div className="modal-content border-0">
-            <div className="modal-header">
-              <h5 className="modal-title" id="staticBackdropLabel">
-                Banner Image
-              </h5>
-              <button
-                type="button"
-                className="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
-            <div className="modal-body py-4">
-              <div className="chatpart_main">
-                <div className="banner_sliders_box">
-                  <div className="row Onboarding_box mb-4 mx-0">
-                    <div className="form-group mb-0 col-12">
-                      <div className="banner-profile position-relative">
-                        <div
-                          className="banner-Box bg-light"
-                          style={{
-                            display: "flex",
-                            flexDirection: "column",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            height: "auto",
-                          }}
-                        >
-                          <img
-                            src={bottomBannerToShow}
-                            className="img-fluid"
-                            alt="..."
-                          />{" "}
-                          {/* <div>720 X 250</div> */}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div
-        className="modal fade reply_modal"
-        id="staticBackdrop5"
-        data-bs-backdrop="static"
-        data-bs-keyboard="false"
-        tabIndex="-1"
-        aria-labelledby="staticBackdropLabel"
-        aria-hidden="true"
-      >
-        <div className="modal-dialog modal-dialog-centered">
-          <div className="modal-content border-0">
-            <div className="modal-header">
-              <h5 className="modal-title" id="staticBackdropLabel">
-                Banner Image
-              </h5>
-              <button
-                type="button"
-                className="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
-            <div className="modal-body py-4">
-              <div className="chatpart_main">
-                <div className="banner_sliders_box">
-                  <div className="row Onboarding_box mb-4 mx-0">
-                    <div className="form-group mb-0 col-12">
-                      <div className="banner-profile position-relative">
-                        <div
-                          className="banner-Box bg-light"
-                          style={{
-                            display: "flex",
-                            flexDirection: "column",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            height: "auto",
-                          }}
-                        >
-                          <img
-                            src={middleBannerToShow}
-                            className="img-fluid"
-                            alt="..."
-                          />{" "}
-                          {/* <div>720 X 250</div> */}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div
-        className="modal fade reply_modal"
-        id="staticBackdrop7"
-        data-bs-backdrop="static"
-        data-bs-keyboard="false"
-        tabIndex="-1"
-        aria-labelledby="staticBackdropLabel"
-        aria-hidden="true"
-      >
-        <div className="modal-dialog modal-dialog-centered">
-          <div className="modal-content border-0">
-            <div className="modal-header">
-              <h5 className="modal-title" id="staticBackdropLabel">
-                Banner Image
-              </h5>
-              <button
-                type="button"
-                className="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
-            <div className="modal-body py-4">
-              <div className="chatpart_main">
-                <div className="banner_sliders_box">
-                  <div className="row Onboarding_box mb-4 mx-0">
-                    <div className="form-group mb-0 col-12">
-                      <div className="banner-profile position-relative">
-                        <div
-                          className="banner-Box bg-light"
-                          style={{
-                            display: "flex",
-                            flexDirection: "column",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            height: "auto",
-                          }}
-                        >
-                          <img
-                            src={scrollBannerToShow}
                             className="img-fluid"
                             alt="..."
                           />{" "}
