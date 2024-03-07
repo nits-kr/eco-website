@@ -464,7 +464,7 @@ function Staff() {
             <div className="row staff-management justify-content-center">
               <div className="col-12">
                 <div className="row mx-0">
-                  <div className="col-12 design_outter_comman shadow mb-4">
+                  <div className="col-12 design_outter_comman2 shadow mb-4">
                     <div className="row comman_header justify-content-between">
                       <div className="col-auto">
                         <h2>Add New Staff Member</h2>
