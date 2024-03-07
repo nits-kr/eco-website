@@ -34,6 +34,9 @@ function Sidebar({ Dash }) {
   const handleLogout = () => {
     localStorage.removeItem("ecoAdmintoken");
     localStorage.removeItem("admin-data");
+    localStorage.removeItem("ecomadminloginId");
+    localStorage.removeItem("loginType");
+    localStorage.removeItem("adminModules");
   };
 
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);

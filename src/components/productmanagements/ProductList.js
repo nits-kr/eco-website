@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import axios from "axios";
 import Swal from "sweetalert2";
 import Sidebar from "../Sidebar";
-import Spinner from "../Spinner";
+// import Spinner from "../Spinner";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faPencil, faCopy } from "@fortawesome/free-solid-svg-icons";
 import Slider from "react-slick";
@@ -24,6 +24,7 @@ import { useGetProductListQuery } from "../../services/Post";
 import { MDBDataTable } from "mdbreact";
 import { Button } from "rsuite";
 import { setProductId } from "../../app/localSlice";
+import { Spinner } from "react-bootstrap";
 
 function ProductList(props) {
   const ecomAdmintoken = useSelector((data) => data?.local?.token);
@@ -89,6 +90,8 @@ function ProductList(props) {
     const res = await uploadInvent({ formData, ecomAdmintoken });
 
     console.log("res invent", res);
+
+    setLoader2(false);
 
     if (res?.data.error) {
       setLoader2(false);
@@ -695,10 +698,12 @@ function ProductList(props) {
                             fontSize: "20px",
                             position: "relative",
                             top: "-2px",
+                            cursor: loader2 ? "not-allowed" : "pointer",
                           }}
-                          onClick={onUpload}
+                          onClick={!loader2 ? onUpload : null}
                         >
-                          Upload
+                          {loader2 ? <Spinner /> : "Upload"}
+                          {/* Upload */}
                         </Button>
                       ) : (
                         <Button

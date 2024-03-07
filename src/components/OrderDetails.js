@@ -159,7 +159,7 @@ function OrderDetails() {
                                     <div className="pro_name">- Buyer -</div>
                                   </div>
                                   <div className="row justify-content-center">
-                                    <div className="col-12">
+                                    <div className="col-12 d-flex  align-items-center justify-content-center">
                                       <div className="user_imgg">
                                         <img
                                           src={

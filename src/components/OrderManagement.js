@@ -45,14 +45,14 @@ function OrderManagement() {
   const [agents, setAgents] = useState([]);
   const [selectedBrandIds, setSelectedBrandIds] = useState([]);
 
-  const [orderStatus, setOrderStatus] = useState("");
-  const [orderStatusAr, setOrderStatusAr] = useState("");
+  const [status, setOrderStatus] = useState("");
+  const [statusAr, setOrderStatusAr] = useState("");
 
   const handleOrderStatusChange = (event) => {
     const selectedValue = event.target.value;
     setOrderStatus(selectedValue);
 
-    // Select corresponding option in orderStatusAr dropdown
+    // Select corresponding option in statusAr dropdown
     switch (selectedValue) {
       case "Shipped":
         setOrderStatusAr("معباه");
@@ -76,7 +76,7 @@ function OrderManagement() {
     const selectedValue = event.target.value;
     setOrderStatusAr(selectedValue);
 
-    // Select corresponding option in orderStatus dropdown
+    // Select corresponding option in status dropdown
     switch (selectedValue) {
       case "معباه":
         setOrderStatus("Shipped");
@@ -203,6 +203,12 @@ function OrderManagement() {
         sort: "asc",
         width: 150,
       },
+      {
+        label: "NAME",
+        field: "customer",
+        sort: "asc",
+        width: 150,
+      },
 
       {
         label: "DATE",
@@ -288,34 +294,34 @@ function OrderManagement() {
         returnData.status = (
           <div
             className={
-              list?.orderStatus === "Cancelled"
+              list?.status === "Cancelled"
                 ? "text-danger"
-                : list?.orderStatus === "Pending"
+                : list?.status === "Pending"
                 ? "text-warning"
-                : list?.orderStatus === "Shipped"
+                : list?.status === "Shipped"
                 ? "text-info"
-                : list?.orderStatus === "Approved"
+                : list?.status === "Approved"
                 ? "text-success"
-                : list?.orderStatus === "Inprogress"
+                : list?.status === "Processing"
                 ? "text-primary"
-                : list?.orderStatus === "Delivered"
-                ? "text-secondary"
+                : list?.status === "Delivered"
+                ? "text-success"
                 : "text-default"
             }
             style={{
               background:
-                list?.orderStatus === "Cancelled"
+                list?.status === "Cancelled"
                   ? "#ffe5e5"
-                  : list?.orderStatus === "Pending"
+                  : list?.status === "Pending"
                   ? "#fff6e5"
-                  : list?.orderStatus === "Shipped"
+                  : list?.status === "Shipped"
                   ? "#e5f0ff"
-                  : list?.orderStatus === "Approved"
+                  : list?.status === "Approved"
                   ? "#e5ffe5"
-                  : list?.orderStatus === "Inprogress"
+                  : list?.status === "Processing"
                   ? "#e5e5ff"
-                  : list?.orderStatus === "Delivered"
-                  ? "#f3f3f3"
+                  : list?.status === "Delivered"
+                  ? "#e5ffe5"
                   : "#f9f9f9",
               borderRadius: "5px",
               padding: "2px 5px",
@@ -437,8 +443,8 @@ function OrderManagement() {
     // e.preventDefault();
     const editOffer = {
       id: itemId,
-      orderStatus: data?.orderStatus || orderStatus,
-      orderStatus_ar: data?.orderStatusAr || orderStatusAr,
+      orderStatus: data?.status || status,
+      orderStatus_ar: data?.statusAr || statusAr,
       ecomAdmintoken: ecomAdmintoken,
     };
     try {
@@ -609,17 +615,17 @@ function OrderManagement() {
                     <div className="form-floating ">
                       <select
                         className="form-select"
-                        id="orderStatus"
+                        id="status"
                         aria-label="  select example"
                         defaultValue=""
                         style={{
                           padding: "5px",
                         }}
-                        {...register("orderStatus", {
-                          required: orderStatus ? false : true,
+                        {...register("status", {
+                          required: status ? false : true,
                         })}
                         onChange={handleOrderStatusChange}
-                        value={orderStatus}
+                        value={status}
                       >
                         <option value="">Order Status</option>
                         <option value="Shipped">Shipped</option>
@@ -628,10 +634,8 @@ function OrderManagement() {
                         <option value="Processing">Processing</option>
                       </select>
                     </div>
-                    {errors.orderStatus && (
-                      <span
-                        className={`text-danger ${orderStatus ? "d-none" : ""}`}
-                      >
+                    {errors.status && (
+                      <span className={`text-danger ${status ? "d-none" : ""}`}>
                         This field is required
                       </span>
                     )}
@@ -648,11 +652,11 @@ function OrderManagement() {
                         style={{
                           padding: "5px",
                         }}
-                        {...register("orderStatusAr", {
-                          required: orderStatusAr ? false : true,
+                        {...register("statusAr", {
+                          required: statusAr ? false : true,
                         })}
                         onChange={handleOrderStatusArChange}
-                        value={orderStatusAr}
+                        value={statusAr}
                       >
                         <option value="">حالة الطلب</option>
                         <option value="معباه">معباه</option>
@@ -661,11 +665,9 @@ function OrderManagement() {
                         <option value="تجهيز">تجهيز</option>
                       </select>
                     </div>
-                    {errors.orderStatusAr && (
+                    {errors.statusAr && (
                       <span
-                        className={`text-danger ${
-                          orderStatusAr ? "d-none" : ""
-                        }`}
+                        className={`text-danger ${statusAr ? "d-none" : ""}`}
                       >
                         This field is required
                       </span>

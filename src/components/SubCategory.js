@@ -449,12 +449,12 @@ function SubCategory(props) {
                   name="subCategoryAr"
                   {...register("subCategoryAr", {
                     required: "Sub Category Name(Ar) is required!",
-                    pattern: {
-                      value:
-                        /^[\u0600-\u06FF\s.'",\-()&$#!@%*?<>{}[\]]{1,}[\.]{0,1}[\u0600-\u06FF\s.'",\-()&$#!@%*?<>{}[\]]{0,}$/,
-                      message:
-                        "Special characters allowed except underscore (_)",
-                    },
+                    // pattern: {
+                    //   value:
+                    //     /^[\u0600-\u06FF\s.'",\-()&$#!@%*?<>{}[\]]{1,}[\.]{0,1}[\u0600-\u06FF\s.'",\-()&$#!@%*?<>{}[\]]{0,}$/,
+                    //   message:
+                    //     "Special characters allowed except underscore (_)",
+                    // },
 
                     maxLength: {
                       value: 100,
