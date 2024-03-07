@@ -67,14 +67,15 @@ function ContactUs() {
     const alldata = {
       mobileNumber: data?.mobileNumber,
       email: data?.email,
-      facebookLink: data?.facebookLink,
-      telegramLink: data?.telegramLink,
-      instagramLink: data?.instagramLink,
-      linkedInLink: data?.linkedinLink,
-      youtubeLink: data?.youtubeLink,
-      playstoreLink: data?.playstoreLink,
-      appstoreLink: data?.appstoreLink,
+      ...(data?.facebookLink && { facebookLink: data.facebookLink }),
+      ...(data?.telegramLink && { telegramLink: data.telegramLink }),
+      ...(data?.instagramLink && { instagramLink: data.instagramLink }),
+      ...(data?.linkedinLink && { linkedInLink: data.linkedinLink }),
+      ...(data?.youtubeLink && { youtubeLink: data.youtubeLink }),
+      ...(data?.playstoreLink && { playstoreLink: data.playstoreLink }),
+      ...(data?.appstoreLink && { appstoreLink: data.appstoreLink }),
     };
+
     const res = await createContact({ alldata, ecomAdmintoken });
     if (res) {
       Swal.fire({
