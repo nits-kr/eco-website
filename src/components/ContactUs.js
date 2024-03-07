@@ -4,79 +4,94 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import Sidebar from "./Sidebar";
 import {
+  useCreateUseFullInfoMutation,
   useDeleteContactMutation,
   useGetContactListQuery,
+  useGetUseFuldataMutation,
+  useGetUseFuldataQuery,
 } from "../services/Post";
 import { useCreateContactMutation } from "../services/Post";
 import { useSelector } from "react-redux";
+import { useForm } from "react-hook-form";
+import classNames from "classnames";
+
 function ContactUs() {
   const ecomAdmintoken = useSelector((data) => data?.local?.token);
   const ml = useSelector((data) => data?.local?.header);
 
-  const { data: contactListdata } = useGetContactListQuery({
-    ecomAdmintoken,
-  });
-  const [deleteContact, response] = useDeleteContactMutation();
-  const [createContact, responseInfo] = useCreateContactMutation();
-  const [contactList, setContactList] = useState("");
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
-  const [itemId, setItemId] = useState(null);
-  const [startDate1, setStartDate1] = useState("");
-  const [descriptionEn2, setDescriptionEn2] = useState("");
-  const [userName, setUserName] = useState([]);
-  const [email, setEmail] = useState([]);
-  const [subject, setSubject] = useState([]);
-  const [descriptionEn, setDescriptionEn] = useState([]);
-  const [descriptionAr, setDescriptionAr] = useState([]);
-  console.log("item id", itemId);
-  const [viewContact, setViewContact] = useState("");
+  const [deleteContact] = useDeleteContactMutation();
+  const [createContact] = useCreateUseFullInfoMutation();
+  const { data: getContact, refetch: fetchContactData } = useGetUseFuldataQuery(
+    { ecomAdmintoken }
+  );
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm();
 
   useEffect(() => {
-    if (contactListdata) {
-      setContactList(contactListdata?.results?.list);
+    if (getContact) {
+      const response = getContact?.results?.list?.[0];
+      reset({
+        mobileNumber: response?.mobileNumber,
+        email: response?.email,
+        facebookLink: response?.facebookLink,
+        instagramLink: response?.instagramLink,
+        telegramLink: response?.telegramLink,
+        youtubeLink: response?.youtubeLink,
+        linkedinLink: response?.linkedInLink,
+      });
     }
-  }, [contactListdata]);
+  }, [getContact]);
 
-  const url = `${process.env.REACT_APP_APIENDPOINT}admin/contact/contact/contactList`;
-  const url2 = `${process.env.REACT_APP_APIENDPOINT}admin/order/order/search`;
-  useEffect(() => {
-    if (itemId) {
-      handleView(itemId);
-    }
-  }, [itemId]);
+  const resData = getContact?.results?.list?.[0];
 
-  const handleView = async (itemId) => {
-    const { data } = await axios.post(
-      `${process.env.REACT_APP_APIENDPOINT}admin/contact/contact/contactView/${itemId}`
-    );
-    setViewContact(data?.results?.contactData);
-  };
+  console.log("getContact", getContact);
 
-  const handleItem = (item) => {
-    setDescriptionEn2(item?.description || "");
-  };
-  const handleSaveChanges = (e) => {
-    e.preventDefault();
-    const newContact = {
-      userName_en: userName,
-      Email: email,
-      subject: subject,
-      description: descriptionEn,
+  // const handleContctItem = (item) => {
+  //   const res = getContact({ ecomAdmintoken });
+  //   // setContactList(contactListdata?.results?.list);
+  //   console.log("res", res);
+  //   const response = res?.results?.list?.[0];
+  //   if (response) {
+  //     reset({
+  //       mobileNumber: response?.mobileNumber,
+  //     });
+  //   }
+  // };
+  const handleSaveChanges = async (data) => {
+    // e.preventDefault();
+    const alldata = {
+      mobileNumber: data?.mobileNumber,
+      email: data?.email,
+      facebookLink: data?.facebookLink,
+      telegramLink: data?.telegramLink,
+      instagramLink: data?.instagramLink,
+      linkedInLink: data?.linkedinLink,
+      youtubeLink: data?.youtubeLink,
+      playstoreLink: data?.playstoreLink,
+      appstoreLink: data?.appstoreLink,
     };
-    createContact(newContact);
-    Swal.fire({
-      title: "Changes Saved",
-      text: "The Contact has been created successfully.",
-      icon: "success",
-      confirmButtonText: "OK",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        // window.location.reload();
-        // fetchInformationList();
-      }
-    });
+    const res = await createContact({ alldata, ecomAdmintoken });
+    if (res) {
+      Swal.fire({
+        title: "Changes Saved",
+        text: "The Contact has been created successfully.",
+        icon: "success",
+        confirmButtonText: "OK",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          fetchContactData();
+        }
+      });
+    } else {
+      console.log("error");
+    }
   };
+
   return (
     <>
       <Sidebar Dash={"contact-us"} />
@@ -90,351 +105,311 @@ function ContactUs() {
                     <div className="row comman_header justify-content-between">
                       <div className="col">
                         <h2 className="capitalize">
-                          add your contact information
+                          Save your contact information
                         </h2>
                       </div>
                     </div>
                     <form
                       className="form-design py-4 px-3 help-support-form row align-items-end justify-content-between"
-                      action=""
-                      onSubmit={handleSaveChanges}
+                      onSubmit={handleSubmit(handleSaveChanges)}
                     >
-                      <div className="form-group col-4">
-                        <label htmlFor="">
+                      <div className="form-group col-4 mt-3">
+                        <label htmlFor="mobileNumber">
                           Mobile Number
                           <span className="required-field text-danger">*</span>
                         </label>
                         <input
                           type="text"
-                          className="form-control"
-                          name="userName"
-                          id="userName"
-                          value={userName}
-                          onChange={(e) => setUserName(e.target.value)}
-                          required
-                          minLength="3"
+                          className={classNames(
+                            "form-control border border-secondary signup_fields",
+                            {
+                              "is-invalid": errors.mobileNumber,
+                            }
+                          )}
+                          id="mobileNumber"
+                          placeholder="Mobile Number"
+                          {...register("mobileNumber", {
+                            required: "Phone Number is Required*",
+                            maxLength: {
+                              value: 10,
+                              message: "Maximum 10 characters",
+                            },
+                            minLength: {
+                              value: 10,
+                              message: "Minimum 10 characters",
+                            },
+                            pattern: {
+                              value: /^[0-9]{10}$/,
+                              message: "Invalid mobile number",
+                            },
+                          })}
                         />
+                        {errors.mobileNumber && (
+                          <small className="errorText mx-1 fw-bold text-danger">
+                            {errors.mobileNumber?.message}
+                          </small>
+                        )}
                       </div>
-                      {/* <div className="form-group col-4">
-                        <label htmlFor="">
-                          User Name
-                          <span className="required-field text-danger">*</span>
-                        </label>
-                        <input
-                          type="text"
-                          className="form-control"
-                          name="userName"
-                          id="userName"
-                          value={userName}
-                          onChange={(e) => setUserName(e.target.value)}
-                          required
-                          minLength="3"
-                        />
-                      </div> */}
-                      <div className="form-group col-4">
-                        <label htmlFor="">
+
+                      <div className="form-group col-4 mt-3">
+                        <label htmlFor="email">
                           Email
                           <span className="required-field text-danger">*</span>
                         </label>
                         <input
                           type="email"
-                          className="form-control"
-                          name="email"
+                          className={classNames(
+                            "form-control border border-secondary signup_fields ",
+                            {
+                              "is-invalid": errors.email,
+                            }
+                          )}
                           id="email"
-                          value={email}
-                          onChange={(e) => setEmail(e.target.value)}
-                          required
-                          minLength="3"
+                          placeholder="Email Address"
+                          {...register("email", {
+                            required: "Email is Required*",
+                            pattern: {
+                              value:
+                                /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+                              message: "Invalid email address",
+                            },
+                          })}
                         />
+                        {errors.email && (
+                          <small className="errorText mx-1 fw-bold text-danger">
+                            {errors.email?.message}
+                          </small>
+                        )}
                       </div>
-                      {/* <div className="form-group col-4">
-                        <label htmlFor="">
-                          Subject
-                          <span className="required-field text-danger">*</span>
-                        </label>
-                        <input
-                          type="text"
-                          className="form-control"
-                          name="subject"
-                          id="subject"
-                          value={subject}
-                          onChange={(e) => setSubject(e.target.value)}
-                          required
-                          minLength="3"
-                        />
-                      </div> */}
-                      <div className="form-group col-4">
-                        <label htmlFor="">
+
+                      <div className="form-group col-4 mt-3">
+                        <label htmlFor="facebookLink">
                           Facebook Link
-                          <span className="required-field text-danger">*</span>
+                          {/* <span className="required-field text-danger">*</span> */}
                         </label>
                         <input
                           type="text"
-                          className="form-control"
-                          name="subject"
-                          id="subject"
-                          value={subject}
-                          onChange={(e) => setSubject(e.target.value)}
-                          required
-                          minLength="3"
+                          className={classNames(
+                            "form-control border border-secondary signup_fields",
+                            {
+                              "is-invalid": errors.facebookLink,
+                            }
+                          )}
+                          name="facebookLink"
+                          id="facebookLink"
+                          {...register("facebookLink", {
+                            // required: "Facebook link is required!*",
+                            minLength: 3,
+                            pattern: {
+                              value: /^(https?:\/\/)?(www\.)?facebook.com\/.+$/,
+                              message: "Invalid Facebook Link",
+                            },
+                          })}
                         />
+                        {errors.facebookLink && (
+                          <small className="errorText mx-1 fw-bold text-danger">
+                            {errors.facebookLink?.message}
+                          </small>
+                        )}
                       </div>
-                      <div className="form-group col-6">
-                        <label htmlFor="">
+
+                      <div className="form-group col-6 mt-3">
+                        <label htmlFor="telegramLink">
                           Telegram Link
-                          <span className="required-field text-danger">*</span>
+                          {/* <span className="required-field text-danger">*</span> */}
                         </label>
                         <input
                           type="text"
-                          className="form-control"
-                          name="subject"
-                          id="subject"
-                          value={subject}
-                          onChange={(e) => setSubject(e.target.value)}
-                          required
-                          minLength="3"
+                          className={classNames(
+                            "form-control border border-secondary signup_fields",
+                            {
+                              "is-invalid": errors.telegramLink,
+                            }
+                          )}
+                          name="telegramLink"
+                          id="telegramLink"
+                          {...register("telegramLink", {
+                            // required: "Telegram link is required!*",
+                            minLength: 3,
+                            pattern: {
+                              value: /^(https?:\/\/)?t\.me\/.+$/,
+                              message: "Invalid Telegram Link",
+                            },
+                          })}
                         />
+                        {errors.telegramLink && (
+                          <small className="errorText mx-1 fw-bold text-danger">
+                            {errors.telegramLink?.message}
+                          </small>
+                        )}
                       </div>
-                      <div className="form-group col-6">
-                        <label htmlFor="">
+
+                      <div className="form-group col-6 mt-3">
+                        <label htmlFor="instagramLink">
                           Instagram Link
-                          <span className="required-field text-danger">*</span>
+                          {/* <span className="required-field text-danger">*</span> */}
                         </label>
                         <input
                           type="text"
-                          className="form-control"
-                          name="subject"
-                          id="subject"
-                          value={subject}
-                          onChange={(e) => setSubject(e.target.value)}
-                          required
-                          minLength="3"
+                          className={classNames(
+                            "form-control border border-secondary signup_fields",
+                            {
+                              "is-invalid": errors.instagramLink,
+                            }
+                          )}
+                          name="instagramLink"
+                          id="instagramLink"
+                          {...register("instagramLink", {
+                            // required: "Instagram link is required!*",
+                            minLength: 3,
+                            pattern: {
+                              value:
+                                /^(https?:\/\/)?(www\.)?instagram.com\/.+$/,
+                              message: "Invalid Instagram Link",
+                            },
+                          })}
                         />
+                        {errors.instagramLink && (
+                          <small className="errorText mx-1 fw-bold text-danger">
+                            {errors.instagramLink?.message}
+                          </small>
+                        )}
                       </div>
-                      <div className="form-group col-6">
-                        <label htmlFor="">
+
+                      <div className="form-group col-6 mt-3">
+                        <label htmlFor="youtubeLink">
                           YouTube Link
-                          <span className="required-field text-danger">*</span>
+                          {/* <span className="required-field text-danger">*</span> */}
                         </label>
                         <input
                           type="text"
-                          className="form-control"
-                          name="subject"
-                          id="subject"
-                          value={subject}
-                          onChange={(e) => setSubject(e.target.value)}
-                          required
-                          minLength="3"
+                          className={classNames(
+                            "form-control border border-secondary signup_fields",
+                            {
+                              "is-invalid": errors.youtubeLink,
+                            }
+                          )}
+                          name="youtubeLink"
+                          id="youtubeLink"
+                          {...register("youtubeLink", {
+                            // required: "YouTube link is required!*",
+                            minLength: 3,
+                            pattern: {
+                              value: /^(https?:\/\/)?(www\.)?youtube.com\/.+$/,
+                              message: "Invalid YouTube Link",
+                            },
+                          })}
                         />
+                        {errors.youtubeLink && (
+                          <small className="errorText mx-1 fw-bold text-danger">
+                            {errors.youtubeLink?.message}
+                          </small>
+                        )}
                       </div>
-                      <div className="form-group col-6">
-                        <label htmlFor="">
+
+                      <div className="form-group col-6 mt-3">
+                        <label htmlFor="linkedinLink">
                           LinkedIn Link
-                          <span className="required-field text-danger">*</span>
+                          {/* <span className="required-field text-danger">*</span> */}
                         </label>
                         <input
                           type="text"
-                          className="form-control"
-                          name="subject"
-                          id="subject"
-                          value={subject}
-                          onChange={(e) => setSubject(e.target.value)}
-                          required
-                          minLength="3"
+                          className={classNames(
+                            "form-control border border-secondary signup_fields",
+                            {
+                              "is-invalid": errors.linkedinLink,
+                            }
+                          )}
+                          name="linkedinLink"
+                          id="linkedinLink"
+                          {...register("linkedinLink", {
+                            // required: "LinkedIn link is required!*",
+                            minLength: 3,
+                            pattern: {
+                              value: /^(https?:\/\/)?(www\.)?linkedin.com\/.+$/,
+                              message: "Invalid LinkedIn Link",
+                            },
+                          })}
                         />
+                        {errors.linkedinLink && (
+                          <small className="errorText mx-1 fw-bold text-danger">
+                            {errors.linkedinLink?.message}
+                          </small>
+                        )}
                       </div>
-                      {/* <div className="form-group col-6">
-                        <label htmlFor="">
-                          Description(En)
-                          <span className="required-field text-danger">*</span>
+                      <div className="form-group col-6 mt-3">
+                        <label htmlFor="playstoreLink">
+                          Play Store Link
+                          {/* <span className="required-field text-danger">*</span> */}
                         </label>
-                        <textarea
-                          className="form-control"
-                          name="descriptionEn"
-                          id="descriptionEn"
-                          style={{ height: "120px" }}
-                          value={descriptionEn}
-                          onChange={(e) => setDescriptionEn(e.target.value)}
-                          required
-                        ></textarea>
+                        <input
+                          type="text"
+                          className={classNames(
+                            "form-control border border-secondary signup_fields",
+                            {
+                              "is-invalid": errors.playstoreLink,
+                            }
+                          )}
+                          name="playstoreLink"
+                          id="playstoreLink"
+                          {...register("playstoreLink", {
+                            // required: "Play store link is required!*",
+                            minLength: 3,
+                            pattern: {
+                              value:
+                                /^(https?:\/\/)?play\.google\.com\/store\/apps\/details\?id=.+$/,
+                              message: "Invalid Play Store Link",
+                            },
+                          })}
+                        />
+                        {errors.playstoreLink && (
+                          <small className="errorText mx-1 fw-bold text-danger">
+                            {errors.playstoreLink?.message}
+                          </small>
+                        )}
                       </div>
-                      <div className="form-group  col-6">
-                        <label htmlFor="">
-                          Description(Ar)
-                          <span className="required-field text-danger">*</span>
+
+                      <div className="form-group col-6 mt-3">
+                        <label htmlFor="appstoreLink">
+                          App Store Link
+                          {/* <span className="required-field text-danger">*</span> */}
                         </label>
-                        <textarea
-                          className="form-control"
-                          name="descriptionAr"
-                          id="descriptionAr"
-                          style={{ height: "120px" }}
-                          value={descriptionAr}
-                          onChange={(e) => setDescriptionAr(e.target.value)}
-                          required
-                        ></textarea>
-                      </div> */}
-                      <div className="form-group mb-0 col-auto">
+                        <input
+                          type="text"
+                          className={classNames(
+                            "form-control border border-secondary signup_fields",
+                            {
+                              "is-invalid": errors.appstoreLink,
+                            }
+                          )}
+                          name="appstoreLink"
+                          id="appstoreLink"
+                          {...register("appstoreLink", {
+                            // required: "App store link is required!*",
+                            minLength: 3,
+                            pattern: {
+                              value: /^(https?:\/\/)?apps\.apple\.com\/.+$/,
+                              message: "Invalid App Store Link",
+                            },
+                          })}
+                        />
+                        {errors.appstoreLink && (
+                          <small className="errorText mx-1 fw-bold text-danger">
+                            {errors.appstoreLink?.message}
+                          </small>
+                        )}
+                      </div>
+
+                      <div className="form-group mb-0 mt-4 d-flex align-items-center justify-content-center">
                         <button
                           className="comman_btn2"
-                          style={{ marginLeft: "72vh" }}
+                          // style={{ marginLeft: "72vh" }}
+                          type="submit"
                         >
-                          Add
+                          {resData ? "Update" : "Save"}
                         </button>
                       </div>
                     </form>
-                  </div>
-                  <div className="col-12 design_outter_comman shadow">
-                    <div className="row comman_header justify-content-between">
-                      <div className="col">
-                        <h2>Contact Us</h2>
-                      </div>
-                      <div className="col-3 Searchbox">
-                        <form className="form-design" action="">
-                          <div className="form-group mb-0 position-relative icons_set">
-                            <input
-                              type="text"
-                              className="form-control"
-                              placeholder="Search"
-                              name="name"
-                              id="name"
-                            />
-                            <i className="far fa-search"></i>
-                          </div>
-                        </form>
-                      </div>
-                      <div className="col-auto">
-                        <input
-                          type="date"
-                          className="custom_date"
-                          value={startDate1}
-                          onChange={(e) => setStartDate1(e.target.value)}
-                        />
-                      </div>
-                    </div>
-                    <form
-                      className="form-design py-4 px-3 help-support-form row align-items-end justify-content-between"
-                      action=""
-                      // onSubmit={handleSearch}
-                    >
-                      <div className="form-group mb-0 col-5">
-                        <label htmlFor="">From</label>
-                        <input
-                          type="date"
-                          className="form-control"
-                          value={startDate}
-                          onChange={(e) => setStartDate(e.target.value)}
-                        />
-                      </div>
-                      <div className="form-group mb-0 col-5">
-                        <label htmlFor="">To</label>
-                        <input
-                          type="date"
-                          className="form-control"
-                          value={endDate}
-                          onChange={(e) => setEndDate(e.target.value)}
-                        />
-                      </div>
-                      <div className="form-group mb-0 col-auto">
-                        <button
-                          className="comman_btn2"
-                          disabled={startDate > endDate}
-                        >
-                          Search
-                        </button>
-                      </div>
-                    </form>
-                    <div className="row">
-                      <div className="col-12 comman_table_design px-0">
-                        <div className="table-responsive">
-                          <table className="table mb-0">
-                            <thead>
-                              <tr>
-                                <th>S.No.</th>
-                                <th>User Name</th>
-                                <th>E-mail</th>
-                                <th>Subject</th>
-                                <th>Description</th>
-                                <th>Date</th>
-                                <th>Status</th>
-                                <th>Action</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {(contactList || []).map((data, index) => (
-                                <tr key={index}>
-                                  <td>{index + 1}</td>
-                                  <td>{data.userName_en}</td>
-                                  <td>{data.Email}</td>
-                                  <td>{data.subject}</td>
-                                  <td>{data?.description?.slice(0, 20)}...</td>
-                                  <td>{data?.createdAt?.slice(0, 10)}</td>
-                                  <td>
-                                    <form className="table_btns d-flex align-items-center">
-                                      <div className="check_toggle">
-                                        <input
-                                          data-bs-toggle="modal"
-                                          data-bs-target="#staticBackdrop2"
-                                          defaultChecked={data?.status}
-                                          type="checkbox"
-                                          name={`check${index}`}
-                                          id={`check${index}`}
-                                          className="d-none"
-                                        />
-                                        <label
-                                          htmlFor={`check${index}`}
-                                        ></label>
-                                      </div>
-                                    </form>
-                                  </td>
-                                  <td>
-                                    <Link
-                                      data-bs-toggle="modal"
-                                      data-bs-target="#staticBackdrop"
-                                      className="comman_btn table_viewbtn me-2"
-                                      to="#"
-                                      onClick={() => {
-                                        handleItem(data);
-                                        setItemId(data?._id);
-                                      }}
-                                    >
-                                      View
-                                    </Link>
-                                    <Link
-                                      className="comman_btn2 table_viewbtn"
-                                      to="#"
-                                      onClick={() => {
-                                        Swal.fire({
-                                          title: "Are you sure?",
-                                          text: "You won't be able to revert this!",
-                                          icon: "warning",
-                                          showCancelButton: true,
-                                          confirmButtonColor: "#3085d6",
-                                          cancelButtonColor: "#d33",
-                                          confirmButtonText: "Yes, delete it!",
-                                        }).then((result) => {
-                                          if (result.isConfirmed) {
-                                            deleteContact(data?._id);
-                                            Swal.fire(
-                                              "Deleted!",
-                                              `${data?.userName_en}  item has been deleted.`,
-                                              "success"
-                                            ).then(() => {
-                                              // fetchInformationList();
-                                            });
-                                          }
-                                        });
-                                      }}
-                                    >
-                                      Delete
-                                    </Link>
-                                  </td>
-                                </tr>
-                              ))}
-                            </tbody>
-                          </table>
-                        </div>
-                      </div>
-                    </div>
                   </div>
                 </div>
               </div>
@@ -468,7 +443,7 @@ function ContactUs() {
             </div>
             <div className="modal-body py-4">
               <div className="chatpart_main">
-                <p>{viewContact?.description}</p>
+                {/* <p>{viewContact?.description}</p> */}
               </div>
             </div>
           </div>

@@ -1457,6 +1457,27 @@ export const PostApi = createApi({
         };
       },
     }),
+    // getUseFuldata: builder.mutation({
+    //   query: (body) => {
+    //     const { ecomAdmintoken } = body;
+    //     return {
+    //       url: "api/admin/getContactList",
+    //       method: "get",
+    //       headers: {
+    //         "x-auth-token-admin": ecomAdmintoken,
+    //       },
+    //     };
+    //   },
+    // }),
+    getUseFuldata: builder.query({
+      query: ({ ecomAdmintoken }) => ({
+        url: "api/admin/getContactList",
+        method: "get",
+        headers: {
+          "x-auth-token-admin": ecomAdmintoken,
+        },
+      }),
+    }),
     attributesList: builder.mutation({
       query: (body) => {
         const { ecomAdmintoken, id } = body;
@@ -1595,6 +1616,16 @@ export const PostApi = createApi({
     createAttribute: builder.mutation({
       query: ({ alldata, ecomAdmintoken }) => ({
         url: `admin/category/attribute/createAttribute`,
+        method: "POST",
+        body: alldata,
+        headers: {
+          "x-auth-token-admin": ecomAdmintoken,
+        },
+      }),
+    }),
+    createUseFullInfo: builder.mutation({
+      query: ({ alldata, ecomAdmintoken }) => ({
+        url: "api/admin/createlink",
         method: "POST",
         body: alldata,
         headers: {
@@ -1812,4 +1843,7 @@ export const {
   useGetAdminDataQuery,
   useChangePasswordMutation,
   useCreateInventoryMutation,
+  useCreateUseFullInfoMutation,
+  useGetUseFuldataMutation,
+  useGetUseFuldataQuery,
 } = PostApi;
