@@ -506,12 +506,12 @@ function CategoryManagement(props) {
                                         //   message:
                                         //     "Special Character not allowed!",
                                         // },
-                                        pattern: {
-                                          value:
-                                            /^[\u0600-\u06FF\s.'",\-()&$#!@%*?<>{}[\]]{1,}[\.]{0,1}[\u0600-\u06FF\s.'",\-()&$#!@%*?<>{}[\]]{0,}$/,
-                                          message:
-                                            "Special characters allowed except underscore (_)",
-                                        },
+                                        // pattern: {
+                                        //   value:
+                                        //     /^[\u0600-\u06FF\s.'",\-()&$#!@%*?<>{}[\]]{1,}[\.]{0,1}[\u0600-\u06FF\s.'",\-()&$#!@%*?<>{}[\]]{0,}$/,
+                                        //   message:
+                                        //     "Special characters allowed except underscore (_)",
+                                        // },
                                         maxLength: {
                                           value: 100,
                                           message:
@@ -528,7 +528,13 @@ function CategoryManagement(props) {
 
                                   <div className="form-group mb-0 col choose_file position-relative">
                                     <span>Upload Image</span>
-                                    <label htmlFor="uploadImage">
+                                    <label
+                                      htmlFor="uploadImage"
+                                      style={{
+                                        marginTop: "-1px",
+                                        height: "50px",
+                                      }}
+                                    >
                                       <i className="fal fa-camera me-1"></i>
                                       Choose File{" "}
                                     </label>

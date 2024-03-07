@@ -54,7 +54,7 @@ function SubCategory(props) {
     nameEn: "",
     nameAr: "",
     categoryId1: "",
-    uploadImage: null,
+    uploadImage1: null,
   });
   const [searchQuery, setSearchQuery] = useState("");
   const [startDate1, setStartDate1] = useState("");
@@ -77,7 +77,7 @@ function SubCategory(props) {
     console.log("edit category value:  ", value);
   };
   const handleFileChange1 = (e, key) => {
-    setCategory({ ...category, uploadImage: e.target.files[0] });
+    setCategory({ ...category, uploadImage1: e.target.files[0] });
   };
 
   const onFileSelection = (e, key) => {
@@ -473,7 +473,7 @@ function SubCategory(props) {
                 <div className="form-group mb-0 col choose_file position-relative">
                   <span>Upload Image</span>
                   <label
-                    htmlFor="uploadImage"
+                    htmlFor="uploadImage1"
                     style={{ marginTop: "-1px", height: "50px" }}
                   >
                     <i className="fal fa-camera me-1"></i>
@@ -482,14 +482,14 @@ function SubCategory(props) {
                   <input
                     type="file"
                     // className="form-control"
-                    name="uploadImage"
-                    id="uploadImage"
+                    name="uploadImage1"
+                    id="uploadImage1"
                     className={classNames("form-control", {
                       "is-invalid":
-                        errors.uploadImage && !subCategory.subCategoryPic,
+                        errors.uploadImage1 && !subCategory.subCategoryPic,
                     })}
-                    // id="uploadImage"
-                    {...register("uploadImage", {
+                    // id="uploadImage1"
+                    {...register("uploadImage1", {
                       required: "Image required!",
                     })}
                     // style={{
@@ -508,9 +508,9 @@ function SubCategory(props) {
                   </div>
                 </div>
               </div>
-              {errors.uploadImage && (
+              {errors.uploadImage1 && (
                 <div className="invalid-feedback fw-bold">
-                  {errors.uploadImage.message}*
+                  {errors.uploadImage1.message}*
                 </div>
               )}
               <div className="form-group col-auto">
@@ -741,7 +741,7 @@ function SubCategory(props) {
                     // defaultValue={props?.newCategory?.categoryPic}
                     name="upload_video"
                     id="upload_video"
-                    onChange={(e) => handleFileChange(e, "uploadImage")}
+                    onChange={(e) => handleFileChange(e, "uploadImage1")}
                   />
                 </div> */}
                 <div className="form-group mb-0 col-auto">
