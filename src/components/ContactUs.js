@@ -9,18 +9,22 @@ import {
   useGetContactListQuery,
   useGetUseFuldataMutation,
   useGetUseFuldataQuery,
+  useUpdateContactMutation,
 } from "../services/Post";
 import { useCreateContactMutation } from "../services/Post";
 import { useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import classNames from "classnames";
+import { Spinner } from "react-bootstrap";
 
 function ContactUs() {
+  const [loader, setLoader] = useState(false);
   const ecomAdmintoken = useSelector((data) => data?.local?.token);
   const ml = useSelector((data) => data?.local?.header);
 
   const [deleteContact] = useDeleteContactMutation();
   const [createContact] = useCreateUseFullInfoMutation();
+  const [updateContact] = useUpdateContactMutation();
   const { data: getContact, refetch: fetchContactData } = useGetUseFuldataQuery(
     { ecomAdmintoken }
   );
@@ -34,7 +38,7 @@ function ContactUs() {
 
   useEffect(() => {
     if (getContact) {
-      const response = getContact?.results?.list?.[0];
+      const response = getContact?.results?.details?.[0];
       reset({
         mobileNumber: response?.mobileNumber,
         email: response?.email,
@@ -43,25 +47,14 @@ function ContactUs() {
         telegramLink: response?.telegramLink,
         youtubeLink: response?.youtubeLink,
         linkedinLink: response?.linkedInLink,
+        appstoreLink: response?.appStoreLink,
+        playstoreLink: response?.playStoreLink,
       });
     }
   }, [getContact]);
 
-  const resData = getContact?.results?.list?.[0];
+  const resData = getContact?.results?.details?.[0];
 
-  console.log("getContact", getContact);
-
-  // const handleContctItem = (item) => {
-  //   const res = getContact({ ecomAdmintoken });
-  //   // setContactList(contactListdata?.results?.list);
-  //   console.log("res", res);
-  //   const response = res?.results?.list?.[0];
-  //   if (response) {
-  //     reset({
-  //       mobileNumber: response?.mobileNumber,
-  //     });
-  //   }
-  // };
   const handleSaveChanges = async (data) => {
     // e.preventDefault();
     const alldata = {
@@ -72,15 +65,20 @@ function ContactUs() {
       ...(data?.instagramLink && { instagramLink: data.instagramLink }),
       ...(data?.linkedinLink && { linkedInLink: data.linkedinLink }),
       ...(data?.youtubeLink && { youtubeLink: data.youtubeLink }),
-      ...(data?.playstoreLink && { playstoreLink: data.playstoreLink }),
-      ...(data?.appstoreLink && { appstoreLink: data.appstoreLink }),
+      ...(data?.playstoreLink && { playStoreLink: data.playstoreLink }),
+      ...(data?.appstoreLink && { appStoreLink: data.appstoreLink }),
     };
-
-    const res = await createContact({ alldata, ecomAdmintoken });
+    setLoader(true);
+    const res = resData
+      ? await updateContact({ alldata, id: resData?._id, ecomAdmintoken })
+      : await createContact({ alldata, ecomAdmintoken });
+    setLoader(false);
     if (res) {
       Swal.fire({
-        title: "Changes Saved",
-        text: "The Contact has been created successfully.",
+        title: resData ? "Contact Updated!" : "Contact Saved",
+        text: `The Contact has been ${
+          resData ? "updated" : "created"
+        }  successfully.`,
         icon: "success",
         confirmButtonText: "OK",
       }).then((result) => {
@@ -406,8 +404,12 @@ function ContactUs() {
                           className="comman_btn2"
                           // style={{ marginLeft: "72vh" }}
                           type="submit"
+                          disabled={loader ? true : ""}
+                          style={{
+                            cursor: loader ? "not-allowed" : "pointer",
+                          }}
                         >
-                          {resData ? "Update" : "Save"}
+                          {loader ? <Spinner /> : resData ? "Update" : "Save"}
                         </button>
                       </div>
                     </form>

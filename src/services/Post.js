@@ -858,6 +858,20 @@ export const PostApi = createApi({
         };
       },
     }),
+    updateContact: builder.mutation({
+      query: (body) => {
+        const { id, ecomAdmintoken, alldata } = body;
+
+        return {
+          url: `api/admin/update-contact/${id}`,
+          method: "PATCH",
+          body: alldata,
+          headers: {
+            "x-auth-token-admin": ecomAdmintoken,
+          },
+        };
+      },
+    }),
     updateCategory: builder.mutation({
       query: ({ alldata, itemId, ecomAdmintoken }) => ({
         url: `admin/category/category/update/${itemId}`,
@@ -1471,7 +1485,7 @@ export const PostApi = createApi({
     // }),
     getUseFuldata: builder.query({
       query: ({ ecomAdmintoken }) => ({
-        url: "api/admin/getContactList",
+        url: "api/admin/getDetails",
         method: "get",
         headers: {
           "x-auth-token-admin": ecomAdmintoken,
@@ -1846,4 +1860,5 @@ export const {
   useCreateUseFullInfoMutation,
   useGetUseFuldataMutation,
   useGetUseFuldataQuery,
+  useUpdateContactMutation,
 } = PostApi;
