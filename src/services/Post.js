@@ -1565,7 +1565,7 @@ export const PostApi = createApi({
     }),
     createProduct: builder.mutation({
       query: ({ alldata, ecomAdmintoken }) => ({
-        url: `admin/product/createProduct`,
+        url: "admin/category/product/createProduct",
         method: "POST",
         body: alldata,
         headers: {
