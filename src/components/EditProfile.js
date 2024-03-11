@@ -29,8 +29,7 @@ function EditProfile() {
   const [counter, setCounter] = useState(30);
   const [intervalId, setIntervalId] = useState(null);
   const navigate = useNavigate();
-  axios.defaults.headers.common["x-auth-token-user"] =
-    localStorage.getItem("token");
+
   const handleFileChange = (e, key) => {
     setFormData({ ...formData, [key]: e.target.files[0] });
   };
