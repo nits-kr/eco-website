@@ -1,11 +1,25 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
 // import { useGetTransactionListDetailsQuery } from "../services/Post";
 import { useGetTransactionListDetailsMutation } from "../services/Post";
 import Sidebar from "./Sidebar";
+import { useSelector } from "react-redux";
 function TransactionDetails() {
-  const transactionDetail = useGetTransactionListDetailsMutation();
+  const ecomAdmintoken = useSelector((data) => data?.local?.token);
+  const [transactionDetail] = useGetTransactionListDetailsMutation();
   console.log("transactionDetail", transactionDetail);
+  const { id } = useParams();
+  console.log(id);
+  useEffect(() => {
+    if (ecomAdmintoken) {
+      handleTransListDetails();
+    }
+  }, [ecomAdmintoken]);
+
+  const handleTransListDetails = async () => {
+    const res = await transactionDetail({ id, ecomAdmintoken });
+    console.log("res brand cate", res?.data?.results?.detailsData);
+  };
   return (
     <>
       <Sidebar />

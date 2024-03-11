@@ -377,6 +377,20 @@ export const PostApi = createApi({
         };
       },
     }),
+    getTransList: builder.mutation({
+      query: (body) => {
+        const { ecomAdmintoken, ...data } = body;
+
+        return {
+          url: "api/admin/listTranstaction",
+          method: "post",
+          body: data,
+          headers: {
+            "x-auth-token-admin": ecomAdmintoken,
+          },
+        };
+      },
+    }),
     // getBrandList: builder.query({
     //   query: ({ ecomAdmintoken }) => ({
     //     url: "admin/product/brand-list",
@@ -677,9 +691,12 @@ export const PostApi = createApi({
       }),
     }),
     getTransactionListDetails: builder.mutation({
-      query: (id) => ({
-        url: `admin/transacation/details/${id}`,
+      query: ({ ecomAdmintoken, id }) => ({
+        url: `api/admin/details/${id}`,
         method: "post",
+        headers: {
+          "x-auth-token-admin": ecomAdmintoken,
+        },
       }),
     }),
     createOrder: builder.mutation({
@@ -1861,4 +1878,5 @@ export const {
   useGetUseFuldataMutation,
   useGetUseFuldataQuery,
   useUpdateContactMutation,
+  useGetTransListMutation,
 } = PostApi;

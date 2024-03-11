@@ -560,7 +560,7 @@ function App() {
           <Route
             exact
             className="active"
-            path="/transactionDetails"
+            path="/transactionDetails/:id"
             element={
               loginType !== "Admin" ? (
                 isAccessAllowed("transaction") ? (

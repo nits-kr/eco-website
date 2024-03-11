@@ -3,7 +3,10 @@ import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 import axios from "axios";
 
-import { useGetTransactionListQuery } from "../services/Post";
+import {
+  useGetTransListMutation,
+  useGetTransactionListQuery,
+} from "../services/Post";
 // import { useGetTransactionListDetailsQuery } from "../services/Post";
 import { useGetTransactionListDetailsMutation } from "../services/Post";
 import Sidebar from "./Sidebar";
@@ -14,24 +17,41 @@ function TransactionManagement() {
   const ecomAdmintoken = useSelector((data) => data?.local?.token);
   const ml = useSelector((data) => data?.local?.header);
 
-  const { data, isLoading, isError } = useGetFileQuery("file-id");
-  const { data: transactionList } = useGetTransactionListQuery({
-    ecomAdmintoken,
-  });
+  const { data } = useGetFileQuery("file-id");
+
   const [transactionListItems, setTransactionListItems] = useState([]);
   const [getTransactionDetails] = useGetTransactionListDetailsMutation();
+  const [transListdata] = useGetTransListMutation();
   const [startDate, setStartDate] = useState("");
   const [startDate1, setStartDate1] = useState("");
   const [endDate, setEndDate] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [categoryListData, setCategoryListData] = useState([]);
-  console.log("getTransactionDetails", getTransactionDetails);
+  const [transList, setTransListData] = useState([]);
+  // console.log("getTransactionDetails", getTransactionDetails);
 
   useEffect(() => {
-    const reversedList =
-      transactionList?.data?.results?.statusData?.slice().reverse() ?? [];
-    setCategoryListData(reversedList);
-  }, [transactionList]);
+    if (ecomAdmintoken) {
+      handleTransList();
+    }
+  }, [ecomAdmintoken, searchQuery, startDate1]);
+
+  const handleTransList = async () => {
+    const data = {
+      from: startDate,
+      to: endDate,
+      paymentIntent: searchQuery,
+      ecomAdmintoken: ecomAdmintoken,
+    };
+    const res = await transListdata(data);
+    console.log("res brand cate", res);
+    setTransListData(res?.data?.results?.transactions);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    handleTransList();
+  };
 
   const handleDownload = () => {
     if (data) {
@@ -108,7 +128,7 @@ function TransactionManagement() {
                           style={{ width: "100%" }}
                         >
                           {" "}
-                          Orders{" "}
+                          Transactions{" "}
                         </button>
                         {/* <button
                           className="nav-link"
@@ -137,13 +157,8 @@ function TransactionManagement() {
                             <form
                               className="form-design py-4 px-3 help-support-form row align-items-end justify-content-between"
                               action=""
-                              // onSubmit={handleSearch}
+                              onSubmit={handleSubmit}
                             >
-                              {/* <div className="form-group mb-0 col position-relative percent_mark">
-                                <label htmlFor="">Commission</label>
-                                <input type="text" className="form-control" />
-                                <span>%</span>
-                              </div> */}
                               <div className="form-group mb-0 col-5">
                                 <label htmlFor="">From</label>
                                 <input
@@ -168,13 +183,11 @@ function TransactionManagement() {
                                 <button
                                   className="comman_btn2"
                                   disabled={startDate > endDate}
+                                  // onClick={(e) => handleProductList(e)}
                                 >
                                   Search
                                 </button>
                               </div>
-                              {/* <div className="form-group mb-0 col-auto">
-                                <button className="comman_btn2">Save</button>
-                              </div> */}
                             </form>
                             <div className="row">
                               <div className="col-12 comman_table_design px-0">
@@ -186,39 +199,35 @@ function TransactionManagement() {
                                         <th>Date</th>
                                         <th>Order ID</th>
                                         <th>Buyer Name</th>
-                                        <th>Cart Total</th>
+                                        <th>Grand Total</th>
                                         <th>Payment Intent</th>
                                         <th>Order Status</th>
-                                        {/* <th>Action</th> */}
+                                        <th>Action</th>
                                       </tr>
                                     </thead>
                                     <tbody>
-                                      {categoryListData?.map((item, index) => {
+                                      {transList?.map((item, index) => {
                                         return (
                                           <tr key={index}>
-                                            <td>1</td>
+                                            <td>{index + 1} </td>
                                             <td>
                                               {item?.createdAt?.slice(0, 10)}
                                             </td>
 
                                             <td> {item?._id} </td>
                                             <td> {item?.user_Id?.userName} </td>
-                                            <td> {item?.cartsTotal} </td>
+                                            <td> {item?.grandTotal} </td>
                                             <td> {item?.paymentIntent} </td>
-                                            <td> {item?.orderStatus} </td>
-                                            {/* <td>
+                                            <td> {item?.status} </td>
+                                            <td>
                                               <Link
                                                 className="comman_btn2 table_viewbtn"
-                                                to="/transactionDetails"
-                                                onClick={() =>
-                                                  getTransactionDetails(
-                                                    item?._id
-                                                  )
-                                                }
+                                                // to="/transactionDetails"
+                                                to={`/order-details/${item?._id}`}
                                               >
                                                 View
                                               </Link>
-                                            </td> */}
+                                            </td>
                                           </tr>
                                         );
                                       })}
