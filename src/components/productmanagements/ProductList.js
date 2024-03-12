@@ -25,33 +25,33 @@ import { MDBDataTable } from "mdbreact";
 import { Button } from "rsuite";
 import { setProductId } from "../../app/localSlice";
 import { Spinner } from "react-bootstrap";
+import Pagination from "../paginations/Pagination";
 
 function ProductList(props) {
   const ecomAdmintoken = useSelector((data) => data?.local?.token);
   const ml = useSelector((data) => data?.local?.header);
-  // const { data: productLists, refetch: productListsData } =
-  //   useGetProductListQuery({ ecomAdmintoken });
+  const localPage = useSelector((data) => data?.local?.page);
+
+  const [selectedRowsPerPage, setSelectedRowsPerPage] = useState(null);
 
   const [productLists] = useGetProductListSearchMutation();
   const [uploadInvent] = useCreateInventoryMutation();
 
   const [loading, setLoading] = useState(false);
-  const [selectedProducts, setSelectedProducts] = useState([]);
-  const [userCounts, setUserCounts] = useState(0);
-  const [recentOrderList, setRecentOrderList] = useState([]);
+
   const [startDate, setStartDate] = useState("");
-  const [startDate1, setStartDate1] = useState("");
+
   const [endDate, setEndDate] = useState("");
   const [loader2, setLoader2] = useState(false);
 
   //   const [searchQuery, setSearchQuery] = useState("");
   const [deleteProductList, response] = useDeleteProductListMutation();
   const [addReccomded] = useAddReccomdedMutation();
-  const [editProductList] = useEditProductListMutation();
-  const [productName2, setProductName2] = useState("");
-  //   const [loading, setLoading] = useState(false);
+
   const [searchQuery, setSearchQuery] = useState("");
   const [productList, setProductList] = useState([]);
+  const [totalItems, setTotalItems] = useState("");
+
   const [selectAll, setSelectAll] = useState(false);
   const importInput = document.getElementById("fileID");
 
@@ -59,6 +59,11 @@ function ProductList(props) {
   const [copiedSlug, setCopiedSlug] = useState(null);
   const [impFile, setImpFile] = useState([]);
   const [set, setSet] = useState(true);
+
+  const [goToPageInput, setGoToPageInput] = useState("");
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
 
   const [ux, setUx] = useState("");
   const [uE, setUE] = useState("");
@@ -88,8 +93,6 @@ function ProductList(props) {
     const formData = new FormData();
     formData.append("file ", impFile);
     const res = await uploadInvent({ formData, ecomAdmintoken });
-
-    console.log("res invent", res);
 
     setLoader2(false);
 
@@ -141,68 +144,17 @@ function ProductList(props) {
     }
   };
 
-  const [product, setProduct] = useState({
-    columns: [
-      {
-        label: "S.NO.",
-        field: "sn",
-        sort: "asc",
-        width: 150,
-      },
-
-      {
-        label: "PRODUCT IMAGE",
-        field: "pic",
-        sort: "asc",
-        width: 150,
-      },
-
-      {
-        label: "PRODUCT NAME",
-        field: "product_en",
-        sort: "asc",
-        width: 100,
-      },
-
-      {
-        label: "CATEGORY",
-        field: "cate",
-        sort: "asc",
-        width: 100,
-      },
-      {
-        label: "BRAND",
-        field: "brand",
-        sort: "asc",
-        width: 100,
-      },
-      {
-        label: "SLUG",
-        field: "slug",
-        sort: "asc",
-        width: 100,
-      },
-      {
-        label: "RECOMMENDED",
-        field: "status",
-        sort: "asc",
-        width: 100,
-      },
-      {
-        label: "ACTION",
-        field: "action",
-        sort: "asc",
-        width: 100,
-      },
-    ],
-    rows: [],
-  });
-
   useEffect(() => {
     if (ecomAdmintoken) {
       handleProductList();
     }
-  }, [ecomAdmintoken, searchQuery]);
+  }, [
+    ecomAdmintoken,
+    searchQuery,
+    localPage,
+    selectedRowsPerPage,
+    goToPageInput,
+  ]);
 
   const handleProductList = async (e) => {
     const data = {
@@ -210,112 +162,21 @@ function ProductList(props) {
       to: endDate,
       search: searchQuery,
       ecomAdmintoken: ecomAdmintoken,
-      pageSize: 100,
+      pageSize:
+        selectedRowsPerPage !== null ? parseInt(selectedRowsPerPage) : 10,
+      page: parseInt(goToPageInput),
     };
+    setLoading(true);
     const res = await productLists(data);
-
+    setLoading(false);
     setProductList(res?.data?.results?.list);
+    setTotalItems(res?.data?.results?.totalPages);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     handleProductList();
   };
-
-  useEffect(() => {
-    if (productList) {
-      // setProductList(productLists?.results?.list);
-      const newRows = [];
-
-      productList?.map((list, index) => {
-        const returnData = {};
-        returnData.sn = index + 1 + ".";
-
-        returnData.product_en = (
-          <div
-            className="col-12"
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "left",
-            }}
-          >
-            <strong className="text-dark-emphasis">
-              {list?.productName_en?.toUpperCase()?.length > 20
-                ? list?.productName_en.toUpperCase().slice(0, 20) + "..."
-                : list?.productName_en?.toUpperCase() || "N/A"}
-            </strong>
-          </div>
-        );
-        returnData.cate = <strong>{list?.category_Id?.categoryName_en}</strong>;
-        returnData.brand = list?.brand_Id?.brandName_en
-          ? list?.brand_Id?.brandName_en
-          : "None";
-        returnData.slug = (
-          <div
-            style={{
-              cursor: "pointer",
-              color: "blue",
-            }}
-            title="Copy Slug"
-            onClick={() => copyToClipboard(list.slug)}
-          >
-            {displaySlug(list.slug)}{" "}
-            <span className="text-secondary">
-              <FontAwesomeIcon icon={faCopy} />
-            </span>
-          </div>
-        );
-        returnData.pic = (
-          <div className="">
-            <img
-              src={list?.varient?.product_Pic?.[0]}
-              className="avatar lg rounded"
-              alt=""
-              style={{
-                width: "10vh",
-                height: "10vh",
-              }}
-            />
-          </div>
-        );
-        returnData.status = (
-          <strong>
-            <input
-              type="checkbox"
-              name={`checkbox-${list.productName_en}`}
-              id={list._id}
-              defaultChecked={list?.Recommended === true ? "checked" : ""}
-              onChange={() => handleCheckboxChange(list._id)}
-            />
-          </strong>
-        );
-        returnData.action = (
-          <>
-            <Link
-              className="comman_btn table_viewbtn"
-              to="/product-management"
-              state={{ id: list?._id }}
-              onClick={() => dispatch(setProductId(list?._id))}
-            >
-              View
-            </Link>
-            <Link
-              className="comman_btn2 table_viewbtn ms-2"
-              to="#"
-              onClick={() => {
-                handleDeleteProduct(list._id, list);
-              }}
-            >
-              Delete
-            </Link>
-          </>
-        );
-        newRows.push(returnData);
-      });
-      setProduct({ ...product, rows: newRows });
-    }
-  }, [productList]);
 
   const copyToClipboard = async (text) => {
     if (navigator.clipboard) {
@@ -349,7 +210,7 @@ function ProductList(props) {
 
   const handleCheckboxChange = async (productId) => {
     const res = await addReccomded({ productId, ecomAdmintoken });
-    console.log("res", res);
+
     if (res?.data?.message === "Added to recommendation") {
       toast.success("Item added to recommended list!");
     } else {
@@ -378,6 +239,40 @@ function ProductList(props) {
         });
       }
     });
+  };
+
+  const onPageChange = (page) => {
+    setCurrentPage(page);
+  };
+
+  const startIndex = (currentPage - 1) * itemsPerPage;
+
+  const currentItems = productList?.slice(
+    startIndex,
+    startIndex + itemsPerPage
+  );
+
+  const handleRowsPerPageChange = (event) => {
+    setGoToPageInput("");
+    setSelectedRowsPerPage(null);
+    const selectedValue = event.target.value;
+    setSelectedRowsPerPage(selectedValue);
+
+    const parsedValue = parseInt(selectedValue, 10);
+    setItemsPerPage(isNaN(parsedValue) ? 2 : parsedValue);
+  };
+
+  const handleGoToPage = () => {
+    const pageNumber = parseInt(goToPageInput, 10);
+    if (
+      !isNaN(pageNumber) &&
+      pageNumber > 0 &&
+      pageNumber <= Math.ceil(productList.length / itemsPerPage)
+    ) {
+      setCurrentPage(pageNumber);
+    } else {
+      console.error("Invalid page number");
+    }
   };
 
   return (
@@ -486,22 +381,14 @@ function ProductList(props) {
                       </div>
                     </form>
                     {loading ? (
-                      <Spinner />
+                      <div className="d-flex align-items-center justify-content-center mb-3">
+                        <Spinner />
+                      </div>
                     ) : (
                       <div className="row">
                         <div className="col-12 comman_table_design px-0">
                           <div className="table-responsive">
-                            <MDBDataTable
-                              bordered
-                              displayEntries={false}
-                              className="mt-0"
-                              hover
-                              data={product}
-                              noBottomColumns
-                              sortable
-                              searching={false}
-                            />
-                            {/* <table className="table mb-0">
+                            <table className="table mb-0">
                               <thead>
                                 <tr>
                                   <th>Product Image</th>
@@ -515,21 +402,21 @@ function ProductList(props) {
                                 </tr>
                               </thead>
                               <tbody>
-                                {(productList || [])?.map((product, index) => (
+                                {(productList || [])?.map((list, index) => (
                                   <tr key={index}>
                                     <td>
                                       {" "}
-                                      <img
-                                        src={
-                                          product?.addVarient[0]?.product_Pic[0]
-                                        }
-                                        className="avatar lg rounded"
-                                        alt=""
-                                        style={{
-                                          width: "10vh",
-                                          height: "10vh",
-                                        }}
-                                      />{" "}
+                                      <div className="">
+                                        <img
+                                          src={list?.varient?.product_Pic?.[0]}
+                                          className="avatar lg rounded"
+                                          alt=""
+                                          style={{
+                                            width: "10vh",
+                                            height: "10vh",
+                                          }}
+                                        />
+                                      </div>
                                     </td>
                                     <td>
                                       <div
@@ -541,12 +428,12 @@ function ProductList(props) {
                                         }}
                                       >
                                         <strong className="text-dark-emphasis">
-                                          {product?.productName_en?.toUpperCase()
+                                          {list?.productName_en?.toUpperCase()
                                             ?.length > 20
-                                            ? product.productName_en
+                                            ? list?.productName_en
                                                 .toUpperCase()
                                                 .slice(0, 20) + "..."
-                                            : product.productName_en?.toUpperCase() ||
+                                            : list?.productName_en?.toUpperCase() ||
                                               "N/A"}
                                         </strong>
                                       </div>
@@ -554,13 +441,13 @@ function ProductList(props) {
                                     <td>
                                       {" "}
                                       <strong>
-                                        {product?.category_Id?.categoryName_en}
+                                        {list?.category_Id?.categoryName_en}
                                       </strong>
                                     </td>
 
                                     <td>
-                                      {product?.brand_Id?.brandName_en
-                                        ? product?.brand_Id?.brandName_en
+                                      {list?.brand_Id?.brandName_en
+                                        ? list?.brand_Id?.brandName_en
                                         : "None"}
                                     </td>
                                     <td
@@ -569,11 +456,9 @@ function ProductList(props) {
                                         color: "blue",
                                       }}
                                       title="Copy Slug"
-                                      onClick={() =>
-                                        copyToClipboard(product.slug)
-                                      }
+                                      onClick={() => copyToClipboard(list.slug)}
                                     >
-                                      {displaySlug(product.slug)}{" "}
+                                      {displaySlug(list.slug)}{" "}
                                       <span className="text-secondary">
                                         <FontAwesomeIcon icon={faCopy} />
                                       </span>
@@ -582,44 +467,101 @@ function ProductList(props) {
                                       <strong>
                                         <input
                                           type="checkbox"
-                                          name={`checkbox-${product.productName_en}`}
-                                          id={product._id}
+                                          name={`checkbox-${list.productName_en}`}
+                                          id={list._id}
                                           defaultChecked={
-                                            product?.Recommended === true
+                                            list?.Recommended === true
                                               ? "checked"
                                               : ""
                                           }
                                           onChange={() =>
-                                            handleCheckboxChange(product._id)
+                                            handleCheckboxChange(list._id)
                                           }
                                         />
                                       </strong>
                                     </td>
                                     <td>
-                                      <Link
-                                        className="comman_btn table_viewbtn"
-                                        to="/product-management"
-                                        state={{ id: product?._id }}
-                                      >
-                                        View
-                                      </Link>
-                                      <Link
-                                        className="comman_btn2 table_viewbtn ms-2"
-                                        to="#"
-                                        onClick={() => {
-                                          handleDeleteProduct(
-                                            product._id,
-                                            product
-                                          );
-                                        }}
-                                      >
-                                        Delete
-                                      </Link>
+                                      <>
+                                        <Link
+                                          className="comman_btn table_viewbtn"
+                                          to="/product-management"
+                                          state={{ id: list?._id }}
+                                          onClick={() =>
+                                            dispatch(setProductId(list?._id))
+                                          }
+                                        >
+                                          View
+                                        </Link>
+                                        <Link
+                                          className="comman_btn2 table_viewbtn ms-2"
+                                          to="#"
+                                          onClick={() => {
+                                            handleDeleteProduct(list._id, list);
+                                          }}
+                                        >
+                                          Delete
+                                        </Link>
+                                      </>
                                     </td>
                                   </tr>
                                 ))}
                               </tbody>
-                            </table> */}
+                            </table>
+                            <div
+                              className="row tables_bottom "
+                              style={{
+                                display:
+                                  productList?.length > 0 ? "flex" : "none",
+                              }}
+                            >
+                              <div className="col-auto">
+                                <div className="tables_bottom_left">
+                                  <span>Rows per page</span>
+                                  <select
+                                    className="form-select"
+                                    aria-label="Default select example"
+                                    value={selectedRowsPerPage}
+                                    onChange={handleRowsPerPageChange}
+                                    style={{ width: "75px" }}
+                                  >
+                                    <option value="" disabled>
+                                      Select
+                                    </option>
+                                    <option value="10">10</option>
+                                    <option value="20">20</option>
+                                    <option value="30">30</option>
+                                    <option value="40">40</option>
+                                  </select>
+                                </div>
+                              </div>
+                              <div className="col text-center">
+                                <Pagination
+                                  totalItems={productList?.length * totalItems}
+                                  itemsPerPage={itemsPerPage}
+                                  onPageChange={onPageChange}
+                                  goToPageInput={goToPageInput}
+                                />
+                              </div>
+                              <div className="col-auto">
+                                <div className="tables_bottom_left">
+                                  <span>Go to page</span>
+                                  <input
+                                    className="form-control"
+                                    type="text"
+                                    value={goToPageInput}
+                                    onChange={(e) =>
+                                      setGoToPageInput(e.target.value)
+                                    }
+                                  />
+                                  <Link to="#" onClick={handleGoToPage}>
+                                    <img
+                                      src="assets/img/arrow_colr.png"
+                                      alt=""
+                                    />
+                                  </Link>
+                                </div>
+                              </div>
+                            </div>
                           </div>
                         </div>
                       </div>

@@ -14,9 +14,6 @@ function Sidebar({ Dash }) {
 
   const { data: adminData } = useGetAdminDataQuery({ ecomAdmintoken });
 
-  console.log("modules", modules);
-  console.log("loginType", loginType);
-
   const [adminDetails, setAdminDetails] = useState("");
 
   useEffect(() => {

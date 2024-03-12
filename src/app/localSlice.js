@@ -11,6 +11,7 @@ export const localSlice = createSlice({
     emailauthecomadmin: localStorage.getItem("emailauthecomadmin") || null,
     productId: localStorage.getItem("productId") || null,
     header: null,
+    page: null,
   },
   reducers: {
     setToken: (state, action) => {
@@ -40,6 +41,9 @@ export const localSlice = createSlice({
     setHeader: (state, action) => {
       state.header = action.payload;
     },
+    setPage: (state, action) => {
+      state.page = action.payload;
+    },
   },
 });
 
@@ -51,5 +55,6 @@ export const {
   setEmailauthecomadmin,
   setHeader,
   setProductId,
+  setPage,
 } = localSlice.actions;
 export default localSlice.reducer;
