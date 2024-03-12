@@ -210,6 +210,7 @@ function ProductList(props) {
       to: endDate,
       search: searchQuery,
       ecomAdmintoken: ecomAdmintoken,
+      pageSize: 100,
     };
     const res = await productLists(data);
 
