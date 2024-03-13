@@ -164,7 +164,7 @@ function ProductList(props) {
       ecomAdmintoken: ecomAdmintoken,
       pageSize:
         selectedRowsPerPage !== null ? parseInt(selectedRowsPerPage) : 10,
-      page: parseInt(goToPageInput),
+      page: localPage || parseInt(goToPageInput),
     };
     setLoading(true);
     const res = await productLists(data);
