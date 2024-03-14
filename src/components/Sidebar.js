@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCog } from "@fortawesome/free-solid-svg-icons";
 import { useDispatch, useSelector } from "react-redux";
 import { useGetAdminDataQuery } from "../services/Post";
-import { setHeader } from "../app/localSlice";
+import { setHeader, setProductId } from "../app/localSlice";
 
 function Sidebar({ Dash }) {
   const ecomAdmintoken = useSelector((data) => data?.local?.token);
@@ -147,7 +147,10 @@ function Sidebar({ Dash }) {
                       <Link
                         className="ms-link "
                         to="/product-management"
-                        onClick={() => toggleSidebar1()}
+                        onClick={() => {
+                          toggleSidebar1();
+                          dispatch(setProductId(""));
+                        }}
                       >
                         <i className="fas fa-cogs"></i>
                         <span>Add New Product</span>
@@ -530,7 +533,10 @@ function Sidebar({ Dash }) {
                         <Link
                           className="ms-link "
                           to="/product-management"
-                          onClick={() => toggleSidebar1()}
+                          onClick={() => {
+                            toggleSidebar1();
+                            dispatch(setProductId(""));
+                          }}
                         >
                           <i className="fas fa-cogs"></i>
                           <span>Add New Product</span>

@@ -1083,6 +1083,16 @@ export const PostApi = createApi({
         },
       }),
     }),
+    updateVarientList: builder.mutation({
+      query: ({ id, alldata, ecomAdmintoken }) => ({
+        url: `api/admin/updateVarient/${id}`,
+        method: "PATCH",
+        body: alldata,
+        headers: {
+          "x-auth-token-admin": ecomAdmintoken,
+        },
+      }),
+    }),
     // editProductList: builder.mutation({
     //   query: (body) => {
     //     console.log("update product", body);
@@ -1417,6 +1427,15 @@ export const PostApi = createApi({
     deleteAnnouncementList: builder.mutation({
       query: ({ id, ecomAdmintoken }) => ({
         url: `api/admin/deleteAnnouncement/${id}`,
+        method: "DELETE",
+        headers: {
+          "x-auth-token-admin": ecomAdmintoken,
+        },
+      }),
+    }),
+    deleteVarient: builder.mutation({
+      query: ({ id, ecomAdmintoken }) => ({
+        url: `api/admin/deleteVarient/${id}`,
         method: "DELETE",
         headers: {
           "x-auth-token-admin": ecomAdmintoken,
@@ -1879,4 +1898,6 @@ export const {
   useGetUseFuldataQuery,
   useUpdateContactMutation,
   useGetTransListMutation,
+  useDeleteVarientMutation,
+  useUpdateVarientListMutation,
 } = PostApi;

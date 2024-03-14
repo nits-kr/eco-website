@@ -11,6 +11,7 @@ import {
   useAttributesListMutation,
   useBrandListMutation,
   useCreateProductMutation,
+  useDeleteVarientMutation,
   useEditProductListMutation,
   useGetCategoryListMutation,
   useGetCategoryListQuery,
@@ -18,6 +19,7 @@ import {
   useProductDetailsMutation,
   useSubCategoryListMutation,
   useSubSubCategoryListMutation,
+  useUpdateVarientListMutation,
   useValueListMutation,
   useValueListforAttributesMutation,
 } from "../../services/Post";
@@ -31,6 +33,7 @@ function Products(props) {
 
   const ecomAdmintoken = useSelector((data) => data?.local?.token);
   const ml = useSelector((data) => data?.local?.header);
+  const productIds = useSelector((data) => data?.local?.productId);
 
   const { data: categoryListdata, refetch: fetchcategoryListData } =
     useGetSelectCategoryListQuery({
@@ -46,6 +49,8 @@ function Products(props) {
   const [addVariant] = useAddNewVariantMutation();
   const [productDetails] = useProductDetailsMutation();
   const [updateProduct] = useEditProductListMutation();
+  const [updateVarient] = useUpdateVarientListMutation();
+  const [deleteVarient] = useDeleteVarientMutation();
 
   const [varientId, setVarientId] = useState("");
   const [loading, setLoading] = useState(false);
@@ -135,15 +140,17 @@ function Products(props) {
       Price: item?.Price,
       oldPrice: item?.oldPrice,
       dollar: item?.dollarPrice,
+      attributeId: item?.attribute_Id?._id,
+      valueId: item?.values_Id?._id,
     });
   };
 
   useEffect(() => {
-    if (id) {
-      handleProductDetails(id);
+    if (productIds) {
+      handleProductDetails(productIds);
       setShowAddButton(true);
     }
-  }, [id]);
+  }, [productIds]);
 
   const [details, setDetails] = useState("");
 
@@ -286,10 +293,12 @@ function Products(props) {
   }, [subSubCategory.categoryId, subSubCategory.categoryId1]);
 
   useEffect(() => {
-    if (subSubCategory.attributeId) {
-      handleGetValues(subSubCategory.attributeId);
+    if (subSubCategory.attributeId || variantDetails) {
+      handleGetValues(
+        subSubCategory.attributeId || variantDetails?.attribute_Id?._id
+      );
     }
-  }, [subSubCategory.attributeId]);
+  }, [subSubCategory.attributeId, varientId]);
   useEffect(() => {
     if (details) {
       handleGetAttributes(details?.category_Id?._id);
@@ -478,16 +487,27 @@ function Products(props) {
     //   });
     //   return;
     // }
-    if (!imageSelected) {
-      if (!varientId) {
-        Swal.fire({
-          title: "Error!",
-          text: "Please upload at least one image.",
-          icon: "error",
-          confirmButtonColor: "#3085d6",
-          confirmButtonText: "OK",
-        });
-      }
+    // if (!imageSelected) {
+    //   if (!varientId) {
+    //     Swal.fire({
+    //       title: "Error!",
+    //       text: "Please upload at least one image.",
+    //       icon: "error",
+    //       confirmButtonColor: "#3085d6",
+    //       confirmButtonText: "OK",
+    //     });
+    //   }
+    //   return;
+    // }
+    if (varientId) {
+    } else if (!imageSelected) {
+      Swal.fire({
+        title: "Error!",
+        text: "Please upload at least one image.",
+        icon: "error",
+        confirmButtonColor: "#3085d6",
+        confirmButtonText: "OK",
+      });
       return;
     }
 
@@ -499,8 +519,11 @@ function Products(props) {
     alldata.append("SKU_ar", data.SKUAr);
     alldata.append("stockQuantity", data.stockQuantity);
 
-    alldata.append("values_Id", data.valueId);
-    alldata.append("attribute_Id", subSubCategory.attributeId);
+    alldata.append("values_Id", data.valueId || variantDetails?.values_Id?._id);
+    alldata.append(
+      "attribute_Id",
+      subSubCategory.attributeId || variantDetails?.attribute_Id?._id
+    );
 
     if (selectedImage && selectedImage.length > 0) {
       selectedImage.forEach((item, index) => {
@@ -525,7 +548,9 @@ function Products(props) {
     setLoader(true);
 
     try {
-      const res = await addVariant({ alldata, ecomAdmintoken, productId });
+      const res = varientId
+        ? await updateVarient({ alldata, ecomAdmintoken, id: varientId })
+        : await addVariant({ alldata, ecomAdmintoken, productId });
       setLoader(false);
 
       if (res) {
@@ -582,6 +607,25 @@ function Products(props) {
       console.error("Clipboard API is not supported.");
       return false;
     }
+  };
+
+  const handleDeleteVarient = async (id, product) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        deleteVarient({ id, ecomAdmintoken });
+        Swal.fire("Deleted!", "item has been deleted.", "success").then(() => {
+          handleProductDetails(id);
+        });
+      }
+    });
   };
 
   return (
@@ -1318,7 +1362,9 @@ function Products(props) {
                               id="attributeId"
                               // value={subSubCategory.valueId}
                               {...register2("attributeId", {
-                                required: "Attribute is Required*",
+                                required: varientId
+                                  ? false
+                                  : "Attribute is Required*",
                               })}
                               onChange={handleInputChange3}
                             >
@@ -1351,12 +1397,22 @@ function Products(props) {
                               name="valueId"
                               id="valueId"
                               // value={subSubCategory.valueId}
-                              onChange={handleInputChange3}
+
                               {...register2("valueId", {
-                                required: "Value is Required*",
+                                required: varientId
+                                  ? false
+                                  : "Value is Required*",
                               })}
+                              onChange={handleInputChange3}
                             >
-                              <option value="">Select Values</option>
+                              {/* <option value="">Select Values</option> */}
+                              <option value="">
+                                {varientId
+                                  ? variantDetails?.values_Id?.valuesName_en ||
+                                    "Select Values"
+                                  : "Select Values"}
+                              </option>
+
                               {Array.isArray(value) &&
                                 value.map((subCategory) => (
                                   <option
@@ -1782,6 +1838,8 @@ function Products(props) {
                                     width: "20px",
                                   }}
                                 />
+                              ) : varientId ? (
+                                "Update"
                               ) : (
                                 "Save"
                               )}
@@ -1822,7 +1880,7 @@ function Products(props) {
                         <th>Value</th>
                         {/* <th>Action</th> */}
 
-                        {/* <th>Action</th> */}
+                        <th>Action</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -1873,7 +1931,7 @@ function Products(props) {
                               {item?.attribute_Id?.attributeName_en || "N/A"}
                             </td>
                             <td>{item?.values_Id?.valuesName_en || "N/A"}</td>
-                            {/* <td>
+                            <td>
                               <>
                                 <Link
                                   className="comman_btn table_viewbtn"
@@ -1886,14 +1944,14 @@ function Products(props) {
                                 <Link
                                   className="comman_btn2 table_viewbtn ms-2"
                                   to="#"
-                                  // onClick={() => {
-                                  //   handleDeleteProduct(item._id, list);
-                                  // }}
+                                  onClick={() => {
+                                    handleDeleteVarient(item._id);
+                                  }}
                                 >
                                   Delete
                                 </Link>
                               </>
-                            </td> */}
+                            </td>
                           </tr>
                         );
                       })}
