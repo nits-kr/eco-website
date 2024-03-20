@@ -22,6 +22,7 @@ import {
   useUpdateVarientListMutation,
   useValueListMutation,
   useValueListforAttributesMutation,
+  useVarientStatusMutation,
 } from "../../services/Post";
 import classNames from "classnames";
 import { useForm } from "react-hook-form";
@@ -51,6 +52,7 @@ function Products(props) {
   const [updateProduct] = useEditProductListMutation();
   const [updateVarient] = useUpdateVarientListMutation();
   const [deleteVarient] = useDeleteVarientMutation();
+  const [updateStatus] = useVarientStatusMutation();
 
   const [varientId, setVarientId] = useState("");
   const [loading, setLoading] = useState(false);
@@ -626,6 +628,45 @@ function Products(props) {
         });
       }
     });
+  };
+
+  const handleCheckboxChange = async (e, varientId) => {
+    e.preventDefault();
+
+    const newStatus = e.target.checked;
+
+    const confirmationResult = await Swal.fire({
+      title: "Confirm Status Change",
+      text: "Do you want to change the status?",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "Yes",
+      cancelButtonText: "No",
+    });
+
+    if (confirmationResult.isConfirmed) {
+      const editStatus = {
+        varientId: varientId,
+        // status: newStatus?.toString(),
+        ecomAdmintoken: ecomAdmintoken,
+      };
+      try {
+        await updateStatus(editStatus);
+
+        Swal.fire({
+          title: "Changes Saved",
+          text: "The Status has been updated successfully.",
+          icon: "success",
+          confirmButtonColor: "#764AE7",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "OK",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            handleProductDetails(productId);
+          }
+        });
+      } catch (error) {}
+    }
   };
 
   return (
@@ -1878,7 +1919,7 @@ function Products(props) {
                         <th>Stock</th>
                         <th>Attribute</th>
                         <th>Value</th>
-                        {/* <th>Action</th> */}
+                        <th>Status</th>
 
                         <th>Action</th>
                       </tr>
@@ -1931,6 +1972,22 @@ function Products(props) {
                               {item?.attribute_Id?.attributeName_en || "N/A"}
                             </td>
                             <td>{item?.values_Id?.valuesName_en || "N/A"}</td>
+                            <td>
+                              <div className="check_toggle">
+                                <input
+                                  className="d-none"
+                                  // defaultChecked={user?.status}
+                                  checked={item?.status === true}
+                                  type="checkbox"
+                                  name={`status_${item?._id}`}
+                                  id={`status_${item?._id}`}
+                                  onChange={(e) =>
+                                    handleCheckboxChange(e, item?._id)
+                                  }
+                                />
+                                <label htmlFor={`status_${item?._id}`}></label>
+                              </div>
+                            </td>
                             <td>
                               <>
                                 <Link

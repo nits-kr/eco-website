@@ -1,29 +1,24 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
-import axios from "axios";
 import Swal from "sweetalert2";
 import Sidebar from "../Sidebar";
 // import Spinner from "../Spinner";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEye, faPencil, faCopy } from "@fortawesome/free-solid-svg-icons";
-import Slider from "react-slick";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
+import { faCopy } from "@fortawesome/free-solid-svg-icons";
+
 import { BiEdit } from "react-icons/bi";
 
 import {
   useAddReccomdedMutation,
   useCreateInventoryMutation,
-  useEditProductListMutation,
   useGetProductListSearchMutation,
 } from "../../services/Post";
 import { useDeleteProductListMutation } from "../../services/Post";
 import { useDispatch, useSelector } from "react-redux";
-import { useGetProductListQuery } from "../../services/Post";
-import { MDBDataTable } from "mdbreact";
+
 import { Button } from "rsuite";
-import { setProductId } from "../../app/localSlice";
+import { setPage, setProductId } from "../../app/localSlice";
 import { Spinner } from "react-bootstrap";
 import Pagination from "../paginations/Pagination";
 
@@ -44,8 +39,7 @@ function ProductList(props) {
   const [endDate, setEndDate] = useState("");
   const [loader2, setLoader2] = useState(false);
 
-  //   const [searchQuery, setSearchQuery] = useState("");
-  const [deleteProductList, response] = useDeleteProductListMutation();
+  const [deleteProductList] = useDeleteProductListMutation();
   const [addReccomded] = useAddReccomdedMutation();
 
   const [searchQuery, setSearchQuery] = useState("");
@@ -55,31 +49,17 @@ function ProductList(props) {
   const [selectAll, setSelectAll] = useState(false);
   const importInput = document.getElementById("fileID");
 
-  const [itemId, setItemId] = useState("");
   const [copiedSlug, setCopiedSlug] = useState(null);
   const [impFile, setImpFile] = useState([]);
   const [set, setSet] = useState(true);
 
   const [goToPageInput, setGoToPageInput] = useState("");
 
-  const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
 
   const [ux, setUx] = useState("");
-  const [uE, setUE] = useState("");
-  const handleSelectAll = () => {
-    setSelectAll(!selectAll);
-  };
 
   const dispatch = useDispatch();
-
-  const sliderSettings = {
-    dots: true,
-    // infinite: true,
-    speed: 500,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-  };
 
   const onFileSelection = (e) => {
     let file = e.target.files[0];
@@ -148,13 +128,7 @@ function ProductList(props) {
     if (ecomAdmintoken) {
       handleProductList();
     }
-  }, [
-    ecomAdmintoken,
-    searchQuery,
-    localPage,
-    selectedRowsPerPage,
-    goToPageInput,
-  ]);
+  }, [ecomAdmintoken, searchQuery, localPage, selectedRowsPerPage]);
 
   const handleProductList = async (e) => {
     const data = {
@@ -164,7 +138,7 @@ function ProductList(props) {
       ecomAdmintoken: ecomAdmintoken,
       pageSize:
         selectedRowsPerPage !== null ? parseInt(selectedRowsPerPage) : 10,
-      page: localPage || parseInt(goToPageInput),
+      page: localPage,
     };
     setLoading(true);
     const res = await productLists(data);
@@ -241,38 +215,12 @@ function ProductList(props) {
     });
   };
 
-  const onPageChange = (page) => {
-    setCurrentPage(page);
-  };
-
-  const startIndex = (currentPage - 1) * itemsPerPage;
-
-  const currentItems = productList?.slice(
-    startIndex,
-    startIndex + itemsPerPage
-  );
-
   const handleRowsPerPageChange = (event) => {
-    setGoToPageInput("");
-    setSelectedRowsPerPage(null);
     const selectedValue = event.target.value;
     setSelectedRowsPerPage(selectedValue);
 
     const parsedValue = parseInt(selectedValue, 10);
     setItemsPerPage(isNaN(parsedValue) ? 2 : parsedValue);
-  };
-
-  const handleGoToPage = () => {
-    const pageNumber = parseInt(goToPageInput, 10);
-    if (
-      !isNaN(pageNumber) &&
-      pageNumber > 0 &&
-      pageNumber <= Math.ceil(productList.length / itemsPerPage)
-    ) {
-      setCurrentPage(pageNumber);
-    } else {
-      console.error("Invalid page number");
-    }
   };
 
   return (
@@ -538,8 +486,6 @@ function ProductList(props) {
                                 <Pagination
                                   totalItems={productList?.length * totalItems}
                                   itemsPerPage={itemsPerPage}
-                                  onPageChange={onPageChange}
-                                  goToPageInput={goToPageInput}
                                 />
                               </div>
                               <div className="col-auto">
@@ -548,12 +494,11 @@ function ProductList(props) {
                                   <input
                                     className="form-control"
                                     type="text"
-                                    value={goToPageInput}
-                                    onChange={(e) =>
-                                      setGoToPageInput(e.target.value)
-                                    }
+                                    onChange={(e) => {
+                                      dispatch(setPage(e.target.value));
+                                    }}
                                   />
-                                  <Link to="#" onClick={handleGoToPage}>
+                                  <Link to="#">
                                     <img
                                       src="assets/img/arrow_colr.png"
                                       alt=""

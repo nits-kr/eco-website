@@ -7,9 +7,6 @@ export const PostApi = createApi({
 
   baseQuery: fetchBaseQuery({
     baseUrl: "https://euser.techgropsedev.com:2087/",
-    // headers: {
-    //   "x-auth-token-admin": localStorage.getItem("token"),
-    // },
   }),
   endpoints: (builder) => ({
     userLogin: builder.mutation({
@@ -161,6 +158,15 @@ export const PostApi = createApi({
     getAdminData: builder.query({
       query: ({ ecomAdmintoken }) => ({
         url: "api/admin/getAdminData",
+        method: "get",
+        headers: {
+          "x-auth-token-admin": ecomAdmintoken,
+        },
+      }),
+    }),
+    getDashBoardData: builder.query({
+      query: ({ ecomAdmintoken }) => ({
+        url: "api/admin/order-statistics",
         method: "get",
         headers: {
           "x-auth-token-admin": ecomAdmintoken,
@@ -1241,6 +1247,15 @@ export const PostApi = createApi({
         },
       }),
     }),
+    varientStatus: builder.mutation({
+      query: ({ varientId, ecoAdminToken }) => ({
+        url: `user/product/product/varientStatus/${varientId}`,
+        method: "PATCH",
+        headers: {
+          "x-auth-token-admin": ecoAdminToken,
+        },
+      }),
+    }),
     valueStatus: builder.mutation({
       query: (body) => {
         console.log("update category", body);
@@ -1900,4 +1915,6 @@ export const {
   useGetTransListMutation,
   useDeleteVarientMutation,
   useUpdateVarientListMutation,
+  useGetDashBoardDataQuery,
+  useVarientStatusMutation,
 } = PostApi;

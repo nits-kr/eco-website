@@ -1,26 +1,18 @@
 import React, { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { setPage } from "../../app/localSlice";
 
-const Pagination = ({
-  totalItems,
-  itemsPerPage,
-  onPageChange,
-  goToPageInput,
-}) => {
+const Pagination = ({ totalItems, itemsPerPage }) => {
+  const localPage = useSelector((data) => data?.local?.page);
   const totalPages = Math.ceil(totalItems / itemsPerPage);
-  const [currentPage, setCurrentPage] = useState(goToPageInput || 1);
+  const [currentPage, setCurrentPage] = useState(localPage);
+
+  console.log("currentPage", currentPage);
+  console.log("localPage", localPage);
+  console.log("totalItems",totalItems);
 
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    onPageChange(currentPage);
-  }, [currentPage, onPageChange]);
-
-  useEffect(() => {
-    setCurrentPage(goToPageInput || 1);
-  }, [goToPageInput]);
 
   const handlePageClick = (page) => {
     setCurrentPage(page);

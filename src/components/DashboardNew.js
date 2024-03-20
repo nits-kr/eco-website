@@ -9,6 +9,7 @@ import DashboardDougnetChart from "./chart/DashboardDougnetChart";
 import Barchart from "./chart/Barchart";
 import DashboardDiscountedChart from "./chart/DashboardDiscountedChart";
 import {
+  useGetDashBoardDataQuery,
   useGetDashboardCountQuery,
   useGetOrderListAllMutation,
   useGetOrderListQuery,
@@ -26,7 +27,9 @@ function DashboardNew(props) {
   const [loading, setLoading] = useState(false);
   const { data: dashboard, refetch: refetchdashboard } =
     useGetDashboardCountQuery({ ecomAdmintoken });
-  // const { data: orderListdata } = useGetOrderListQuery({ ecomAdmintoken });
+  const { data: dashboardData } = useGetDashBoardDataQuery({ ecomAdmintoken });
+
+  const dashMonth = dashboardData?.results?.stats?.month?.[0];
 
   const [orderListdata] = useGetOrderListAllMutation();
 
@@ -487,7 +490,7 @@ function DashboardNew(props) {
                             <div className="canvas_top d-flex align-items-center">
                               <h3>
                                 <span>$</span>
-                                {monthPrice}
+                                {dashMonth?.monthlySale}
                               </h3>
                               <div className="Percent_box ms-2">2.2%</div>
                             </div>
@@ -626,9 +629,9 @@ function DashboardNew(props) {
                                     <Link
                                       title="Click For More"
                                       className="heros"
-                                      data-bs-toggle="modal"
-                                      data-bs-target="#staticBackdrop"
-                                      href="javascript:;"
+                                      // data-bs-toggle="modal"
+                                      // data-bs-target="#staticBackdrop"
+                                      to="/users"
                                     >
                                       <div
                                         style={{
@@ -668,7 +671,7 @@ function DashboardNew(props) {
                             <div className="canvas_top d-flex align-items-center">
                               <h3>
                                 <span>$</span>
-                                {(totalCartsTotal / 12).toFixed(2)}
+                                {dashMonth?.monthlyAverageSale}
                               </h3>
                               <div className="Percent_box ms-2">2.2%</div>
                             </div>
