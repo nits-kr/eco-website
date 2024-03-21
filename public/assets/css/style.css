@@ -2398,6 +2398,28 @@ strong.box_tag_left {
   padding-left: 13px;
 }
 
+.product_showw2 img {
+  /* max-height: 30px; */
+  margin-right: 15px;
+}
+
+.product_showw2 {
+  display: flex;
+  align-items: center;
+  text-align: left;
+}
+
+.product_showw2_iiner a {
+  display: block;
+  font-weight: 600;
+  color: #3d3d3d;
+}
+
+.product_showw2_iiner span {
+  display: block;
+  font-weight: 500;
+  color: #b3b3b3;
+}
 .product_showw img {
   max-height: 30px;
   margin-right: 15px;
@@ -2769,3 +2791,6 @@ strong.box_tag_left {
   padding: 0;
   text-align: center;
 }
+/* .recharts-surface{
+  margin-left: -50px !important;
+} */

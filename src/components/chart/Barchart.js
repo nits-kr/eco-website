@@ -1,112 +1,3 @@
-// import React from "react";
-
-// import {
-//   BarChart,
-//   Bar,
-//   Rectangle,
-//   XAxis,
-//   YAxis,
-//   CartesianGrid,
-//   Tooltip,
-//   Legend,
-//   ResponsiveContainer,
-// } from "recharts";
-// import { useSelector } from "react-redux";
-
-// const Barchart = () => {
-//   const barChartData = useSelector((state) => state?.charts?.charts);
-
-//   console.log("barChartData", barChartData);
-
-//   const sortedData = barChartData?.salesDAy?.slice()?.sort((a, b) => {
-//     const dateA = new Date(a.createdAt?.slice(0, 10));
-//     const dateB = new Date(b.createdAt?.slice(0, 10));
-//     return dateA - dateB;
-//   });
-
-//   const totalCartsTotal = sortedData?.reduce(
-//     (acc, curr) => acc + curr.cartsTotal,
-//     0
-//   );
-
-//   const chartData = sortedData?.map((item) => ({
-//     date: new Date(item.createdAt).toLocaleDateString(),
-//     total: totalCartsTotal, // Use the total sum for all bars
-//   }));
-
-//   const customTickFormatter = (tick) => {
-//     const date = new Date(tick);
-//     const day = date.getDate().toString().padStart(2, "0");
-//     const month = date.toLocaleString("default", { month: "short" });
-//     return `${day} ${month}`;
-//   };
-
-//   return (
-//     <>
-//       <div
-//         style={{
-//           display: "flex",
-//           alignItems: "center",
-//           justifyContent: "center",
-//         }}
-//       >
-//         <strong
-//           style={{
-//             textTransform: "uppercase",
-//             fontWeight: "900",
-//             fontSize: "22px",
-//             height: "35px",
-//             textShadow:
-//               "0px 0px 0px rgba(0, 0, 0, 0), 1px 1px 2px rgba(0, 0, 0, 0.2)",
-//           }}
-//         >
-//           Daily Sales
-//         </strong>
-//       </div>
-
-//       <ResponsiveContainer width="100%" height={300}>
-//         <BarChart
-//           data={chartData}
-//           margin={{ top: 10, right: 30, left: 30, bottom: 0 }}
-//         >
-//           <defs>
-//             <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
-//               <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8} />
-//               <stop offset="95%" stopColor="#8884d8" stopOpacity={0} />
-//             </linearGradient>
-//           </defs>
-//           <XAxis
-//             dataKey="createdAt"
-//             tickFormatter={customTickFormatter}
-//             type="category"
-//           />
-//           <YAxis
-//             tickFormatter={(value) => `$${value.toFixed(2)}`}
-//             label={{
-//               angle: -90,
-//               position: "insideLeft",
-//             }}
-//           />
-//           <CartesianGrid strokeDasharray="3 3" />
-//           <Tooltip
-//             formatter={(value) => [`$${value.toFixed(2)}k`, "Y Value"]}
-//             labelFormatter={(label) => customTickFormatter(label)}
-//           />
-//           <Bar
-//             type="monotone"
-//             dataKey="total"
-//             stroke="#8884d8"
-//             fillOpacity={1}
-//             fill="url(#colorUv)"
-//           />
-//         </BarChart>
-//       </ResponsiveContainer>
-//     </>
-//   );
-// };
-
-// export default Barchart;
-
 import React from "react";
 import {
   BarChart,
@@ -117,37 +8,46 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import { useSelector } from "react-redux";
 
-const Barchart = () => {
-  const barChartData = useSelector((state) => state?.charts?.charts);
-
-  console.log("barChartData", barChartData);
-
-  const sortedData = barChartData?.salesDAy?.slice()?.sort((a, b) => {
-    const dateA = new Date(a.createdAt?.slice(0, 10));
-    const dateB = new Date(b.createdAt?.slice(0, 10));
-    return dateA - dateB;
-  });
+const Barchart = ({ dashboardData }) => {
+  const sortedData = dashboardData?.results?.stats?.dailyTimeLine
+    ?.slice()
+    ?.sort((a, b) => {
+      const dateA = new Date(a._id);
+      const dateB = new Date(b._id);
+      return dateA - dateB;
+    });
 
   const totalCartsTotal = sortedData?.reduce(
-    (acc, curr) => acc + curr.cartsTotal,
+    (acc, curr) => acc + curr.sales,
     0
   );
 
-  // Prepare data for the chart - ensure only one item in the array
-  const chartData = [
-    {
-      date: new Date(sortedData?.[0]?.createdAt)?.toLocaleDateString(),
-      total: totalCartsTotal, // Use the total sum for all bars
-    },
-  ];
+  const chartData = sortedData?.map((item) => ({
+    date: new Date(item._id).toLocaleDateString(),
+    sales: item.sales,
+  }));
+
+  console.log("chartData", chartData);
 
   const customTickFormatter = (tick) => {
     const date = new Date(tick);
     const day = date.getDate().toString().padStart(2, "0");
     const month = date.toLocaleString("default", { month: "short" });
     return `${day} ${month}`;
+  };
+
+  const formatYAxisLabel = (value) => {
+    if (Math.abs(value) >= 1.0e9) {
+      return (value / 1.0e9).toFixed(1) + "B";
+    }
+    if (Math.abs(value) >= 1.0e6) {
+      return (value / 1.0e6).toFixed(1) + "M";
+    }
+    if (Math.abs(value) >= 1.0e3) {
+      return (value / 1.0e3).toFixed(1) + "k";
+    }
+    return value;
   };
 
   return (
@@ -173,33 +73,36 @@ const Barchart = () => {
         </strong>
       </div>
 
-      <ResponsiveContainer width="100%" height={300}>
+      <ResponsiveContainer width="120%" height={300}>
         <BarChart
           data={chartData}
-          margin={{ top: 10, right: 30, left: 30, bottom: 0 }}
+          margin={{ top: 10, right: 30, left: 30, bottom: 20 }}
         >
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis
             dataKey="date"
             tickFormatter={customTickFormatter}
-            type="category"
+            interval={2}
+            angle={-45}
+            textAnchor="end"
           />
           <YAxis
-            tickFormatter={(value) => `$${value.toFixed(2)}`}
+            tickFormatter={(value) => formatYAxisLabel(value)}
             label={{
               angle: -90,
               position: "insideLeft",
             }}
           />
           <Tooltip
-            formatter={(value) => [`$${value.toFixed(2)}k`, "Y Value"]}
+            formatter={(value) => [`$${value.toFixed(1)}`, "Y Value"]}
             labelFormatter={(label) => customTickFormatter(label)}
           />
           <Bar
             type="monotone"
-            dataKey="total"
+            dataKey="sales"
             stroke="#8884d8"
             fillOpacity={1}
+            // entry.sales > 500 ? "#82ca9d" : "#8884d8";
             fill="#8884d8"
           />
         </BarChart>

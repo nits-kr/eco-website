@@ -519,6 +519,15 @@ export const PostApi = createApi({
         },
       }),
     }),
+    getMonthlyUser: builder.query({
+      query: ({ ecomAdmintoken }) => ({
+        url: "api/admin/monthly-users",
+        method: "get",
+        headers: {
+          "x-auth-token-admin": ecomAdmintoken,
+        },
+      }),
+    }),
 
     getCategoryList: builder.mutation({
       query: (body) => {
@@ -1917,4 +1926,5 @@ export const {
   useUpdateVarientListMutation,
   useGetDashBoardDataQuery,
   useVarientStatusMutation,
+  useGetMonthlyUserQuery,
 } = PostApi;

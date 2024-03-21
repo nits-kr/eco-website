@@ -2,8 +2,6 @@ import React, { useState, useEffect } from "react";
 import Sidebar from "./Sidebar";
 import { Link, useNavigate } from "react-router-dom";
 
-import axios from "axios";
-import Swal from "sweetalert2";
 import DashboardConvaschart from "./chart/DashboardConvaschart";
 import DashboardDougnetChart from "./chart/DashboardDougnetChart";
 import Barchart from "./chart/Barchart";
@@ -11,14 +9,15 @@ import DashboardDiscountedChart from "./chart/DashboardDiscountedChart";
 import {
   useGetDashBoardDataQuery,
   useGetDashboardCountQuery,
+  useGetMonthlyUserQuery,
   useGetOrderListAllMutation,
-  useGetOrderListQuery,
   useGetProductListQuery,
 } from "../services/Post";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllData } from "../app/chartSlice";
 import { MDBDataTable } from "mdbreact";
 import moment from "moment";
+import { Spinner } from "react-bootstrap";
 
 function DashboardNew(props) {
   const ecomAdmintoken = useSelector((data) => data?.local?.token);
@@ -27,7 +26,18 @@ function DashboardNew(props) {
   const [loading, setLoading] = useState(false);
   const { data: dashboard, refetch: refetchdashboard } =
     useGetDashboardCountQuery({ ecomAdmintoken });
-  const { data: dashboardData } = useGetDashBoardDataQuery({ ecomAdmintoken });
+  const { data: dashboardData, isLoading: loadings } = useGetDashBoardDataQuery(
+    { ecomAdmintoken }
+  );
+  const { data: monthlyUser, isLoading } = useGetMonthlyUserQuery({
+    ecomAdmintoken,
+  });
+
+  if (!isLoading) {
+    console.log("monthlyUser", monthlyUser?.results?.users?.Total);
+  }
+
+  console.log("dashboardData", dashboardData);
 
   const dashMonth = dashboardData?.results?.stats?.month?.[0];
 
@@ -46,6 +56,16 @@ function DashboardNew(props) {
   const dispatch = useDispatch();
 
   const [dashboarddata, setDashboarddata] = useState("");
+
+  const totalBarTotals = dashboardData?.results?.stats?.dailyTimeLine?.reduce(
+    (acc, curr) => acc + curr.sales,
+    0
+  );
+  const totalMonthTotals =
+    dashboardData?.results?.stats?.monthlyTimeLine?.reduce(
+      (acc, curr) => acc + curr.sales,
+      0
+    );
 
   useEffect(() => {
     if (dashboard) {
@@ -356,10 +376,8 @@ function DashboardNew(props) {
   }, [productListdata]);
 
   const reloadUsersPage = () => {
+    document?.getElementById("closeusermodal").click();
     navigate("/users");
-    setTimeout(() => {
-      window?.location?.reload();
-    }, 500);
   };
 
   let totalDeliveredItems = 0;
@@ -368,14 +386,6 @@ function DashboardNew(props) {
       totalDeliveredItems++;
     }
   });
-
-  const calculateTotalCartsTotal = (orderList) => {
-    let total = 0;
-    for (const order of orderList) {
-      total += order.cartsTotal;
-    }
-    setTotalCartsTotal(total);
-  };
 
   function formatTimeAgo(createdAt) {
     const currentDate = new Date();
@@ -404,26 +414,6 @@ function DashboardNew(props) {
       return productName;
     }
   }
-
-  const calculateAverageDailySales = (orderList) => {
-    if (!orderList || orderList.length === 0) {
-      return 0;
-    }
-    const totalSales = orderList.reduce((total, order) => {
-      return (
-        total +
-        order.products.reduce((subTotal, product) => {
-          return subTotal + product.quantity;
-        }, 0)
-      );
-    }, 0);
-
-    const averageDailySales = totalSales / orderList.length;
-    return averageDailySales;
-  };
-
-  const averageDailySales = calculateAverageDailySales(orderList);
-  console.log("Average Daily Sales:", averageDailySales);
 
   return (
     <>
@@ -461,12 +451,20 @@ function DashboardNew(props) {
                             <div className="canvas_top d-flex align-items-center">
                               <h3>
                                 <span>$</span>
-                                {salesList}
+                                {loadings ? (
+                                  <Spinner />
+                                ) : (
+                                  (
+                                    totalBarTotals /
+                                    dashboardData?.results?.stats?.dailyTimeLine
+                                      ?.length
+                                  )?.toFixed(1)
+                                )}
                               </h3>
                               <div className="Percent_box ms-2">2.2%</div>
                             </div>
                             {/* <canvas className="w-100" id="myChart" /> */}
-                            <Barchart />
+                            <Barchart dashboardData={dashboardData} />
                             {/* <Bar
                               data={dataBarInfo} height={300}
                               onClick={infoBar ? onClickInfo : onClick}
@@ -490,12 +488,15 @@ function DashboardNew(props) {
                             <div className="canvas_top d-flex align-items-center">
                               <h3>
                                 <span>$</span>
-                                {dashMonth?.monthlySale}
+                                {loadings ? <Spinner /> : totalMonthTotals}
                               </h3>
                               <div className="Percent_box ms-2">2.2%</div>
                             </div>
                             {/* <canvas id="line-chart" className="w-full w-100" /> */}
-                            <DashboardConvaschart />
+                            <DashboardConvaschart
+                              dashboardData={dashboardData}
+                              loadings={loadings}
+                            />
                           </div>
                         </div>
                       </div>
@@ -510,10 +511,14 @@ function DashboardNew(props) {
                               {dashboarddata?.OrderMonth?.length}
                             </h3>
                             <div className="Percent_box ms-2">
-                              {(
-                                (dashboarddata?.OrderMonth?.length / 200) *
-                                100
-                              ).toFixed(1)}
+                              {loadings ? (
+                                <Spinner />
+                              ) : (
+                                (
+                                  (dashboarddata?.OrderMonth?.length / 200) *
+                                  100
+                                ).toFixed(1)
+                              )}
                               %
                             </div>
                           </div>
@@ -564,7 +569,14 @@ function DashboardNew(props) {
                       <div className="col-12 design_outter_comman shadow">
                         <div className="row comman_header justify-content-between">
                           <div className="canvas_top d-flex align-items-center mt-3">
-                            <h3 className="p-0"> {usersList?.length} </h3>
+                            <h3 className="p-0">
+                              {isLoading ? (
+                                <Spinner />
+                              ) : (
+                                monthlyUser?.results?.users?.metadate?.[0]
+                                  ?.Total
+                              )}
+                            </h3>
                           </div>
                           <div className="col text-secondary">
                             <h6>New Customers This Month</h6>
@@ -587,27 +599,29 @@ function DashboardNew(props) {
                               >
                                 {usersList.length < 3 ? (
                                   <div>
-                                    {usersList.map((data, index) => (
-                                      <Link
-                                        key={data._id}
-                                        data-bs-toggle="tooltip"
-                                        title="Alan Warden"
-                                        className="heros"
-                                        href="javascript:;"
-                                      >
-                                        <img
-                                          src={
-                                            data.profile_Pic ||
-                                            "assets/img/profile.png"
-                                          }
-                                          alt=""
-                                        />
-                                      </Link>
-                                    ))}
+                                    {monthlyUser?.results?.users?.users?.map(
+                                      (data, index) => (
+                                        <Link
+                                          key={data._id}
+                                          data-bs-toggle="tooltip"
+                                          title="Alan Warden"
+                                          className="heros"
+                                          href="javascript:;"
+                                        >
+                                          <img
+                                            src={
+                                              data.profile_Pic ||
+                                              "assets/img/profile.png"
+                                            }
+                                            alt=""
+                                          />
+                                        </Link>
+                                      )
+                                    )}
                                   </div>
                                 ) : (
                                   <>
-                                    {usersList
+                                    {monthlyUser?.results?.users?.users
                                       ?.slice(0, 3)
                                       .map((data, index) => (
                                         <Link
@@ -629,9 +643,9 @@ function DashboardNew(props) {
                                     <Link
                                       title="Click For More"
                                       className="heros"
-                                      // data-bs-toggle="modal"
-                                      // data-bs-target="#staticBackdrop"
-                                      to="/users"
+                                      data-bs-toggle="modal"
+                                      data-bs-target="#staticBackdrop"
+                                      to="#"
                                     >
                                       <div
                                         style={{
@@ -646,7 +660,11 @@ function DashboardNew(props) {
                                           fontWeight: "bold",
                                         }}
                                       >
-                                        {usersList?.length}+
+                                        {
+                                          monthlyUser?.results?.users?.users
+                                            ?.length
+                                        }
+                                        +
                                       </div>
                                     </Link>
                                   </>
@@ -671,7 +689,12 @@ function DashboardNew(props) {
                             <div className="canvas_top d-flex align-items-center">
                               <h3>
                                 <span>$</span>
-                                {dashMonth?.monthlyAverageSale}
+                                {loadings ? (
+                                  <Spinner />
+                                ) : (
+                                  dashboardData?.results?.stats
+                                    ?.monthlyTimeLine?.[0]?.averageSale
+                                )}
                               </h3>
                               <div className="Percent_box ms-2">2.2%</div>
                             </div>
@@ -694,7 +717,12 @@ function DashboardNew(props) {
                             <div className="canvas_top d-flex align-items-center">
                               <h3>
                                 <span>$</span>
-                                {(salesList / 30)?.toFixed(2)}
+                                {loadings ? (
+                                  <Spinner />
+                                ) : (
+                                  dashboardData?.results?.stats
+                                    ?.dailyTimeLine?.[0]?.averageSale
+                                )}
                               </h3>
                               <div className="Percent_box ms-2">2.2%</div>
                             </div>
@@ -1020,6 +1048,7 @@ function DashboardNew(props) {
                 className="btn-close"
                 data-bs-dismiss="modal"
                 aria-label="Close"
+                id="closeusermodal"
               ></button>
             </div>
             <div
@@ -1036,21 +1065,59 @@ function DashboardNew(props) {
                   <div className="table-responsive">
                     <table className="table mb-0">
                       <tbody>
-                        {usersList?.map((data, index) => (
-                          <tr key={index}>
-                            <td> {index + 1} </td>
-                            <td>
-                              <div className="product_showw">
-                                <img
-                                  src={
-                                    data.profile_Pic || "assets/img/profile.png"
+                        {monthlyUser?.results?.users?.users?.map(
+                          (data, index) => (
+                            <tr key={index}>
+                              <td> {index + 1} </td>
+                              <td>
+                                <Link
+                                  to={`/userDetails/${data?._id}`}
+                                  className="product_showw2"
+                                  onClick={() =>
+                                    document
+                                      ?.getElementById("closeusermodal")
+                                      .click()
                                   }
-                                  alt=""
-                                />
+                                >
+                                  <img
+                                    src={
+                                      data.profile_Pic ||
+                                      "assets/img/profile.png"
+                                    }
+                                    alt=""
+                                    style={{
+                                      height: "50px",
+                                      width: "50px",
+                                      borderRadius: "50%",
+                                    }}
+                                  />
+                                  <div>
+                                    <div className="product_showw2_iiner">
+                                      <a href="javascript:;">
+                                        <strong>{data?.userName}</strong>{" "}
+                                      </a>
+                                    </div>
+                                    <div className="product_showw2_iiner">
+                                      <a
+                                        href="javascript:;"
+                                        className="text-secondary"
+                                      >
+                                        {data?.mobileNumber}
+                                      </a>
+                                    </div>
+                                  </div>
+                                </Link>
+                              </td>
+                              <td>
                                 <div>
-                                  <div className="product_showw_iiner">
+                                  <div className="product_showw2_iiner">
                                     <a href="javascript:;">
-                                      <strong>{data.userName}</strong>{" "}
+                                      <strong>
+                                        $
+                                        {data?.totalAfterDiscount?.[0]?.toFixed(
+                                          2
+                                        ) || 0.0}
+                                      </strong>{" "}
                                     </a>
                                   </div>
                                   <div className="product_showw_iiner">
@@ -1058,36 +1125,14 @@ function DashboardNew(props) {
                                       href="javascript:;"
                                       className="text-secondary"
                                     >
-                                      {data.userEmail}
+                                      Sales
                                     </a>
                                   </div>
                                 </div>
-                              </div>
-                            </td>
-                            <td>
-                              <div>
-                                <div className="product_showw_iiner">
-                                  <a href="javascript:;">
-                                    <strong>
-                                      $
-                                      {data?.totalAfterDiscount?.[0]?.toFixed(
-                                        2
-                                      ) || 0.0}
-                                    </strong>{" "}
-                                  </a>
-                                </div>
-                                <div className="product_showw_iiner">
-                                  <a
-                                    href="javascript:;"
-                                    className="text-secondary"
-                                  >
-                                    Sales
-                                  </a>
-                                </div>
-                              </div>
-                            </td>
-                          </tr>
-                        ))}
+                              </td>
+                            </tr>
+                          )
+                        )}
                       </tbody>
                     </table>
                   </div>
