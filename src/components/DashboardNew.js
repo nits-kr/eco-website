@@ -12,34 +12,31 @@ import {
   useGetMonthlyUserQuery,
   useGetOrderListAllMutation,
   useGetProductListQuery,
+  useGetStockReportQuery,
 } from "../services/Post";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllData } from "../app/chartSlice";
 import { MDBDataTable } from "mdbreact";
 import moment from "moment";
 import { Spinner } from "react-bootstrap";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlus, faMinus } from "@fortawesome/free-solid-svg-icons";
 
 function DashboardNew(props) {
   const ecomAdmintoken = useSelector((data) => data?.local?.token);
   const ml = useSelector((data) => data?.local?.header);
-  console.log("ml", ml);
   const [loading, setLoading] = useState(false);
   const { data: dashboard, refetch: refetchdashboard } =
     useGetDashboardCountQuery({ ecomAdmintoken });
   const { data: dashboardData, isLoading: loadings } = useGetDashBoardDataQuery(
     { ecomAdmintoken }
   );
+  const { data: stockReport, isLoading: loadings2 } = useGetStockReportQuery({
+    ecomAdmintoken,
+  });
   const { data: monthlyUser, isLoading } = useGetMonthlyUserQuery({
     ecomAdmintoken,
   });
-
-  if (!isLoading) {
-    console.log("monthlyUser", monthlyUser?.results?.users?.Total);
-  }
-
-  console.log("dashboardData", dashboardData);
-
-  const dashMonth = dashboardData?.results?.stats?.month?.[0];
 
   const [orderListdata] = useGetOrderListAllMutation();
 
@@ -50,7 +47,6 @@ function DashboardNew(props) {
   const [totalStockQuantity, setTotalStockQuantity] = useState(0);
   const [usersList, setUsersList] = useState([]);
   const [salesList, setSalesList] = useState([]);
-  const [totalCartsTotal, setTotalCartsTotal] = useState(0);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -211,7 +207,6 @@ function DashboardNew(props) {
       ecomAdmintoken: ecomAdmintoken,
     };
     const res = await orderListdata(data);
-    console.log("res cate", res);
     setOrderList(res?.data?.results?.orders);
   };
 
@@ -415,6 +410,99 @@ function DashboardNew(props) {
     }
   }
 
+  // const currentDayIndex = 0; // Index of today's data
+  // const previousDayIndex = 1; // Index of yesterday's data
+
+  // const currentDaySales =
+  //   dashboardData?.results?.stats?.dailyTimeLine[currentDayIndex]?.sales;
+  // const previousDaySales =
+  //   dashboardData?.results?.stats?.dailyTimeLine[previousDayIndex]?.sales;
+
+  // // Calculate percentage change
+  // const percentageChange =
+  //   ((currentDaySales - previousDaySales) / previousDaySales) * 100;
+
+  const currentDayIndex = 0;
+  const previousDayIndex = 1;
+
+  const currentDaySales =
+    dashboardData?.results?.stats?.dailyTimeLine[currentDayIndex]?.sales;
+  const previousDaySales =
+    dashboardData?.results?.stats?.dailyTimeLine[previousDayIndex]?.sales;
+
+  let percentageChange;
+
+  if (previousDaySales !== 0) {
+    percentageChange =
+      ((currentDaySales - previousDaySales) / previousDaySales) * 100;
+  } else {
+    if (currentDaySales !== 0) {
+      percentageChange = 100;
+    } else {
+      percentageChange = 0;
+    }
+  }
+
+  let icon;
+  let colorClass;
+  if (percentageChange > 0) {
+    icon = <i className="bi bi-arrow-up"></i>;
+    colorClass = "text-success";
+  } else if (percentageChange < 0) {
+    icon = <i className="bi bi-arrow-down"></i>;
+    colorClass = "text-danger";
+  } else {
+    icon = <i className="bi bi-dash"></i>;
+    colorClass = "text-muted";
+  }
+
+  const currentMonthIndex = 0;
+  const previousMonthIndex = 1;
+
+  // Extracting data from the response
+  const monthlyData = dashboardData?.results?.stats?.monthlyTimeLine;
+
+  // Function to calculate total sales for a given month
+  const calculateTotalSales = (monthData) => {
+    return monthData.reduce((total, item) => total + item.sales, 0);
+  };
+
+  // Find current month and previous month data
+  const currentMonthData = monthlyData?.find(
+    (month) => month._id === moment().format("YYYY-MM")
+  );
+  const previousMonthData = monthlyData?.find((month) => {
+    const previousMonth = moment().subtract(1, "months").format("YYYY-MM");
+    return month._id === previousMonth;
+  });
+
+  // Calculate total sales for current month and previous month
+  const totalCurrentMonthSales = currentMonthData ? currentMonthData.sales : 0;
+  const totalPreviousMonthSales = previousMonthData
+    ? previousMonthData.sales
+    : 0;
+
+  const currentMonthSales =
+    dashboardData?.results?.stats?.monthlyTimeLine[currentMonthIndex]?.sales;
+  const previousMonthSales =
+    dashboardData?.results?.stats?.monthlyTimeLine[previousMonthIndex]?.sales;
+
+  const percentageChanges =
+    ((totalCurrentMonthSales - totalPreviousMonthSales) /
+      totalPreviousMonthSales) *
+    100;
+
+  if (percentageChange > 0) {
+    icon = <i className="bi bi-arrow-up"></i>;
+    colorClass = "text-success";
+  } else if (percentageChange < 0) {
+    icon = <i className="bi bi-arrow-down"></i>;
+    colorClass = "text-danger";
+  } else {
+    icon = <i className="bi bi-dash"></i>;
+    colorClass = "text-muted";
+  }
+
   return (
     <>
       {loading}
@@ -461,15 +549,20 @@ function DashboardNew(props) {
                                   )?.toFixed(1)
                                 )}
                               </h3>
-                              <div className="Percent_box ms-2">2.2%</div>
+                              {/* <div className="Percent_box ms-2">2.2%</div> */}
+                              <div className="Percent_box ms-2">
+                                {loadings ? (
+                                  <Spinner />
+                                ) : (
+                                  <span className={colorClass}>
+                                    {icon}{" "}
+                                    {Math.abs(percentageChange).toFixed(1)}%
+                                  </span>
+                                )}
+                              </div>
                             </div>
                             {/* <canvas className="w-100" id="myChart" /> */}
                             <Barchart dashboardData={dashboardData} />
-                            {/* <Bar
-                              data={dataBarInfo} height={300}
-                              onClick={infoBar ? onClickInfo : onClick}
-                              ref={charRef}
-                            /> */}
                           </div>
                         </div>
                       </div>
@@ -488,9 +581,22 @@ function DashboardNew(props) {
                             <div className="canvas_top d-flex align-items-center">
                               <h3>
                                 <span>$</span>
-                                {loadings ? <Spinner /> : totalMonthTotals}
+                                {loadings ? (
+                                  <Spinner />
+                                ) : (
+                                  totalMonthTotals?.toFixed(1)
+                                )}
                               </h3>
-                              <div className="Percent_box ms-2">2.2%</div>
+                              <div className="Percent_box ms-2">
+                                {loadings ? (
+                                  <Spinner />
+                                ) : (
+                                  <span className={colorClass}>
+                                    {icon}{" "}
+                                    {Math.abs(percentageChanges).toFixed(1)}%
+                                  </span>
+                                )}
+                              </div>
                             </div>
                             {/* <canvas id="line-chart" className="w-full w-100" /> */}
                             <DashboardConvaschart
@@ -750,13 +856,14 @@ function DashboardNew(props) {
                                 <thead>
                                   <tr>
                                     <th>S.No.</th>
-                                    <th>ITEM</th>
+                                    <th>Order Id</th>
                                     <th>QTY</th>
                                     <th>PRICE</th>
                                     <th>DISCOUNT</th>
                                     <th>shipping Price</th>
                                     <th>Tax</th>
                                     <th>Grand TOTAL</th>
+                                    <th>Action</th>
                                   </tr>
                                 </thead>
                                 <tbody>
@@ -765,7 +872,8 @@ function DashboardNew(props) {
                                     ?.map((data, index) => (
                                       <tr key={index}>
                                         <td> {index + 1} </td>
-                                        <td>
+                                        <td> {data?._id} </td>
+                                        {/* <td>
                                           <div className="product_showw">
                                             <img
                                               src={"assets/img/product1.png"}
@@ -780,13 +888,33 @@ function DashboardNew(props) {
                                               </a>
                                             </div>
                                           </div>
+                                        </td> */}
+                                        <td>
+                                          {data?.products?.reduce(
+                                            (total, product) =>
+                                              total + product?.quantity,
+                                            0
+                                          )}
                                         </td>
-                                        <td>X </td>
                                         <td>${data?.totalAmount}</td>
                                         <td>${data?.discount}</td>
                                         <td>${data?.shippingPrice}</td>
                                         <td>${data?.taxPrice}</td>
                                         <td>{data?.grandTotal || "N/A"}</td>
+                                        <td>
+                                          <Link
+                                            className="comman_btn table_viewbtn ms-2"
+                                            to={`/order-details/${data?._id}`}
+                                            onClick={() => {
+                                              // handleItem(data);
+                                              setTimeout(() => {
+                                                window?.location?.reload();
+                                              }, 500);
+                                            }}
+                                          >
+                                            View
+                                          </Link>
+                                        </td>
                                       </tr>
                                     ))}
                                 </tbody>

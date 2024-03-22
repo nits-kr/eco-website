@@ -182,7 +182,7 @@ function OrderDetails() {
                                 </div>
                                 <div className="col-12 offerdetails_inner border">
                                   <Link
-                                    className="download_invoice5 border"
+                                    className="download_invoice5 border mb-2"
                                     to="#"
                                     style={{ width: "100px" }}
                                     onClick={handleDownload}

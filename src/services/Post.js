@@ -164,6 +164,15 @@ export const PostApi = createApi({
         },
       }),
     }),
+    getStockReport: builder.query({
+      query: ({ ecomAdmintoken }) => ({
+        url: "api/admin/stock-report",
+        method: "get",
+        headers: {
+          "x-auth-token-admin": ecomAdmintoken,
+        },
+      }),
+    }),
     getDashBoardData: builder.query({
       query: ({ ecomAdmintoken }) => ({
         url: "api/admin/order-statistics",
@@ -1927,4 +1936,5 @@ export const {
   useGetDashBoardDataQuery,
   useVarientStatusMutation,
   useGetMonthlyUserQuery,
+  useGetStockReportQuery,
 } = PostApi;
