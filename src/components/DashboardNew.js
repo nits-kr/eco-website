@@ -430,6 +430,9 @@ function DashboardNew(props) {
   const previousDaySales =
     dashboardData?.results?.stats?.dailyTimeLine[previousDayIndex]?.sales;
 
+  console.log("currentDaySales", currentDaySales);
+  console.log("previousDaySales", previousDaySales);
+
   let percentageChange;
 
   if (previousDaySales !== 0) {
