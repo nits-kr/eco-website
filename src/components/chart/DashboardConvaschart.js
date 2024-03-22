@@ -28,16 +28,16 @@ const DashboardConvaschart = ({ dashboardData, loadings }) => {
   };
 
   const formatYAxisLabel = (value) => {
-    if (Math.abs(value) >= 1.0e9) {
-      return (value / 1.0e9).toFixed(1) + "B";
-    }
-    if (Math.abs(value) >= 1.0e6) {
-      return (value / 1.0e6).toFixed(1) + "M";
-    }
-    if (Math.abs(value) >= 1.0e3) {
-      return (value / 1.0e3).toFixed(1) + "k";
-    }
-    return value;
+    const formattedValue =
+      Math.abs(value) >= 1.0e9
+        ? "$" + (value / 1.0e9).toFixed(1) + "B"
+        : Math.abs(value) >= 1.0e6
+        ? "$" + (value / 1.0e6).toFixed(1) + "M"
+        : Math.abs(value) >= 1.0e3
+        ? "$" + (value / 1.0e3).toFixed(1) + "k"
+        : "$" + value;
+
+    return formattedValue;
   };
 
   return (

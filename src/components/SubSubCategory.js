@@ -62,7 +62,6 @@ function SubSubCategory() {
 
   const handleGetSubCategory = async (id) => {
     const res = await getSubCategory({ id, ecomAdmintoken });
-    console.log("res", res);
     setSubCategories(res?.data?.results?.subCategoryData);
   };
 
@@ -142,7 +141,6 @@ function SubSubCategory() {
       ecomAdmintoken: ecomAdmintoken,
     };
     const res = await subSubcategoryListdata(data);
-    console.log("res sub cate", res);
     setSubSubCategoryListDatas(res?.data?.results?.list);
   };
   useEffect(() => {
@@ -284,7 +282,6 @@ function SubSubCategory() {
   };
 
   const handleUpdate = (item) => {
-    console.log(item);
     setNewCategory({
       nameEn: item?.subSubCategoryName_en,
       nameAr: item?.subSubCategoryName_ar,
@@ -354,10 +351,14 @@ function SubSubCategory() {
                   </small>
                 )}
               </div>
-              <div className="form-group col-6">
+              <div
+                className="form-group col-6"
+                style={{
+                  display: subCategories?.length > 0 ? "" : "none",
+                }}
+              >
                 <label htmlFor="">Select Sub Category</label>
                 <select
-                  // className="select form-control"
                   className={classNames("form-control", {
                     "is-invalid":
                       errors.categoryId1 && !subSubCategory.categoryId1,
@@ -365,10 +366,7 @@ function SubSubCategory() {
                   multiple=""
                   name="categoryId1"
                   id="categoryId1"
-                  // value={subSubCategory.categoryId1}
-                  {...register("categoryId1", {
-                    // required: "Please Select Category*",
-                  })}
+                  {...register("categoryId1", {})}
                   onChange={handleInputChange}
                 >
                   <option value="">Select Sub Category</option>
@@ -724,8 +722,6 @@ function SubSubCategory() {
                     className="form-control"
                     name="subSubAr"
                     id="subSubAr"
-                    // defaultValue={props.newCategory.nameAr}
-                    // onChange={handleInputChange}
                     {...register2("subSubAr", {
                       // required: "Category Name is required!",
                       // pattern: {

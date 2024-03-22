@@ -38,6 +38,7 @@ function SubCategory(props) {
   const [subCategoryList, setSubCategoryList] = useState([]);
   const [categories, setCategories] = useState([]);
   const [files, setFiles] = useState();
+  const [ids, setIds] = useState("");
   const [formData1, setFormData1] = useState({
     pic: files?.editImage,
   });
@@ -60,8 +61,6 @@ function SubCategory(props) {
   const [startDate1, setStartDate1] = useState("");
   const [item, setItem] = useState("");
 
-  console.log("item", item);
-
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setSubCategory({ ...subCategory, [name]: value });
@@ -69,12 +68,10 @@ function SubCategory(props) {
 
   const handleFileChange = (event) => {
     setSubCategory({ ...subCategory, subCategoryPic: event.target.files[0] });
-    console.log("picture", event.target.files[0]);
   };
   const handleInputChange1 = (event) => {
     const { name, value } = event.target;
     setCategory({ ...category, [name]: value });
-    console.log("edit category value:  ", value);
   };
   const handleFileChange1 = (e, key) => {
     setCategory({ ...category, uploadImage1: e.target.files[0] });
@@ -97,22 +94,6 @@ function SubCategory(props) {
     formState: { errors: errors2 },
     reset: reset2,
   } = useForm();
-
-  // const handleCategoryList = async () => {
-  //   const data = {
-  //     from: "",
-  //     to: "",
-  //     search: "",
-  //     ecomAdmintoken: ecomAdmintoken,
-  //   };
-  //   const res = await categoryListdata(data);
-  //   console.log("res cate", res);
-  //   setCategories(res?.data?.results?.list);
-  // };
-
-  // useEffect(() => {
-  //   handleCategoryList();
-  // }, [ecomAdmintoken]);
 
   useEffect(() => {
     if (categoryListdata) {
@@ -183,7 +164,6 @@ function SubCategory(props) {
       ecomAdmintoken: ecomAdmintoken,
     };
     const res = await subcategoryListdata(data);
-    console.log("res sub cate", res);
     setSubCategoryList(res?.data?.results?.list);
   };
 
@@ -246,15 +226,15 @@ function SubCategory(props) {
   }, [subCategoryList]);
 
   const handleUpdate = (item) => {
-    console.log("item", item);
-
     reset2({
       editCatename_en: item?.subCategoryName_en,
       editCatename_ar: item?.subCategoryName_ar,
+      categoryId1: item?.category_Id?._id,
     });
     setFiles({ editImage: item?.subCategoryPic });
     setItemId(item?._id);
     // setFormData1({ pic: item?.categoryPic });
+    setIds(item);
   };
 
   const handleItem = (item) => {
@@ -299,8 +279,6 @@ function SubCategory(props) {
       const response = await createSubCategory({ alldata, ecomAdmintoken });
       setLoader(false);
 
-      console.log("response from server ", response);
-
       if (response) {
         Swal.fire({
           icon: "success",
@@ -330,7 +308,6 @@ function SubCategory(props) {
       if (formData1.pic) {
         alldata.append("subCategoryPic", formData1.pic);
       }
-      console.log("formData1.pic)", formData1.pic);
 
       setLoader(true);
 
@@ -340,8 +317,6 @@ function SubCategory(props) {
         ecomAdmintoken,
       });
       setLoader(false);
-
-      console.log("response from server ", response);
 
       if (response) {
         Swal.fire({
@@ -490,7 +465,8 @@ function SubCategory(props) {
                     })}
                     // id="uploadImage1"
                     {...register("uploadImage1", {
-                      required: "Image required!",
+                      required:
+                        "Image required! Please choose a valid image file (JPG, JPEG, or PNG).",
                     })}
                     // style={{
                     //   marginLeft: "15px",
@@ -502,17 +478,22 @@ function SubCategory(props) {
                     required
                     accept=".jpg, .jpeg, .png"
                   />
-
-                  <div className="invalid-feedback fw-bold">
+                  {errors.uploadImage1 && (
+                    <div className="invalid-feedback fw-bold">
+                      <small
+                        className="errorText mx-1 fw-bold text-danger"
+                        style={{ marginTop: "-25px" }}
+                      >
+                        {errors.uploadImage1.message}*
+                      </small>
+                    </div>
+                  )}
+                  {/* <div className="invalid-feedback fw-bold">
                     Please choose a valid image file (JPG, JPEG, or PNG).
-                  </div>
+                  </div> */}
                 </div>
               </div>
-              {errors.uploadImage1 && (
-                <div className="invalid-feedback fw-bold">
-                  {errors.uploadImage1.message}*
-                </div>
-              )}
+
               <div className="form-group col-auto">
                 <button
                   type="submit"
@@ -669,7 +650,11 @@ function SubCategory(props) {
                       // required: "Please Select Category*",
                     })}
                   >
-                    <option value="">Select Category</option>
+                    <option value="" disabled>
+                      {ids
+                        ? ids?.category_Id?.categoryName_en
+                        : "Select Category"}
+                    </option>
                     {categories.map((category) => (
                       <option key={category._id} value={category?._id}>
                         {category?.categoryName_en}

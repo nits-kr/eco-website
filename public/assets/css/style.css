@@ -400,10 +400,12 @@ h6 {
   /* margin-bottom: 22px; */
   position: relative;
 }
+
 .errorText {
   position: absolute;
-  bottom: -25px;
-  left: 6px;
+  /* bottom: -25px; */
+  /* left: 6px; */
+  font-size: 10px;
 }
 
 .invalid-feedback {
@@ -608,6 +610,7 @@ div#google_translate_element {
   border-radius: 6px;
   background-color: #fff;
 }
+
 .design_outter_comman2 {
   /* overflow: hidden; */
   border-radius: 6px;
@@ -2420,6 +2423,7 @@ strong.box_tag_left {
   font-weight: 500;
   color: #b3b3b3;
 }
+
 .product_showw img {
   max-height: 30px;
   margin-right: 15px;
@@ -2791,6 +2795,7 @@ strong.box_tag_left {
   padding: 0;
   text-align: center;
 }
+
 /* .recharts-surface{
   margin-left: -50px !important;
 } */

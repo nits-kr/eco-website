@@ -570,12 +570,14 @@ function DashboardNew(props) {
                         <div className="row comman_header justify-content-between">
                           <div className="canvas_top d-flex align-items-center mt-3">
                             <h3 className="p-0">
+                              Total:{" "}
                               {isLoading ? (
                                 <Spinner />
                               ) : (
                                 monthlyUser?.results?.users?.metadate?.[0]
                                   ?.Total
                               )}
+                              +
                             </h3>
                           </div>
                           <div className="col text-secondary">
@@ -597,7 +599,8 @@ function DashboardNew(props) {
                                   gap: "10px",
                                 }}
                               >
-                                {usersList.length < 3 ? (
+                                {monthlyUser?.results?.users?.users.length <
+                                3 ? (
                                   <div>
                                     {monthlyUser?.results?.users?.users?.map(
                                       (data, index) => (
@@ -732,7 +735,7 @@ function DashboardNew(props) {
                       </div>
                     </div>
                   </div>
-                  <div className="col-md-6 d-flex align-items-stretch mb-4">
+                  <div className="col-md-12 d-flex align-items-stretch mb-4">
                     <div className="row mx-0 w-100">
                       <div className="col-12 design_outter_comman shadow">
                         <div className="row comman_header justify-content-between">
@@ -750,11 +753,14 @@ function DashboardNew(props) {
                                     <th>ITEM</th>
                                     <th>QTY</th>
                                     <th>PRICE</th>
-                                    <th>TOTAL</th>
+                                    <th>DISCOUNT</th>
+                                    <th>shipping Price</th>
+                                    <th>Tax</th>
+                                    <th>Grand TOTAL</th>
                                   </tr>
                                 </thead>
                                 <tbody>
-                                  {orderList
+                                  {dashboardData?.results?.stats?.orders
                                     ?.slice(0, 5)
                                     ?.map((data, index) => (
                                       <tr key={index}>
@@ -762,17 +768,12 @@ function DashboardNew(props) {
                                         <td>
                                           <div className="product_showw">
                                             <img
-                                              src={
-                                                data.products[0]?.product_Id
-                                                  ?.addVarient[0]
-                                                  ?.product_Pic[0] ||
-                                                "assets/img/product1.png"
-                                              }
+                                              src={"assets/img/product1.png"}
                                               alt=""
                                             />
                                             <div className="product_showw_iiner">
                                               <a href="javascript:;">
-                                                {data.products[0]?.product_Id?.productName_en?.slice(
+                                                {data?.productName_en?.slice(
                                                   0,
                                                   8
                                                 )}
@@ -780,37 +781,12 @@ function DashboardNew(props) {
                                             </div>
                                           </div>
                                         </td>
-                                        <td>
-                                          X{" "}
-                                          {data.products.reduce(
-                                            (totalQuantity, item) => {
-                                              return (
-                                                totalQuantity + item.quantity
-                                              );
-                                            },
-                                            0
-                                          )}
-                                        </td>
-                                        <td>
-                                          $
-                                          {(
-                                            data?.cartsTotal /
-                                            data.products.reduce(
-                                              (totalQuantity, item) => {
-                                                return (
-                                                  totalQuantity + item.quantity
-                                                );
-                                              },
-                                              0
-                                            )
-                                          ).toFixed(2)}
-                                        </td>
-
-                                        <td>
-                                          {data?.cartsTotal
-                                            ? data?.cartsTotal?.toFixed(2)
-                                            : "N/A"}
-                                        </td>
+                                        <td>X </td>
+                                        <td>${data?.totalAmount}</td>
+                                        <td>${data?.discount}</td>
+                                        <td>${data?.shippingPrice}</td>
+                                        <td>${data?.taxPrice}</td>
+                                        <td>{data?.grandTotal || "N/A"}</td>
                                       </tr>
                                     ))}
                                 </tbody>
@@ -821,7 +797,7 @@ function DashboardNew(props) {
                       </div>
                     </div>
                   </div>
-                  <div className="col-md-6 d-flex align-items-stretch mb-4">
+                  <div className="col-md-6 d-flex align-items-stretch mb-4 d-none">
                     <div className="row mx-0 w-100">
                       <div className="col-12 design_outter_comman shadow">
                         {/* <div className="row comman_header justify-content-between">
@@ -836,7 +812,10 @@ function DashboardNew(props) {
                               <div className="Percent_box ms-2">2.2%</div>
                             </div>
                             {/* <canvas className="w-100" id="myChart1" /> */}
-                            <DashboardDiscountedChart />
+                            <DashboardDiscountedChart
+                              dashboardData={dashboardData}
+                              loadings={loadings}
+                            />
                           </div>
                         </div>
                       </div>

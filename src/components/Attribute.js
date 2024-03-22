@@ -42,7 +42,9 @@ function Attribute() {
   const [categories, setCategories] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
   const [subSubCategories, setSubSubCategories] = useState([]);
+
   const [itemId, setItemId] = useState([]);
+  const [ids, setIds] = useState("");
   const [newCategory, setNewCategory] = useState([]);
 
   const [attributes, setAttributes] = useState({
@@ -53,8 +55,6 @@ function Attribute() {
     categoryId2: "",
   });
 
-  console.log("attributes", attributes);
-
   useEffect(() => {
     if (categoryListdata) {
       setCategories(categoryListdata?.results?.categoryData);
@@ -63,21 +63,20 @@ function Attribute() {
 
   const handleGetSubCategory = async (id) => {
     const res = await getSubCategory({ id, ecomAdmintoken });
-    console.log("res", res);
+
     setSubCategories(res?.data?.results?.subCategoryData);
   };
   const handleGetSubSubCategory = async (id) => {
     const res = await getSubSubCategory({ id, ecomAdmintoken });
-    console.log("res", res);
 
     setSubSubCategories(res.data.results.subSubCategoryData);
   };
 
   useEffect(() => {
-    if (attributes.categoryId) {
-      handleGetSubCategory(attributes.categoryId);
+    if (attributes.categoryId || ids) {
+      handleGetSubCategory(attributes.categoryId || ids?.category_Id?._id);
     }
-  }, [attributes.categoryId]);
+  }, [attributes.categoryId, ids]);
   useEffect(() => {
     if (attributes.categoryId1) {
       handleGetSubSubCategory(attributes.categoryId1);
@@ -166,7 +165,6 @@ function Attribute() {
       ecomAdmintoken: ecomAdmintoken,
     };
     const res = await attributesListdata(data);
-    console.log("res sub cate", res);
     setSubAttributesList(res?.data?.results?.list);
   };
 
@@ -283,7 +281,6 @@ function Attribute() {
 
       setLoader(false);
 
-      console.log("response", response);
       if (response?.data?.message === "Success") {
         toast.success("Attribute Created Successfully");
         handleAttributesList();
@@ -296,7 +293,6 @@ function Attribute() {
     }
   };
   const handleOnEdit = async (data) => {
-    console.log("data", data);
     try {
       const alldata = {
         attributeName_en: data?.attributesEn,
@@ -314,7 +310,6 @@ function Attribute() {
 
       setLoader(false);
 
-      console.log("response", response);
       if (response?.data?.message === "Success") {
         toast.success("Attribute Updated Successfully");
         handleAttributesList();
@@ -329,7 +324,6 @@ function Attribute() {
   };
 
   const handleUpdate = (item) => {
-    console.log(item);
     setNewCategory({
       nameEn: item?.attributeName_en,
       nameAr: item?.attributeName_ar,
@@ -339,6 +333,7 @@ function Attribute() {
       id2: item?.subSubCategory_Id,
     });
     setItemId(item?._id);
+    setIds(item);
     reset2({
       categoryId: item?.category_Id?._id,
       categoryId1: item?.subCategory_Id?._id,
@@ -368,7 +363,11 @@ function Attribute() {
               action=""
               onSubmit={handleSubmit(handleOnSave)}
             >
-              <div className="form-group col-4">
+              <div
+                className={`form-group col-${
+                  subSubCategories?.length > 0 ? "4" : "6"
+                }`}
+              >
                 <label htmlFor="categoryId">Select Category</label>
                 <select
                   // className="select form-control"
@@ -398,24 +397,14 @@ function Attribute() {
                   </small>
                 )}
               </div>
-              <div className="form-group col-4">
-                {/* <label htmlFor="">Select Sub Category</label>
-                <select
-                  className="select form-control"
-                  multiple=""
-                  name="categoryId1"
-                  id="selectSubCategory"
-                  value={attributes.categoryId1}
-                  onChange={handleInputChange}
-                >
-                  <option value="">Select Sub Category</option>
-                  {Array.isArray(subCategories) &&
-                    subCategories.map((subCategory) => (
-                      <option key={subCategory._id} value={subCategory._id}>
-                        {subCategory.subCategoryName_en}
-                      </option>
-                    ))}
-                </select> */}
+              <div
+                className={`form-group col-${
+                  subSubCategories?.length > 0 ? "4" : "6"
+                }`}
+                style={{
+                  display: subCategories?.length > 0 ? "" : "none",
+                }}
+              >
                 <label htmlFor="">Select Sub Category</label>
                 <select
                   // className="select form-control"
@@ -445,7 +434,12 @@ function Attribute() {
                   </small>
                 )}
               </div>
-              <div className="form-group col-4">
+              <div
+                className="form-group col-4"
+                style={{
+                  display: subSubCategories?.length > 0 ? "" : "none",
+                }}
+              >
                 <label htmlFor="categoryId2">Select Sub Sub Category</label>
                 <select
                   // className="select form-control"
@@ -773,12 +767,16 @@ function Attribute() {
                     multiple=""
                     name="categoryId1"
                     id="categoryId1"
-                    {...register2("categoryId1", {})}
+                    {...register2("categoryId1")}
                     onChange={(e) => {
                       handleInputChange(e);
                     }}
                   >
-                    <option value="">Select Sub Category</option>
+                    <option value="" disabled>
+                      {ids
+                        ? ids?.subCategory_Id?.subCategoryName_en
+                        : "Select Sub Category"}
+                    </option>
                     {Array.isArray(subCategories) &&
                       subCategories.map((subCategory) => (
                         <option key={subCategory._id} value={subCategory._id}>

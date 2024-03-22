@@ -43,6 +43,7 @@ function Value() {
   const [attributes, setAttributes] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [startDate1, setStartDate1] = useState("");
+  const [ids, setIds] = useState("");
 
   const [values, setValues] = useState({
     nameEn: "",
@@ -61,37 +62,34 @@ function Value() {
 
   const handleGetSubCategory = async (id) => {
     const res = await getSubCategory({ id, ecomAdmintoken });
-    console.log("res", res);
     setSubCategories(res?.data?.results?.subCategoryData);
   };
   const handleGetSubSubCategory = async (id) => {
     const res = await getSubSubCategory({ id, ecomAdmintoken });
-    console.log("res", res);
 
     setSubSubCategories(res?.data?.results?.subSubCategoryData);
   };
   const handleAttributes = async (id) => {
     const res = await getAttribute({ id, ecomAdmintoken });
-    console.log("res", res);
 
     setAttributes(res?.data?.results?.attributeCategoryData);
   };
 
   useEffect(() => {
-    if (values.categoryId) {
-      handleGetSubCategory(values.categoryId);
+    if (values.categoryId || ids) {
+      handleGetSubCategory(values.categoryId || ids?.category_Id?._id);
     }
-  }, [values.categoryId]);
+  }, [values.categoryId, ids]);
   useEffect(() => {
-    if (values.categoryId) {
-      handleAttributes(values.categoryId);
+    if (values.categoryId || ids) {
+      handleAttributes(values.categoryId || ids?.category_Id?._id);
     }
-  }, [values.categoryId]);
+  }, [values.categoryId, ids]);
   useEffect(() => {
-    if (values.categoryId1) {
-      handleGetSubSubCategory(values.categoryId1);
+    if (values.categoryId1 || ids) {
+      handleGetSubSubCategory(values.categoryId1 || ids?.subCategory_Id?._id);
     }
-  }, [values.categoryId1]);
+  }, [values.categoryId1, ids]);
 
   const [value, setValue] = useState({
     columns: [
@@ -181,7 +179,6 @@ function Value() {
       ecomAdmintoken: ecomAdmintoken,
     };
     const res = await valueLists(data);
-    console.log("res sub cate", res);
     setSubValueList(res?.data?.results?.list);
   };
 
@@ -276,16 +273,6 @@ function Value() {
 
   const handleOnSubmit = async (data) => {
     try {
-      // const alldata = {
-      //   valuesName_en: data.valueEn,
-      //   valuesName_ar: data.valueAr,
-      //   category_Id: data.categoryId,
-      //   subCategory_Id: data.categoryId1,
-      //   attribute_Id: data.categoryId3,
-      // };
-      // if (data.categoryId2) {
-      //   alldata.subSubCategory_Id = data.categoryId2;
-      // }
       const alldata = {
         ...(data.valueEn && { valuesName_en: data.valueEn }),
         ...(data.valueAr && { valuesName_ar: data.valueAr }),
@@ -297,7 +284,6 @@ function Value() {
       setLoader(true);
       const res = await createValues({ alldata, ecomAdmintoken });
       setLoader(false);
-      console.log("res", res);
 
       if (res?.data?.message === "Success") {
         handleValueList();
@@ -328,7 +314,6 @@ function Value() {
       setLoader(true);
       const res = await update(alldata);
       setLoader(false);
-      console.log("res", res);
 
       if (res?.data?.message === "Success") {
         handleValueList();
@@ -355,6 +340,7 @@ function Value() {
       categoryId2: item?.subSubCategory_Id?._id,
     });
     setItemId(item?._id);
+    setIds(item);
   };
   return (
     <>
@@ -408,7 +394,12 @@ function Value() {
                   </small>
                 )}
               </div>
-              <div className="form-group col-6">
+              <div
+                className="form-group col-6"
+                style={{
+                  display: subCategories?.length > 0 ? "" : "none",
+                }}
+              >
                 <label htmlFor="categoryId1">Select Sub Category</label>
                 <select
                   // className="select form-control"
@@ -438,27 +429,12 @@ function Value() {
                   </small>
                 )}
               </div>
-              <div className="form-group col-6">
-                {/* <label htmlFor="">Select Sub Sub Category</label>
-                <select
-                  className="select form-control"
-                  multiple=""
-                  name="categoryId2"
-                  id="selectSubSubCategory"
-                  value={values.categoryId2}
-                  onChange={handleInputChange}
-                >
-                  <option value="">Select Sub Sub Category</option>
-                  {Array.isArray(subSubCategories) &&
-                    subSubCategories.map((subSubCategory) => (
-                      <option
-                        key={subSubCategory._id}
-                        value={subSubCategory._id}
-                      >
-                        {subSubCategory.subSubCategoryName_en}
-                      </option>
-                    ))}
-                </select> */}
+              <div
+                className="form-group col-6"
+                style={{
+                  display: subSubCategories?.length > 0 ? "" : "none",
+                }}
+              >
                 <label htmlFor="categoryId2">Select Sub Sub Category</label>
                 <select
                   // className="select form-control"
@@ -491,7 +467,12 @@ function Value() {
                   </small>
                 )}
               </div>
-              <div className="form-group col-6">
+              <div
+                className="form-group col-6"
+                style={{
+                  display: attributes?.length > 0 ? "" : "none",
+                }}
+              >
                 <label htmlFor="categoryId3">
                   Select Attribute
                   <span className="required-field text-danger">*</span>
@@ -739,7 +720,11 @@ function Value() {
                       handleInputChange(e);
                     }}
                   >
-                    <option value="">Select Sub Category</option>
+                    <option value="" disabled>
+                      {ids
+                        ? ids?.subCategory_Id?.subCategoryName_en
+                        : "Select Sub Category"}
+                    </option>
                     {Array.isArray(subCategories) &&
                       subCategories.map((subCategory) => (
                         <option key={subCategory._id} value={subCategory._id}>
@@ -768,7 +753,11 @@ function Value() {
                       handleInputChange(e);
                     }}
                   >
-                    <option value="">Select Sub Sub Category</option>
+                    <option value="" disabled>
+                      {ids
+                        ? ids?.subSubCategory_Id?.subSubCategoryName_en
+                        : "Select Sub Sub Category"}
+                    </option>
                     {Array.isArray(subSubCategories) &&
                       subSubCategories.map((subSubCategory) => (
                         <option
@@ -795,7 +784,11 @@ function Value() {
                       // required: "Please Select Category*",
                     })}
                   >
-                    <option value="">Select Attribute</option>
+                    <option value="" disabled>
+                      {ids
+                        ? ids?.attribute_Id?.attributeName_en
+                        : "Select Attribute"}
+                    </option>
                     {Array.isArray(attributes) &&
                       attributes.map((attribute) => (
                         <option key={attribute._id} value={attribute._id}>

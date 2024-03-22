@@ -46,13 +46,10 @@ function CategoryManagement(props) {
   const [formData1, setFormData1] = useState({
     pic: files?.editImages,
   });
-  console.log("formData1", formData1);
-  console.log("formData1.pic23", formData1.pic);
+
   const [newCategory, setNewCategory] = useState([]);
 
   const [itemId, setItemId] = useState("");
-
-  console.log("files", files);
 
   const handleFileChange = (event) => {
     setFormData({ ...formData, categoryPic: event?.target?.files[0] });
@@ -134,7 +131,7 @@ function CategoryManagement(props) {
       ecomAdmintoken: ecomAdmintoken,
     };
     const res = await categoryListdata(data);
-    console.log("res cate", res);
+
     setCategoryList(res?.data?.results?.list);
   };
 
@@ -197,7 +194,6 @@ function CategoryManagement(props) {
     }
   }, [categoryList]);
 
-  console.log("set form data pic", formData.categoryPic);
   const handleOnSave = async (data) => {
     setLoader(true);
     try {
@@ -208,7 +204,6 @@ function CategoryManagement(props) {
       const res = await createCategory({ alldata, ecomAdmintoken });
       setLoader(false);
 
-      console.log("res,", res);
       if (res?.data?.message === "Category Create Successfully") {
         Swal.fire({
           icon: "success",
@@ -224,22 +219,15 @@ function CategoryManagement(props) {
     }
   };
 
-  console.log("FormData1.pic:", formData1.pic);
   const onSubmit2 = async (data) => {
     try {
       const alldata = new FormData();
       alldata.append("categoryName_en", data.editCatename_en);
       alldata.append("categoryName_ar", data.editCatename_ar);
 
-      // Log the value of formData1.pic before appending it to FormData
-      console.log("FormData1.pic:", formData1.pic);
-
       if (formData1.pic) {
         alldata.append("categoryPic", formData1.pic);
       }
-
-      // Log the content of the FormData object before submitting
-      console.log("FormData content:", alldata);
 
       setLoader(true);
 
@@ -247,7 +235,6 @@ function CategoryManagement(props) {
 
       setLoader(false);
 
-      console.log("res,", res);
       if (res?.data?.message === "Success") {
         Swal.fire({
           icon: "success",
@@ -265,7 +252,6 @@ function CategoryManagement(props) {
   };
 
   const handleUpdate = (item) => {
-    console.log("item", item);
     setNewCategory({
       nameEn: item?.categoryName_en,
       nameAr: item?.categoryName_ar,
@@ -283,7 +269,7 @@ function CategoryManagement(props) {
 
   const handleCheckboxChange = async (e, categoryId) => {
     e.preventDefault();
-    console.log("handleSaveChanges1", categoryId);
+
     const newStatus = e.target.checked;
 
     const confirmationResult = await Swal.fire({
@@ -479,7 +465,7 @@ function CategoryManagement(props) {
                                       })}
                                     />
                                     {errors.Category_name && (
-                                      <small className="errorText mx-1 text-danger">
+                                      <small className="errorText fw-bold mx-1 text-danger">
                                         {errors.Category_name.message}*
                                       </small>
                                     )}
@@ -520,7 +506,7 @@ function CategoryManagement(props) {
                                       })}
                                     />
                                     {errors.Category_nameAr && (
-                                      <small className="errorText mx-1 text-danger">
+                                      <small className="errorText fw-bold mx-1 text-danger">
                                         {errors.Category_nameAr.message}*
                                       </small>
                                     )}
@@ -548,7 +534,8 @@ function CategoryManagement(props) {
                                       })}
                                       id="uploadImage"
                                       {...register("uploadImage", {
-                                        required: "Image required!",
+                                        required:
+                                          "Image required! Please choose a valid image file (JPG, JPEG, or PNG).",
                                       })}
                                       style={{
                                         marginLeft: "15px",
@@ -558,7 +545,12 @@ function CategoryManagement(props) {
                                     />
                                     {errors.uploadImage && (
                                       <div className="invalid-feedback">
-                                        {errors.uploadImage.message}*
+                                        <small
+                                          className="errorText mx-1 fw-bold text-danger"
+                                          style={{ marginTop: "-25px" }}
+                                        >
+                                          {errors.uploadImage.message}*
+                                        </small>
                                       </div>
                                     )}
                                   </div>

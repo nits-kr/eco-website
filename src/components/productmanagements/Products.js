@@ -974,8 +974,7 @@ function Products(props) {
                             )}
                           </div>
 
-                          {/* Description (En) */}
-                          <div className="form-group col-6">
+                          <div className="form-group col-6 mt-2">
                             <label htmlFor="DescriptionEn">
                               Description(En){" "}
                               <span className="required-field text-danger">
@@ -1003,8 +1002,7 @@ function Products(props) {
                             )}
                           </div>
 
-                          {/* Description (Ar) */}
-                          <div className="form-group col-6">
+                          <div className="form-group col-6 mt-2">
                             <label htmlFor="DescriptionAr">
                               Description(Ar){" "}
                               <span className="required-field text-danger">
@@ -1032,8 +1030,7 @@ function Products(props) {
                             )}
                           </div>
 
-                          {/* Care Instructions (En) */}
-                          <div className="form-group col-6">
+                          <div className="form-group col-6 mt-2">
                             <label htmlFor="shortDescriptionEn">
                               Care Instructions(En){" "}
                               <span className="required-field text-danger">
@@ -1061,8 +1058,7 @@ function Products(props) {
                             )}
                           </div>
 
-                          {/* Care Instructions (Ar) */}
-                          <div className="form-group col-6">
+                          <div className="form-group col-6 mt-2">
                             <label htmlFor="shortDescriptionAr">
                               Care Instructions(Ar){" "}
                               <span className="required-field text-danger">
@@ -1090,8 +1086,7 @@ function Products(props) {
                             )}
                           </div>
 
-                          {/* Additional Info (En) */}
-                          <div className="form-group col-6">
+                          <div className="form-group col-6 mt-2">
                             <label htmlFor="additionalInfoEn">
                               Additional Info(En){" "}
                               <span className="required-field text-danger">
@@ -1119,8 +1114,7 @@ function Products(props) {
                             )}
                           </div>
 
-                          {/* Additional Info (Ar) */}
-                          <div className="form-group col-6">
+                          <div className="form-group col-6 mt-2">
                             <label htmlFor="additionalInfoAr">
                               Additional Info(Ar){" "}
                               <span className="required-field text-danger">
@@ -1148,7 +1142,7 @@ function Products(props) {
                             )}
                           </div>
                         </div>
-                        <div className="col-12 text-end mb-4">
+                        <div className="col-12 text-end mb-4 mt-2">
                           <div
                             style={{
                               display: "flex",
@@ -1351,41 +1345,6 @@ function Products(props) {
                           action=""
                           onSubmit={handleSubmit2(handleOnSave1)}
                         >
-                          {/* <div className="form-group col-6">
-                            <label htmlFor="attributeId">
-                              {" "}
-                              Select Attribute
-                            </label>
-                            <select
-                              className={`select form-control signup_fields  mt-1 ${
-                                errors2.attributeId ? "is-invalid" : ""
-                              }`}
-                              multiple=""
-                              name="attributeId"
-                              id="attributeId"
-                              {...register("attributeId", {
-                                required: "Attribute is Required*",
-                              })}
-                              onChange={handleInputChange3}
-                            >
-                              <option value=""> Select Attribute</option>
-                              {Array.isArray(attribute) &&
-                                attribute.map((category) => (
-                                  <option
-                                    key={category._id}
-                                    value={category._id}
-                                  >
-                                    {category.attributeName_en}
-                                  </option>
-                                ))}
-                            </select>
-                            {errors.attributeId && (
-                              <small className="errorText mx-1 fw-bold text-danger">
-                                {errors.attributeId?.message}
-                              </small>
-                            )}
-                          </div> */}
-
                           <div className="form-group col-6">
                             <label htmlFor="attributeId">
                               Select Attribute
