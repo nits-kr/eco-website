@@ -526,7 +526,7 @@ function DashboardNew(props) {
                                 <span>$</span>
                                 {dashboarddata?.expectedEarnings?.toFixed(2)}
                               </h3>
-                              <div className="Percent_box ms-2">2.2%</div>
+                              {/* <div className="Percent_box ms-2">2.2%</div> */}
                             </div>
                           </div>
                           <DashboardDougnetChart />
@@ -553,7 +553,7 @@ function DashboardNew(props) {
                                 )}
                               </h3>
                               {/* <div className="Percent_box ms-2">2.2%</div> */}
-                              <div className="Percent_box ms-2">
+                              <div className="Percent_box ms-2 d-none">
                                 {loadings ? (
                                   <Spinner />
                                 ) : (
@@ -590,7 +590,7 @@ function DashboardNew(props) {
                                   totalMonthTotals?.toFixed(1)
                                 )}
                               </h3>
-                              <div className="Percent_box ms-2">
+                              <div className="Percent_box ms-2 d-none">
                                 {loadings ? (
                                   <Spinner />
                                 ) : (
@@ -952,7 +952,7 @@ function DashboardNew(props) {
                       </div>
                     </div>
                   </div>
-                  <div className="col-md-12 mb-4">
+                  <div className="col-md-12 mb-4 d-none">
                     <div className="row mx-0 w-100">
                       <div className="col-12 design_outter_comman shadow">
                         <div className="row comman_header justify-content-between">
@@ -1095,7 +1095,7 @@ function DashboardNew(props) {
                       </div>
                     </div>
                   </div> */}
-                  <div className="col-md-12 mb-4">
+                  <div className="col-md-12 mb-4 d-none">
                     <div className="row mx-0 w-100">
                       <div className="col-12 design_outter_comman shadow">
                         <div className="row comman_header justify-content-between">
